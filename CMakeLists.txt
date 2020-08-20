@@ -16,6 +16,8 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   set(BUILD_SHARED_LIBS ON)
 endif()
 
+find_package(Boost REQUIRED)
+
 include(FetchContent)
 set(USE_SYSTEM_CURL ON)
 set(BUILD_CPR_TESTS OFF)
@@ -55,5 +57,10 @@ FetchContent_MakeAvailable(lager)
 
 option(libkazv_BUILD_TESTS "Build tests" ON)
 option(libkazv_BUILD_EXAMPLES "Build examples" ON)
+option(libkazv_OUTPUT_LEVEL "Output level: Debug>=90, Info>=70, Quiet>=20, no output=1" 0)
+
+if(libkazv_OUTPUT_LEVEL)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")
+endif()
 
 add_subdirectory(src)

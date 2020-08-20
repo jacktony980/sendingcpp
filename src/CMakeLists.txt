@@ -2,7 +2,8 @@
 include_directories(api .)
 
 set(libkazv_SRCS
-#  api/wellknown.cpp
+  #  api/wellknown.cpp
+  debug.cpp
   api/basejob.cpp
   api/login.cpp
   client/client.cpp

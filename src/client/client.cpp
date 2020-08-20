@@ -6,7 +6,7 @@
 #include "client.hpp"
 #include "api/login.hpp"
 #include "types.hpp"
-#include "iostream"
+#include "debug.hpp"
 
 namespace Kazv
 {
@@ -19,10 +19,10 @@ namespace Kazv
                              a.password,
                              a.deviceName);
                 auto res = job.fetch();
-                std::cout << "Result validity: " << res.valid() << std::endl;
+                dbgClient << "Result validity: " << res.valid() << std::endl;
                 auto r = res.get();
                 if (job.success(r)) {
-                    std::cout << "Job success" << std::endl;
+                    dbgClient << "Job success" << std::endl;
                     const json &j = jsonBody(r).get();
                     try {
                         std::string serverUrl = j.contains("well_known")
@@ -36,7 +36,7 @@ namespace Kazv
                                 /* loggedIn = */ true
                                 });
                     } catch (const json::out_of_range &e) {
-                        std::cout << "Bad login" << e.what() << std::endl;
+                        dbgClient << "Json error: " << e.what() << std::endl;
                         ctx.dispatch(Error::SetErrorAction{e.what()});
                     }
                 }
@@ -60,7 +60,7 @@ namespace Kazv
 
     auto Client::update(Client m, Action a) -> Result
     {
-        std::cout << "Client::update()" << std::endl;
+        dbgClient << "Client::update()" << std::endl;
         return
             std::visit(lager::visitor{
                 [=](Error::Action a) mutable -> Result {
@@ -74,7 +74,7 @@ namespace Kazv
                     return {std::move(m), logoutEffect(std::move(a))};
                 },
                 [=](LoadUserInfoAction a) mutable -> Result {
-                    std::cout << "LoadUserInfoAction: " << a.userId << std::endl;
+                    dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
                     // Need to use set()s
                     Client newClient{a.serverUrl,
                                      a.userId,
