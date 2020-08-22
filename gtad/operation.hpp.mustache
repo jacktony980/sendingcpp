@@ -49,7 +49,9 @@ public:
     /// {{summary}}
         {{/summary}}
     {{/allParams?}}
-    explicit {{camelCaseOperationId}}Job(std::string serverUrl{{#allParams?}},{{/allParams?}}
+    explicit {{camelCaseOperationId}}Job(std::string serverUrl
+    {{^skipAuth}}, std::string _accessToken{{/skipAuth}}
+      {{#allParams?}},{{/allParams?}}
         {{#allParams}}{{>joinedParamDecl}}{{/allParams}});
     {{^hasBody?}}
 
@@ -71,7 +73,7 @@ public:
     {
     return
     {{#producesNonJson?}}
-      r
+      std::get<Bytes>(r.body)
     {{/producesNonJson?}}
     {{^producesNonJson?}}
       std::move(jsonBody(r).get()).get<{{dataType.name}}>()
@@ -82,23 +84,30 @@ public:
         {{#properties}}
 
     {{!there's nothing in #properties if the response is inline}}
-    {{>nonInlineResponseSignature}}
-    {
-    return jsonBody(r).get()
-    .contains("{{baseName}}"s) ?
-    jsonBody(r).get()["{{baseName}}"s]
-    .get<{{dataType.name}}>() : {{defaultValue}};
-    }
+    {{>nonInlineResponseSignature}};
         {{/properties}}
     {{/allProperties?}}{{/normalResponse?}}{{/responses}}
-};
-    {{#models.model}}
 
+    {{#queryParams?}}
+    static BaseJob::Query buildQuery(
+    {{#queryParams}}{{>joinedParamDef}}{{/queryParams}});{{/queryParams?}}
+
+    static BaseJob::Body buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}});
+      };
+
+      } {{! namespace Kazv}}
+      namespace nlohmann
+      {
+      using namespace Kazv;
+    {{#models.model}}
+      template<>
+      struct adl_serializer<{{qualifiedName}}> {
 {{#in?}}
-  inline void to_json(json& jo, const {{qualifiedName}} &pod)
+  static void to_json(json& jo, const {{qualifiedName}} &pod)
   {
   {{#parents}}{{!assume no more one parent}}
-    nlohmann::to_json(jo, static_cast<const {{name}} &>(pod));
+    jo = static_cast<const {{name}} &>(pod);
+    //nlohmann::to_json(jo, static_cast<const {{name}} &>(pod));
   {{/parents}}
   {{#propertyMap}}
     addPropertyMapToJson(jo, pod.{{nameCamelCase}});
@@ -110,21 +119,26 @@ public:
   }
 {{/in?}}
 {{#out?}}
-  inline void from_json({{>maybeCrefJsonObject}} jo, {{qualifiedName}}& result)
+  static void from_json(const json &jo, {{qualifiedName}}& result)
   {
   {{#parents}}
-    nlohmann::from_json(static_cast<const {{name}} &{{!of the parent!}}>(result), result);
+    static_cast<{{name}} &{{!of the parent!}}>(result) = jo;
+    //nlohmann::from_json(jo, static_cast<const {{name}} &{{!of the parent!}}>(result));
   {{/parents}}
   {{#vars}}
     result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
   {{/vars}}
   {{#propertyMap}}
-    from_json(jo, result.{{nameCamelCase}});
+    result.{{nameCamelCase}} = jo;
   {{/propertyMap}}
   }
 {{/out?}}
-
+};
     {{/models.model}}
+    }
+
+    namespace Kazv
+    {
 {{/operations.operation}}
 
 } // namespace Kazv

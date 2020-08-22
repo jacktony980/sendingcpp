@@ -21,12 +21,17 @@ struct {{name}}{{#parents?}} : {{#parents}}{{name}}{{>cjoin}}{{/parents}}{{/pare
         {{/propertyMap}}
 };
 
-
+}
+namespace nlohmann
+{
+using namespace Kazv;
+template<>
+struct adl_serializer<{{qualifiedName}}> {
 {{#in?}}
-  inline void to_json(json& jo, const {{qualifiedName}} &pod)
+  static void to_json(json& jo, const {{qualifiedName}} &pod)
   {
   {{#parents}}{{!assume no more one parent}}
-    nlohmann::to_json(jo, static_cast<const {{name}} &>(pod));
+    jo = static_cast<const {{name}} &>(pod);
   {{/parents}}
   {{#propertyMap}}
     addPropertyMapToJson(jo, pod.{{nameCamelCase}});
@@ -38,20 +43,24 @@ struct {{name}}{{#parents?}} : {{#parents}}{{name}}{{>cjoin}}{{/parents}}{{/pare
   }
 {{/in?}}
 {{#out?}}
-  inline void from_json({{>maybeCrefJsonObject}} jo, {{qualifiedName}}& result)
+  static void from_json(const json &jo, {{qualifiedName}}& result)
   {
   {{#parents}}
-    nlohmann::from_json(static_cast<const {{name}} &{{!of the parent!}}>(result), result);
+    static_cast<{{name}} &{{!of the parent!}}>(result) = jo;
   {{/parents}}
   {{#vars}}
     result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
   {{/vars}}
   {{#propertyMap}}
-    from_json(jo, result.{{nameCamelCase}});
+    result.{{nameCamelCase}} = jo;
   {{/propertyMap}}
   }
 {{/out?}}
+};
+    }
 
+    namespace Kazv
+    {
     {{/model}}
 {{/models}}
-} // namespace Quotient
+} // namespace Kazv

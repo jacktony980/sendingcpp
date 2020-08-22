@@ -4,7 +4,7 @@
 #include <functional>
 
 #include "client.hpp"
-#include "api/login.hpp"
+#include "csapi/login.hpp"
 #include "types.hpp"
 #include "debug.hpp"
 
@@ -15,9 +15,12 @@ namespace Kazv
         return
             [=](auto &&ctx) {
                 LoginJob job(a.serverUrl,
-                             a.username,
+                             "m.login.password"s, // type
+                             UserIdentifier{ "m.id.user"s, json{{"user", a.username}} }, // identifier
                              a.password,
-                             a.deviceName);
+                             {}, // token, not used
+                             {}, // device id, not used
+                             a.deviceName.value_or("libkazv"));
                 auto res = job.fetch();
                 dbgClient << "Result validity: " << res.valid() << std::endl;
                 auto r = res.get();

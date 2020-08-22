@@ -28,6 +28,8 @@ namespace Kazv
 
         std::unique_ptr<concept> m_d;
     public:
+        Descendent() : m_d(std::make_unique<model<T>>(T())) {}
+
         template<typename U>
         Descendent(U x) : m_d(std::make_unique<model<U> >(std::move(x))) {}
 

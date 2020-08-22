@@ -6,27 +6,29 @@ namespace Kazv
 {{#operations}}{{#operation}}
   {{#queryParams?}}
 
-inline BaseJob::Query build{{camelCaseOperationId}}JobQuery(
+BaseJob::Query {{camelCaseOperationId}}Job::buildQuery(
 {{#queryParams}}{{>joinedParamDef}}{{/queryParams}})
 {
 BaseJob::Query _q;
 {{#queryParams}}
   {{#required?}}
-    _q = std::move(_q).set("{{baseName}}"s, {{paramName}})
+    addToQuery(_q, "{{baseName}}"s, {{paramName}});
   {{/required?}}
   {{^required?}}
-    _q = addToQueryIfNeeded(std::move(_q), "{{baseName}}"s, {{paramName}});
+    addToQueryIfNeeded(_q, "{{baseName}}"s, {{paramName}});
   {{/required?}}
 {{/queryParams}}
-return std::move(_q);
+return _q;
 }
     {{/queryParams?}}
 
-    inline BaseJob::Body build{{camelCaseOperationId}}JobBody({{#allParams}}{{>joinedParamDef}}{{/allParams}})
+    BaseJob::Body {{camelCaseOperationId}}Job::buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}})
       {
+      // ignore unused param
+      {{#allParams}}(void)({{paramName}});{{/allParams}}
       {{#inlineBody}}{{^propertyMap}}{{^bodyParams?}}
         return {{#consumesNonJson?}}BaseJob::BytesBody({{nameCamelCase}}){{/consumesNonJson?}}
-          {{^consumesNonJson?}}BaseJob::JsonBody(json({{nameCamelCase}})){{/consumesNonJson?}};
+          {{^consumesNonJson?}}BaseJob::JsonBody({{nameCamelCase}}){{/consumesNonJson?}};
           {{/bodyParams?}}{{/propertyMap}}{{/inlineBody}}
       {{#bodyParams?}}
         json _data
@@ -46,22 +48,28 @@ return std::move(_q);
         {{/bodyParams}}
         return BaseJob::JsonBody(_data);
         {{/bodyParams?}}
-
+        {{^bodyParams?}}
+          {{^inlineBody}}
+            {{^propertyMap?}}
+              return BaseJob::EmptyBody{};
+        {{/propertyMap?}}
+        {{/inlineBody}}
+        {{/bodyParams?}}
 
       };
 
 {{camelCaseOperationId}}Job::{{camelCaseOperationId}}Job(
         std::string serverUrl
-        {{^skipAuth?}}, std::string token{{/skipAuth?}}
+        {{^skipAuth}}, std::string _accessToken{{/skipAuth}}
         {{#allParams?}},{{/allParams?}}
         {{#allParams}}{{>joinedParamDef}}{{/allParams}})
       : BaseJob(std::move(serverUrl),
           std::string("{{basePathWithoutHost}}"){{#pathParts}} + {{_}}{{/pathParts}},
           {{#_toupper}}{{httpMethod}}{{/_toupper}},
-          {{^skipAuth?}}token{{/skipAuth?}}{{#skipAuth?}} {} {{/skipAuth?}},
+          {{^skipAuth}}_accessToken{{/skipAuth}}{{#skipAuth}} {} {{/skipAuth}},
           ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}Byte{{/producesNonJson?}},
-            build{{camelCaseOperationId}}JobBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
-      {{#queryParams?}}, build{{camelCaseOperationId}}JobQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}}){{/queryParams?}})
+            buildBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
+      {{#queryParams?}}, buildQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}}){{/queryParams?}})
         {
         {{#headerParams}}
           //setRequestHeader("{{baseName}}", {{paramName}}.toLatin1());
@@ -72,7 +80,23 @@ return std::move(_q);
         {{^producesNonJson?}}{{#responses}}{{#normalResponse?}}{{#properties}}{{#required?}}
           //addExpectedKey("{{baseName}}");
         {{/required?}}{{/properties}}{{/normalResponse?}}{{/responses
-    }}{{/producesNonJson?}}
-}
+        }}{{/producesNonJson?}}
+        }
+
+        {{#responses}}{{#normalResponse?}}
+                {{#properties}}
+
+    {{!there's nothing in #properties if the response is inline}}
+    {{>qualifiedMaybeOmittableType}} {{camelCaseOperationId}}Job::{{paramName}}(Response r)
+    {
+    if (jsonBody(r).get()
+    .contains("{{baseName}}"s)) {
+    return
+    jsonBody(r).get()["{{baseName}}"s]
+    /*.get<{{dataType.name}}>()*/;}
+    else { return {{>maybeOmittableType}}( {{defaultValue}} );}
+    }
+        {{/properties}}{{/normalResponse?}}{{/responses}}
+
 {{/operation}}{{/operations}}
 }

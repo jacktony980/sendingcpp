@@ -2,6 +2,8 @@
 #include <cpr/cpr.h>
 #include <cpr/util.h>
 #include <lager/util.hpp>
+#include <vector>
+#include <tuple>
 
 #include "basejob.hpp"
 
@@ -11,6 +13,18 @@ namespace Kazv
     BaseJob::Post BaseJob::POST{};
     BaseJob::Put BaseJob::PUT{};
     BaseJob::Delete BaseJob::DELETE{};
+
+    struct BaseJob::Query::Private
+    {
+        std::vector<std::pair<std::string, std::string>> params;
+    };
+
+    BaseJob::Query::Query() = default;
+
+    void BaseJob::Query::add(std::string k, std::string v)
+    {
+        m_d->params.push_back({k, v});
+    };
 
     struct BaseJob::Private
     {
@@ -56,10 +70,10 @@ namespace Kazv
             this->body = b;
         }
 
-        if (! query.empty()) {
+        if (! query.m_d->params.empty()) {
             // from cpr/parameters.cpp
             cpr::CurlHolder holder;
-            for (const auto kv : query) {
+            for (const auto kv : query.m_d->params) {
                 std::string key = kv.first;
                 std::string value = kv.second;
                 params.AddParameter(cpr::Parameter(std::move(key), std::move(value)), holder);

@@ -28,7 +28,17 @@ namespace Kazv
         static Put PUT;
         static Delete DELETE;
 
-        using Query = immer::map<std::string, std::string>;
+        class Query
+        {
+        public:
+            Query();
+
+            void add(std::string k, std::string v);
+        private:
+            struct Private;
+            Descendent<Private> m_d;
+            friend class BaseJob;
+        };
 
         using BytesBody = Bytes;
         using JsonBody = JsonWrap;
@@ -75,29 +85,100 @@ namespace Kazv
 
     JsonWrap jsonBody(const BaseJob::Response &res);
 
-    template<class T,
-             std::enable_if_t<std::is_same_v<decltype(std::declval<T>().empty()), bool>,
-                                    int> = 0>
-    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, T &&arg)
+
+
+    namespace detail
     {
-        if (! arg.empty()) {
-            return std::move(q).set(name, std::forward<T>(arg));
-        }
-        return std::move(q);
-    };
+        template<class T>
+        struct AddToQueryT
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                q.add(name, std::to_string(std::forward<U>(arg)));
+            }
+        };
+
+        template<>
+        struct AddToQueryT<std::string>
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                q.add(name, std::forward<U>(arg));
+            }
+        };
+
+        template<>
+        struct AddToQueryT<bool>
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                q.add(name, std::forward<U>(arg) ? "true"s : "false"s);
+            }
+        };
+
+        template<class T>
+        struct AddToQueryT<immer::array<T>>
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                for (auto v : std::forward<U>(arg)) {
+                    q.add(name, v);
+                }
+            }
+        };
+
+        template<>
+        struct AddToQueryT<json>
+        {
+            // https://github.com/nlohmann/json/issues/2040
+            static void call(BaseJob::Query &q, std::string /* name */, const json &arg) {
+                // assume v is string type
+                for (auto [k, v] : arg.items()) {
+                    q.add(k, v);
+                }
+            }
+        };
+    }
 
     template<class T>
-    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, T &&arg)
+    inline void addToQuery(BaseJob::Query &q, std::string name, T &&arg)
     {
-        return std::move(q).set(name, std::forward<T>(arg));
-    };
+        detail::AddToQueryT<std::decay_t<T>>::call(q, name, std::forward<T>(arg));
+    }
+
+    namespace detail
+    {
+        template<class T>
+        struct AddToQueryIfNeededT
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                if constexpr (detail::hasEmptyMethod(arg)) {
+                    if (! arg.empty()) {
+                        addToQuery(q, name, std::forward<U>(arg));
+                    }
+                } else {
+                    addToQuery(q, name, std::forward<U>(arg));
+                }
+            }
+        };
+
+        template<class T>
+        struct AddToQueryIfNeededT<std::optional<T>>
+        {
+            template<class U>
+            static void call(BaseJob::Query &q, std::string name, U &&arg) {
+                if (arg.has_value()) {
+                    addToQuery(q, name, std::forward<U>(arg).value());
+                }
+            }
+        };
+    }
 
     template<class T>
-    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, std::optional<T> &&arg)
+    inline void addToQueryIfNeeded(BaseJob::Query &q, std::string name, T &&arg)
     {
-        if (arg.has_value()) {
-            return std::move(q).set(name, std::forward<T>(arg).value());
-        }
-        return std::move(q);
-    };
+        detail::AddToQueryIfNeededT<std::decay_t<T>>::call(q, name, std::forward<T>(arg));
+    }
+
 }
