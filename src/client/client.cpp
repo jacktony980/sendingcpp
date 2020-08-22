@@ -75,14 +75,18 @@ namespace Kazv
                 },
                 [=](LoadUserInfoAction a) mutable -> Result {
                     dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
-                    // Need to use set()s
-                    Client newClient{a.serverUrl,
-                                     a.userId,
-                                     a.token,
-                                     a.deviceId,
-                                     a.loggedIn,
-                                     Error::NoError{}};
-                    return { std::move(newClient), lager::noop };
+
+                    m.serverUrl = a.serverUrl;
+                    m.userId = a.userId;
+                    m.token = a.token;
+                    m.deviceId = a.deviceId;
+                    m.loggedIn = a.loggedIn;
+
+                    return { std::move(m),
+                             [](auto &&ctx) {
+                                 ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
+                             }
+                    };
                 },
             }, std::move(a));
     }

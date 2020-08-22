@@ -1,0 +1,57 @@
+{{>preamble}}
+#pragma once
+
+#include "types.hpp"
+{{#imports}}
+#include {{_}}{{/imports}}
+
+namespace Kazv {
+{{#models}}
+    {{#model}}
+{{>docCommentShort}}
+struct {{name}}{{#parents?}} : {{#parents}}{{name}}{{>cjoin}}{{/parents}}{{/parents?}}
+{       {{#vars}}
+
+    {{>docCommentShort}}
+    {{>maybeOmittableType}} {{nameCamelCase}};
+        {{/vars}}{{#propertyMap}}
+
+    {{>docCommentShort}}
+    {{>maybeOmittableType}} {{nameCamelCase}};
+        {{/propertyMap}}
+};
+
+
+{{#in?}}
+  inline void to_json(json& jo, const {{qualifiedName}} &pod)
+  {
+  {{#parents}}{{!assume no more one parent}}
+    nlohmann::to_json(jo, static_cast<const {{name}} &>(pod));
+  {{/parents}}
+  {{#propertyMap}}
+    addPropertyMapToJson(jo, pod.{{nameCamelCase}});
+  {{/propertyMap}}
+  {{#vars}}
+    {{#required?}}jo["{{baseName}}"s] = pod.{{nameCamelCase}};{{/required?}}
+    {{^required?}}addToJsonIfNeeded(jo, "{{baseName}}"s, pod.{{nameCamelCase}});{{/required?}}
+  {{/vars}}
+  }
+{{/in?}}
+{{#out?}}
+  inline void from_json({{>maybeCrefJsonObject}} jo, {{qualifiedName}}& result)
+  {
+  {{#parents}}
+    nlohmann::from_json(static_cast<const {{name}} &{{!of the parent!}}>(result), result);
+  {{/parents}}
+  {{#vars}}
+    result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
+  {{/vars}}
+  {{#propertyMap}}
+    from_json(jo, result.{{nameCamelCase}});
+  {{/propertyMap}}
+  }
+{{/out?}}
+
+    {{/model}}
+{{/models}}
+} // namespace Quotient

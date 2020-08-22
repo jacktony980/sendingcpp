@@ -59,7 +59,8 @@ namespace Kazv
                 Method method,
                 std::string token = {},
                 ReturnType returnType = ReturnType::Json,
-                Body body = EmptyBody{});
+                Body body = EmptyBody{},
+                Query query = {});
 
         std::future<Response> fetch() const;
 
@@ -73,4 +74,30 @@ namespace Kazv
     };
 
     JsonWrap jsonBody(const BaseJob::Response &res);
+
+    template<class T,
+             std::enable_if_t<std::is_same_v<decltype(std::declval<T>().empty()), bool>,
+                                    int> = 0>
+    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, T &&arg)
+    {
+        if (! arg.empty()) {
+            return std::move(q).set(name, std::forward<T>(arg));
+        }
+        return std::move(q);
+    };
+
+    template<class T>
+    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, T &&arg)
+    {
+        return std::move(q).set(name, std::forward<T>(arg));
+    };
+
+    template<class T>
+    inline BaseJob::Query addToQueryIfNeeded(BaseJob::Query &&q, std::string name, std::optional<T> &&arg)
+    {
+        if (arg.has_value()) {
+            return std::move(q).set(name, std::forward<T>(arg).value());
+        }
+        return std::move(q);
+    };
 }
