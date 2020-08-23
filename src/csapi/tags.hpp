@@ -72,7 +72,9 @@ static immer::map<std::string, Tag> tags(Response r);
   static void from_json(const json &jo, GetRoomTagsJob::Tag& result)
   {
   
-    result.order = jo.at("order"s);
+    if (jo.contains("order"s)) {
+      result.order = jo.at("order"s);
+    }
     result.additionalProperties = jo;
   }
 };

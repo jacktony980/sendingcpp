@@ -48,10 +48,18 @@ struct adl_serializer<ThirdPartySigned> {
   static void from_json(const json &jo, ThirdPartySigned& result)
   {
   
-    result.sender = jo.at("sender"s);
-    result.mxid = jo.at("mxid"s);
-    result.token = jo.at("token"s);
-    result.signatures = jo.at("signatures"s);
+    if (jo.contains("sender"s)) {
+      result.sender = jo.at("sender"s);
+    }
+    if (jo.contains("mxid"s)) {
+      result.mxid = jo.at("mxid"s);
+    }
+    if (jo.contains("token"s)) {
+      result.token = jo.at("token"s);
+    }
+    if (jo.contains("signatures"s)) {
+      result.signatures = jo.at("signatures"s);
+    }
   
   }
 };

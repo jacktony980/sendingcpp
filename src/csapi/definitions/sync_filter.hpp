@@ -63,13 +63,27 @@ struct adl_serializer<RoomFilter> {
   static void from_json(const json &jo, RoomFilter& result)
   {
   
-    result.notRooms = jo.at("not_rooms"s);
-    result.rooms = jo.at("rooms"s);
-    result.ephemeral = jo.at("ephemeral"s);
-    result.includeLeave = jo.at("include_leave"s);
-    result.state = jo.at("state"s);
-    result.timeline = jo.at("timeline"s);
-    result.accountData = jo.at("account_data"s);
+    if (jo.contains("not_rooms"s)) {
+      result.notRooms = jo.at("not_rooms"s);
+    }
+    if (jo.contains("rooms"s)) {
+      result.rooms = jo.at("rooms"s);
+    }
+    if (jo.contains("ephemeral"s)) {
+      result.ephemeral = jo.at("ephemeral"s);
+    }
+    if (jo.contains("include_leave"s)) {
+      result.includeLeave = jo.at("include_leave"s);
+    }
+    if (jo.contains("state"s)) {
+      result.state = jo.at("state"s);
+    }
+    if (jo.contains("timeline"s)) {
+      result.timeline = jo.at("timeline"s);
+    }
+    if (jo.contains("account_data"s)) {
+      result.accountData = jo.at("account_data"s);
+    }
   
   }
 };
@@ -121,11 +135,21 @@ struct adl_serializer<Filter> {
   static void from_json(const json &jo, Filter& result)
   {
   
-    result.eventFields = jo.at("event_fields"s);
-    result.eventFormat = jo.at("event_format"s);
-    result.presence = jo.at("presence"s);
-    result.accountData = jo.at("account_data"s);
-    result.room = jo.at("room"s);
+    if (jo.contains("event_fields"s)) {
+      result.eventFields = jo.at("event_fields"s);
+    }
+    if (jo.contains("event_format"s)) {
+      result.eventFormat = jo.at("event_format"s);
+    }
+    if (jo.contains("presence"s)) {
+      result.presence = jo.at("presence"s);
+    }
+    if (jo.contains("account_data"s)) {
+      result.accountData = jo.at("account_data"s);
+    }
+    if (jo.contains("room"s)) {
+      result.room = jo.at("room"s);
+    }
   
   }
 };

@@ -130,7 +130,9 @@ public:
     //nlohmann::from_json(jo, static_cast<const {{name}} &{{!of the parent!}}>(result));
   {{/parents}}
   {{#vars}}
-    result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
+    if (jo.contains("{{baseName}}"s)) {
+      result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
+    }
   {{/vars}}
   {{#propertyMap}}
     result.{{nameCamelCase}} = jo;

@@ -42,9 +42,15 @@ struct adl_serializer<ThirdPartyUser> {
   static void from_json(const json &jo, ThirdPartyUser& result)
   {
   
-    result.userid = jo.at("userid"s);
-    result.protocol = jo.at("protocol"s);
-    result.fields = jo.at("fields"s);
+    if (jo.contains("userid"s)) {
+      result.userid = jo.at("userid"s);
+    }
+    if (jo.contains("protocol"s)) {
+      result.protocol = jo.at("protocol"s);
+    }
+    if (jo.contains("fields"s)) {
+      result.fields = jo.at("fields"s);
+    }
   
   }
 };

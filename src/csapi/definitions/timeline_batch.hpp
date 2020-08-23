@@ -37,8 +37,12 @@ struct adl_serializer<Timeline> {
   static void from_json(const json &jo, Timeline& result)
   {
     static_cast<RoomEventBatch &>(result) = jo;
-    result.limited = jo.at("limited"s);
-    result.prevBatch = jo.at("prev_batch"s);
+    if (jo.contains("limited"s)) {
+      result.limited = jo.at("limited"s);
+    }
+    if (jo.contains("prev_batch"s)) {
+      result.prevBatch = jo.at("prev_batch"s);
+    }
   
   }
 };

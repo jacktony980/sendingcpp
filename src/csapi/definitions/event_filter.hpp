@@ -52,11 +52,21 @@ struct adl_serializer<EventFilter> {
   static void from_json(const json &jo, EventFilter& result)
   {
   
-    result.limit = jo.at("limit"s);
-    result.notSenders = jo.at("not_senders"s);
-    result.notTypes = jo.at("not_types"s);
-    result.senders = jo.at("senders"s);
-    result.types = jo.at("types"s);
+    if (jo.contains("limit"s)) {
+      result.limit = jo.at("limit"s);
+    }
+    if (jo.contains("not_senders"s)) {
+      result.notSenders = jo.at("not_senders"s);
+    }
+    if (jo.contains("not_types"s)) {
+      result.notTypes = jo.at("not_types"s);
+    }
+    if (jo.contains("senders"s)) {
+      result.senders = jo.at("senders"s);
+    }
+    if (jo.contains("types"s)) {
+      result.types = jo.at("types"s);
+    }
   
   }
 };

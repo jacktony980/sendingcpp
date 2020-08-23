@@ -42,9 +42,15 @@ struct adl_serializer<ThirdPartyLocation> {
   static void from_json(const json &jo, ThirdPartyLocation& result)
   {
   
-    result.alias = jo.at("alias"s);
-    result.protocol = jo.at("protocol"s);
-    result.fields = jo.at("fields"s);
+    if (jo.contains("alias"s)) {
+      result.alias = jo.at("alias"s);
+    }
+    if (jo.contains("protocol"s)) {
+      result.protocol = jo.at("protocol"s);
+    }
+    if (jo.contains("fields"s)) {
+      result.fields = jo.at("fields"s);
+    }
   
   }
 };

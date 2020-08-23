@@ -106,9 +106,15 @@ static immer::map<std::string, DeviceInfo> devices(Response r);
   static void from_json(const json &jo, GetWhoIsJob::ConnectionInfo& result)
   {
   
-    result.ip = jo.at("ip"s);
-    result.lastSeen = jo.at("last_seen"s);
-    result.userAgent = jo.at("user_agent"s);
+    if (jo.contains("ip"s)) {
+      result.ip = jo.at("ip"s);
+    }
+    if (jo.contains("last_seen"s)) {
+      result.lastSeen = jo.at("last_seen"s);
+    }
+    if (jo.contains("user_agent"s)) {
+      result.userAgent = jo.at("user_agent"s);
+    }
   
   }
 };
@@ -118,7 +124,9 @@ static immer::map<std::string, DeviceInfo> devices(Response r);
   static void from_json(const json &jo, GetWhoIsJob::SessionInfo& result)
   {
   
-    result.connections = jo.at("connections"s);
+    if (jo.contains("connections"s)) {
+      result.connections = jo.at("connections"s);
+    }
   
   }
 };
@@ -128,7 +136,9 @@ static immer::map<std::string, DeviceInfo> devices(Response r);
   static void from_json(const json &jo, GetWhoIsJob::DeviceInfo& result)
   {
   
-    result.sessions = jo.at("sessions"s);
+    if (jo.contains("sessions"s)) {
+      result.sessions = jo.at("sessions"s);
+    }
   
   }
 };

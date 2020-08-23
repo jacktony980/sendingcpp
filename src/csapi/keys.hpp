@@ -163,7 +163,9 @@ static immer::map<std::string, immer::map<std::string, DeviceInformation>> devic
   static void from_json(const json &jo, QueryKeysJob::UnsignedDeviceInfo& result)
   {
   
-    result.deviceDisplayName = jo.at("device_display_name"s);
+    if (jo.contains("device_display_name"s)) {
+      result.deviceDisplayName = jo.at("device_display_name"s);
+    }
   
   }
 };
@@ -174,7 +176,9 @@ static immer::map<std::string, immer::map<std::string, DeviceInformation>> devic
   {
     static_cast<DeviceKeys &>(result) = jo;
     //nlohmann::from_json(jo, static_cast<const DeviceKeys &>(result));
-    result.unsignedData = jo.at("unsigned"s);
+    if (jo.contains("unsigned"s)) {
+      result.unsignedData = jo.at("unsigned"s);
+    }
   
   }
 };

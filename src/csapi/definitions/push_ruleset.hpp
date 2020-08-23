@@ -52,11 +52,21 @@ struct adl_serializer<PushRuleset> {
   static void from_json(const json &jo, PushRuleset& result)
   {
   
-    result.content = jo.at("content"s);
-    result.override = jo.at("override"s);
-    result.room = jo.at("room"s);
-    result.sender = jo.at("sender"s);
-    result.underride = jo.at("underride"s);
+    if (jo.contains("content"s)) {
+      result.content = jo.at("content"s);
+    }
+    if (jo.contains("override"s)) {
+      result.override = jo.at("override"s);
+    }
+    if (jo.contains("room"s)) {
+      result.room = jo.at("room"s);
+    }
+    if (jo.contains("sender"s)) {
+      result.sender = jo.at("sender"s);
+    }
+    if (jo.contains("underride"s)) {
+      result.underride = jo.at("underride"s);
+    }
   
   }
 };

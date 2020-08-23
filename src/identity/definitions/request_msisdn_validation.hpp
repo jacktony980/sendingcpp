@@ -64,11 +64,21 @@ struct adl_serializer<RequestMsisdnValidation> {
   static void from_json(const json &jo, RequestMsisdnValidation& result)
   {
   
-    result.clientSecret = jo.at("client_secret"s);
-    result.country = jo.at("country"s);
-    result.phoneNumber = jo.at("phone_number"s);
-    result.sendAttempt = jo.at("send_attempt"s);
-    result.nextLink = jo.at("next_link"s);
+    if (jo.contains("client_secret"s)) {
+      result.clientSecret = jo.at("client_secret"s);
+    }
+    if (jo.contains("country"s)) {
+      result.country = jo.at("country"s);
+    }
+    if (jo.contains("phone_number"s)) {
+      result.phoneNumber = jo.at("phone_number"s);
+    }
+    if (jo.contains("send_attempt"s)) {
+      result.sendAttempt = jo.at("send_attempt"s);
+    }
+    if (jo.contains("next_link"s)) {
+      result.nextLink = jo.at("next_link"s);
+    }
   
   }
 };

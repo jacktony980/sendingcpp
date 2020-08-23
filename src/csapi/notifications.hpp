@@ -95,12 +95,24 @@ static immer::array<Notification> notifications(Response r);
   static void from_json(const json &jo, GetNotificationsJob::Notification& result)
   {
   
-    result.actions = jo.at("actions"s);
-    result.event = jo.at("event"s);
-    result.profileTag = jo.at("profile_tag"s);
-    result.read = jo.at("read"s);
-    result.roomId = jo.at("room_id"s);
-    result.ts = jo.at("ts"s);
+    if (jo.contains("actions"s)) {
+      result.actions = jo.at("actions"s);
+    }
+    if (jo.contains("event"s)) {
+      result.event = jo.at("event"s);
+    }
+    if (jo.contains("profile_tag"s)) {
+      result.profileTag = jo.at("profile_tag"s);
+    }
+    if (jo.contains("read"s)) {
+      result.read = jo.at("read"s);
+    }
+    if (jo.contains("room_id"s)) {
+      result.roomId = jo.at("room_id"s);
+    }
+    if (jo.contains("ts"s)) {
+      result.ts = jo.at("ts"s);
+    }
   
   }
 };

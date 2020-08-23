@@ -95,9 +95,15 @@ static bool limited(Response r);
   static void from_json(const json &jo, SearchUserDirectoryJob::User& result)
   {
   
-    result.userId = jo.at("user_id"s);
-    result.displayName = jo.at("display_name"s);
-    result.avatarUrl = jo.at("avatar_url"s);
+    if (jo.contains("user_id"s)) {
+      result.userId = jo.at("user_id"s);
+    }
+    if (jo.contains("display_name"s)) {
+      result.displayName = jo.at("display_name"s);
+    }
+    if (jo.contains("avatar_url"s)) {
+      result.avatarUrl = jo.at("avatar_url"s);
+    }
   
   }
 };

@@ -32,7 +32,9 @@ struct adl_serializer<HomeserverInformation> {
   static void from_json(const json &jo, HomeserverInformation& result)
   {
   
-    result.baseUrl = jo.at("base_url"s);
+    if (jo.contains("base_url"s)) {
+      result.baseUrl = jo.at("base_url"s);
+    }
   
   }
 };

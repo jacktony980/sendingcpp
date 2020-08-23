@@ -48,10 +48,18 @@ struct adl_serializer<StrippedState> {
   static void from_json(const json &jo, StrippedState& result)
   {
   
-    result.content = jo.at("content"s);
-    result.stateKey = jo.at("state_key"s);
-    result.type = jo.at("type"s);
-    result.sender = jo.at("sender"s);
+    if (jo.contains("content"s)) {
+      result.content = jo.at("content"s);
+    }
+    if (jo.contains("state_key"s)) {
+      result.stateKey = jo.at("state_key"s);
+    }
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
+    if (jo.contains("sender"s)) {
+      result.sender = jo.at("sender"s);
+    }
   
   }
 };

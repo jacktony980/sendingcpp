@@ -60,12 +60,24 @@ struct adl_serializer<PushRule> {
   static void from_json(const json &jo, PushRule& result)
   {
   
-    result.actions = jo.at("actions"s);
-    result.isDefault = jo.at("default"s);
-    result.enabled = jo.at("enabled"s);
-    result.ruleId = jo.at("rule_id"s);
-    result.conditions = jo.at("conditions"s);
-    result.pattern = jo.at("pattern"s);
+    if (jo.contains("actions"s)) {
+      result.actions = jo.at("actions"s);
+    }
+    if (jo.contains("default"s)) {
+      result.isDefault = jo.at("default"s);
+    }
+    if (jo.contains("enabled"s)) {
+      result.enabled = jo.at("enabled"s);
+    }
+    if (jo.contains("rule_id"s)) {
+      result.ruleId = jo.at("rule_id"s);
+    }
+    if (jo.contains("conditions"s)) {
+      result.conditions = jo.at("conditions"s);
+    }
+    if (jo.contains("pattern"s)) {
+      result.pattern = jo.at("pattern"s);
+    }
   
   }
 };

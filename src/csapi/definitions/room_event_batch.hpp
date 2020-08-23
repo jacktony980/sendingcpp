@@ -32,7 +32,9 @@ struct adl_serializer<RoomEventBatch> {
   static void from_json(const json &jo, RoomEventBatch& result)
   {
   
-    result.events = jo.at("events"s);
+    if (jo.contains("events"s)) {
+      result.events = jo.at("events"s);
+    }
   
   }
 };

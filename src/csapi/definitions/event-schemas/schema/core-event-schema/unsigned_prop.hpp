@@ -44,9 +44,15 @@ struct adl_serializer<UnsignedData> {
   static void from_json(const json &jo, UnsignedData& result)
   {
   
-    result.age = jo.at("age"s);
-    result.redactedBecause = jo.at("redacted_because"s);
-    result.transactionId = jo.at("transaction_id"s);
+    if (jo.contains("age"s)) {
+      result.age = jo.at("age"s);
+    }
+    if (jo.contains("redacted_because"s)) {
+      result.redactedBecause = jo.at("redacted_because"s);
+    }
+    if (jo.contains("transaction_id"s)) {
+      result.transactionId = jo.at("transaction_id"s);
+    }
   
   }
 };

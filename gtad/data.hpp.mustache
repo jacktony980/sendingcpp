@@ -49,7 +49,9 @@ struct adl_serializer<{{qualifiedName}}> {
     static_cast<{{name}} &{{!of the parent!}}>(result) = jo;
   {{/parents}}
   {{#vars}}
-    result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
+    if (jo.contains("{{baseName}}"s)) {
+      result.{{nameCamelCase}} = jo.at("{{baseName}}"s);
+    }
   {{/vars}}
   {{#propertyMap}}
     result.{{nameCamelCase}} = jo;

@@ -48,8 +48,12 @@ struct adl_serializer<RequestTokenResponse> {
   static void from_json(const json &jo, RequestTokenResponse& result)
   {
   
-    result.sid = jo.at("sid"s);
-    result.submitUrl = jo.at("submit_url"s);
+    if (jo.contains("sid"s)) {
+      result.sid = jo.at("sid"s);
+    }
+    if (jo.contains("submit_url"s)) {
+      result.submitUrl = jo.at("submit_url"s);
+    }
   
   }
 };

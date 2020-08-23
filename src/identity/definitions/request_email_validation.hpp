@@ -59,10 +59,18 @@ struct adl_serializer<RequestEmailValidation> {
   static void from_json(const json &jo, RequestEmailValidation& result)
   {
   
-    result.clientSecret = jo.at("client_secret"s);
-    result.email = jo.at("email"s);
-    result.sendAttempt = jo.at("send_attempt"s);
-    result.nextLink = jo.at("next_link"s);
+    if (jo.contains("client_secret"s)) {
+      result.clientSecret = jo.at("client_secret"s);
+    }
+    if (jo.contains("email"s)) {
+      result.email = jo.at("email"s);
+    }
+    if (jo.contains("send_attempt"s)) {
+      result.sendAttempt = jo.at("send_attempt"s);
+    }
+    if (jo.contains("next_link"s)) {
+      result.nextLink = jo.at("next_link"s);
+    }
   
   }
 };

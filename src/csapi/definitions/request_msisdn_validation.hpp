@@ -46,8 +46,12 @@ struct adl_serializer<MsisdnValidationData> {
   static void from_json(const json &jo, MsisdnValidationData& result)
   {
     static_cast<RequestMsisdnValidation &>(result) = jo;
-    result.idServer = jo.at("id_server"s);
-    result.idAccessToken = jo.at("id_access_token"s);
+    if (jo.contains("id_server"s)) {
+      result.idServer = jo.at("id_server"s);
+    }
+    if (jo.contains("id_access_token"s)) {
+      result.idAccessToken = jo.at("id_access_token"s);
+    }
   
   }
 };

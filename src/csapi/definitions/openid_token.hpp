@@ -51,10 +51,18 @@ struct adl_serializer<OpenidToken> {
   static void from_json(const json &jo, OpenidToken& result)
   {
   
-    result.accessToken = jo.at("access_token"s);
-    result.tokenType = jo.at("token_type"s);
-    result.matrixServerName = jo.at("matrix_server_name"s);
-    result.expiresIn = jo.at("expires_in"s);
+    if (jo.contains("access_token"s)) {
+      result.accessToken = jo.at("access_token"s);
+    }
+    if (jo.contains("token_type"s)) {
+      result.tokenType = jo.at("token_type"s);
+    }
+    if (jo.contains("matrix_server_name"s)) {
+      result.matrixServerName = jo.at("matrix_server_name"s);
+    }
+    if (jo.contains("expires_in"s)) {
+      result.expiresIn = jo.at("expires_in"s);
+    }
   
   }
 };

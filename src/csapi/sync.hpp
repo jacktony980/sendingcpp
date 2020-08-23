@@ -349,9 +349,15 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::RoomSummary& result)
   {
   
-    result.mHeroes = jo.at("m.heroes"s);
-    result.mJoinedMemberCount = jo.at("m.joined_member_count"s);
-    result.mInvitedMemberCount = jo.at("m.invited_member_count"s);
+    if (jo.contains("m.heroes"s)) {
+      result.mHeroes = jo.at("m.heroes"s);
+    }
+    if (jo.contains("m.joined_member_count"s)) {
+      result.mJoinedMemberCount = jo.at("m.joined_member_count"s);
+    }
+    if (jo.contains("m.invited_member_count"s)) {
+      result.mInvitedMemberCount = jo.at("m.invited_member_count"s);
+    }
   
   }
 };
@@ -361,8 +367,12 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::UnreadNotificationCounts& result)
   {
   
-    result.highlightCount = jo.at("highlight_count"s);
-    result.notificationCount = jo.at("notification_count"s);
+    if (jo.contains("highlight_count"s)) {
+      result.highlightCount = jo.at("highlight_count"s);
+    }
+    if (jo.contains("notification_count"s)) {
+      result.notificationCount = jo.at("notification_count"s);
+    }
   
   }
 };
@@ -372,12 +382,24 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::JoinedRoom& result)
   {
   
-    result.summary = jo.at("summary"s);
-    result.state = jo.at("state"s);
-    result.timeline = jo.at("timeline"s);
-    result.ephemeral = jo.at("ephemeral"s);
-    result.accountData = jo.at("account_data"s);
-    result.unreadNotifications = jo.at("unread_notifications"s);
+    if (jo.contains("summary"s)) {
+      result.summary = jo.at("summary"s);
+    }
+    if (jo.contains("state"s)) {
+      result.state = jo.at("state"s);
+    }
+    if (jo.contains("timeline"s)) {
+      result.timeline = jo.at("timeline"s);
+    }
+    if (jo.contains("ephemeral"s)) {
+      result.ephemeral = jo.at("ephemeral"s);
+    }
+    if (jo.contains("account_data"s)) {
+      result.accountData = jo.at("account_data"s);
+    }
+    if (jo.contains("unread_notifications"s)) {
+      result.unreadNotifications = jo.at("unread_notifications"s);
+    }
   
   }
 };
@@ -387,7 +409,9 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::InviteState& result)
   {
   
-    result.events = jo.at("events"s);
+    if (jo.contains("events"s)) {
+      result.events = jo.at("events"s);
+    }
   
   }
 };
@@ -397,7 +421,9 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::InvitedRoom& result)
   {
   
-    result.inviteState = jo.at("invite_state"s);
+    if (jo.contains("invite_state"s)) {
+      result.inviteState = jo.at("invite_state"s);
+    }
   
   }
 };
@@ -407,9 +433,15 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::LeftRoom& result)
   {
   
-    result.state = jo.at("state"s);
-    result.timeline = jo.at("timeline"s);
-    result.accountData = jo.at("account_data"s);
+    if (jo.contains("state"s)) {
+      result.state = jo.at("state"s);
+    }
+    if (jo.contains("timeline"s)) {
+      result.timeline = jo.at("timeline"s);
+    }
+    if (jo.contains("account_data"s)) {
+      result.accountData = jo.at("account_data"s);
+    }
   
   }
 };
@@ -419,9 +451,15 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
   static void from_json(const json &jo, SyncJob::Rooms& result)
   {
   
-    result.join = jo.at("join"s);
-    result.invite = jo.at("invite"s);
-    result.leave = jo.at("leave"s);
+    if (jo.contains("join"s)) {
+      result.join = jo.at("join"s);
+    }
+    if (jo.contains("invite"s)) {
+      result.invite = jo.at("invite"s);
+    }
+    if (jo.contains("leave"s)) {
+      result.leave = jo.at("leave"s);
+    }
   
   }
 };

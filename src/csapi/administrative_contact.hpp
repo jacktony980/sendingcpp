@@ -93,10 +93,18 @@ static immer::array<ThirdPartyIdentifier> threepids(Response r);
   static void from_json(const json &jo, GetAccount3PIDsJob::ThirdPartyIdentifier& result)
   {
   
-    result.medium = jo.at("medium"s);
-    result.address = jo.at("address"s);
-    result.validatedAt = jo.at("validated_at"s);
-    result.addedAt = jo.at("added_at"s);
+    if (jo.contains("medium"s)) {
+      result.medium = jo.at("medium"s);
+    }
+    if (jo.contains("address"s)) {
+      result.address = jo.at("address"s);
+    }
+    if (jo.contains("validated_at"s)) {
+      result.validatedAt = jo.at("validated_at"s);
+    }
+    if (jo.contains("added_at"s)) {
+      result.addedAt = jo.at("added_at"s);
+    }
   
   }
 };

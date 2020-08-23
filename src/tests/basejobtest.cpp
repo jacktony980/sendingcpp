@@ -12,17 +12,23 @@ using namespace Kazv;
 
 TEST_CASE("Base job should fetch correctly", "[basejob]")
 {
+    boost::asio::io_context ioContext;
     BaseJob job(TEST_SERVER_URL, "/.well-known/matrix/client", BaseJob::Get{});
-    CprJobHandler h;
-    auto futureResponse = h.fetch(job);
-    BaseJob::Response r = futureResponse.get();
 
-    if (r.statusCode == 200) {
-        REQUIRE( BaseJob::isBodyJson(r.body) );
+    CprJobHandler h(ioContext.get_executor());
+    h.fetch(
+        job,
+        [](auto futureResponse) {
+            BaseJob::Response r = futureResponse.get();
 
-        json j = std::get<BaseJob::JsonBody>(r.body).get();
+            if (r.statusCode == 200) {
+                REQUIRE( BaseJob::isBodyJson(r.body) );
 
-        REQUIRE_NOTHROW( (j["m.homeserver"]["base_url"]) );
-        REQUIRE( (j["m.homeserver"]["base_url"].size() > 0) );
-    }
+                json j = std::get<BaseJob::JsonBody>(r.body).get();
+
+                REQUIRE_NOTHROW( (j["m.homeserver"]["base_url"]) );
+                REQUIRE( (j["m.homeserver"]["base_url"].size() > 0) );
+            }
+        });
+    ioContext.run();
 }

@@ -297,8 +297,12 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::UserProfile& result)
   {
   
-    result.displayname = jo.at("displayname"s);
-    result.avatarUrl = jo.at("avatar_url"s);
+    if (jo.contains("displayname"s)) {
+      result.displayname = jo.at("displayname"s);
+    }
+    if (jo.contains("avatar_url"s)) {
+      result.avatarUrl = jo.at("avatar_url"s);
+    }
   
   }
 };
@@ -308,11 +312,21 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::EventContext& result)
   {
   
-    result.start = jo.at("start"s);
-    result.end = jo.at("end"s);
-    result.profileInfo = jo.at("profile_info"s);
-    result.eventsBefore = jo.at("events_before"s);
-    result.eventsAfter = jo.at("events_after"s);
+    if (jo.contains("start"s)) {
+      result.start = jo.at("start"s);
+    }
+    if (jo.contains("end"s)) {
+      result.end = jo.at("end"s);
+    }
+    if (jo.contains("profile_info"s)) {
+      result.profileInfo = jo.at("profile_info"s);
+    }
+    if (jo.contains("events_before"s)) {
+      result.eventsBefore = jo.at("events_before"s);
+    }
+    if (jo.contains("events_after"s)) {
+      result.eventsAfter = jo.at("events_after"s);
+    }
   
   }
 };
@@ -322,9 +336,15 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::Result& result)
   {
   
-    result.rank = jo.at("rank"s);
-    result.result = jo.at("result"s);
-    result.context = jo.at("context"s);
+    if (jo.contains("rank"s)) {
+      result.rank = jo.at("rank"s);
+    }
+    if (jo.contains("result"s)) {
+      result.result = jo.at("result"s);
+    }
+    if (jo.contains("context"s)) {
+      result.context = jo.at("context"s);
+    }
   
   }
 };
@@ -334,9 +354,15 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::GroupValue& result)
   {
   
-    result.nextBatch = jo.at("next_batch"s);
-    result.order = jo.at("order"s);
-    result.results = jo.at("results"s);
+    if (jo.contains("next_batch"s)) {
+      result.nextBatch = jo.at("next_batch"s);
+    }
+    if (jo.contains("order"s)) {
+      result.order = jo.at("order"s);
+    }
+    if (jo.contains("results"s)) {
+      result.results = jo.at("results"s);
+    }
   
   }
 };
@@ -346,12 +372,24 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::ResultRoomEvents& result)
   {
   
-    result.count = jo.at("count"s);
-    result.highlights = jo.at("highlights"s);
-    result.results = jo.at("results"s);
-    result.state = jo.at("state"s);
-    result.groups = jo.at("groups"s);
-    result.nextBatch = jo.at("next_batch"s);
+    if (jo.contains("count"s)) {
+      result.count = jo.at("count"s);
+    }
+    if (jo.contains("highlights"s)) {
+      result.highlights = jo.at("highlights"s);
+    }
+    if (jo.contains("results"s)) {
+      result.results = jo.at("results"s);
+    }
+    if (jo.contains("state"s)) {
+      result.state = jo.at("state"s);
+    }
+    if (jo.contains("groups"s)) {
+      result.groups = jo.at("groups"s);
+    }
+    if (jo.contains("next_batch"s)) {
+      result.nextBatch = jo.at("next_batch"s);
+    }
   
   }
 };
@@ -361,7 +399,9 @@ static ResultCategories searchCategories(Response r);
   static void from_json(const json &jo, SearchJob::ResultCategories& result)
   {
   
-    result.roomEvents = jo.at("room_events"s);
+    if (jo.contains("room_events"s)) {
+      result.roomEvents = jo.at("room_events"s);
+    }
   
   }
 };

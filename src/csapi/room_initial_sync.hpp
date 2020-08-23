@@ -105,9 +105,15 @@ static EventList accountData(Response r);
   static void from_json(const json &jo, RoomInitialSyncJob::PaginationChunk& result)
   {
   
-    result.start = jo.at("start"s);
-    result.end = jo.at("end"s);
-    result.chunk = jo.at("chunk"s);
+    if (jo.contains("start"s)) {
+      result.start = jo.at("start"s);
+    }
+    if (jo.contains("end"s)) {
+      result.end = jo.at("end"s);
+    }
+    if (jo.contains("chunk"s)) {
+      result.chunk = jo.at("chunk"s);
+    }
   
   }
 };

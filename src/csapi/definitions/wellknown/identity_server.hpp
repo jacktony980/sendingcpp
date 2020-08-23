@@ -32,7 +32,9 @@ struct adl_serializer<IdentityServerInformation> {
   static void from_json(const json &jo, IdentityServerInformation& result)
   {
   
-    result.baseUrl = jo.at("base_url"s);
+    if (jo.contains("base_url"s)) {
+      result.baseUrl = jo.at("base_url"s);
+    }
   
   }
 };

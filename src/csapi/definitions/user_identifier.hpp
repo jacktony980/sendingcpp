@@ -35,7 +35,9 @@ struct adl_serializer<UserIdentifier> {
   static void from_json(const json &jo, UserIdentifier& result)
   {
   
-    result.type = jo.at("type"s);
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
     result.additionalProperties = jo;
   }
 };

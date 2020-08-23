@@ -44,8 +44,12 @@ struct adl_serializer<DiscoveryInformation> {
   static void from_json(const json &jo, DiscoveryInformation& result)
   {
   
-    result.homeserver = jo.at("m.homeserver"s);
-    result.identityServer = jo.at("m.identity_server"s);
+    if (jo.contains("m.homeserver"s)) {
+      result.homeserver = jo.at("m.homeserver"s);
+    }
+    if (jo.contains("m.identity_server"s)) {
+      result.identityServer = jo.at("m.identity_server"s);
+    }
     result.additionalProperties = jo;
   }
 };

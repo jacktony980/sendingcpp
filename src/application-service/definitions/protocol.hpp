@@ -39,8 +39,12 @@ struct adl_serializer<FieldType> {
   static void from_json(const json &jo, FieldType& result)
   {
   
-    result.regexp = jo.at("regexp"s);
-    result.placeholder = jo.at("placeholder"s);
+    if (jo.contains("regexp"s)) {
+      result.regexp = jo.at("regexp"s);
+    }
+    if (jo.contains("placeholder"s)) {
+      result.placeholder = jo.at("placeholder"s);
+    }
   
   }
 };
@@ -88,10 +92,18 @@ struct adl_serializer<ProtocolInstance> {
   static void from_json(const json &jo, ProtocolInstance& result)
   {
   
-    result.desc = jo.at("desc"s);
-    result.icon = jo.at("icon"s);
-    result.fields = jo.at("fields"s);
-    result.networkId = jo.at("network_id"s);
+    if (jo.contains("desc"s)) {
+      result.desc = jo.at("desc"s);
+    }
+    if (jo.contains("icon"s)) {
+      result.icon = jo.at("icon"s);
+    }
+    if (jo.contains("fields"s)) {
+      result.fields = jo.at("fields"s);
+    }
+    if (jo.contains("network_id"s)) {
+      result.networkId = jo.at("network_id"s);
+    }
   
   }
 };
@@ -155,11 +167,21 @@ struct adl_serializer<ThirdPartyProtocol> {
   static void from_json(const json &jo, ThirdPartyProtocol& result)
   {
   
-    result.userFields = jo.at("user_fields"s);
-    result.locationFields = jo.at("location_fields"s);
-    result.icon = jo.at("icon"s);
-    result.fieldTypes = jo.at("field_types"s);
-    result.instances = jo.at("instances"s);
+    if (jo.contains("user_fields"s)) {
+      result.userFields = jo.at("user_fields"s);
+    }
+    if (jo.contains("location_fields"s)) {
+      result.locationFields = jo.at("location_fields"s);
+    }
+    if (jo.contains("icon"s)) {
+      result.icon = jo.at("icon"s);
+    }
+    if (jo.contains("field_types"s)) {
+      result.fieldTypes = jo.at("field_types"s);
+    }
+    if (jo.contains("instances"s)) {
+      result.instances = jo.at("instances"s);
+    }
   
   }
 };

@@ -32,7 +32,9 @@ struct adl_serializer<StateEventBatch> {
   static void from_json(const json &jo, StateEventBatch& result)
   {
   
-    result.events = jo.at("events"s);
+    if (jo.contains("events"s)) {
+      result.events = jo.at("events"s);
+    }
   
   }
 };

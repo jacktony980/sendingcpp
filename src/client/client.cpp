@@ -23,28 +23,25 @@ namespace Kazv
                              {}, // device id, not used
                              a.deviceName.value_or("libkazv"));
                 auto &jobHandler = lager::get<JobInterface &>(ctx);
-                auto res = jobHandler.fetch(job);
-                dbgClient << "Result validity: " << res.valid() << std::endl;
-                auto r = res.get();
-                if (job.success(r)) {
-                    dbgClient << "Job success" << std::endl;
-                    const json &j = jsonBody(r).get();
-                    try {
-                        std::string serverUrl = j.contains("well_known")
-                            ? j.at("well_known").at("m.homeserver").at("base_url").get<std::string>()
-                            : a.serverUrl;
-                        ctx.dispatch(Client::LoadUserInfoAction{
-                                serverUrl,
-                                j.at("user_id"),
-                                j.at("access_token"),
-                                j.at("device_id"),
-                                /* loggedIn = */ true
+                jobHandler.fetch(
+                    job,
+                    [=](std::shared_future<BaseJob::Response> res) {
+                        auto r = res.get();
+                        if (LoginJob::success(r)) {
+                            dbgClient << "Job success" << std::endl;
+                            const json &j = jsonBody(r).get();
+                            std::string serverUrl = j.contains("well_known")
+                                ? j.at("well_known").at("m.homeserver").at("base_url").get<std::string>()
+                                : a.serverUrl;
+                            ctx.dispatch(Client::LoadUserInfoAction{
+                                    serverUrl,
+                                    j.at("user_id"),
+                                    j.at("access_token"),
+                                    j.at("device_id"),
+                                    /* loggedIn = */ true
                                 });
-                    } catch (const json::out_of_range &e) {
-                        dbgClient << "Json error: " << e.what() << std::endl;
-                        ctx.dispatch(Error::SetErrorAction{e.what()});
-                    }
-                }
+                        }
+                    });
             };
     }
 

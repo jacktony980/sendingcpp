@@ -40,8 +40,12 @@ struct adl_serializer<AuthenticationData> {
   static void from_json(const json &jo, AuthenticationData& result)
   {
   
-    result.type = jo.at("type"s);
-    result.session = jo.at("session"s);
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
+    if (jo.contains("session"s)) {
+      result.session = jo.at("session"s);
+    }
     result.authInfo = jo;
   }
 };

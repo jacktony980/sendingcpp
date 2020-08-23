@@ -60,10 +60,18 @@ struct adl_serializer<PushCondition> {
   static void from_json(const json &jo, PushCondition& result)
   {
   
-    result.kind = jo.at("kind"s);
-    result.key = jo.at("key"s);
-    result.pattern = jo.at("pattern"s);
-    result.is = jo.at("is"s);
+    if (jo.contains("kind"s)) {
+      result.kind = jo.at("kind"s);
+    }
+    if (jo.contains("key"s)) {
+      result.key = jo.at("key"s);
+    }
+    if (jo.contains("pattern"s)) {
+      result.pattern = jo.at("pattern"s);
+    }
+    if (jo.contains("is"s)) {
+      result.is = jo.at("is"s);
+    }
   
   }
 };

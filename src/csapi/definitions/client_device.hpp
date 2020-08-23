@@ -51,10 +51,18 @@ struct adl_serializer<Device> {
   static void from_json(const json &jo, Device& result)
   {
   
-    result.deviceId = jo.at("device_id"s);
-    result.displayName = jo.at("display_name"s);
-    result.lastSeenIp = jo.at("last_seen_ip"s);
-    result.lastSeenTs = jo.at("last_seen_ts"s);
+    if (jo.contains("device_id"s)) {
+      result.deviceId = jo.at("device_id"s);
+    }
+    if (jo.contains("display_name"s)) {
+      result.displayName = jo.at("display_name"s);
+    }
+    if (jo.contains("last_seen_ip"s)) {
+      result.lastSeenIp = jo.at("last_seen_ip"s);
+    }
+    if (jo.contains("last_seen_ts"s)) {
+      result.lastSeenTs = jo.at("last_seen_ts"s);
+    }
   
   }
 };

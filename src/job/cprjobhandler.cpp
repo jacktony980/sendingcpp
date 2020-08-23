@@ -4,9 +4,21 @@
 
 namespace Kazv
 {
+    CprJobHandler::CprJobHandler(boost::asio::io_context::executor_type executor)
+        : executor(std::move(executor))
+    {
+    }
+
     CprJobHandler::~CprJobHandler() = default;
 
-    std::future<BaseJob::Response> CprJobHandler::fetch(const BaseJob &job)
+    void CprJobHandler::async(std::function<void()> func)
+    {
+        std::thread([func=std::move(func), guard=boost::asio::executor_work_guard(executor)]() {
+                        func();
+                    }).detach();
+    }
+
+    void CprJobHandler::fetch(const BaseJob &job, std::function<void(std::shared_future<BaseJob::Response>)> userCallback)
     {
         cpr::Url url{job.url()};
         cpr::Body body(job.requestBody());
@@ -41,7 +53,7 @@ namespace Kazv
                             return { r.status_code, body, BaseJob::Header(r.header.begin(), r.header.end()) };
                         };
 
-        return std::visit(lager::visitor{
+        std::shared_future<BaseJob::Response> res = std::visit(lager::visitor{
                 [=](BaseJob::Get) {
                     return cpr::GetCallback(callback, url, header, body, params);
                 },
@@ -54,7 +66,10 @@ namespace Kazv
                 [=](BaseJob::Delete) {
                     return cpr::DeleteCallback(callback, url, header, body, params);
                 }
-            }, method);
+            }, method).share();
 
+        async([=]() {
+                  userCallback(res);
+              });
     }
 }

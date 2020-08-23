@@ -295,8 +295,12 @@ static immer::map<std::string, RoomMember> joined(Response r);
   static void from_json(const json &jo, GetJoinedMembersByRoomJob::RoomMember& result)
   {
   
-    result.displayName = jo.at("display_name"s);
-    result.avatarUrl = jo.at("avatar_url"s);
+    if (jo.contains("display_name"s)) {
+      result.displayName = jo.at("display_name"s);
+    }
+    if (jo.contains("avatar_url"s)) {
+      result.avatarUrl = jo.at("avatar_url"s);
+    }
   
   }
 };

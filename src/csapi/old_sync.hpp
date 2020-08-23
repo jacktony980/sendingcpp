@@ -207,9 +207,15 @@ static EventList accountData(Response r);
   static void from_json(const json &jo, InitialSyncJob::PaginationChunk& result)
   {
   
-    result.start = jo.at("start"s);
-    result.end = jo.at("end"s);
-    result.chunk = jo.at("chunk"s);
+    if (jo.contains("start"s)) {
+      result.start = jo.at("start"s);
+    }
+    if (jo.contains("end"s)) {
+      result.end = jo.at("end"s);
+    }
+    if (jo.contains("chunk"s)) {
+      result.chunk = jo.at("chunk"s);
+    }
   
   }
 };
@@ -219,13 +225,27 @@ static EventList accountData(Response r);
   static void from_json(const json &jo, InitialSyncJob::RoomInfo& result)
   {
   
-    result.roomId = jo.at("room_id"s);
-    result.membership = jo.at("membership"s);
-    result.invite = jo.at("invite"s);
-    result.messages = jo.at("messages"s);
-    result.state = jo.at("state"s);
-    result.visibility = jo.at("visibility"s);
-    result.accountData = jo.at("account_data"s);
+    if (jo.contains("room_id"s)) {
+      result.roomId = jo.at("room_id"s);
+    }
+    if (jo.contains("membership"s)) {
+      result.membership = jo.at("membership"s);
+    }
+    if (jo.contains("invite"s)) {
+      result.invite = jo.at("invite"s);
+    }
+    if (jo.contains("messages"s)) {
+      result.messages = jo.at("messages"s);
+    }
+    if (jo.contains("state"s)) {
+      result.state = jo.at("state"s);
+    }
+    if (jo.contains("visibility"s)) {
+      result.visibility = jo.at("visibility"s);
+    }
+    if (jo.contains("account_data"s)) {
+      result.accountData = jo.at("account_data"s);
+    }
   
   }
 };

@@ -58,11 +58,21 @@ struct adl_serializer<RoomEventFilter> {
   static void from_json(const json &jo, RoomEventFilter& result)
   {
     static_cast<EventFilter &>(result) = jo;
-    result.lazyLoadMembers = jo.at("lazy_load_members"s);
-    result.includeRedundantMembers = jo.at("include_redundant_members"s);
-    result.notRooms = jo.at("not_rooms"s);
-    result.rooms = jo.at("rooms"s);
-    result.containsUrl = jo.at("contains_url"s);
+    if (jo.contains("lazy_load_members"s)) {
+      result.lazyLoadMembers = jo.at("lazy_load_members"s);
+    }
+    if (jo.contains("include_redundant_members"s)) {
+      result.includeRedundantMembers = jo.at("include_redundant_members"s);
+    }
+    if (jo.contains("not_rooms"s)) {
+      result.notRooms = jo.at("not_rooms"s);
+    }
+    if (jo.contains("rooms"s)) {
+      result.rooms = jo.at("rooms"s);
+    }
+    if (jo.contains("contains_url"s)) {
+      result.containsUrl = jo.at("contains_url"s);
+    }
   
   }
 };

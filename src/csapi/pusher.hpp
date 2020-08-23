@@ -98,8 +98,12 @@ static immer::array<Pusher> pushers(Response r);
   static void from_json(const json &jo, GetPushersJob::PusherData& result)
   {
   
-    result.url = jo.at("url"s);
-    result.format = jo.at("format"s);
+    if (jo.contains("url"s)) {
+      result.url = jo.at("url"s);
+    }
+    if (jo.contains("format"s)) {
+      result.format = jo.at("format"s);
+    }
   
   }
 };
@@ -109,14 +113,30 @@ static immer::array<Pusher> pushers(Response r);
   static void from_json(const json &jo, GetPushersJob::Pusher& result)
   {
   
-    result.pushkey = jo.at("pushkey"s);
-    result.kind = jo.at("kind"s);
-    result.appId = jo.at("app_id"s);
-    result.appDisplayName = jo.at("app_display_name"s);
-    result.deviceDisplayName = jo.at("device_display_name"s);
-    result.profileTag = jo.at("profile_tag"s);
-    result.lang = jo.at("lang"s);
-    result.data = jo.at("data"s);
+    if (jo.contains("pushkey"s)) {
+      result.pushkey = jo.at("pushkey"s);
+    }
+    if (jo.contains("kind"s)) {
+      result.kind = jo.at("kind"s);
+    }
+    if (jo.contains("app_id"s)) {
+      result.appId = jo.at("app_id"s);
+    }
+    if (jo.contains("app_display_name"s)) {
+      result.appDisplayName = jo.at("app_display_name"s);
+    }
+    if (jo.contains("device_display_name"s)) {
+      result.deviceDisplayName = jo.at("device_display_name"s);
+    }
+    if (jo.contains("profile_tag"s)) {
+      result.profileTag = jo.at("profile_tag"s);
+    }
+    if (jo.contains("lang"s)) {
+      result.lang = jo.at("lang"s);
+    }
+    if (jo.contains("data"s)) {
+      result.data = jo.at("data"s);
+    }
   
   }
 };

@@ -87,7 +87,9 @@ static Capabilities capabilities(Response r);
   static void from_json(const json &jo, GetCapabilitiesJob::ChangePasswordCapability& result)
   {
   
-    result.enabled = jo.at("enabled"s);
+    if (jo.contains("enabled"s)) {
+      result.enabled = jo.at("enabled"s);
+    }
   
   }
 };
@@ -97,8 +99,12 @@ static Capabilities capabilities(Response r);
   static void from_json(const json &jo, GetCapabilitiesJob::RoomVersionsCapability& result)
   {
   
-    result.defaultVersion = jo.at("default"s);
-    result.available = jo.at("available"s);
+    if (jo.contains("default"s)) {
+      result.defaultVersion = jo.at("default"s);
+    }
+    if (jo.contains("available"s)) {
+      result.available = jo.at("available"s);
+    }
   
   }
 };
@@ -108,8 +114,12 @@ static Capabilities capabilities(Response r);
   static void from_json(const json &jo, GetCapabilitiesJob::Capabilities& result)
   {
   
-    result.changePassword = jo.at("m.change_password"s);
-    result.roomVersions = jo.at("m.room_versions"s);
+    if (jo.contains("m.change_password"s)) {
+      result.changePassword = jo.at("m.change_password"s);
+    }
+    if (jo.contains("m.room_versions"s)) {
+      result.roomVersions = jo.at("m.room_versions"s);
+    }
     result.additionalProperties = jo;
   }
 };

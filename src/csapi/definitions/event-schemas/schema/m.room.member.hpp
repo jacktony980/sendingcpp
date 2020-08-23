@@ -43,9 +43,15 @@ struct adl_serializer<SignedData> {
   static void from_json(const json &jo, SignedData& result)
   {
   
-    result.mxid = jo.at("mxid"s);
-    result.signatures = jo.at("signatures"s);
-    result.token = jo.at("token"s);
+    if (jo.contains("mxid"s)) {
+      result.mxid = jo.at("mxid"s);
+    }
+    if (jo.contains("signatures"s)) {
+      result.signatures = jo.at("signatures"s);
+    }
+    if (jo.contains("token"s)) {
+      result.token = jo.at("token"s);
+    }
   
   }
 };
@@ -82,8 +88,12 @@ struct adl_serializer<Invite> {
   static void from_json(const json &jo, Invite& result)
   {
   
-    result.displayName = jo.at("display_name"s);
-    result.signedData = jo.at("signed"s);
+    if (jo.contains("display_name"s)) {
+      result.displayName = jo.at("display_name"s);
+    }
+    if (jo.contains("signed"s)) {
+      result.signedData = jo.at("signed"s);
+    }
   
   }
 };
@@ -135,11 +145,21 @@ struct adl_serializer<EventContent> {
   static void from_json(const json &jo, EventContent& result)
   {
   
-    result.avatarUrl = jo.at("avatar_url"s);
-    result.displayname = jo.at("displayname"s);
-    result.membership = jo.at("membership"s);
-    result.isDirect = jo.at("is_direct"s);
-    result.thirdPartyInvite = jo.at("third_party_invite"s);
+    if (jo.contains("avatar_url"s)) {
+      result.avatarUrl = jo.at("avatar_url"s);
+    }
+    if (jo.contains("displayname"s)) {
+      result.displayname = jo.at("displayname"s);
+    }
+    if (jo.contains("membership"s)) {
+      result.membership = jo.at("membership"s);
+    }
+    if (jo.contains("is_direct"s)) {
+      result.isDirect = jo.at("is_direct"s);
+    }
+    if (jo.contains("third_party_invite"s)) {
+      result.thirdPartyInvite = jo.at("third_party_invite"s);
+    }
   
   }
 };
@@ -348,10 +368,18 @@ struct adl_serializer<TheCurrentMembershipStateOfAUserInTheRoom> {
   static void from_json(const json &jo, TheCurrentMembershipStateOfAUserInTheRoom& result)
   {
     static_cast<JsonWrap &>(result) = jo;
-    result.content = jo.at("content"s);
-    result.stateKey = jo.at("state_key"s);
-    result.type = jo.at("type"s);
-    result.unsignedData = jo.at("unsigned"s);
+    if (jo.contains("content"s)) {
+      result.content = jo.at("content"s);
+    }
+    if (jo.contains("state_key"s)) {
+      result.stateKey = jo.at("state_key"s);
+    }
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
+    if (jo.contains("unsigned"s)) {
+      result.unsignedData = jo.at("unsigned"s);
+    }
   
   }
 };

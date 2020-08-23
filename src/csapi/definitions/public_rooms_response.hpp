@@ -74,15 +74,33 @@ struct adl_serializer<PublicRoomsChunk> {
   static void from_json(const json &jo, PublicRoomsChunk& result)
   {
   
-    result.aliases = jo.at("aliases"s);
-    result.canonicalAlias = jo.at("canonical_alias"s);
-    result.name = jo.at("name"s);
-    result.numJoinedMembers = jo.at("num_joined_members"s);
-    result.roomId = jo.at("room_id"s);
-    result.topic = jo.at("topic"s);
-    result.worldReadable = jo.at("world_readable"s);
-    result.guestCanJoin = jo.at("guest_can_join"s);
-    result.avatarUrl = jo.at("avatar_url"s);
+    if (jo.contains("aliases"s)) {
+      result.aliases = jo.at("aliases"s);
+    }
+    if (jo.contains("canonical_alias"s)) {
+      result.canonicalAlias = jo.at("canonical_alias"s);
+    }
+    if (jo.contains("name"s)) {
+      result.name = jo.at("name"s);
+    }
+    if (jo.contains("num_joined_members"s)) {
+      result.numJoinedMembers = jo.at("num_joined_members"s);
+    }
+    if (jo.contains("room_id"s)) {
+      result.roomId = jo.at("room_id"s);
+    }
+    if (jo.contains("topic"s)) {
+      result.topic = jo.at("topic"s);
+    }
+    if (jo.contains("world_readable"s)) {
+      result.worldReadable = jo.at("world_readable"s);
+    }
+    if (jo.contains("guest_can_join"s)) {
+      result.guestCanJoin = jo.at("guest_can_join"s);
+    }
+    if (jo.contains("avatar_url"s)) {
+      result.avatarUrl = jo.at("avatar_url"s);
+    }
   
   }
 };
@@ -134,10 +152,18 @@ struct adl_serializer<PublicRoomsResponse> {
   static void from_json(const json &jo, PublicRoomsResponse& result)
   {
   
-    result.chunk = jo.at("chunk"s);
-    result.nextBatch = jo.at("next_batch"s);
-    result.prevBatch = jo.at("prev_batch"s);
-    result.totalRoomCountEstimate = jo.at("total_room_count_estimate"s);
+    if (jo.contains("chunk"s)) {
+      result.chunk = jo.at("chunk"s);
+    }
+    if (jo.contains("next_batch"s)) {
+      result.nextBatch = jo.at("next_batch"s);
+    }
+    if (jo.contains("prev_batch"s)) {
+      result.prevBatch = jo.at("prev_batch"s);
+    }
+    if (jo.contains("total_room_count_estimate"s)) {
+      result.totalRoomCountEstimate = jo.at("total_room_count_estimate"s);
+    }
   
   }
 };

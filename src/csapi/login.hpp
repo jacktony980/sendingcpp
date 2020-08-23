@@ -66,7 +66,9 @@ static immer::array<LoginFlow> flows(Response r);
   static void from_json(const json &jo, GetLoginFlowsJob::LoginFlow& result)
   {
   
-    result.type = jo.at("type"s);
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
   
   }
 };

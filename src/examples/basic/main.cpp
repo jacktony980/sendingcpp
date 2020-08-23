@@ -2,7 +2,8 @@
 #include <string>
 #include <iostream>
 #include <lager/store.hpp>
-#include <lager/event_loop/manual.hpp>
+#include <lager/event_loop/boost_asio.hpp>
+#include <boost/asio.hpp>
 
 #include <client/client.hpp>
 #include <job/cprjobhandler.hpp>
@@ -11,11 +12,13 @@ using namespace std::string_literals;
 
 int main()
 {
-    Kazv::Descendent<Kazv::JobInterface> jobHandler(Kazv::CprJobHandler{});
+    boost::asio::io_context ioContext;
+
+    Kazv::Descendent<Kazv::JobInterface> jobHandler(Kazv::CprJobHandler{ioContext.get_executor()});
     auto store = lager::make_store<Kazv::Client::Action>(
         Kazv::Client{},
         &Kazv::Client::update,
-        lager::with_manual_event_loop{},
+        lager::with_boost_asio_event_loop{ioContext.get_executor()},
         lager::with_deps(std::ref(*jobHandler.data())));
 
     std::string homeserver;
@@ -29,6 +32,8 @@ int main()
     std::getline(std::cin, password);
     store.dispatch(Kazv::Client::LoginAction{homeserver, username, password, "libkazv basic example"s});
 
-    std::cout << "Token: " << store.get().token << std::endl;
 
+
+    ioContext.run();
+    std::cout << "Token: " << store.get().token << std::endl;
 }

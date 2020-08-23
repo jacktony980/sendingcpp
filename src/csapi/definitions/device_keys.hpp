@@ -60,11 +60,21 @@ struct adl_serializer<DeviceKeys> {
   static void from_json(const json &jo, DeviceKeys& result)
   {
   
-    result.userId = jo.at("user_id"s);
-    result.deviceId = jo.at("device_id"s);
-    result.algorithms = jo.at("algorithms"s);
-    result.keys = jo.at("keys"s);
-    result.signatures = jo.at("signatures"s);
+    if (jo.contains("user_id"s)) {
+      result.userId = jo.at("user_id"s);
+    }
+    if (jo.contains("device_id"s)) {
+      result.deviceId = jo.at("device_id"s);
+    }
+    if (jo.contains("algorithms"s)) {
+      result.algorithms = jo.at("algorithms"s);
+    }
+    if (jo.contains("keys"s)) {
+      result.keys = jo.at("keys"s);
+    }
+    if (jo.contains("signatures"s)) {
+      result.signatures = jo.at("signatures"s);
+    }
   
   }
 };
