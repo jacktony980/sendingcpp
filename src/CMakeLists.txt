@@ -1,4 +1,5 @@
 
+include(linklibsys)
 include_directories(job . csapi)
 set(FULL_CSAPI_DIR csapi)
 file(GLOB_RECURSE api_SRCS ${FULL_CSAPI_DIR}/*.cpp)
@@ -7,19 +8,17 @@ set(libkazv_SRCS
   ${api_SRCS}
   debug.cpp
   job/basejob.cpp
-  job/cprjobhandler.cpp
   client/client.cpp
   )
 
 add_library(kazv ${libkazv_SRCS})
 add_library(libkazv::kazv ALIAS kazv)
 
-target_link_libraries(kazv
-  PUBLIC cpr::cpr
+target_link_libraries_system(kazv
   PUBLIC nlohmann_json::nlohmann_json
-  PUBLIC immer
-  PUBLIC zug
-  PUBLIC lager)
+  immer
+  zug
+  lager)
 target_include_directories(kazv
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -31,6 +30,22 @@ install(
 
   LIBRARY
   )
+
+set(libkazvjob_SRCS
+  job/cprjobhandler.cpp
+  )
+add_library(kazvjob ${libkazvjob_SRCS})
+add_library(libkazv::kazvjob ALIAS kazvjob)
+
+target_link_libraries(kazvjob PUBLIC kazv)
+target_link_libraries_system(kazvjob PUBLIC cpr::cpr)
+target_include_directories(kazvjob
+  INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/kazv>
+  )
+
+install( TARGETS kazvjob LIBRARY )
 
 if(libkazv_INSTALL_HEADERS)
   install(

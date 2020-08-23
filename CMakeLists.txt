@@ -8,8 +8,13 @@ endif()
 
 project(libkazv)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+option(libkazv_BUILD_TESTS "Build tests" ON)
+option(libkazv_BUILD_EXAMPLES "Build examples" ON)
+option(libkazv_OUTPUT_LEVEL "Output level: Debug>=90, Info>=70, Quiet>=20, no output=1" 0)
 
 # Build shared libraries by default
 if(NOT DEFINED BUILD_SHARED_LIBS)
@@ -24,8 +29,10 @@ set(BUILD_CPR_TESTS OFF)
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git GIT_TAG c8d33915dbd88ad6c92b258869b03aba06587ff9) # the commit hash for 1.5.0
 FetchContent_MakeAvailable(cpr)
 
-FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2 GIT_TAG v2.13.0)
-FetchContent_MakeAvailable(Catch2)
+if(libkazv_BUILD_TESTS)
+  FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2 GIT_TAG v2.13.0)
+  FetchContent_MakeAvailable(Catch2)
+endif()
 
 set(JSON_BuildTests OFF)
 FetchContent_Declare(nlohmann_json GIT_REPOSITORY https://github.com/nlohmann/json GIT_TAG v3.9.1)
@@ -53,11 +60,6 @@ set(lager_EMBED_RESOURCES_PATH OFF)
 FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG a112eed88789bb2986b7924b5b1e71c8a410f81a)
 FetchContent_MakeAvailable(lager)
 
-
-
-option(libkazv_BUILD_TESTS "Build tests" ON)
-option(libkazv_BUILD_EXAMPLES "Build examples" ON)
-option(libkazv_OUTPUT_LEVEL "Output level: Debug>=90, Info>=70, Quiet>=20, no output=1" 0)
 
 if(libkazv_OUTPUT_LEVEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")
