@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "versions.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetVersionsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetVersionsJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetVersionsJob::GetVersionsJob(
         std::string serverUrl
@@ -29,12 +41,19 @@ GetVersionsJob::GetVersionsJob(
            {} ,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("versions");
         }
+
+          bool GetVersionsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("versions"s)
+          ;
+          }
 
 
     

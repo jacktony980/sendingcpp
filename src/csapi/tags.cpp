@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "tags.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetRoomTagsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetRoomTagsJob::buildBody(std::string userId, std::string roomId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetRoomTagsJob::GetRoomTagsJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetRoomTagsJob::GetRoomTagsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetRoomTagsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -47,7 +66,15 @@ GetRoomTagsJob::GetRoomTagsJob(
     else { return immer::map<std::string, Tag>(  );}
     }
 
-  
+
+
+BaseJob::Query SetRoomTagJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetRoomTagJob::buildBody(std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties)
       {
@@ -64,6 +91,8 @@ GetRoomTagsJob::GetRoomTagsJob(
 
       };
 
+      
+
 SetRoomTagJob::SetRoomTagJob(
         std::string serverUrl
         , std::string _accessToken
@@ -75,14 +104,29 @@ SetRoomTagJob::SetRoomTagJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, tag, order, additionalProperties)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetRoomTagJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query DeleteRoomTagJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeleteRoomTagJob::buildBody(std::string userId, std::string roomId, std::string tag)
       {
@@ -93,6 +137,8 @@ SetRoomTagJob::SetRoomTagJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 DeleteRoomTagJob::DeleteRoomTagJob(
         std::string serverUrl
@@ -105,11 +151,18 @@ DeleteRoomTagJob::DeleteRoomTagJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, tag)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool DeleteRoomTagJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

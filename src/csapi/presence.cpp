@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "presence.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetPresenceJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetPresenceJob::buildBody(std::string userId, std::string presence, std::string statusMsg)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 SetPresenceJob::SetPresenceJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,14 +48,29 @@ SetPresenceJob::SetPresenceJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, presence, statusMsg)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetPresenceJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetPresenceJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetPresenceJob::buildBody(std::string userId)
       {
@@ -54,6 +81,8 @@ SetPresenceJob::SetPresenceJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetPresenceJob::GetPresenceJob(
         std::string serverUrl
@@ -66,12 +95,19 @@ GetPresenceJob::GetPresenceJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("presence");
         }
+
+          bool GetPresenceJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("presence"s)
+          ;
+          }
 
 
     

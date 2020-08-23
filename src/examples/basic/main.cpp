@@ -5,15 +5,18 @@
 #include <lager/event_loop/manual.hpp>
 
 #include <client/client.hpp>
+#include <job/cprjobhandler.hpp>
 
 using namespace std::string_literals;
 
 int main()
 {
+    Kazv::Descendent<Kazv::JobInterface> jobHandler(Kazv::CprJobHandler{});
     auto store = lager::make_store<Kazv::Client::Action>(
         Kazv::Client{},
         &Kazv::Client::update,
-        lager::with_manual_event_loop{});
+        lager::with_manual_event_loop{},
+        lager::with_deps(std::ref(*jobHandler.data())));
 
     std::string homeserver;
     std::string username;

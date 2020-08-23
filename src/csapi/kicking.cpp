@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "kicking.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query KickJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body KickJob::buildBody(std::string roomId, std::string userId, std::string reason)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 KickJob::KickJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,11 +48,18 @@ KickJob::KickJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId, reason)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool KickJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

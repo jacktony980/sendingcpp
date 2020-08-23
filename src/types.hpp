@@ -33,7 +33,7 @@ namespace Kazv
         JsonWrap(json&& j) : m_d(1, std::move(j)) {}
         JsonWrap(const json& j) : m_d(1, j) {}
 
-        auto get() const { return m_d.at(0); }
+        const json &get() const { return m_d.at(0); }
         operator json() const { return m_d.at(0); }
     };
 

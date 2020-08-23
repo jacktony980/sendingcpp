@@ -79,7 +79,10 @@ static immer::array<Notification> notifications(Response r);
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> limit, std::string only);
 
-    static BaseJob::Body buildBody(std::string from, std::optional<int> limit, std::string only);
+      static BaseJob::Body buildBody(std::string from, std::optional<int> limit, std::string only);
+
+        static bool success(Response r);
+        
       };
 
       } 

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "joining.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query JoinRoomByIdJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body JoinRoomByIdJob::buildBody(std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 JoinRoomByIdJob::JoinRoomByIdJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,12 +46,19 @@ JoinRoomByIdJob::JoinRoomByIdJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, thirdPartySigned)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("room_id");
         }
+
+          bool JoinRoomByIdJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("room_id"s)
+          ;
+          }
 
 
     
@@ -52,6 +71,7 @@ JoinRoomByIdJob::JoinRoomByIdJob(
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
+
 
 
 BaseJob::Query JoinRoomJob::buildQuery(
@@ -78,6 +98,8 @@ return _q;
 
       };
 
+      
+
 JoinRoomJob::JoinRoomJob(
         std::string serverUrl
         , std::string _accessToken
@@ -89,12 +111,19 @@ JoinRoomJob::JoinRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomIdOrAlias, serverName, thirdPartySigned)
-      , buildQuery(serverName))
+              , buildQuery(serverName)
+                )
         {
-        
-        
-          //addExpectedKey("room_id");
         }
+
+          bool JoinRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("room_id"s)
+          ;
+          }
 
 
     

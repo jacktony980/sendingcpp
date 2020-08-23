@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "openid.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query RequestOpenIdTokenJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RequestOpenIdTokenJob::buildBody(std::string userId, JsonWrap body)
       {
@@ -19,6 +29,8 @@ namespace Kazv
 
       };
 
+      
+
 RequestOpenIdTokenJob::RequestOpenIdTokenJob(
         std::string serverUrl
         , std::string _accessToken
@@ -30,11 +42,18 @@ RequestOpenIdTokenJob::RequestOpenIdTokenJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool RequestOpenIdTokenJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

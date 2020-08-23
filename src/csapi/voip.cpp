@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "voip.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetTurnServerJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetTurnServerJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetTurnServerJob::GetTurnServerJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetTurnServerJob::GetTurnServerJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetTurnServerJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "notifications.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query GetNotificationsJob::buildQuery(
 std::string from, std::optional<int> limit, std::string only)
@@ -30,6 +33,8 @@ return _q;
 
       };
 
+      
+
 GetNotificationsJob::GetNotificationsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -41,12 +46,19 @@ GetNotificationsJob::GetNotificationsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(from, limit, only)
-      , buildQuery(from, limit, only))
+              , buildQuery(from, limit, only)
+                )
         {
-        
-        
-          //addExpectedKey("notifications");
         }
+
+          bool GetNotificationsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("notifications"s)
+          ;
+          }
 
 
     

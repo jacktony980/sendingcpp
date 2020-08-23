@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "peeking_events.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query PeekEventsJob::buildQuery(
 std::string from, std::optional<int> timeout, std::string roomId)
@@ -30,6 +33,8 @@ return _q;
 
       };
 
+      
+
 PeekEventsJob::PeekEventsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -41,11 +46,18 @@ PeekEventsJob::PeekEventsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(from, timeout, roomId)
-      , buildQuery(from, timeout, roomId))
+              , buildQuery(from, timeout, roomId)
+                )
         {
-        
-        
         }
+
+          bool PeekEventsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

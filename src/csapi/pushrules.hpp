@@ -39,9 +39,13 @@ public:
 /// The global ruleset.
 static PushRuleset global(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -95,9 +99,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -137,9 +145,13 @@ public:
         std::string scope , std::string kind , std::string ruleId );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -207,7 +219,10 @@ public:
     static BaseJob::Query buildQuery(
     std::string before, std::string after);
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -256,9 +271,13 @@ public:
 /// Whether the push rule is enabled or not.
 static bool enabled(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -301,9 +320,13 @@ public:
         std::string scope , std::string kind , std::string ruleId , bool enabled );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, bool enabled);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, bool enabled);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -352,9 +375,13 @@ public:
 /// The action(s) to perform for this rule.
 static immer::array<Variant> actions(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -398,9 +425,13 @@ public:
         std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions);
+
+        static bool success(Response r);
+        
       };
 
       } 

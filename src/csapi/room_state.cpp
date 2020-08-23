@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "room_state.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetRoomStateWithKeyJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetRoomStateWithKeyJob::buildBody(std::string roomId, std::string eventType, std::string stateKey, JsonWrap body)
       {
@@ -19,6 +29,8 @@ namespace Kazv
 
       };
 
+      
+
 SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
         std::string serverUrl
         , std::string _accessToken
@@ -30,12 +42,19 @@ SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey, body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("event_id");
         }
+
+          bool SetRoomStateWithKeyJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("event_id"s)
+          ;
+          }
 
 
     

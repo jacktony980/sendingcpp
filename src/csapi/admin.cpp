@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "admin.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetWhoIsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetWhoIsJob::buildBody(std::string userId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetWhoIsJob::GetWhoIsJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetWhoIsJob::GetWhoIsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetWhoIsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

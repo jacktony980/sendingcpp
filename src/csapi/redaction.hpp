@@ -55,9 +55,13 @@ public:
 /// A unique identifier for the event.
 static std::string eventId(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::string txnId, std::string reason);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::string txnId, std::string reason);
+
+        static bool success(Response r);
+        
       };
 
       } 

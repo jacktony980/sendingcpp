@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "capabilities.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetCapabilitiesJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetCapabilitiesJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetCapabilitiesJob::GetCapabilitiesJob(
         std::string serverUrl
@@ -29,12 +41,19 @@ GetCapabilitiesJob::GetCapabilitiesJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("capabilities");
         }
+
+          bool GetCapabilitiesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("capabilities"s)
+          ;
+          }
 
 
     

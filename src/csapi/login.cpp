@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "login.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetLoginFlowsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetLoginFlowsJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetLoginFlowsJob::GetLoginFlowsJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetLoginFlowsJob::GetLoginFlowsJob(
            {} ,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetLoginFlowsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -47,7 +66,15 @@ GetLoginFlowsJob::GetLoginFlowsJob(
     else { return immer::array<LoginFlow>(  );}
     }
 
-  
+
+
+BaseJob::Query LoginJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body LoginJob::buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName)
       {
@@ -74,6 +101,8 @@ GetLoginFlowsJob::GetLoginFlowsJob(
 
       };
 
+      
+
 LoginJob::LoginJob(
         std::string serverUrl
         
@@ -85,11 +114,18 @@ LoginJob::LoginJob(
            {} ,
           ReturnType::Json,
             buildBody(type, identifier, password, token, deviceId, initialDeviceDisplayName)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool LoginJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

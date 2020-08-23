@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "pusher.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetPushersJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetPushersJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetPushersJob::GetPushersJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetPushersJob::GetPushersJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetPushersJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -47,7 +66,15 @@ GetPushersJob::GetPushersJob(
     else { return immer::array<Pusher>(  );}
     }
 
-  
+
+
+BaseJob::Query PostPusherJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body PostPusherJob::buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append)
       {
@@ -80,6 +107,8 @@ GetPushersJob::GetPushersJob(
 
       };
 
+      
+
 PostPusherJob::PostPusherJob(
         std::string serverUrl
         , std::string _accessToken
@@ -91,11 +120,18 @@ PostPusherJob::PostPusherJob(
           _accessToken,
           ReturnType::Json,
             buildBody(pushkey, kind, appId, appDisplayName, deviceDisplayName, lang, data, profileTag, append)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool PostPusherJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

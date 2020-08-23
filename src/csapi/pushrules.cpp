@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "pushrules.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetPushRulesJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetPushRulesJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetPushRulesJob::GetPushRulesJob(
         std::string serverUrl
@@ -29,12 +41,19 @@ GetPushRulesJob::GetPushRulesJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("global");
         }
+
+          bool GetPushRulesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("global"s)
+          ;
+          }
 
 
     
@@ -48,7 +67,15 @@ GetPushRulesJob::GetPushRulesJob(
     else { return PushRuleset(  );}
     }
 
-  
+
+
+BaseJob::Query GetPushRuleJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetPushRuleJob::buildBody(std::string scope, std::string kind, std::string ruleId)
       {
@@ -59,6 +86,8 @@ GetPushRulesJob::GetPushRulesJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetPushRuleJob::GetPushRuleJob(
         std::string serverUrl
@@ -71,14 +100,29 @@ GetPushRuleJob::GetPushRuleJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetPushRuleJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query DeletePushRuleJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeletePushRuleJob::buildBody(std::string scope, std::string kind, std::string ruleId)
       {
@@ -89,6 +133,8 @@ GetPushRuleJob::GetPushRuleJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 DeletePushRuleJob::DeletePushRuleJob(
         std::string serverUrl
@@ -101,11 +147,19 @@ DeletePushRuleJob::DeletePushRuleJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool DeletePushRuleJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -139,6 +193,8 @@ return _q;
 
       };
 
+      
+
 SetPushRuleJob::SetPushRuleJob(
         std::string serverUrl
         , std::string _accessToken
@@ -150,14 +206,29 @@ SetPushRuleJob::SetPushRuleJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions, before, after, conditions, pattern)
-      , buildQuery(before, after))
+              , buildQuery(before, after)
+                )
         {
-        
-        
         }
 
+          bool SetPushRuleJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query IsPushRuleEnabledJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body IsPushRuleEnabledJob::buildBody(std::string scope, std::string kind, std::string ruleId)
       {
@@ -168,6 +239,8 @@ SetPushRuleJob::SetPushRuleJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 IsPushRuleEnabledJob::IsPushRuleEnabledJob(
         std::string serverUrl
@@ -180,12 +253,19 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("enabled");
         }
+
+          bool IsPushRuleEnabledJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("enabled"s)
+          ;
+          }
 
 
     
@@ -199,7 +279,15 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
     else { return bool(  );}
     }
 
-  
+
+
+BaseJob::Query SetPushRuleEnabledJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetPushRuleEnabledJob::buildBody(std::string scope, std::string kind, std::string ruleId, bool enabled)
       {
@@ -216,6 +304,8 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
 
       };
 
+      
+
 SetPushRuleEnabledJob::SetPushRuleEnabledJob(
         std::string serverUrl
         , std::string _accessToken
@@ -227,14 +317,29 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, enabled)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetPushRuleEnabledJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetPushRuleActionsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetPushRuleActionsJob::buildBody(std::string scope, std::string kind, std::string ruleId)
       {
@@ -245,6 +350,8 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetPushRuleActionsJob::GetPushRuleActionsJob(
         std::string serverUrl
@@ -257,12 +364,19 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("actions");
         }
+
+          bool GetPushRuleActionsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("actions"s)
+          ;
+          }
 
 
     
@@ -276,7 +390,15 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
     else { return immer::array<Variant>(  );}
     }
 
-  
+
+
+BaseJob::Query SetPushRuleActionsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetPushRuleActionsJob::buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions)
       {
@@ -293,6 +415,8 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
 
       };
 
+      
+
 SetPushRuleActionsJob::SetPushRuleActionsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -304,11 +428,18 @@ SetPushRuleActionsJob::SetPushRuleActionsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool SetPushRuleActionsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

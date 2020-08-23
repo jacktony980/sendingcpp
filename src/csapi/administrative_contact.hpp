@@ -74,9 +74,13 @@ public:
 /// identifiers that it will accept to reset the user's account password.
 static immer::array<ThirdPartyIdentifier> threepids(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -148,9 +152,13 @@ public:
         ThreePidCredentials threePidCreds );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(ThreePidCredentials threePidCreds);
+      static BaseJob::Body buildBody(ThreePidCredentials threePidCreds);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -213,9 +221,13 @@ public:
         std::string clientSecret , std::string sid , std::optional<AuthenticationData> auth  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth);
+      static BaseJob::Body buildBody(std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -264,9 +276,13 @@ public:
         std::string clientSecret , std::string idServer , std::string idAccessToken , std::string sid );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid);
+      static BaseJob::Body buildBody(std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -327,9 +343,13 @@ public:
 /// unbind from.
 static std::string idServerUnbindResult(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+      static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -389,9 +409,13 @@ public:
 /// an identity server to unbind from.
 static std::string idServerUnbindResult(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+      static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -452,9 +476,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(EmailValidationData body);
+      static BaseJob::Body buildBody(EmailValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -513,9 +541,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(MsisdnValidationData body);
+      static BaseJob::Body buildBody(MsisdnValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 

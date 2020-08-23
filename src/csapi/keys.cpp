@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "keys.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query UploadKeysJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body UploadKeysJob::buildBody(std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 UploadKeysJob::UploadKeysJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,12 +48,19 @@ UploadKeysJob::UploadKeysJob(
           _accessToken,
           ReturnType::Json,
             buildBody(deviceKeys, oneTimeKeys)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("one_time_key_counts");
         }
+
+          bool UploadKeysJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("one_time_key_counts"s)
+          ;
+          }
 
 
     
@@ -55,7 +74,15 @@ UploadKeysJob::UploadKeysJob(
     else { return immer::map<std::string, int>(  );}
     }
 
-  
+
+
+BaseJob::Query QueryKeysJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body QueryKeysJob::buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token)
       {
@@ -76,6 +103,8 @@ UploadKeysJob::UploadKeysJob(
 
       };
 
+      
+
 QueryKeysJob::QueryKeysJob(
         std::string serverUrl
         , std::string _accessToken
@@ -87,11 +116,18 @@ QueryKeysJob::QueryKeysJob(
           _accessToken,
           ReturnType::Json,
             buildBody(deviceKeys, timeout, token)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool QueryKeysJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -116,7 +152,15 @@ QueryKeysJob::QueryKeysJob(
     else { return immer::map<std::string, immer::map<std::string, DeviceInformation>>(  );}
     }
 
-  
+
+
+BaseJob::Query ClaimKeysJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body ClaimKeysJob::buildBody(immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout)
       {
@@ -135,6 +179,8 @@ QueryKeysJob::QueryKeysJob(
 
       };
 
+      
+
 ClaimKeysJob::ClaimKeysJob(
         std::string serverUrl
         , std::string _accessToken
@@ -146,12 +192,19 @@ ClaimKeysJob::ClaimKeysJob(
           _accessToken,
           ReturnType::Json,
             buildBody(oneTimeKeys, timeout)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("one_time_keys");
         }
+
+          bool ClaimKeysJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("one_time_keys"s)
+          ;
+          }
 
 
     
@@ -177,6 +230,7 @@ ClaimKeysJob::ClaimKeysJob(
     }
 
 
+
 BaseJob::Query GetKeysChangesJob::buildQuery(
 std::string from, std::string to)
 {
@@ -198,6 +252,8 @@ return _q;
 
       };
 
+      
+
 GetKeysChangesJob::GetKeysChangesJob(
         std::string serverUrl
         , std::string _accessToken
@@ -209,11 +265,18 @@ GetKeysChangesJob::GetKeysChangesJob(
           _accessToken,
           ReturnType::Json,
             buildBody(from, to)
-      , buildQuery(from, to))
+              , buildQuery(from, to)
+                )
         {
-        
-        
         }
+
+          bool GetKeysChangesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

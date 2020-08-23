@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "room_upgrades.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query UpgradeRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body UpgradeRoomJob::buildBody(std::string roomId, std::string newVersion)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 UpgradeRoomJob::UpgradeRoomJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,12 +46,19 @@ UpgradeRoomJob::UpgradeRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, newVersion)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("replacement_room");
         }
+
+          bool UpgradeRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("replacement_room"s)
+          ;
+          }
 
 
     

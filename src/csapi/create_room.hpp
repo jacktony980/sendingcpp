@@ -262,9 +262,13 @@ public:
 /// The created room's ID.
 static std::string roomId(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride);
+      static BaseJob::Body buildBody(std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride);
+
+        static bool success(Response r);
+        
       };
 
       } 

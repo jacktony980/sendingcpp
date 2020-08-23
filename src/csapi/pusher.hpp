@@ -79,9 +79,13 @@ public:
 /// An array containing the current pushers for the user
 static immer::array<Pusher> pushers(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -212,9 +216,13 @@ public:
         std::string pushkey , std::string kind , std::string appId , std::string appDisplayName , std::string deviceDisplayName , std::string lang , PusherData data , std::string profileTag  = {}, std::optional<bool> append  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append);
+      static BaseJob::Body buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append);
+
+        static bool success(Response r);
+        
       };
 
       } 

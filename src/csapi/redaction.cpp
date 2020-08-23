@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "redaction.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query RedactEventJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RedactEventJob::buildBody(std::string roomId, std::string eventId, std::string txnId, std::string reason)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 RedactEventJob::RedactEventJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,11 +46,18 @@ RedactEventJob::RedactEventJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, txnId, reason)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool RedactEventJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

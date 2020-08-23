@@ -76,9 +76,13 @@ static immer::array<User> results(Response r);
 /// Indicates if the result list has been truncated by the limit.
 static bool limited(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string searchTerm, std::optional<int> limit);
+      static BaseJob::Body buildBody(std::string searchTerm, std::optional<int> limit);
+
+        static bool success(Response r);
+        
       };
 
       } 

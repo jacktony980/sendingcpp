@@ -47,9 +47,13 @@ public:
         std::string networkId , std::string roomId , std::string visibility );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string networkId, std::string roomId, std::string visibility);
+      static BaseJob::Body buildBody(std::string networkId, std::string roomId, std::string visibility);
+
+        static bool success(Response r);
+        
       };
 
       } 

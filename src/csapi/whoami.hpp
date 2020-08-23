@@ -41,9 +41,13 @@ public:
 /// The user id that owns the access token.
 static std::string userId(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 

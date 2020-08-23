@@ -52,9 +52,13 @@ public:
 /// The joined room ID.
 static std::string roomId(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned);
+      static BaseJob::Body buildBody(std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -116,7 +120,10 @@ static std::string roomId(Response r);
     static BaseJob::Query buildQuery(
     immer::array<std::string> serverName);
 
-    static BaseJob::Body buildBody(std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned);
+      static BaseJob::Body buildBody(std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned);
+
+        static bool success(Response r);
+        
       };
 
       } 

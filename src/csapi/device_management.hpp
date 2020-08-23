@@ -35,9 +35,13 @@ public:
 /// A list of all registered devices for this user.
 static immer::array<Device> devices(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -84,9 +88,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string deviceId);
+      static BaseJob::Body buildBody(std::string deviceId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -124,9 +132,13 @@ public:
         std::string deviceId , std::string displayName  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string deviceId, std::string displayName);
+      static BaseJob::Body buildBody(std::string deviceId, std::string displayName);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -166,9 +178,13 @@ public:
         std::string deviceId , std::optional<AuthenticationData> auth  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string deviceId, std::optional<AuthenticationData> auth);
+      static BaseJob::Body buildBody(std::string deviceId, std::optional<AuthenticationData> auth);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -208,9 +224,13 @@ public:
         immer::array<std::string> devices , std::optional<AuthenticationData> auth  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(immer::array<std::string> devices, std::optional<AuthenticationData> auth);
+      static BaseJob::Body buildBody(immer::array<std::string> devices, std::optional<AuthenticationData> auth);
+
+        static bool success(Response r);
+        
       };
 
       } 

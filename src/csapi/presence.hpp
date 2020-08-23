@@ -39,9 +39,13 @@ public:
         std::string userId , std::string presence , std::string statusMsg  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string presence, std::string statusMsg);
+      static BaseJob::Body buildBody(std::string userId, std::string presence, std::string statusMsg);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -96,9 +100,13 @@ static Variant statusMsg(Response r);
 /// Whether the user is currently active
 static std::optional<bool> currentlyActive(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId);
+      static BaseJob::Body buildBody(std::string userId);
+
+        static bool success(Response r);
+        
       };
 
       } 

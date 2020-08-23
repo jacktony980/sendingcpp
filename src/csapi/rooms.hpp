@@ -47,9 +47,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string eventId);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -96,9 +100,13 @@ public:
         std::string roomId , std::string eventType , std::string stateKey );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string eventType, std::string stateKey);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventType, std::string stateKey);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -145,9 +153,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId);
+      static BaseJob::Body buildBody(std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -208,7 +220,10 @@ static immer::array<TheCurrentMembershipStateOfAUserInTheRoom> chunk(Response r)
     static BaseJob::Query buildQuery(
     std::string at, std::string membership, std::string notMembership);
 
-    static BaseJob::Body buildBody(std::string roomId, std::string at, std::string membership, std::string notMembership);
+      static BaseJob::Body buildBody(std::string roomId, std::string at, std::string membership, std::string notMembership);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -261,9 +276,13 @@ public:
 /// A map from user ID to a RoomMember object.
 static immer::map<std::string, RoomMember> joined(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId);
+      static BaseJob::Body buildBody(std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 

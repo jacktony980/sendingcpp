@@ -32,9 +32,13 @@ public:
         std::string roomAlias , std::string roomId );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomAlias, std::string roomId);
+      static BaseJob::Body buildBody(std::string roomAlias, std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -84,9 +88,13 @@ static std::string roomId(Response r);
 /// A list of servers that are aware of this room alias.
 static immer::array<std::string> servers(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomAlias);
+      static BaseJob::Body buildBody(std::string roomAlias);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -130,9 +138,13 @@ public:
         std::string roomAlias );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomAlias);
+      static BaseJob::Body buildBody(std::string roomAlias);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -189,9 +201,13 @@ public:
 /// The server's local aliases on the room. Can be empty.
 static immer::array<std::string> aliases(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId);
+      static BaseJob::Body buildBody(std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 

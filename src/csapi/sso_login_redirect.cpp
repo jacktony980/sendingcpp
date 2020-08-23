@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "sso_login_redirect.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query RedirectToSSOJob::buildQuery(
 std::string redirectUrl)
@@ -26,6 +29,8 @@ return _q;
 
       };
 
+      
+
 RedirectToSSOJob::RedirectToSSOJob(
         std::string serverUrl
         
@@ -37,10 +42,9 @@ RedirectToSSOJob::RedirectToSSOJob(
            {} ,
           ReturnType::Json,
             buildBody(redirectUrl)
-      , buildQuery(redirectUrl))
+              , buildQuery(redirectUrl)
+                )
         {
-        
-        
         }
 
         

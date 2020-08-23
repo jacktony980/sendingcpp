@@ -41,9 +41,13 @@ public:
         std::string eventType , std::string txnId , immer::map<std::string, immer::map<std::string, JsonWrap>> messages  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages);
+      static BaseJob::Body buildBody(std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages);
+
+        static bool success(Response r);
+        
       };
 
       } 

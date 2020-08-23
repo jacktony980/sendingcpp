@@ -67,7 +67,10 @@ static EventList chunk(Response r);
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> timeout, std::string roomId);
 
-    static BaseJob::Body buildBody(std::string from, std::optional<int> timeout, std::string roomId);
+      static BaseJob::Body buildBody(std::string from, std::optional<int> timeout, std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 

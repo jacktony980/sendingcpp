@@ -68,9 +68,13 @@ public:
 /// Java package naming convention.
 static Capabilities capabilities(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 

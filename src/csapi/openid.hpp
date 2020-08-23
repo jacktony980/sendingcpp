@@ -57,9 +57,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, JsonWrap body);
+      static BaseJob::Body buildBody(std::string userId, JsonWrap body);
+
+        static bool success(Response r);
+        
       };
 
       } 

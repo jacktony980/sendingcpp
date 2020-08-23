@@ -61,7 +61,10 @@ static EventList chunk(Response r);
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> timeout);
 
-    static BaseJob::Body buildBody(std::string from, std::optional<int> timeout);
+      static BaseJob::Body buildBody(std::string from, std::optional<int> timeout);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -188,7 +191,10 @@ static EventList accountData(Response r);
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::optional<bool> archived);
 
-    static BaseJob::Body buildBody(std::optional<int> limit, std::optional<bool> archived);
+      static BaseJob::Body buildBody(std::optional<int> limit, std::optional<bool> archived);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -267,9 +273,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string eventId);
+      static BaseJob::Body buildBody(std::string eventId);
+
+        static bool success(Response r);
+        
       };
 
       } 

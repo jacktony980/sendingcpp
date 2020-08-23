@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "content-repo.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query UploadContentJob::buildQuery(
 std::string filename)
@@ -27,6 +30,8 @@ return _q;
 
       };
 
+      
+
 UploadContentJob::UploadContentJob(
         std::string serverUrl
         , std::string _accessToken
@@ -38,12 +43,21 @@ UploadContentJob::UploadContentJob(
           _accessToken,
           ReturnType::Json,
             buildBody(content, filename, contentType)
-      , buildQuery(filename))
+              , buildQuery(filename)
+                , std::map<std::string, std::string>{
+                    { "Content-Type"s, contentType },
+                  })
         {
-          //setRequestHeader("Content-Type", contentType.toLatin1());
-        
-          //addExpectedKey("content_uri");
         }
+
+          bool UploadContentJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("content_uri"s)
+          ;
+          }
 
 
     
@@ -56,6 +70,7 @@ UploadContentJob::UploadContentJob(
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
+
 
 
 BaseJob::Query GetContentJob::buildQuery(
@@ -77,6 +92,8 @@ return _q;
 
       };
 
+        const immer::array<std::string> GetContentJob::expectedContentTypes{ "*/*" };
+
 GetContentJob::GetContentJob(
         std::string serverUrl
         
@@ -88,12 +105,19 @@ GetContentJob::GetContentJob(
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, allowRemote)
-      , buildQuery(allowRemote))
+              , buildQuery(allowRemote)
+                )
         {
-        
-          //setExpectedContentTypes({ "*/*" });
-        
         }
+
+          bool GetContentJob::success(Response r)
+          {
+            return BaseJob::success(r)
+              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            
+          ;
+          }
+
 
 
 
@@ -116,6 +140,8 @@ return _q;
 
       };
 
+        const immer::array<std::string> GetContentOverrideNameJob::expectedContentTypes{ "*/*" };
+
 GetContentOverrideNameJob::GetContentOverrideNameJob(
         std::string serverUrl
         
@@ -127,12 +153,19 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, fileName, allowRemote)
-      , buildQuery(allowRemote))
+              , buildQuery(allowRemote)
+                )
         {
-        
-          //setExpectedContentTypes({ "*/*" });
-        
         }
+
+          bool GetContentOverrideNameJob::success(Response r)
+          {
+            return BaseJob::success(r)
+              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            
+          ;
+          }
+
 
 
 
@@ -161,6 +194,8 @@ return _q;
 
       };
 
+        const immer::array<std::string> GetContentThumbnailJob::expectedContentTypes{ "image/jpeg", "image/png" };
+
 GetContentThumbnailJob::GetContentThumbnailJob(
         std::string serverUrl
         
@@ -172,12 +207,19 @@ GetContentThumbnailJob::GetContentThumbnailJob(
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, width, height, method, allowRemote)
-      , buildQuery(width, height, method, allowRemote))
+              , buildQuery(width, height, method, allowRemote)
+                )
         {
-        
-          //setExpectedContentTypes({ "image/jpeg", "image/png" });
-        
         }
+
+          bool GetContentThumbnailJob::success(Response r)
+          {
+            return BaseJob::success(r)
+              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            
+          ;
+          }
+
 
 
 
@@ -202,6 +244,8 @@ return _q;
 
       };
 
+      
+
 GetUrlPreviewJob::GetUrlPreviewJob(
         std::string serverUrl
         , std::string _accessToken
@@ -213,11 +257,18 @@ GetUrlPreviewJob::GetUrlPreviewJob(
           _accessToken,
           ReturnType::Json,
             buildBody(url, ts)
-      , buildQuery(url, ts))
+              , buildQuery(url, ts)
+                )
         {
-        
-        
         }
+
+          bool GetUrlPreviewJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -242,7 +293,15 @@ GetUrlPreviewJob::GetUrlPreviewJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query GetConfigJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetConfigJob::buildBody()
       {
@@ -253,6 +312,8 @@ GetUrlPreviewJob::GetUrlPreviewJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetConfigJob::GetConfigJob(
         std::string serverUrl
@@ -265,11 +326,18 @@ GetConfigJob::GetConfigJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetConfigJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

@@ -43,9 +43,13 @@ public:
         std::string userId , std::string roomId , bool typing , std::optional<int> timeout  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId, bool typing, std::optional<int> timeout);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId, bool typing, std::optional<int> timeout);
+
+        static bool success(Response r);
+        
       };
 
       } 

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "account-data.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetAccountDataJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetAccountDataJob::buildBody(std::string userId, std::string type, JsonWrap content)
       {
@@ -19,6 +29,8 @@ namespace Kazv
 
       };
 
+      
+
 SetAccountDataJob::SetAccountDataJob(
         std::string serverUrl
         , std::string _accessToken
@@ -30,14 +42,29 @@ SetAccountDataJob::SetAccountDataJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, type, content)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetAccountDataJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetAccountDataJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetAccountDataJob::buildBody(std::string userId, std::string type)
       {
@@ -48,6 +75,8 @@ SetAccountDataJob::SetAccountDataJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetAccountDataJob::GetAccountDataJob(
         std::string serverUrl
@@ -60,14 +89,29 @@ GetAccountDataJob::GetAccountDataJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, type)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetAccountDataJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query SetAccountDataPerRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetAccountDataPerRoomJob::buildBody(std::string userId, std::string roomId, std::string type, JsonWrap content)
       {
@@ -80,6 +124,8 @@ GetAccountDataJob::GetAccountDataJob(
 
       };
 
+      
+
 SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
         std::string serverUrl
         , std::string _accessToken
@@ -91,14 +137,29 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, type, content)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetAccountDataPerRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetAccountDataPerRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetAccountDataPerRoomJob::buildBody(std::string userId, std::string roomId, std::string type)
       {
@@ -109,6 +170,8 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetAccountDataPerRoomJob::GetAccountDataPerRoomJob(
         std::string serverUrl
@@ -121,11 +184,18 @@ GetAccountDataPerRoomJob::GetAccountDataPerRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, type)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetAccountDataPerRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "banning.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query BanJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body BanJob::buildBody(std::string roomId, std::string userId, std::string reason)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 BanJob::BanJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,14 +48,29 @@ BanJob::BanJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId, reason)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool BanJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query UnbanJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body UnbanJob::buildBody(std::string roomId, std::string userId)
       {
@@ -60,6 +87,8 @@ BanJob::BanJob(
 
       };
 
+      
+
 UnbanJob::UnbanJob(
         std::string serverUrl
         , std::string _accessToken
@@ -71,11 +100,18 @@ UnbanJob::UnbanJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool UnbanJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -53,9 +53,13 @@ public:
 /// List the tags set by a user on a room.
 static immer::map<std::string, Tag> tags(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -112,9 +116,13 @@ public:
         std::string userId , std::string roomId , std::string tag , std::optional<float> order  = std::nullopt, JsonWrap additionalProperties  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -155,9 +163,13 @@ public:
         std::string userId , std::string roomId , std::string tag );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag);
+
+        static bool success(Response r);
+        
       };
 
       } 

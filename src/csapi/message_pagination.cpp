@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "message_pagination.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query GetRoomEventsJob::buildQuery(
 std::string from, std::string to, std::string dir, std::optional<int> limit, std::string filter)
@@ -34,6 +37,8 @@ return _q;
 
       };
 
+      
+
 GetRoomEventsJob::GetRoomEventsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -45,11 +50,18 @@ GetRoomEventsJob::GetRoomEventsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, from, dir, to, limit, filter)
-      , buildQuery(from, to, dir, limit, filter))
+              , buildQuery(from, to, dir, limit, filter)
+                )
         {
-        
-        
         }
+
+          bool GetRoomEventsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

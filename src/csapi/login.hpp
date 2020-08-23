@@ -47,9 +47,13 @@ public:
 /// The homeserver's supported login types
 static immer::array<LoginFlow> flows(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -163,9 +167,13 @@ static std::string deviceId(Response r);
 /// form as the one returned from .well-known autodiscovery.
 static std::optional<DiscoveryInformation> wellKnown(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName);
+      static BaseJob::Body buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName);
+
+        static bool success(Response r);
+        
       };
 
       } 

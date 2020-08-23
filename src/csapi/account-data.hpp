@@ -40,9 +40,13 @@ public:
         std::string userId , std::string type , JsonWrap content  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string type, JsonWrap content);
+      static BaseJob::Body buildBody(std::string userId, std::string type, JsonWrap content);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -82,9 +86,13 @@ public:
         std::string userId , std::string type );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string type);
+      static BaseJob::Body buildBody(std::string userId, std::string type);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -131,9 +139,13 @@ public:
         std::string userId , std::string roomId , std::string type , JsonWrap content  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type, JsonWrap content);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type, JsonWrap content);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -176,9 +188,13 @@ public:
         std::string userId , std::string roomId , std::string type );
 
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type);
+      static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type);
+
+        static bool success(Response r);
+        
       };
 
       } 

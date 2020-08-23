@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "old_sync.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query GetEventsJob::buildQuery(
 std::string from, std::optional<int> timeout)
@@ -28,6 +31,8 @@ return _q;
 
       };
 
+      
+
 GetEventsJob::GetEventsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -39,11 +44,18 @@ GetEventsJob::GetEventsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(from, timeout)
-      , buildQuery(from, timeout))
+              , buildQuery(from, timeout)
+                )
         {
-        
-        
         }
+
+          bool GetEventsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -80,6 +92,7 @@ GetEventsJob::GetEventsJob(
     }
 
 
+
 BaseJob::Query InitialSyncJob::buildQuery(
 std::optional<int> limit, std::optional<bool> archived)
 {
@@ -101,6 +114,8 @@ return _q;
 
       };
 
+      
+
 InitialSyncJob::InitialSyncJob(
         std::string serverUrl
         , std::string _accessToken
@@ -112,14 +127,21 @@ InitialSyncJob::InitialSyncJob(
           _accessToken,
           ReturnType::Json,
             buildBody(limit, archived)
-      , buildQuery(limit, archived))
+              , buildQuery(limit, archived)
+                )
         {
-        
-        
-          //addExpectedKey("end");
-          //addExpectedKey("presence");
-          //addExpectedKey("rooms");
         }
+
+          bool InitialSyncJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("end"s)
+            && jsonBody(r).get().contains("presence"s)
+            && jsonBody(r).get().contains("rooms"s)
+          ;
+          }
 
 
     
@@ -166,7 +188,15 @@ InitialSyncJob::InitialSyncJob(
     else { return EventList(  );}
     }
 
-  
+
+
+BaseJob::Query GetOneEventJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetOneEventJob::buildBody(std::string eventId)
       {
@@ -177,6 +207,8 @@ InitialSyncJob::InitialSyncJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetOneEventJob::GetOneEventJob(
         std::string serverUrl
@@ -189,11 +221,18 @@ GetOneEventJob::GetOneEventJob(
           _accessToken,
           ReturnType::Json,
             buildBody(eventId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetOneEventJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

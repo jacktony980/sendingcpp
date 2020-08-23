@@ -333,7 +333,10 @@ static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
     static BaseJob::Query buildQuery(
     std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
 
-    static BaseJob::Body buildBody(std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
+      static BaseJob::Body buildBody(std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
+
+        static bool success(Response r);
+        
       };
 
       } 

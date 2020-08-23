@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "inviting.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query InviteUserJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body InviteUserJob::buildBody(std::string roomId, std::string userId)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 InviteUserJob::InviteUserJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,11 +46,18 @@ InviteUserJob::InviteUserJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool InviteUserJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

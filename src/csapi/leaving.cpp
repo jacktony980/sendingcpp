@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "leaving.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query LeaveRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body LeaveRoomJob::buildBody(std::string roomId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 LeaveRoomJob::LeaveRoomJob(
         std::string serverUrl
@@ -29,14 +41,29 @@ LeaveRoomJob::LeaveRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool LeaveRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query ForgetRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body ForgetRoomJob::buildBody(std::string roomId)
       {
@@ -47,6 +74,8 @@ LeaveRoomJob::LeaveRoomJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 ForgetRoomJob::ForgetRoomJob(
         std::string serverUrl
@@ -59,11 +88,18 @@ ForgetRoomJob::ForgetRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool ForgetRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "filter.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query DefineFilterJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DefineFilterJob::buildBody(std::string userId, Filter filter)
       {
@@ -19,6 +29,8 @@ namespace Kazv
 
       };
 
+      
+
 DefineFilterJob::DefineFilterJob(
         std::string serverUrl
         , std::string _accessToken
@@ -30,12 +42,19 @@ DefineFilterJob::DefineFilterJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, filter)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("filter_id");
         }
+
+          bool DefineFilterJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("filter_id"s)
+          ;
+          }
 
 
     
@@ -49,7 +68,15 @@ DefineFilterJob::DefineFilterJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query GetFilterJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetFilterJob::buildBody(std::string userId, std::string filterId)
       {
@@ -60,6 +87,8 @@ DefineFilterJob::DefineFilterJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetFilterJob::GetFilterJob(
         std::string serverUrl
@@ -72,11 +101,18 @@ GetFilterJob::GetFilterJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, filterId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetFilterJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

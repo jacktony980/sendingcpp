@@ -7,6 +7,7 @@
 
 #include <lager/context.hpp>
 
+#include "job/jobinterface.hpp"
 #include "error.hpp"
 
 namespace Kazv
@@ -42,7 +43,8 @@ namespace Kazv
                                     LoadUserInfoAction,
                                     Error::Action
                                     >;
-        using Result = std::pair<Client, lager::effect<Action>>;
+        using Effect = lager::effect<Action, lager::deps<JobInterface &>>;
+        using Result = std::pair<Client, Effect>;
         static Result update(Client m, Action a);
     };
 }

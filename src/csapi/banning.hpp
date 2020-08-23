@@ -40,9 +40,13 @@ public:
         std::string roomId , std::string userId , std::string reason  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string userId, std::string reason);
+      static BaseJob::Body buildBody(std::string roomId, std::string userId, std::string reason);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -82,9 +86,13 @@ public:
         std::string roomId , std::string userId );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string userId);
+      static BaseJob::Body buildBody(std::string roomId, std::string userId);
+
+        static bool success(Response r);
+        
       };
 
       } 

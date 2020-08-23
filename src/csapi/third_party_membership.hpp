@@ -87,9 +87,13 @@ public:
         std::string roomId , std::string idServer , std::string idAccessToken , std::string medium , std::string address );
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address);
+      static BaseJob::Body buildBody(std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address);
+
+        static bool success(Response r);
+        
       };
 
       } 

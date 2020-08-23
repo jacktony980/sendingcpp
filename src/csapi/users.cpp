@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "users.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SearchUserDirectoryJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SearchUserDirectoryJob::buildBody(std::string searchTerm, std::optional<int> limit)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 SearchUserDirectoryJob::SearchUserDirectoryJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,13 +48,20 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
           _accessToken,
           ReturnType::Json,
             buildBody(searchTerm, limit)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("results");
-          //addExpectedKey("limited");
         }
+
+          bool SearchUserDirectoryJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("results"s)
+            && jsonBody(r).get().contains("limited"s)
+          ;
+          }
 
 
     

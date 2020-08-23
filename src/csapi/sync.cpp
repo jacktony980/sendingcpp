@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "sync.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query SyncJob::buildQuery(
 std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout)
@@ -34,6 +37,8 @@ return _q;
 
       };
 
+      
+
 SyncJob::SyncJob(
         std::string serverUrl
         , std::string _accessToken
@@ -45,12 +50,19 @@ SyncJob::SyncJob(
           _accessToken,
           ReturnType::Json,
             buildBody(filter, since, fullState, setPresence, timeout)
-      , buildQuery(filter, since, fullState, setPresence, timeout))
+              , buildQuery(filter, since, fullState, setPresence, timeout)
+                )
         {
-        
-        
-          //addExpectedKey("next_batch");
         }
+
+          bool SyncJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("next_batch"s)
+          ;
+          }
 
 
     

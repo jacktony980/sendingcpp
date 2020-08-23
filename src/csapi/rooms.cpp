@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "rooms.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetOneRoomEventJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetOneRoomEventJob::buildBody(std::string roomId, std::string eventId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetOneRoomEventJob::GetOneRoomEventJob(
         std::string serverUrl
@@ -29,14 +41,29 @@ GetOneRoomEventJob::GetOneRoomEventJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetOneRoomEventJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetRoomStateWithKeyJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetRoomStateWithKeyJob::buildBody(std::string roomId, std::string eventType, std::string stateKey)
       {
@@ -47,6 +74,8 @@ GetOneRoomEventJob::GetOneRoomEventJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
         std::string serverUrl
@@ -59,14 +88,29 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetRoomStateWithKeyJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetRoomStateJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetRoomStateJob::buildBody(std::string roomId)
       {
@@ -77,6 +121,8 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetRoomStateJob::GetRoomStateJob(
         std::string serverUrl
@@ -89,11 +135,19 @@ GetRoomStateJob::GetRoomStateJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetRoomStateJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -120,6 +174,8 @@ return _q;
 
       };
 
+      
+
 GetMembersByRoomJob::GetMembersByRoomJob(
         std::string serverUrl
         , std::string _accessToken
@@ -131,11 +187,18 @@ GetMembersByRoomJob::GetMembersByRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, at, membership, notMembership)
-      , buildQuery(at, membership, notMembership))
+              , buildQuery(at, membership, notMembership)
+                )
         {
-        
-        
         }
+
+          bool GetMembersByRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -149,7 +212,15 @@ GetMembersByRoomJob::GetMembersByRoomJob(
     else { return immer::array<TheCurrentMembershipStateOfAUserInTheRoom>(  );}
     }
 
-  
+
+
+BaseJob::Query GetJoinedMembersByRoomJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetJoinedMembersByRoomJob::buildBody(std::string roomId)
       {
@@ -160,6 +231,8 @@ GetMembersByRoomJob::GetMembersByRoomJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
         std::string serverUrl
@@ -172,11 +245,18 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetJoinedMembersByRoomJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

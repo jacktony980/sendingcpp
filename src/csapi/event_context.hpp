@@ -83,7 +83,10 @@ static EventList state(Response r);
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::string filter);
 
-    static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::string filter);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::string filter);
+
+        static bool success(Response r);
+        
       };
 
       } 

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "receipts.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query PostReceiptJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body PostReceiptJob::buildBody(std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt)
       {
@@ -19,6 +29,8 @@ namespace Kazv
 
       };
 
+      
+
 PostReceiptJob::PostReceiptJob(
         std::string serverUrl
         , std::string _accessToken
@@ -30,11 +42,18 @@ PostReceiptJob::PostReceiptJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, receiptType, eventId, receipt)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool PostReceiptJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

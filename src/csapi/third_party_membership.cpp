@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "third_party_membership.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query InviteBy3PIDJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body InviteBy3PIDJob::buildBody(std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address)
       {
@@ -29,6 +39,8 @@ namespace Kazv
 
       };
 
+      
+
 InviteBy3PIDJob::InviteBy3PIDJob(
         std::string serverUrl
         , std::string _accessToken
@@ -40,11 +52,18 @@ InviteBy3PIDJob::InviteBy3PIDJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, idServer, idAccessToken, medium, address)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool InviteBy3PIDJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

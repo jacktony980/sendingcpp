@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "profile.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetDisplayNameJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetDisplayNameJob::buildBody(std::string userId, std::string displayname)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 SetDisplayNameJob::SetDisplayNameJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,14 +46,29 @@ SetDisplayNameJob::SetDisplayNameJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, displayname)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetDisplayNameJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetDisplayNameJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetDisplayNameJob::buildBody(std::string userId)
       {
@@ -52,6 +79,8 @@ SetDisplayNameJob::SetDisplayNameJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetDisplayNameJob::GetDisplayNameJob(
         std::string serverUrl
@@ -64,11 +93,18 @@ GetDisplayNameJob::GetDisplayNameJob(
            {} ,
           ReturnType::Json,
             buildBody(userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetDisplayNameJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -82,7 +118,15 @@ GetDisplayNameJob::GetDisplayNameJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query SetAvatarUrlJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetAvatarUrlJob::buildBody(std::string userId, std::string avatarUrl)
       {
@@ -99,6 +143,8 @@ GetDisplayNameJob::GetDisplayNameJob(
 
       };
 
+      
+
 SetAvatarUrlJob::SetAvatarUrlJob(
         std::string serverUrl
         , std::string _accessToken
@@ -110,14 +156,29 @@ SetAvatarUrlJob::SetAvatarUrlJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, avatarUrl)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetAvatarUrlJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetAvatarUrlJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetAvatarUrlJob::buildBody(std::string userId)
       {
@@ -128,6 +189,8 @@ SetAvatarUrlJob::SetAvatarUrlJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetAvatarUrlJob::GetAvatarUrlJob(
         std::string serverUrl
@@ -140,11 +203,18 @@ GetAvatarUrlJob::GetAvatarUrlJob(
            {} ,
           ReturnType::Json,
             buildBody(userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetAvatarUrlJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -158,7 +228,15 @@ GetAvatarUrlJob::GetAvatarUrlJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query GetUserProfileJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetUserProfileJob::buildBody(std::string userId)
       {
@@ -169,6 +247,8 @@ GetAvatarUrlJob::GetAvatarUrlJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetUserProfileJob::GetUserProfileJob(
         std::string serverUrl
@@ -181,11 +261,18 @@ GetUserProfileJob::GetUserProfileJob(
            {} ,
           ReturnType::Json,
             buildBody(userId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetUserProfileJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

@@ -46,7 +46,10 @@ static std::string contentUri(Response r);
     static BaseJob::Query buildQuery(
     std::string filename);
 
-    static BaseJob::Body buildBody(Bytes content, std::string filename, std::string contentType);
+      static BaseJob::Body buildBody(Bytes content, std::string filename, std::string contentType);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -116,7 +119,10 @@ static std::string contentDisposition(Response r)
     static BaseJob::Query buildQuery(
     bool allowRemote);
 
-    static BaseJob::Body buildBody(std::string serverName, std::string mediaId, bool allowRemote);
+      static BaseJob::Body buildBody(std::string serverName, std::string mediaId, bool allowRemote);
+
+        static bool success(Response r);
+          static const immer::array<std::string> expectedContentTypes;
       };
 
       } 
@@ -193,7 +199,10 @@ static std::string contentDisposition(Response r)
     static BaseJob::Query buildQuery(
     bool allowRemote);
 
-    static BaseJob::Body buildBody(std::string serverName, std::string mediaId, std::string fileName, bool allowRemote);
+      static BaseJob::Body buildBody(std::string serverName, std::string mediaId, std::string fileName, bool allowRemote);
+
+        static bool success(Response r);
+          static const immer::array<std::string> expectedContentTypes;
       };
 
       } 
@@ -270,7 +279,10 @@ static std::string contentType(Response r)
     static BaseJob::Query buildQuery(
     int width, int height, std::string method, bool allowRemote);
 
-    static BaseJob::Body buildBody(std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote);
+      static BaseJob::Body buildBody(std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote);
+
+        static bool success(Response r);
+          static const immer::array<std::string> expectedContentTypes;
       };
 
       } 
@@ -331,7 +343,10 @@ static std::string ogImage(Response r);
     static BaseJob::Query buildQuery(
     std::string url, std::optional<std::int_fast64_t> ts);
 
-    static BaseJob::Body buildBody(std::string url, std::optional<std::int_fast64_t> ts);
+      static BaseJob::Body buildBody(std::string url, std::optional<std::int_fast64_t> ts);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -380,9 +395,13 @@ public:
 /// If not listed or null, the size limit should be treated as unknown.
 static std::optional<std::int_fast64_t> uploadSize(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "typing.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetTypingJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetTypingJob::buildBody(std::string userId, std::string roomId, bool typing, std::optional<int> timeout)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 SetTypingJob::SetTypingJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,11 +48,18 @@ SetTypingJob::SetTypingJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, typing, timeout)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool SetTypingJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "whoami.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetTokenOwnerJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetTokenOwnerJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetTokenOwnerJob::GetTokenOwnerJob(
         std::string serverUrl
@@ -29,12 +41,19 @@ GetTokenOwnerJob::GetTokenOwnerJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("user_id");
         }
+
+          bool GetTokenOwnerJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("user_id"s)
+          ;
+          }
 
 
     

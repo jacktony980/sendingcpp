@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "list_public_rooms.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetRoomVisibilityOnDirectoryJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetRoomVisibilityOnDirectoryJob::buildBody(std::string roomId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
            {} ,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetRoomVisibilityOnDirectoryJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -47,7 +66,15 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query SetRoomVisibilityOnDirectoryJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetRoomVisibilityOnDirectoryJob::buildBody(std::string roomId, std::string visibility)
       {
@@ -64,6 +91,8 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
 
       };
 
+      
+
 SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
         std::string serverUrl
         , std::string _accessToken
@@ -75,11 +104,19 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, visibility)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool SetRoomVisibilityOnDirectoryJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -106,6 +143,8 @@ return _q;
 
       };
 
+      
+
 GetPublicRoomsJob::GetPublicRoomsJob(
         std::string serverUrl
         
@@ -117,12 +156,19 @@ GetPublicRoomsJob::GetPublicRoomsJob(
            {} ,
           ReturnType::Json,
             buildBody(limit, since, server)
-      , buildQuery(limit, since, server))
+              , buildQuery(limit, since, server)
+                )
         {
-        
-        
-          //addExpectedKey("chunk");
         }
+
+          bool GetPublicRoomsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("chunk"s)
+          ;
+          }
 
 
     
@@ -170,6 +216,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     }
 
 
+
 BaseJob::Query QueryPublicRoomsJob::buildQuery(
 std::string server)
 {
@@ -202,6 +249,8 @@ return _q;
 
       };
 
+      
+
 QueryPublicRoomsJob::QueryPublicRoomsJob(
         std::string serverUrl
         , std::string _accessToken
@@ -213,12 +262,19 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
           _accessToken,
           ReturnType::Json,
             buildBody(server, limit, since, filter, includeAllNetworks, thirdPartyInstanceId)
-      , buildQuery(server))
+              , buildQuery(server)
+                )
         {
-        
-        
-          //addExpectedKey("chunk");
         }
+
+          bool QueryPublicRoomsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("chunk"s)
+          ;
+          }
 
 
     

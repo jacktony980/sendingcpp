@@ -38,9 +38,13 @@ public:
 /// The visibility of the room in the directory.
 static std::string visibility(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId);
+      static BaseJob::Body buildBody(std::string roomId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -83,9 +87,13 @@ public:
         std::string roomId , std::string visibility  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string visibility);
+      static BaseJob::Body buildBody(std::string roomId, std::string visibility);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -160,7 +168,10 @@ static std::optional<int> totalRoomCountEstimate(Response r);
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::string since, std::string server);
 
-    static BaseJob::Body buildBody(std::optional<int> limit, std::string since, std::string server);
+      static BaseJob::Body buildBody(std::optional<int> limit, std::string since, std::string server);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -256,7 +267,10 @@ static std::optional<int> totalRoomCountEstimate(Response r);
     static BaseJob::Query buildQuery(
     std::string server);
 
-    static BaseJob::Body buildBody(std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId);
+      static BaseJob::Body buildBody(std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId);
+
+        static bool success(Response r);
+        
       };
 
       } 

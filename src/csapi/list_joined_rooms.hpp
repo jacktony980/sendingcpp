@@ -34,9 +34,13 @@ public:
 /// The ID of each room in which the user has ``joined`` membership.
 static immer::array<std::string> joinedRooms(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 

@@ -46,9 +46,13 @@ public:
 /// declared filter by homeservers on some APIs.
 static std::string filterId(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, Filter filter);
+      static BaseJob::Body buildBody(std::string userId, Filter filter);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -97,9 +101,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string filterId);
+      static BaseJob::Body buildBody(std::string userId, std::string filterId);
+
+        static bool success(Response r);
+        
       };
 
       } 

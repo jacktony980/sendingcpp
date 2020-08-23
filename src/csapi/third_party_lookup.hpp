@@ -43,9 +43,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -92,9 +96,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string protocol);
+      static BaseJob::Body buildBody(std::string protocol);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -155,7 +163,10 @@ public:
     static BaseJob::Query buildQuery(
     std::string searchFields);
 
-    static BaseJob::Body buildBody(std::string protocol, std::string searchFields);
+      static BaseJob::Body buildBody(std::string protocol, std::string searchFields);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -209,7 +220,10 @@ public:
     static BaseJob::Query buildQuery(
     std::string fields);
 
-    static BaseJob::Body buildBody(std::string protocol, std::string fields);
+      static BaseJob::Body buildBody(std::string protocol, std::string fields);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -260,7 +274,10 @@ public:
     static BaseJob::Query buildQuery(
     std::string alias);
 
-    static BaseJob::Body buildBody(std::string alias);
+      static BaseJob::Body buildBody(std::string alias);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -310,7 +327,10 @@ public:
     static BaseJob::Query buildQuery(
     std::string userid);
 
-    static BaseJob::Body buildBody(std::string userid);
+      static BaseJob::Body buildBody(std::string userid);
+
+        static bool success(Response r);
+        
       };
 
       } 

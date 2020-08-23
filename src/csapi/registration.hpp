@@ -134,7 +134,10 @@ static std::string deviceId(Response r);
     static BaseJob::Query buildQuery(
     std::string kind);
 
-    static BaseJob::Body buildBody(std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin);
+      static BaseJob::Body buildBody(std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -189,9 +192,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(EmailValidationData body);
+      static BaseJob::Body buildBody(EmailValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -246,9 +253,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(MsisdnValidationData body);
+      static BaseJob::Body buildBody(MsisdnValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -304,9 +315,13 @@ public:
         std::string newPassword , std::optional<bool> logoutDevices  = std::nullopt, std::optional<AuthenticationData> auth  = std::nullopt);
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth);
+      static BaseJob::Body buildBody(std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -389,9 +404,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(EmailValidationData body);
+      static BaseJob::Body buildBody(EmailValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -472,9 +491,13 @@ public:
     }
         
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(MsisdnValidationData body);
+      static BaseJob::Body buildBody(MsisdnValidationData body);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -544,9 +567,13 @@ public:
 /// for the user.
 static std::string idServerUnbindResult(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::optional<AuthenticationData> auth, std::string idServer);
+      static BaseJob::Body buildBody(std::optional<AuthenticationData> auth, std::string idServer);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -603,7 +630,10 @@ static std::optional<bool> available(Response r);
     static BaseJob::Query buildQuery(
     std::string username);
 
-    static BaseJob::Body buildBody(std::string username);
+      static BaseJob::Body buildBody(std::string username);
+
+        static bool success(Response r);
+        
       };
 
       } 

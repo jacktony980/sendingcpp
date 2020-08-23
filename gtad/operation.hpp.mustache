@@ -88,11 +88,15 @@ public:
         {{/properties}}
     {{/allProperties?}}{{/normalResponse?}}{{/responses}}
 
-    {{#queryParams?}}
     static BaseJob::Query buildQuery(
-    {{#queryParams}}{{>joinedParamDef}}{{/queryParams}});{{/queryParams?}}
+    {{#queryParams}}{{>joinedParamDef}}{{/queryParams}});
 
-    static BaseJob::Body buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}});
+      static BaseJob::Body buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}});
+
+        static bool success(Response r);
+        {{#producesNonJson?}}
+          static const immer::array<std::string> expectedContentTypes;
+        {{/producesNonJson?}}
       };
 
       } {{! namespace Kazv}}

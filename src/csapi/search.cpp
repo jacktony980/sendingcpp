@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "search.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query SearchJob::buildQuery(
 std::string nextBatch)
@@ -31,6 +34,8 @@ return _q;
 
       };
 
+      
+
 SearchJob::SearchJob(
         std::string serverUrl
         , std::string _accessToken
@@ -42,12 +47,19 @@ SearchJob::SearchJob(
           _accessToken,
           ReturnType::Json,
             buildBody(searchCategories, nextBatch)
-      , buildQuery(nextBatch))
+              , buildQuery(nextBatch)
+                )
         {
-        
-        
-          //addExpectedKey("search_categories");
         }
+
+          bool SearchJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("search_categories"s)
+          ;
+          }
 
 
     

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "directory.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetRoomAliasJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetRoomAliasJob::buildBody(std::string roomAlias, std::string roomId)
       {
@@ -23,6 +33,8 @@ namespace Kazv
 
       };
 
+      
+
 SetRoomAliasJob::SetRoomAliasJob(
         std::string serverUrl
         , std::string _accessToken
@@ -34,14 +46,29 @@ SetRoomAliasJob::SetRoomAliasJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomAlias, roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool SetRoomAliasJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetRoomIdByAliasJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetRoomIdByAliasJob::buildBody(std::string roomAlias)
       {
@@ -52,6 +79,8 @@ SetRoomAliasJob::SetRoomAliasJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetRoomIdByAliasJob::GetRoomIdByAliasJob(
         std::string serverUrl
@@ -64,11 +93,18 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
            {} ,
           ReturnType::Json,
             buildBody(roomAlias)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetRoomIdByAliasJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -93,7 +129,15 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
     else { return immer::array<std::string>(  );}
     }
 
-  
+
+
+BaseJob::Query DeleteRoomAliasJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeleteRoomAliasJob::buildBody(std::string roomAlias)
       {
@@ -104,6 +148,8 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 DeleteRoomAliasJob::DeleteRoomAliasJob(
         std::string serverUrl
@@ -116,14 +162,29 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomAlias)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool DeleteRoomAliasJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetLocalAliasesJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetLocalAliasesJob::buildBody(std::string roomId)
       {
@@ -134,6 +195,8 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetLocalAliasesJob::GetLocalAliasesJob(
         std::string serverUrl
@@ -146,12 +209,19 @@ GetLocalAliasesJob::GetLocalAliasesJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("aliases");
         }
+
+          bool GetLocalAliasesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("aliases"s)
+          ;
+          }
 
 
     

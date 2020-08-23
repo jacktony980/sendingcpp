@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "third_party_lookup.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetProtocolsJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetProtocolsJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetProtocolsJob::GetProtocolsJob(
         std::string serverUrl
@@ -29,14 +41,29 @@ GetProtocolsJob::GetProtocolsJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetProtocolsJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query GetProtocolMetadataJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetProtocolMetadataJob::buildBody(std::string protocol)
       {
@@ -47,6 +74,8 @@ GetProtocolsJob::GetProtocolsJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetProtocolMetadataJob::GetProtocolMetadataJob(
         std::string serverUrl
@@ -59,11 +88,19 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
           _accessToken,
           ReturnType::Json,
             buildBody(protocol)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetProtocolMetadataJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -86,6 +123,8 @@ return _q;
 
       };
 
+      
+
 QueryLocationByProtocolJob::QueryLocationByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
@@ -97,11 +136,19 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
           _accessToken,
           ReturnType::Json,
             buildBody(protocol, searchFields)
-      , buildQuery(searchFields))
+              , buildQuery(searchFields)
+                )
         {
-        
-        
         }
+
+          bool QueryLocationByProtocolJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -124,6 +171,8 @@ return _q;
 
       };
 
+      
+
 QueryUserByProtocolJob::QueryUserByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
@@ -135,11 +184,19 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
           _accessToken,
           ReturnType::Json,
             buildBody(protocol, fields)
-      , buildQuery(fields))
+              , buildQuery(fields)
+                )
         {
-        
-        
         }
+
+          bool QueryUserByProtocolJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -162,6 +219,8 @@ return _q;
 
       };
 
+      
+
 QueryLocationByAliasJob::QueryLocationByAliasJob(
         std::string serverUrl
         , std::string _accessToken
@@ -173,11 +232,19 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
           _accessToken,
           ReturnType::Json,
             buildBody(alias)
-      , buildQuery(alias))
+              , buildQuery(alias)
+                )
         {
-        
-        
         }
+
+          bool QueryLocationByAliasJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
+
 
 
 
@@ -200,6 +267,8 @@ return _q;
 
       };
 
+      
+
 QueryUserByIDJob::QueryUserByIDJob(
         std::string serverUrl
         , std::string _accessToken
@@ -211,11 +280,18 @@ QueryUserByIDJob::QueryUserByIDJob(
           _accessToken,
           ReturnType::Json,
             buildBody(userid)
-      , buildQuery(userid))
+              , buildQuery(userid)
+                )
         {
-        
-        
         }
+
+          bool QueryUserByIDJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

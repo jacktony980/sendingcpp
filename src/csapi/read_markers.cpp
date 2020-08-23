@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "read_markers.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query SetReadMarkerJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body SetReadMarkerJob::buildBody(std::string roomId, std::string mFullyRead, std::string mRead)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 SetReadMarkerJob::SetReadMarkerJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,11 +48,18 @@ SetReadMarkerJob::SetReadMarkerJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, mFullyRead, mRead)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool SetReadMarkerJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

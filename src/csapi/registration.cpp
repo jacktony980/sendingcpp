@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "registration.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query RegisterJob::buildQuery(
 std::string kind)
@@ -41,6 +44,8 @@ return _q;
 
       };
 
+      
+
 RegisterJob::RegisterJob(
         std::string serverUrl
         
@@ -52,12 +57,19 @@ RegisterJob::RegisterJob(
            {} ,
           ReturnType::Json,
             buildBody(kind, auth, username, password, deviceId, initialDeviceDisplayName, inhibitLogin)
-      , buildQuery(kind))
+              , buildQuery(kind)
+                )
         {
-        
-        
-          //addExpectedKey("user_id");
         }
+
+          bool RegisterJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("user_id"s)
+          ;
+          }
 
 
     
@@ -104,7 +116,15 @@ RegisterJob::RegisterJob(
     else { return std::string(  );}
     }
 
-  
+
+
+BaseJob::Query RequestTokenToRegisterEmailJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RequestTokenToRegisterEmailJob::buildBody(EmailValidationData body)
       {
@@ -117,6 +137,8 @@ RegisterJob::RegisterJob(
 
       };
 
+      
+
 RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
         std::string serverUrl
         
@@ -128,14 +150,29 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
            {} ,
           ReturnType::Json,
             buildBody(body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool RequestTokenToRegisterEmailJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query RequestTokenToRegisterMSISDNJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RequestTokenToRegisterMSISDNJob::buildBody(MsisdnValidationData body)
       {
@@ -148,6 +185,8 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
 
       };
 
+      
+
 RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
         std::string serverUrl
         
@@ -159,14 +198,29 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
            {} ,
           ReturnType::Json,
             buildBody(body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool RequestTokenToRegisterMSISDNJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query ChangePasswordJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body ChangePasswordJob::buildBody(std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth)
       {
@@ -187,6 +241,8 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
 
       };
 
+      
+
 ChangePasswordJob::ChangePasswordJob(
         std::string serverUrl
         , std::string _accessToken
@@ -198,14 +254,29 @@ ChangePasswordJob::ChangePasswordJob(
           _accessToken,
           ReturnType::Json,
             buildBody(newPassword, logoutDevices, auth)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool ChangePasswordJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query RequestTokenToResetPasswordEmailJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RequestTokenToResetPasswordEmailJob::buildBody(EmailValidationData body)
       {
@@ -218,6 +289,8 @@ ChangePasswordJob::ChangePasswordJob(
 
       };
 
+      
+
 RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
         std::string serverUrl
         
@@ -229,14 +302,29 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
            {} ,
           ReturnType::Json,
             buildBody(body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool RequestTokenToResetPasswordEmailJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query RequestTokenToResetPasswordMSISDNJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RequestTokenToResetPasswordMSISDNJob::buildBody(MsisdnValidationData body)
       {
@@ -249,6 +337,8 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
 
       };
 
+      
+
 RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
         std::string serverUrl
         
@@ -260,14 +350,29 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
            {} ,
           ReturnType::Json,
             buildBody(body)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool RequestTokenToResetPasswordMSISDNJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query DeactivateAccountJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeactivateAccountJob::buildBody(std::optional<AuthenticationData> auth, std::string idServer)
       {
@@ -286,6 +391,8 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
 
       };
 
+      
+
 DeactivateAccountJob::DeactivateAccountJob(
         std::string serverUrl
         , std::string _accessToken
@@ -297,12 +404,19 @@ DeactivateAccountJob::DeactivateAccountJob(
           _accessToken,
           ReturnType::Json,
             buildBody(auth, idServer)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("id_server_unbind_result");
         }
+
+          bool DeactivateAccountJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("id_server_unbind_result"s)
+          ;
+          }
 
 
     
@@ -315,6 +429,7 @@ DeactivateAccountJob::DeactivateAccountJob(
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
+
 
 
 BaseJob::Query CheckUsernameAvailabilityJob::buildQuery(
@@ -336,6 +451,8 @@ return _q;
 
       };
 
+      
+
 CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
         std::string serverUrl
         
@@ -347,11 +464,18 @@ CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
            {} ,
           ReturnType::Json,
             buildBody(username)
-      , buildQuery(username))
+              , buildQuery(username)
+                )
         {
-        
-        
         }
+
+          bool CheckUsernameAvailabilityJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

@@ -1,13 +1,13 @@
 
-include_directories(api . csapi)
+include_directories(job . csapi)
 set(FULL_CSAPI_DIR csapi)
 file(GLOB_RECURSE api_SRCS ${FULL_CSAPI_DIR}/*.cpp)
 set(libkazv_SRCS
   #  api/wellknown.cpp
   ${api_SRCS}
   debug.cpp
-  api/basejob.cpp
-  #api/login.cpp
+  job/basejob.cpp
+  job/cprjobhandler.cpp
   client/client.cpp
   )
 

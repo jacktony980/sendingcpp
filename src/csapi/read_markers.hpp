@@ -40,9 +40,13 @@ public:
         std::string roomId , std::string mFullyRead , std::string mRead  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string mFullyRead, std::string mRead);
+      static BaseJob::Body buildBody(std::string roomId, std::string mFullyRead, std::string mRead);
+
+        static bool success(Response r);
+        
       };
 
       } 

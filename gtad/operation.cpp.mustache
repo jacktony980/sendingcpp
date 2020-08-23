@@ -1,10 +1,12 @@
 {{>preamble}}
+#include <algorithm>
+
 #include "{{filenameBase}}.hpp"
 
 namespace Kazv
 {
 {{#operations}}{{#operation}}
-  {{#queryParams?}}
+
 
 BaseJob::Query {{camelCaseOperationId}}Job::buildQuery(
 {{#queryParams}}{{>joinedParamDef}}{{/queryParams}})
@@ -20,7 +22,6 @@ BaseJob::Query _q;
 {{/queryParams}}
 return _q;
 }
-    {{/queryParams?}}
 
     BaseJob::Body {{camelCaseOperationId}}Job::buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}})
       {
@@ -58,6 +59,10 @@ return _q;
 
       };
 
+      {{#producesNonJson?}}
+        const immer::array<std::string> {{camelCaseOperationId}}Job::expectedContentTypes{ {{#produces}}"{{_}}"{{>cjoin}}{{/produces}} };
+      {{/producesNonJson?}}
+
 {{camelCaseOperationId}}Job::{{camelCaseOperationId}}Job(
         std::string serverUrl
         {{^skipAuth}}, std::string _accessToken{{/skipAuth}}
@@ -69,21 +74,32 @@ return _q;
           {{^skipAuth}}_accessToken{{/skipAuth}}{{#skipAuth}} {} {{/skipAuth}},
           ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}Byte{{/producesNonJson?}},
             buildBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
-      {{#queryParams?}}, buildQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}}){{/queryParams?}})
+              , buildQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}})
+                {{#headerParams?}}, std::map<std::string, std::string>{
+                  {{#headerParams}}
+                    { "{{baseName}}"s, {{paramName}} },
+                  {{/headerParams}}
+                  }{{/headerParams?}})
         {
-        {{#headerParams}}
-          //setRequestHeader("{{baseName}}", {{paramName}}.toLatin1());
-        {{/headerParams}}
-        {{#producesNonJson?}}
-          //setExpectedContentTypes({ {{#produces}}"{{_}}"{{>cjoin}}{{/produces}} });
-        {{/producesNonJson?}}
-        {{^producesNonJson?}}{{#responses}}{{#normalResponse?}}{{#properties}}{{#required?}}
-          //addExpectedKey("{{baseName}}");
-        {{/required?}}{{/properties}}{{/normalResponse?}}{{/responses
-        }}{{/producesNonJson?}}
         }
 
-        {{#responses}}{{#normalResponse?}}
+        {{#responses}}
+          bool {{camelCaseOperationId}}Job::success(Response r)
+          {
+            return BaseJob::success(r)
+            {{#producesNonJson?}}
+              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            {{/producesNonJson?}}
+            {{^producesNonJson?}}
+              && isBodyJson(r.body)
+              {{#normalResponse?}}{{#properties}}{{#required?}}
+            && jsonBody(r).get().contains("{{baseName}}"s)
+            {{/required?}}{{/properties}}{{/normalResponse?}}
+            {{/producesNonJson?}}
+          ;
+          }
+
+          {{#normalResponse?}}
                 {{#properties}}
 
     {{!there's nothing in #properties if the response is inline}}

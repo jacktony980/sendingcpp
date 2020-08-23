@@ -41,9 +41,13 @@ public:
         std::string roomId , std::string receiptType , std::string eventId , JsonWrap receipt  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt);
+      static BaseJob::Body buildBody(std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt);
+
+        static bool success(Response r);
+        
       };
 
       } 

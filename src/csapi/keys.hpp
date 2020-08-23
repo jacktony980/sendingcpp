@@ -48,9 +48,13 @@ public:
 /// of that type currently held on the server for this device.
 static immer::map<std::string, int> oneTimeKeyCounts(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys);
+      static BaseJob::Body buildBody(std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -140,9 +144,13 @@ static immer::map<std::string, JsonWrap> failures(Response r);
 /// property.
 static immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token);
+      static BaseJob::Body buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -223,9 +231,13 @@ static immer::map<std::string, JsonWrap> failures(Response r);
 /// on the Key Object format.
 static immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout);
+      static BaseJob::Body buildBody(immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -295,7 +307,10 @@ static immer::array<std::string> left(Response r);
     static BaseJob::Query buildQuery(
     std::string from, std::string to);
 
-    static BaseJob::Body buildBody(std::string from, std::string to);
+      static BaseJob::Body buildBody(std::string from, std::string to);
+
+        static bool success(Response r);
+        
       };
 
       } 

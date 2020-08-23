@@ -58,9 +58,13 @@ static immer::array<std::string> versions(Response r);
 /// not supported.
 static immer::map<std::string, bool> unstableFeatures(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody();
+      static BaseJob::Body buildBody();
+
+        static bool success(Response r);
+        
       };
 
       } 

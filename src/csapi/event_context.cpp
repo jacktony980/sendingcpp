@@ -2,10 +2,13 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "event_context.hpp"
 
 namespace Kazv
 {
+
 
 BaseJob::Query GetEventContextJob::buildQuery(
 std::optional<int> limit, std::string filter)
@@ -28,6 +31,8 @@ return _q;
 
       };
 
+      
+
 GetEventContextJob::GetEventContextJob(
         std::string serverUrl
         , std::string _accessToken
@@ -39,11 +44,18 @@ GetEventContextJob::GetEventContextJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, limit, filter)
-      , buildQuery(limit, filter))
+              , buildQuery(limit, filter)
+                )
         {
-        
-        
         }
+
+          bool GetEventContextJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     

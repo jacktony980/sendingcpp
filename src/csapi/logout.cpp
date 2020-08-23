@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "logout.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query LogoutJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body LogoutJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 LogoutJob::LogoutJob(
         std::string serverUrl
@@ -29,14 +41,29 @@ LogoutJob::LogoutJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool LogoutJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query LogoutAllJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body LogoutAllJob::buildBody()
       {
@@ -47,6 +74,8 @@ LogoutJob::LogoutJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 LogoutAllJob::LogoutAllJob(
         std::string serverUrl
@@ -59,11 +88,18 @@ LogoutAllJob::LogoutAllJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool LogoutAllJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

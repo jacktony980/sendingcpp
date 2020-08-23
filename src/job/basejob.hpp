@@ -5,9 +5,11 @@
 #include <tuple>
 #include <functional>
 #include <string>
+#include <map>
+#include <future>
 #include <immer/map.hpp>
 #include <immer/array.hpp>
-#include <future>
+#include <immer/box.hpp>
 
 #include "types.hpp"
 #include "descendent.hpp"
@@ -28,16 +30,14 @@ namespace Kazv
         static Put PUT;
         static Delete DELETE;
 
-        class Query
+        class Query : public std::vector<std::pair<std::string, std::string>>
         {
+            using BaseT = std::vector<std::pair<std::string, std::string>>;
         public:
-            Query();
-
-            void add(std::string k, std::string v);
-        private:
-            struct Private;
-            Descendent<Private> m_d;
-            friend class BaseJob;
+            using BaseT::BaseT;
+            void add(std::string k, std::string v) {
+                push_back({k, v});
+            }
         };
 
         using BytesBody = Bytes;
@@ -49,14 +49,17 @@ namespace Kazv
             return std::holds_alternative<JsonBody>(body);
         };
 
+        using Header = immer::box<std::map<std::string, std::string>>;
+
         using StatusCode = int;
         struct Response {
             StatusCode statusCode;
             Body body;
+            Header header;
         };
 
-        constexpr bool success(const Response &res) const {
-            return res.statusCode < 300 && (!shouldReturnJson() || isBodyJson(res.body));
+        static constexpr bool success(const Response &res) {
+            return res.statusCode < 300;
         }
 
         enum ReturnType {
@@ -70,13 +73,25 @@ namespace Kazv
                 std::string token = {},
                 ReturnType returnType = ReturnType::Json,
                 Body body = EmptyBody{},
-                Query query = {});
-
-        std::future<Response> fetch() const;
+                Query query = {},
+                Header header = {});
 
         bool shouldReturnJson() const;
 
         std::string url() const;
+
+        BytesBody requestBody() const;
+
+        Header requestHeader() const;
+
+        ReturnType returnType() const;
+
+        /// returns the non-encoded query as an array of pairs
+        Query requestQuery() const;
+
+        Method requestMethod() const;
+
+        static bool contentTypeMatches(immer::array<std::string> expected, std::string actual);
 
     private:
         struct Private;

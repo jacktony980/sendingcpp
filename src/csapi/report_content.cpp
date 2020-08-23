@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "report_content.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query ReportContentJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body ReportContentJob::buildBody(std::string roomId, std::string eventId, int score, std::string reason)
       {
@@ -25,6 +35,8 @@ namespace Kazv
 
       };
 
+      
+
 ReportContentJob::ReportContentJob(
         std::string serverUrl
         , std::string _accessToken
@@ -36,11 +48,18 @@ ReportContentJob::ReportContentJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, score, reason)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool ReportContentJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "room_initial_sync.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query RoomInitialSyncJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body RoomInitialSyncJob::buildBody(std::string roomId)
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 RoomInitialSyncJob::RoomInitialSyncJob(
         std::string serverUrl
@@ -29,12 +41,19 @@ RoomInitialSyncJob::RoomInitialSyncJob(
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
-          //addExpectedKey("room_id");
         }
+
+          bool RoomInitialSyncJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+            && jsonBody(r).get().contains("room_id"s)
+          ;
+          }
 
 
     

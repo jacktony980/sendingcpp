@@ -7,10 +7,11 @@
 #include "csapi/login.hpp"
 #include "types.hpp"
 #include "debug.hpp"
+#include "job/jobinterface.hpp"
 
 namespace Kazv
 {
-    lager::effect<Client::Action> loginEffect(Client::LoginAction a)
+    Client::Effect loginEffect(Client::LoginAction a)
     {
         return
             [=](auto &&ctx) {
@@ -21,7 +22,8 @@ namespace Kazv
                              {}, // token, not used
                              {}, // device id, not used
                              a.deviceName.value_or("libkazv"));
-                auto res = job.fetch();
+                auto &jobHandler = lager::get<JobInterface &>(ctx);
+                auto res = jobHandler.fetch(job);
                 dbgClient << "Result validity: " << res.valid() << std::endl;
                 auto r = res.get();
                 if (job.success(r)) {

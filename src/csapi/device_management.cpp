@@ -2,11 +2,21 @@
  * THIS FILE IS GENERATED - ANY EDITS WILL BE OVERWRITTEN
  */
 
+#include <algorithm>
+
 #include "device_management.hpp"
 
 namespace Kazv
 {
-  
+
+
+BaseJob::Query GetDevicesJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetDevicesJob::buildBody()
       {
@@ -17,6 +27,8 @@ namespace Kazv
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetDevicesJob::GetDevicesJob(
         std::string serverUrl
@@ -29,11 +41,18 @@ GetDevicesJob::GetDevicesJob(
           _accessToken,
           ReturnType::Json,
             buildBody()
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool GetDevicesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
     
@@ -47,7 +66,15 @@ GetDevicesJob::GetDevicesJob(
     else { return immer::array<Device>(  );}
     }
 
-  
+
+
+BaseJob::Query GetDeviceJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body GetDeviceJob::buildBody(std::string deviceId)
       {
@@ -58,6 +85,8 @@ GetDevicesJob::GetDevicesJob(
               return BaseJob::EmptyBody{};
 
       };
+
+      
 
 GetDeviceJob::GetDeviceJob(
         std::string serverUrl
@@ -70,14 +99,29 @@ GetDeviceJob::GetDeviceJob(
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool GetDeviceJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query UpdateDeviceJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body UpdateDeviceJob::buildBody(std::string deviceId, std::string displayName)
       {
@@ -94,6 +138,8 @@ GetDeviceJob::GetDeviceJob(
 
       };
 
+      
+
 UpdateDeviceJob::UpdateDeviceJob(
         std::string serverUrl
         , std::string _accessToken
@@ -105,14 +151,29 @@ UpdateDeviceJob::UpdateDeviceJob(
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId, displayName)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool UpdateDeviceJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query DeleteDeviceJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeleteDeviceJob::buildBody(std::string deviceId, std::optional<AuthenticationData> auth)
       {
@@ -129,6 +190,8 @@ UpdateDeviceJob::UpdateDeviceJob(
 
       };
 
+      
+
 DeleteDeviceJob::DeleteDeviceJob(
         std::string serverUrl
         , std::string _accessToken
@@ -140,14 +203,29 @@ DeleteDeviceJob::DeleteDeviceJob(
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId, auth)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
 
+          bool DeleteDeviceJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
-  
+
+
+
+BaseJob::Query DeleteDevicesJob::buildQuery(
+)
+{
+BaseJob::Query _q;
+
+return _q;
+}
 
     BaseJob::Body DeleteDevicesJob::buildBody(immer::array<std::string> devices, std::optional<AuthenticationData> auth)
       {
@@ -166,6 +244,8 @@ DeleteDeviceJob::DeleteDeviceJob(
 
       };
 
+      
+
 DeleteDevicesJob::DeleteDevicesJob(
         std::string serverUrl
         , std::string _accessToken
@@ -177,11 +257,18 @@ DeleteDevicesJob::DeleteDevicesJob(
           _accessToken,
           ReturnType::Json,
             buildBody(devices, auth)
-      )
+              , buildQuery()
+                )
         {
-        
-        
         }
+
+          bool DeleteDevicesJob::success(Response r)
+          {
+            return BaseJob::success(r)
+            
+              && isBodyJson(r.body)
+          ;
+          }
 
 
 }

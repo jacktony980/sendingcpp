@@ -41,9 +41,13 @@ public:
 /// The ID of the new room.
 static std::string replacementRoom(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string roomId, std::string newVersion);
+      static BaseJob::Body buildBody(std::string roomId, std::string newVersion);
+
+        static bool success(Response r);
+        
       };
 
       } 

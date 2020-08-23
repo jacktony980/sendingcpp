@@ -34,9 +34,13 @@ public:
         std::string userId , std::string displayname  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string displayname);
+      static BaseJob::Body buildBody(std::string userId, std::string displayname);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -80,9 +84,13 @@ public:
 /// The user's display name if they have set one, otherwise not present.
 static std::string displayname(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId);
+      static BaseJob::Body buildBody(std::string userId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -120,9 +128,13 @@ public:
         std::string userId , std::string avatarUrl  = {});
     
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId, std::string avatarUrl);
+      static BaseJob::Body buildBody(std::string userId, std::string avatarUrl);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -166,9 +178,13 @@ public:
 /// The user's avatar URL if they have set one, otherwise not present.
 static std::string avatarUrl(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId);
+      static BaseJob::Body buildBody(std::string userId);
+
+        static bool success(Response r);
+        
       };
 
       } 
@@ -217,9 +233,13 @@ static std::string avatarUrl(Response r);
 /// The user's display name if they have set one, otherwise not present.
 static std::string displayname(Response r);
 
-    
+    static BaseJob::Query buildQuery(
+    );
 
-    static BaseJob::Body buildBody(std::string userId);
+      static BaseJob::Body buildBody(std::string userId);
+
+        static bool success(Response r);
+        
       };
 
       } 

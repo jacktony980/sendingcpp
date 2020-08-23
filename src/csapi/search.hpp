@@ -210,7 +210,10 @@ static ResultCategories searchCategories(Response r);
     static BaseJob::Query buildQuery(
     std::string nextBatch);
 
-    static BaseJob::Body buildBody(Categories searchCategories, std::string nextBatch);
+      static BaseJob::Body buildBody(Categories searchCategories, std::string nextBatch);
+
+        static bool success(Response r);
+        
       };
 
       } 
