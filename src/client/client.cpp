@@ -40,6 +40,8 @@ namespace Kazv
                                     j.at("device_id"),
                                     /* loggedIn = */ true
                                 });
+                            // after user info is loaded, do first sync
+                            ctx.dispatch(Client::SyncAction{});
                         }
                     });
             };
@@ -74,6 +76,9 @@ namespace Kazv
                 },
                 [=](LogoutAction a) mutable -> Result {
                     return {std::move(m), logoutEffect(std::move(a))};
+                },
+                [=](SyncAction a) -> Result {
+                    return {m, syncEffect(m, a)};
                 },
                 [=](LoadUserInfoAction a) mutable -> Result {
                     dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;

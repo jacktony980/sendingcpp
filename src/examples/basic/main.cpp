@@ -32,8 +32,6 @@ int main()
     std::getline(std::cin, password);
     store.dispatch(Kazv::Client::LoginAction{homeserver, username, password, "libkazv basic example"s});
 
-
-
     ioContext.run();
     std::cout << "Token: " << store.get().token << std::endl;
 }

@@ -41,7 +41,6 @@ namespace Kazv
         : fullRequestUrl(serverUrl + requestUrl)
         , method(std::move(method))
         , returnType(returnType)
-        , header(header)
         , body()
         , query(std::move(query))
     {
@@ -58,8 +57,8 @@ namespace Kazv
             BytesBody b = std::get<BytesBody>(std::move(body));
             this->body = b;
         }
-        header = header_;
 
+        this->header = header_;
     }
 
     BaseJob::BaseJob(std::string serverUrl,

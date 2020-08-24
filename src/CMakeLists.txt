@@ -9,6 +9,7 @@ set(libkazv_SRCS
   debug.cpp
   job/basejob.cpp
   client/client.cpp
+  client/sync.cpp
   )
 
 add_library(kazv ${libkazv_SRCS})
@@ -38,7 +39,7 @@ add_library(kazvjob ${libkazvjob_SRCS})
 add_library(libkazv::kazvjob ALIAS kazvjob)
 
 target_link_libraries(kazvjob PUBLIC kazv)
-target_link_libraries_system(kazvjob PUBLIC cpr::cpr)
+target_link_libraries_system(kazvjob PUBLIC cpr::cpr Threads::Threads)
 target_include_directories(kazvjob
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

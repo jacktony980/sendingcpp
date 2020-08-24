@@ -134,7 +134,7 @@ namespace nlohmann {
 
         static void from_json(const json& j, immer::array<T> &a) {
             immer::array<T> ret;
-            if (j.is_object()) {
+            if (j.is_array()) {
                 for (const auto &i : j) {
                     ret = std::move(ret).push_back(i);
                 }
