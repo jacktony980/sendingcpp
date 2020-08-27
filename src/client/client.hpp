@@ -9,6 +9,7 @@
 #include <lager/context.hpp>
 
 #include "job/jobinterface.hpp"
+#include "eventemitter/eventinterface.hpp"
 #include "error.hpp"
 
 namespace Kazv
@@ -21,6 +22,8 @@ namespace Kazv
         std::string deviceId;
         bool loggedIn;
         Error error;
+
+        std::string syncToken;
 
         struct LoginAction {
             std::string serverUrl;
@@ -39,17 +42,20 @@ namespace Kazv
 
         struct LogoutAction {};
 
-        struct SyncAction {
-            std::string since;
+        struct SyncAction {};
+
+        struct LoadSyncTokenAction {
+            std::string syncToken;
         };
 
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
                                     SyncAction,
-                                    Error::Action
+                                    Error::Action,
+                                    LoadSyncTokenAction
                                     >;
-        using Effect = lager::effect<Action, lager::deps<JobInterface &>>;
+        using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
         using Result = std::pair<Client, Effect>;
         static Result update(Client m, Action a);
     };

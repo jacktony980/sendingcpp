@@ -18,6 +18,31 @@ namespace Kazv
                     }).detach();
     }
 
+    void CprJobHandler::setTimeout(std::function<void()> func, int ms)
+    {
+        auto timer=std::make_shared<boost::asio::steady_timer>(
+            executor, boost::asio::chrono::milliseconds(ms));
+        timer->async_wait(
+            [=, timer=timer](const boost::system::error_code &error){
+                if (! error) {
+                    func();
+                }
+            });
+    }
+
+    void CprJobHandler::setInterval(std::function<void()> func, int ms)
+    {
+        auto dur = boost::asio::chrono::milliseconds(ms);
+        auto timer = std::make_shared<boost::asio::steady_timer>(executor, dur);
+        timer->async_wait(
+            [=, timer=timer](const boost::system::error_code &error) {
+                if (!error) {
+                    func();
+                    timer->expires_at(timer->expiry() + dur);
+                }
+            });
+    }
+
     void CprJobHandler::fetch(const BaseJob &job, std::function<void(std::shared_future<BaseJob::Response>)> userCallback)
     {
         cpr::Url url{job.url()};

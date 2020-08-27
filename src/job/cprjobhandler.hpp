@@ -11,6 +11,8 @@ namespace Kazv
         CprJobHandler(boost::asio::io_context::executor_type executor);
         ~CprJobHandler() override;
         void async(std::function<void()> func) override;
+        void setTimeout(std::function<void()> func, int ms) override;
+        void setInterval(std::function<void()> func, int ms) override;
         void fetch(const BaseJob &job,
                    std::function<void(std::shared_future<BaseJob::Response>)> callback) override;
     private:

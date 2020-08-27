@@ -16,7 +16,7 @@ namespace Kazv
 
         using Action = std::variant<SetErrorAction>;
 
-        static inline Error update(Error e, Action a) {
+        static inline Error update(Error, Action a) {
             return Error{std::get<SetErrorAction>(a).error};
         }
 

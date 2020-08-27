@@ -26,7 +26,18 @@ libkazv offers the following CMake options:
   as a subproject.
 
 libkazv can be incorporated into your project using CMake `FetchContent()`.
+It has two libraries you can link to:
 
+- `libkazv::kazv` is the one that contains API call definitions
+  and client logic. It does not, however, define how the jobs are
+  fetched.
+- `libkazv::kazvjob` is a tiny library that provides async
+  and network fetching functionalities. There is one class
+  `CprJobHandler` that implements `JobInterface` in `kazv`.
+  You can link your program to `kazvjob` or make up another
+  job handler using what you choose as async and network
+  libraries. To switch from one job handler to another,
+  you only need to change one or two lines in your program.
 
 
 # Acknowledgement
@@ -34,11 +45,11 @@ libkazv can be incorporated into your project using CMake `FetchContent()`.
 libkazv uses [gtad](https://github.com/KitsuneRal/gtad) to generate the API
 definitions it needed. The source of the Matrix API is
 [https://github.com/matrix-org/matrix-doc](https://github.com/matrix-org/matrix-doc)
-. The gtad configuration files and json/query serializing used in libkazv is
+. The gtad configuration files and json/query serializing used in libkazv are
 adapted from the ones in [libQuotient](https://github.com/quotient-im/libQuotient).
 libQuotient is released under GNU LGPL v2.1. The changes in said files
 in libkazv compared to libQuotient's are:
 
 - Get rid of the `avoidCopy` and `moveOnly` markers
-- Use data types from `lager` and `std` instead of Qt
+- Use data types from `immer` and `std` instead of Qt
 - Use `nlohmann::json` instead of Qt's JSON library

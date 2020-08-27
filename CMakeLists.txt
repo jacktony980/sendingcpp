@@ -14,7 +14,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
 option(libkazv_BUILD_TESTS "Build tests" ON)
 option(libkazv_BUILD_EXAMPLES "Build examples" ON)
+option(libkazv_BUILD_KAZVJOB "Build libkazvjob the async and networking library" ON)
 option(libkazv_OUTPUT_LEVEL "Output level: Debug>=90, Info>=70, Quiet>=20, no output=1" 0)
+
+if((libkazv_BUILD_TESTS OR libkazv_BUILD_EXAMPLES) AND NOT libkazv_BUILD_KAZVJOB)
+  message(FATAL_ERROR
+    "You asked kazvjob not to be built, but asked to build tests or examples. Tests and examples both depend on kazvjob. This is not possible.")
+endif()
 
 # Build shared libraries by default
 if(NOT DEFINED BUILD_SHARED_LIBS)
@@ -23,14 +29,16 @@ endif()
 
 find_package(Boost REQUIRED)
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-
 include(FetchContent)
-set(USE_SYSTEM_CURL ON)
-set(BUILD_CPR_TESTS OFF)
-FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git GIT_TAG c8d33915dbd88ad6c92b258869b03aba06587ff9) # the commit hash for 1.5.0
-FetchContent_MakeAvailable(cpr)
+if(libkazv_BUILD_KAZVJOB)
+  set(USE_SYSTEM_CURL ON)
+  set(BUILD_CPR_TESTS OFF)
+  FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git GIT_TAG c8d33915dbd88ad6c92b258869b03aba06587ff9) # the commit hash for 1.5.0
+  FetchContent_MakeAvailable(cpr)
+
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
+endif()
 
 if(libkazv_BUILD_TESTS)
   FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2 GIT_TAG v2.13.0)

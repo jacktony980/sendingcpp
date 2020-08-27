@@ -176,3 +176,12 @@ namespace nlohmann {
     };
 
 }
+
+namespace Kazv
+{
+    inline bool operator==(JsonWrap a, JsonWrap b)
+    {
+        return a.get() == b.get();
+    }
+
+}

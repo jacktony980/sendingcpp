@@ -47,7 +47,7 @@ namespace Kazv
             };
     }
 
-    lager::effect<Client::Action> logoutEffect(Client::LogoutAction a)
+    lager::effect<Client::Action> logoutEffect(Client::LogoutAction)
     {
         return
             [=](auto &&ctx) {
@@ -64,7 +64,6 @@ namespace Kazv
 
     auto Client::update(Client m, Action a) -> Result
     {
-        dbgClient << "Client::update()" << std::endl;
         return
             std::visit(lager::visitor{
                 [=](Error::Action a) mutable -> Result {
@@ -94,6 +93,11 @@ namespace Kazv
                                  ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
                              }
                     };
+                },
+                [=](LoadSyncTokenAction a) mutable -> Result {
+                    m.syncToken = a.syncToken;
+
+                    return { std::move(m), lager::noop };
                 },
             }, std::move(a));
     }

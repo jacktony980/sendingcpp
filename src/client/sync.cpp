@@ -6,19 +6,19 @@
 #include "job/jobinterface.hpp"
 #include "debug.hpp"
 
+static const int syncInterval = 2000; // ms
+
 namespace Kazv
 {
-    Client::Effect syncEffect(Client m, Client::SyncAction a)
+    Client::Effect syncEffect(Client m, Client::SyncAction)
     {
         return
             [=](auto &&ctx) {
-                dbgClient << "Server: " << m.serverUrl << std::endl
-                          << "User: " << m.userId << std::endl
-                          << "Access token: " << m.token << std::endl;
+                dbgClient << "Start syncing with token " << m.syncToken << std::endl;
                 SyncJob job(m.serverUrl,
                             m.token,
                             {}, // filter
-                            a.since);
+                            m.syncToken);
                 auto &jobHandler = lager::get<JobInterface &>(ctx);
                 jobHandler.fetch(
                     job,
@@ -37,16 +37,40 @@ namespace Kazv
                             return;
                         }
                         dbgClient << "Sync successful" << std::endl;
-                        dbgClient << "Next batch token:" << SyncJob::nextBatch(r) << std::endl;
-                        //dbgClient << "Json: " << jsonBody(r).get().dump() << std::endl;
+
+                        // replace sync token
+                        ctx.dispatch(Client::LoadSyncTokenAction{SyncJob::nextBatch(r)});
+
+                        // emit events
+                        auto &eventEmitter = lager::get<EventInterface &>(ctx);
                         auto accountData = SyncJob::accountData(r);
                         if (accountData) {
-                            dbgClient << "Events in account data: " << std::endl;
                             auto events = accountData.value().events;
                             for (auto e : events) {
-                                dbgClient << e.get().dump() << std::endl;
+                                eventEmitter.emit(ReceivingAccountDataEvent{e});
                             }
                         }
+                        auto presence = SyncJob::presence(r);
+                        if (presence) {
+                            for (auto e : presence.value().events) {
+                                eventEmitter.emit(ReceivingPresenceEvent{e});
+                            }
+                        }
+                        auto rooms = SyncJob::rooms(r);
+                        if (rooms) {
+                            for (auto [id, room] : rooms.value().join) {
+                                for (auto e : room.timeline.events) {
+                                    eventEmitter.emit(ReceivingRoomTimelineEvent{e, id});
+                                }
+                            }
+                        }
+
+                        // kick off next sync
+                        auto &jobHandler = lager::get<JobInterface &>(ctx);
+                        jobHandler.setTimeout(
+                            [=]() {
+                                ctx.dispatch(Client::SyncAction{});
+                            }, syncInterval);
                     });
             };
     }
