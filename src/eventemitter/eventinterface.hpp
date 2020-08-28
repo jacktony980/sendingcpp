@@ -2,6 +2,7 @@
 #pragma once
 #include <variant>
 #include "types.hpp"
+#include "event.hpp"
 
 namespace Kazv
 {
@@ -11,20 +12,20 @@ namespace Kazv
         return true;
     }
 
-    struct ReceivingPresenceEvent { JsonWrap event; };
+    struct ReceivingPresenceEvent { Event event; };
     inline bool operator==(ReceivingPresenceEvent a, ReceivingPresenceEvent b)
     {
         return a.event == b.event;
     }
 
-    struct ReceivingAccountDataEvent { JsonWrap event; };
+    struct ReceivingAccountDataEvent { Event event; };
     inline bool operator==(ReceivingAccountDataEvent a, ReceivingAccountDataEvent b)
     {
         return a.event == b.event;
     }
 
     struct ReceivingRoomTimelineEvent {
-        JsonWrap event;
+        Event event;
         std::string roomId;
     };
 

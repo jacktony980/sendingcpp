@@ -72,8 +72,8 @@ analyzer:
 #        { type: StateEvent, imports: "events/eventloader.h" }
 #    - /room_event.yaml$/:
 #        { type: RoomEvent, imports: "events/eventloader.h" }
-#    - /event.yaml$/:
-#        { type: Event, imports: "events/eventloader.h" }
+    - /event.yaml$/:
+        { type: Event, imports: "event.hpp" }
 #    - /m\.room\.member$/: void # Skip resolving; see EventsArray<> below
     - '/^(\./)?definitions/request_email_validation.yaml$/':
         title: EmailValidationData

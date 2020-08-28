@@ -4,37 +4,23 @@
 #include <variant>
 #include <nlohmann/json.hpp>
 #include <immer/array.hpp>
+#include <immer/flex_vector.hpp>
 #include <immer/map.hpp>
 #include <boost/hana/type.hpp>
 #include <lager/util.hpp>
 
+#include "jsonwrap.hpp"
+#include "event.hpp"
 #include "descendent.hpp"
 
 namespace Kazv
 {
-    using json = nlohmann::json;
-
     using Bytes = std::string;
 
     enum Status : bool
     {
         FAIL,
         SUCC,
-    };
-
-    class JsonWrap
-    {
-        // Cannot use box here, because it causes the resulting json
-        // to be wrapped into an array.
-        // https://github.com/arximboldi/immer/issues/155
-        immer::array<json> m_d;
-    public:
-        JsonWrap() = default;
-        JsonWrap(json&& j) : m_d(1, std::move(j)) {}
-        JsonWrap(const json& j) : m_d(1, j) {}
-
-        const json &get() const { return m_d.at(0); }
-        operator json() const { return m_d.at(0); }
     };
 
     namespace detail
@@ -96,7 +82,8 @@ namespace Kazv
             j[k] = v;
         }
     };
-    using EventList = immer::array<JsonWrap>;
+
+    using EventList = immer::flex_vector<Event>;
 
     using namespace std::string_literals;
 
@@ -128,7 +115,7 @@ namespace nlohmann {
     struct adl_serializer<immer::array<T>> {
         static void to_json(json& j, immer::array<T> arr) {
             for (auto i : arr) {
-                j.push_back(i);
+                j.push_back(json(i));
             }
         }
 
@@ -143,14 +130,22 @@ namespace nlohmann {
         }
     };
 
-    template <>
-    struct adl_serializer<Kazv::JsonWrap> {
-        static void to_json(json& j, Kazv::JsonWrap w) {
-            j = w.get();
+    template <class T>
+    struct adl_serializer<immer::flex_vector<T>> {
+        static void to_json(json& j, immer::flex_vector<T> arr) {
+            for (auto i : arr) {
+                j.push_back(json(i));
+            }
         }
 
-        static void from_json(const json& j, Kazv::JsonWrap &w) {
-            w = Kazv::JsonWrap(j);
+        static void from_json(const json& j, immer::flex_vector<T> &a) {
+            immer::flex_vector<T> ret;
+            if (j.is_array()) {
+                for (const auto &i : j) {
+                    ret = std::move(ret).push_back(i.get<T>());
+                }
+            }
+            a = ret;
         }
     };
 
@@ -174,14 +169,5 @@ namespace nlohmann {
             }
         }
     };
-
-}
-
-namespace Kazv
-{
-    inline bool operator==(JsonWrap a, JsonWrap b)
-    {
-        return a.get() == b.get();
-    }
 
 }

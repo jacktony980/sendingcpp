@@ -64,41 +64,59 @@ namespace Kazv
 
     auto Client::update(Client m, Action a) -> Result
     {
-        return
-            std::visit(lager::visitor{
-                [=](Error::Action a) mutable -> Result {
-                    m.error = Error::update(m.error, a);
-                    return {std::move(m), lager::noop};
-                },
-                [=](LoginAction a) mutable -> Result {
-                    return {std::move(m), loginEffect(std::move(a))};
-                },
-                [=](LogoutAction a) mutable -> Result {
-                    return {std::move(m), logoutEffect(std::move(a))};
-                },
-                [=](SyncAction a) -> Result {
-                    return {m, syncEffect(m, a)};
-                },
-                [=](LoadUserInfoAction a) mutable -> Result {
-                    dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
+        return lager::match(std::move(a))(
+            [=](Error::Action a) mutable -> Result {
+                m.error = Error::update(m.error, a);
+                return {std::move(m), lager::noop};
+            },
+            [=](RoomList::Action a) mutable -> Result {
+                m.roomList = RoomList::update(std::move(m.roomList), a);
+                return {std::move(m), lager::noop};
+            },
+            [=](LoginAction a) mutable -> Result {
+                return {std::move(m), loginEffect(std::move(a))};
+            },
+            [=](LogoutAction a) mutable -> Result {
+                return {std::move(m), logoutEffect(std::move(a))};
+            },
+            [=](SyncAction a) -> Result {
+                return {m, syncEffect(m, a)};
+            },
+            [=](LoadUserInfoAction a) mutable -> Result {
+                dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
 
-                    m.serverUrl = a.serverUrl;
-                    m.userId = a.userId;
-                    m.token = a.token;
-                    m.deviceId = a.deviceId;
-                    m.loggedIn = a.loggedIn;
+                m.serverUrl = a.serverUrl;
+                m.userId = a.userId;
+                m.token = a.token;
+                m.deviceId = a.deviceId;
+                m.loggedIn = a.loggedIn;
 
-                    return { std::move(m),
-                             [](auto &&ctx) {
-                                 ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
-                             }
-                    };
-                },
-                [=](LoadSyncTokenAction a) mutable -> Result {
-                    m.syncToken = a.syncToken;
+                return { std::move(m),
+                         [](auto &&ctx) {
+                             ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
+                         }
+                };
+            },
+            [=](LoadSyncTokenAction a) mutable -> Result {
+                m.syncToken = a.syncToken;
 
-                    return { std::move(m), lager::noop };
-                },
-            }, std::move(a));
+                return { std::move(m), lager::noop };
+            },
+            [=](LoadRoomsAction a) mutable -> Result {
+                RoomList l = m.roomList;
+                for (auto &&[id, room]: a.rooms.join) {
+                    l = RoomList::update(
+                        std::move(l),
+                        RoomList::UpdateRoomAction{id, Room::AppendTimelineAction{room.timeline.events}});
+                    if (room.state) {
+                        l = RoomList::update(
+                            std::move(l),
+                            RoomList::UpdateRoomAction{id, Room::AddStateEventsAction{room.state.value().events}});
+                    }
+                }
+                m.roomList = std::move(l);
+                return {m, lager::noop};
+            });
+
     }
 }

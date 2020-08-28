@@ -7,9 +7,11 @@ set(libkazv_SRCS
   #  api/wellknown.cpp
   ${api_SRCS}
   debug.cpp
+  event.cpp
   job/basejob.cpp
   client/client.cpp
   client/sync.cpp
+  client/data/room.cpp
   )
 
 add_library(kazv ${libkazv_SRCS})

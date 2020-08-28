@@ -41,6 +41,12 @@ namespace Kazv
                         // replace sync token
                         ctx.dispatch(Client::LoadSyncTokenAction{SyncJob::nextBatch(r)});
 
+                        // load rooms
+                        auto rooms = SyncJob::rooms(r);
+                        if (rooms) {
+                            ctx.dispatch(Client::LoadRoomsAction{rooms.value()});
+                        }
+
                         // emit events
                         auto &eventEmitter = lager::get<EventInterface &>(ctx);
                         auto accountData = SyncJob::accountData(r);
@@ -56,7 +62,7 @@ namespace Kazv
                                 eventEmitter.emit(ReceivingPresenceEvent{e});
                             }
                         }
-                        auto rooms = SyncJob::rooms(r);
+
                         if (rooms) {
                             for (auto [id, room] : rooms.value().join) {
                                 for (auto e : room.timeline.events) {

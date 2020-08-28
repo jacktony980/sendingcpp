@@ -8,9 +8,11 @@
 
 #include <lager/context.hpp>
 
+#include "csapi/sync.hpp"
 #include "job/jobinterface.hpp"
 #include "eventemitter/eventinterface.hpp"
 #include "error.hpp"
+#include "data/room.hpp"
 
 namespace Kazv
 {
@@ -24,6 +26,8 @@ namespace Kazv
         Error error;
 
         std::string syncToken;
+
+        RoomList roomList;
 
         struct LoginAction {
             std::string serverUrl;
@@ -48,12 +52,18 @@ namespace Kazv
             std::string syncToken;
         };
 
+        struct LoadRoomsAction {
+            SyncJob::Rooms rooms;
+        };
+
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
                                     SyncAction,
                                     Error::Action,
-                                    LoadSyncTokenAction
+                                    LoadSyncTokenAction,
+                                    RoomList::Action,
+                                    LoadRoomsAction
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
         using Result = std::pair<Client, Effect>;

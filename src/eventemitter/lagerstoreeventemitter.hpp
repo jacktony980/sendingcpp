@@ -10,7 +10,7 @@ namespace Kazv
     {
         struct Model { KazvEvent curEvent; };
         struct Action { KazvEvent nextEvent; };
-        static Model update(Model m, Action a) {
+        static Model update(Model, Action a) {
             return Model{a.nextEvent};
         }
     public:

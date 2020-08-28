@@ -41,9 +41,25 @@ int main()
     watchable.after<Kazv::ReceivingRoomTimelineEvent>(
         [](auto &&e) {
             auto [event, roomId] = e;
-            std::cout << "receiving event in " << roomId << ": " << event.get().dump() << std::endl;
+            std::cout << "receiving event " << event.id()
+                      << " in " << roomId
+                      << " from " << event.sender()
+                      << ": " << event.content().get().dump() << std::endl;
         });
 
+    lager::reader<Kazv::RoomList> roomList = store
+        .zoom(lager::lenses::attr(&Kazv::Client::roomList));
+
+    lager::watch(
+        roomList,
+        [](Kazv::RoomList l) {
+            std::cout << "Room list updated." << std::endl;
+            std::cout << "Rooms: ";
+            for (auto [id, room]: l.rooms) {
+                std::cout << id << " ";
+            }
+            std::cout << std::endl;
+        });
 
     ioContext.run();
 }
