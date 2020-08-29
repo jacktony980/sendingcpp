@@ -53,3 +53,9 @@ in libkazv compared to libQuotient's are:
 - Get rid of the `avoidCopy` and `moveOnly` markers
 - Use data types from `immer` and `std` instead of Qt
 - Use `nlohmann::json` instead of Qt's JSON library
+
+libkazv also uses the libraries [cpr](https://github.com/whoshuu/cpr)
+(in `kazvjob` target only),
+[lager](https://github.com/arximboldi/lager),
+[immer](https://github.com/arximboldi/immer) and
+[zug](https://github.com/arximboldi/zug) without further modification.
