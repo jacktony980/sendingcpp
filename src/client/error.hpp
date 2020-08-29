@@ -1,4 +1,10 @@
 
+#pragma once
+
+#ifndef NDEBUG
+#include <lager/debug/cereal/struct.hpp>
+#endif
+
 #include "types.hpp"
 #include <variant>
 
@@ -28,4 +34,9 @@ namespace Kazv
             return !std::holds_alternative<JsonError>(error);
         }
     };
-};
+#ifndef NDEBUG
+    LAGER_CEREAL_STRUCT(Error::NoError);
+    LAGER_CEREAL_STRUCT(Error::SetErrorAction);
+    LAGER_CEREAL_STRUCT(Error, (error));
+#endif
+}

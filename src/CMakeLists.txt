@@ -21,7 +21,8 @@ target_link_libraries_system(kazv
   PUBLIC nlohmann_json::nlohmann_json
   immer
   zug
-  lager)
+  lager
+  cereal)
 target_include_directories(kazv
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

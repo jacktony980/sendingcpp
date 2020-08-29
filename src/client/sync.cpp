@@ -44,7 +44,7 @@ namespace Kazv
                         // load rooms
                         auto rooms = SyncJob::rooms(r);
                         if (rooms) {
-                            ctx.dispatch(Client::LoadRoomsAction{rooms.value()});
+                            ctx.dispatch(RoomList::LoadRoomsFromSyncAction{rooms.value()});
                         }
 
                         // emit events

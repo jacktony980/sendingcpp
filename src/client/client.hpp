@@ -8,6 +8,10 @@
 
 #include <lager/context.hpp>
 
+#ifndef NDEBUG
+#include <lager/debug/cereal/struct.hpp>
+#endif
+
 #include "csapi/sync.hpp"
 #include "job/jobinterface.hpp"
 #include "eventemitter/eventinterface.hpp"
@@ -52,18 +56,13 @@ namespace Kazv
             std::string syncToken;
         };
 
-        struct LoadRoomsAction {
-            SyncJob::Rooms rooms;
-        };
-
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
                                     SyncAction,
                                     Error::Action,
                                     LoadSyncTokenAction,
-                                    RoomList::Action,
-                                    LoadRoomsAction
+                                    RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
         using Result = std::pair<Client, Effect>;
@@ -71,4 +70,13 @@ namespace Kazv
     };
 
     Client::Effect syncEffect(Client m, Client::SyncAction a);
+
+#ifndef NDEBUG
+    LAGER_CEREAL_STRUCT(Client::LoginAction);
+    LAGER_CEREAL_STRUCT(Client::LoadUserInfoAction);
+    LAGER_CEREAL_STRUCT(Client::LogoutAction);
+    LAGER_CEREAL_STRUCT(Client::SyncAction);
+    LAGER_CEREAL_STRUCT(Client::LoadSyncTokenAction);
+    LAGER_CEREAL_STRUCT(Client, (serverUrl)(userId)(token)(deviceId)(loggedIn)(error)(syncToken)(roomList));
+#endif
 }

@@ -71,6 +71,11 @@ set(lager_EMBED_RESOURCES_PATH OFF)
 FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG a112eed88789bb2986b7924b5b1e71c8a410f81a)
 FetchContent_MakeAvailable(lager)
 
+set(JUST_INSTALL_CEREAL ON)
+FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
+FetchContent_MakeAvailable(cereal)
+
+find_package(LibHttpServer REQUIRED)
 
 if(libkazv_OUTPUT_LEVEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")

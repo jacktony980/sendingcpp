@@ -101,21 +101,6 @@ namespace Kazv
                 m.syncToken = a.syncToken;
 
                 return { std::move(m), lager::noop };
-            },
-            [=](LoadRoomsAction a) mutable -> Result {
-                RoomList l = m.roomList;
-                for (auto &&[id, room]: a.rooms.join) {
-                    l = RoomList::update(
-                        std::move(l),
-                        RoomList::UpdateRoomAction{id, Room::AppendTimelineAction{room.timeline.events}});
-                    if (room.state) {
-                        l = RoomList::update(
-                            std::move(l),
-                            RoomList::UpdateRoomAction{id, Room::AddStateEventsAction{room.state.value().events}});
-                    }
-                }
-                m.roomList = std::move(l);
-                return {m, lager::noop};
             });
 
     }

@@ -1,6 +1,10 @@
 
 #pragma once
 
+#ifndef NDEBUG
+#include <lager/debug/cereal/struct.hpp>
+#endif
+
 #include "jsonwrap.hpp"
 #include <string>
 
@@ -48,6 +52,18 @@ namespace Kazv
         /// internal. only to be called from inside the client.
         Event setDecryptedJson(JsonWrap decryptedJson, DecryptionStatus decrypted) const;
 
+#ifndef NDEBUG
+        template <class Archive>
+        void save( Archive & ar ) const {
+            ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
+        }
+
+        template <class Archive>
+        void load( Archive & ar ) {
+            ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
+        }
+#endif
+
     private:
         JsonWrap m_json;
         JsonWrap m_decryptedJson;
@@ -56,6 +72,7 @@ namespace Kazv
     };
 
     bool operator==(Event a, Event b);
+
 }
 
 namespace nlohmann
