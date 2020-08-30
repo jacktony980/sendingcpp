@@ -60,6 +60,12 @@ namespace Kazv
             : json::object();
     }
 
+    std::string Event::stateKey() const {
+        return raw().get().contains("state_key")
+            ? raw().get().at("state_key")
+            : "";
+    }
+
     /// returns the decrypted json
     JsonWrap Event::raw() const {
         return m_encrypted ? decryptedJson() : m_json;
@@ -91,7 +97,12 @@ namespace Kazv
 
     bool operator==(Event a, Event b)
     {
-        return a.id() == b.id();
+        if (a.id().size() && b.id().size()) {
+            return a.id() == b.id();
+        } else if (a.id().size() || b.id().size()) {
+            return false;
+        }
+        return a.originalJson() == b.originalJson();
     }
 
 }

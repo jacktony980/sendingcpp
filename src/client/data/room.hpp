@@ -1,11 +1,9 @@
 
 #pragma once
 
-#ifndef NDEBUG
 #include <lager/debug/cereal/struct.hpp>
 #include <lager/debug/cereal/immer_flex_vector.hpp>
 #include "cereal_map.hpp"
-#endif
 
 #include <string>
 #include <variant>
@@ -14,7 +12,7 @@
 
 #include "csapi/sync.hpp"
 #include "event.hpp"
-
+#include "client/util.hpp"
 
 namespace Kazv
 {
@@ -26,9 +24,9 @@ namespace Kazv
         };
 
         std::string roomId;
-        immer::flex_vector<Event> stateEvents;
+        immer::map<KeyOfState, Event> stateEvents;
         immer::flex_vector<Event> timeline;
-        immer::flex_vector<Event> accountData;
+        immer::map<std::string, Event> accountData;
         Membership membership;
 
         struct AddStateEventsAction
@@ -77,14 +75,8 @@ namespace Kazv
             Room::Action roomAction;
         };
 
-        struct LoadRoomsFromSyncAction
-        {
-            SyncJob::Rooms rooms;
-        };
-
         using Action = std::variant<
-            UpdateRoomAction,
-            LoadRoomsFromSyncAction
+            UpdateRoomAction
             >;
         static RoomList update(RoomList l, Action a);
     };
@@ -94,9 +86,21 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Room::PrependTimelineAction);
     LAGER_CEREAL_STRUCT(Room::AddAccountDataAction);
     LAGER_CEREAL_STRUCT(Room::ChangeMembershipAction);
-    LAGER_CEREAL_STRUCT(Room, (roomId)(stateEvents)(timeline)(accountData)(membership));
     LAGER_CEREAL_STRUCT(RoomList::UpdateRoomAction);
-    LAGER_CEREAL_STRUCT(RoomList::LoadRoomsFromSyncAction);
-    LAGER_CEREAL_STRUCT(RoomList, (rooms));
 #endif
+
+    template<class Archive>
+    void serialize(Archive &ar, Room &r, std::uint32_t const /*version*/)
+    {
+        ar(r.roomId, r.stateEvents, r.timeline, r.accountData, r.membership);
+    }
+
+    template<class Archive>
+    void serialize(Archive &ar, RoomList &l, std::uint32_t const /*version*/)
+    {
+        ar(l.rooms);
+    }
 }
+
+CEREAL_CLASS_VERSION(Kazv::Room, 0);
+CEREAL_CLASS_VERSION(Kazv::RoomList, 0);

@@ -75,7 +75,10 @@ set(JUST_INSTALL_CEREAL ON)
 FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
 FetchContent_MakeAvailable(cereal)
 
-find_package(LibHttpServer REQUIRED)
+if(libkazv_BUILD_EXAMPLES)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(LIBHTTPSERVER REQUIRED libhttpserver)
+endif()
 
 if(libkazv_OUTPUT_LEVEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")

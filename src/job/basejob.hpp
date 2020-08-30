@@ -59,7 +59,7 @@ namespace Kazv
         };
 
         static constexpr bool success(const Response &res) {
-            return res.statusCode < 300;
+            return res.statusCode < 400;
         }
 
         enum ReturnType {

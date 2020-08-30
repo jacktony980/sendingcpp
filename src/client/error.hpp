@@ -35,8 +35,14 @@ namespace Kazv
         }
     };
 #ifndef NDEBUG
-    LAGER_CEREAL_STRUCT(Error::NoError);
     LAGER_CEREAL_STRUCT(Error::SetErrorAction);
-    LAGER_CEREAL_STRUCT(Error, (error));
 #endif
+    LAGER_CEREAL_STRUCT(Error::NoError);
+    template<class Archive>
+    void serialize(Archive &ar, Error &m, std::uint32_t const /*version*/)
+    {
+        ar(m.error);
+    }
 }
+
+CEREAL_CLASS_VERSION(Kazv::Error, 0);

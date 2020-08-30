@@ -1,10 +1,6 @@
 
 #pragma once
 
-#ifndef NDEBUG
-#include <lager/debug/cereal/struct.hpp>
-#endif
-
 #include "jsonwrap.hpp"
 #include <string>
 
@@ -35,6 +31,8 @@ namespace Kazv
 
         std::string type() const;
 
+        std::string stateKey() const;
+
         JsonWrap content() const;
 
         /// returns the decrypted json
@@ -52,17 +50,15 @@ namespace Kazv
         /// internal. only to be called from inside the client.
         Event setDecryptedJson(JsonWrap decryptedJson, DecryptionStatus decrypted) const;
 
-#ifndef NDEBUG
         template <class Archive>
-        void save( Archive & ar ) const {
+        void save(Archive & ar, std::uint32_t const /*version*/ ) const {
             ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
         }
 
         template <class Archive>
-        void load( Archive & ar ) {
+        void load( Archive & ar, std::uint32_t const /*version*/ ) {
             ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
         }
-#endif
 
     private:
         JsonWrap m_json;
@@ -74,6 +70,8 @@ namespace Kazv
     bool operator==(Event a, Event b);
 
 }
+
+CEREAL_CLASS_VERSION(Kazv::Event, 0);
 
 namespace nlohmann
 {

@@ -10,7 +10,7 @@ namespace Kazv
     {
         return lager::match(std::move(a))(
             [=](AddStateEventsAction a) mutable {
-                r.stateEvents = r.stateEvents + a.stateEvents;
+                r.stateEvents = merge(std::move(r.stateEvents), a.stateEvents, keyOfState);
                 return r;
             },
             [=](AppendTimelineAction a) mutable {
@@ -22,7 +22,7 @@ namespace Kazv
                 return r;
             },
             [=](AddAccountDataAction a) mutable {
-                r.accountData = r.accountData + a.events;
+                r.accountData = merge(std::move(r.accountData), a.events, keyOfAccountData);
                 return r;
             },
             [=](ChangeMembershipAction a) mutable {
@@ -42,45 +42,6 @@ namespace Kazv
                                 oldRoom.roomId = a.roomId; // in case it is a new room
                                 return Room::update(std::move(oldRoom), a.roomAction);
                             });
-                return l;
-            },
-            [=](LoadRoomsFromSyncAction a) mutable {
-                auto updateRoomImpl =
-                    [&l](auto id, auto a) {
-                        l = RoomList::update(
-                            std::move(l),
-                            RoomList::UpdateRoomAction{id, a});
-                    };
-                auto updateSingleRoom =
-                    [updateRoomImpl](auto id, auto room, auto membership) {
-                        updateRoomImpl(id, Room::ChangeMembershipAction{membership});
-                        updateRoomImpl(id, Room::AppendTimelineAction{room.timeline.events});
-                        if (room.state) {
-                            updateRoomImpl(id, Room::AddStateEventsAction{room.state.value().events});
-                        }
-                        if (room.accountData) {
-                            updateRoomImpl(id, Room::AddAccountDataAction{room.accountData.value().events});
-                        }
-                    };
-
-                auto updateJoinedRoom =
-                    [=](auto id, auto room) {
-                        updateSingleRoom(id, room, Room::Membership::Join);
-                    };
-
-                auto updateLeftRoom =
-                    [=](auto id, auto room) {
-                        updateSingleRoom(id, room, Room::Membership::Leave);
-                    };
-
-                for (auto &&[id, room]: a.rooms.join) {
-                    updateJoinedRoom(id, room);
-                }
-
-                for (auto &&[id, room]: a.rooms.leave) {
-                    updateLeftRoom(id, room);
-                }
-
                 return l;
             }
             );

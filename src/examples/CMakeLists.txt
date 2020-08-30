@@ -8,6 +8,6 @@ target_link_libraries(basicexample
   PRIVATE immer
   PRIVATE zug
   PRIVATE lager
-  PRIVATE ${LIBHTTPSERVER_LIBRARIES})
+  PRIVATE ${LIBHTTPSERVER_LINK_LIBRARIES})
 target_include_directories(basicexample
   PRIVATE ${LIBHTTPSERVER_INCLUDE_DIRS})

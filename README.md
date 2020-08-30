@@ -6,6 +6,26 @@ and the value-oriented design it enables.
 
 # Build and Use
 
+## Dependencies
+
+libkazv depends on [lager](https://github.com/arximboldi/lager),
+[immer](https://github.com/arximboldi/immer),
+[zug](https://github.com/arximboldi/zug),
+[boost](https://boost.org),
+[nlohmann_json](https://github.com/nlohmann/json),
+[cereal](https://github.com/USCiLab/cereal).
+
+kazvjob also depends on [cpr](https://github.com/whoshuu/cpr).
+
+Tests also depend on [Catch2](https://github.com/catchorg/Catch2).
+
+Examples also depend on [libhttpserver](https://github.com/etr/libhttpserver).
+
+All the dependencies mentioned, except for boost and libhttpserver,
+are automatically fetched by cmake `FetchContent`.
+
+## Process
+
 You can build libkazv through the standard CMake process:
 
 ```
@@ -53,9 +73,3 @@ in libkazv compared to libQuotient's are:
 - Get rid of the `avoidCopy` and `moveOnly` markers
 - Use data types from `immer` and `std` instead of Qt
 - Use `nlohmann::json` instead of Qt's JSON library
-
-libkazv also uses the libraries [cpr](https://github.com/whoshuu/cpr)
-(in `kazvjob` target only),
-[lager](https://github.com/arximboldi/lager),
-[immer](https://github.com/arximboldi/immer) and
-[zug](https://github.com/arximboldi/zug) without further modification.

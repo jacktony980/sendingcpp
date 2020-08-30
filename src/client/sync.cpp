@@ -38,25 +38,32 @@ namespace Kazv
                         }
                         dbgClient << "Sync successful" << std::endl;
 
-                        // replace sync token
-                        ctx.dispatch(Client::LoadSyncTokenAction{SyncJob::nextBatch(r)});
-
-                        // load rooms
                         auto rooms = SyncJob::rooms(r);
-                        if (rooms) {
-                            ctx.dispatch(RoomList::LoadRoomsFromSyncAction{rooms.value()});
-                        }
+                        auto accountData = SyncJob::accountData(r);
+                        auto presence = SyncJob::presence(r);
+                        // load the info that has been sync'd
+
+                        ctx.dispatch(
+                            Client::LoadSyncResultAction{
+                                SyncJob::nextBatch(r),
+                                rooms,
+                                presence,
+                                accountData,
+                                SyncJob::toDevice(r),
+                                SyncJob::deviceLists(r),
+                                SyncJob::deviceOneTimeKeysCount(r),
+                            });
 
                         // emit events
                         auto &eventEmitter = lager::get<EventInterface &>(ctx);
-                        auto accountData = SyncJob::accountData(r);
+
                         if (accountData) {
                             auto events = accountData.value().events;
                             for (auto e : events) {
                                 eventEmitter.emit(ReceivingAccountDataEvent{e});
                             }
                         }
-                        auto presence = SyncJob::presence(r);
+
                         if (presence) {
                             for (auto e : presence.value().events) {
                                 eventEmitter.emit(ReceivingPresenceEvent{e});

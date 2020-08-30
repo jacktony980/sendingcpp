@@ -1,9 +1,7 @@
 
 #pragma once
 
-#ifndef NDEBUG
 #include <lager/debug/cereal/struct.hpp>
-#endif
 
 #include <nlohmann/json.hpp>
 #include <immer/array.hpp>
@@ -25,21 +23,23 @@ namespace Kazv
 
         const json &get() const { return m_d.at(0); }
         operator json() const { return m_d.at(0); }
-#ifndef NDEBUG
+
         template <class Archive>
-        void save( Archive & ar ) const {
+        void save(Archive & ar, std::uint32_t const /*version*/) const {
             ar( get().dump() );
         }
 
         template <class Archive>
-        void load( Archive & ar ) {
-            json j;
+        void load(Archive & ar, std::uint32_t const /*version*/) {
+            std::string j;
             ar( j );
-            m_d = immer::array<json>(1, std::move(j));
+            m_d = immer::array<json>(1, json::parse(std::move(j)));
         }
-#endif
+
     };
 }
+
+CEREAL_CLASS_VERSION(Kazv::JsonWrap, 0);
 
 namespace nlohmann
 {

@@ -32,6 +32,8 @@ namespace Kazv
         std::string syncToken;
 
         RoomList roomList;
+        immer::map<std::string /* sender */, Event> presence;
+        immer::map<std::string /* type */, Event> accountData;
 
         struct LoginAction {
             std::string serverUrl;
@@ -52,8 +54,15 @@ namespace Kazv
 
         struct SyncAction {};
 
-        struct LoadSyncTokenAction {
+        struct LoadSyncResultAction
+        {
             std::string syncToken;
+            std::optional<SyncJob::Rooms> rooms;
+            std::optional<EventBatch> presence;
+            std::optional<EventBatch> accountData;
+            JsonWrap toDevice;
+            JsonWrap deviceLists;
+            immer::map<std::string, int> deviceOneTimeKeysCount;
         };
 
         using Action = std::variant<LoginAction,
@@ -61,7 +70,7 @@ namespace Kazv
                                     LoadUserInfoAction,
                                     SyncAction,
                                     Error::Action,
-                                    LoadSyncTokenAction,
+                                    LoadSyncResultAction,
                                     RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
@@ -76,7 +85,18 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Client::LoadUserInfoAction);
     LAGER_CEREAL_STRUCT(Client::LogoutAction);
     LAGER_CEREAL_STRUCT(Client::SyncAction);
-    LAGER_CEREAL_STRUCT(Client::LoadSyncTokenAction);
-    LAGER_CEREAL_STRUCT(Client, (serverUrl)(userId)(token)(deviceId)(loggedIn)(error)(syncToken)(roomList));
+    LAGER_CEREAL_STRUCT(Client::LoadSyncResultAction);
 #endif
+
+    template<class Archive>
+    void serialize(Archive &ar, Client &m, std::uint32_t const /*version*/)
+    {
+        ar(m.serverUrl, m.userId, m.token, m.deviceId, m.loggedIn,
+           m.error,
+           m.syncToken,
+           m.roomList,
+           m.presence,
+           m.accountData);
+    }
 }
+CEREAL_CLASS_VERSION(Kazv::Client, 0);
