@@ -38,10 +38,10 @@ install(
 set(libkazvjob_SRCS
   job/cprjobhandler.cpp
   )
-add_library(kazvjob ${libkazvjob_SRCS})
-add_library(libkazv::kazvjob ALIAS kazvjob)
 
 if(libkazv_BUILD_KAZVJOB)
+  add_library(kazvjob ${libkazvjob_SRCS})
+  add_library(libkazv::kazvjob ALIAS kazvjob)
   target_link_libraries(kazvjob PUBLIC Threads::Threads)
   target_link_libraries_system(kazvjob PUBLIC
     cpr::cpr
@@ -49,6 +49,7 @@ if(libkazv_BUILD_KAZVJOB)
     immer
     zug
     lager
+    cereal
     )
   target_include_directories(kazvjob
     INTERFACE
