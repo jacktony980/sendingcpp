@@ -23,6 +23,12 @@ class GetEventsJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Listen on the event stream.
@@ -139,6 +145,12 @@ public:
           EventList accountData;
         
         };
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -265,6 +277,12 @@ static EventList accountData(Response r);
  */
 class GetOneEventJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

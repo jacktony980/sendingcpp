@@ -41,6 +41,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Snapshot the current state of a room and its most recent messages.

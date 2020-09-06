@@ -16,6 +16,12 @@ class SetRoomAliasJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Create a new mapping from room alias to room ID.
@@ -61,6 +67,12 @@ public:
  */
 class GetRoomIdByAliasJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -125,6 +137,12 @@ class DeleteRoomAliasJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Remove a mapping of room alias to room ID.
@@ -178,6 +196,12 @@ public:
  */
 class GetLocalAliasesJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

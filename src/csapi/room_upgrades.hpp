@@ -17,6 +17,12 @@ class UpgradeRoomJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Upgrades a room to a new room version.

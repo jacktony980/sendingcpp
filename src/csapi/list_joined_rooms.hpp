@@ -17,6 +17,12 @@ class GetJoinedRoomsJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Lists the user's current rooms.

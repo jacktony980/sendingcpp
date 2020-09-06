@@ -22,6 +22,12 @@ class GetPushRulesJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Retrieve all push rulesets.
@@ -64,6 +70,12 @@ static PushRuleset global(Response r);
  */
 class GetPushRuleJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -126,6 +138,12 @@ class DeletePushRuleJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Delete a push rule.
@@ -174,6 +192,12 @@ public:
  */
 class SetPushRuleJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -243,6 +267,12 @@ class IsPushRuleEnabledJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get whether a push rule is enabled
@@ -298,6 +328,12 @@ class SetPushRuleEnabledJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Enable or disable a push rule.
@@ -345,6 +381,12 @@ public:
  */
 class GetPushRuleActionsJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -401,6 +443,12 @@ static immer::array<Variant> actions(Response r);
  */
 class SetPushRuleActionsJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

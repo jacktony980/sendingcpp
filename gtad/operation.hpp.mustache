@@ -34,6 +34,12 @@ public:
 
 {{/models}}
 
+          static constexpr auto needsAuth() {
+          return {{^skipAuth}}true{{/skipAuth}}
+            {{#skipAuth}}false{{/skipAuth}};
+              }
+
+
 // Construction/destruction
 
 {{#allParams?}}

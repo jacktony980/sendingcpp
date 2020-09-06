@@ -239,6 +239,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Synchronise the client's state and receive new messages.

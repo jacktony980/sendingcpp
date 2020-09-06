@@ -17,6 +17,12 @@ class UploadKeysJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Upload end-to-end encryption keys.
@@ -95,6 +101,12 @@ public:
           std::optional<UnsignedDeviceInfo> unsignedData;
         
         };
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -195,6 +207,12 @@ class ClaimKeysJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Claim one-time encryption keys.
@@ -268,6 +286,12 @@ static immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys(Res
  */
 class GetKeysChangesJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

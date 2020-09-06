@@ -18,6 +18,12 @@ class SendToDeviceJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Send an event to a given set of devices.

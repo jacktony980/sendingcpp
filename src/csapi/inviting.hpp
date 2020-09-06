@@ -34,6 +34,12 @@ class InviteUserJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Invite a user to participate in a particular room.

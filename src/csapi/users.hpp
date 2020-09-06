@@ -48,6 +48,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Searches the user directory.

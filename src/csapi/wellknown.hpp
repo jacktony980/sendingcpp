@@ -24,6 +24,12 @@ class GetWellknownJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
     /// Gets Matrix server discovery information about the domain.

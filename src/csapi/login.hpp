@@ -30,6 +30,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
     /// Get the supported login types to authenticate users
@@ -92,6 +98,12 @@ static immer::array<LoginFlow> flows(Response r);
  */
 class LoginJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction

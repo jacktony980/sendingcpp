@@ -9,23 +9,26 @@ namespace Kazv
     Room Room::update(Room r, Action a)
     {
         return lager::match(std::move(a))(
-            [=](AddStateEventsAction a) mutable {
+            [&](AddStateEventsAction a) {
                 r.stateEvents = merge(std::move(r.stateEvents), a.stateEvents, keyOfState);
                 return r;
             },
-            [=](AppendTimelineAction a) mutable {
+            [&](AppendTimelineAction a) {
                 r.timeline = r.timeline + a.events;
                 return r;
             },
-            [=](PrependTimelineAction a) mutable {
+            [&](PrependTimelineAction a) {
                 r.timeline = a.events + r.timeline;
+                r.paginateBackToken = a.paginateBackToken;
+                // if there are no more events we should not allow further paginating
+                r.canPaginateBack = a.events.size() != 0;
                 return r;
             },
-            [=](AddAccountDataAction a) mutable {
+            [&](AddAccountDataAction a) {
                 r.accountData = merge(std::move(r.accountData), a.events, keyOfAccountData);
                 return r;
             },
-            [=](ChangeMembershipAction a) mutable {
+            [&](ChangeMembershipAction a) {
                 r.membership = a.membership;
                 return r;
             }

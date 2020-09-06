@@ -21,6 +21,12 @@ class BanJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Ban a user in the room.
@@ -68,6 +74,12 @@ public:
  */
 class UnbanJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

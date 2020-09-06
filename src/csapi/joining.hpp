@@ -26,6 +26,12 @@ class JoinRoomByIdJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Start the requesting user participating in a particular room.
@@ -85,6 +91,12 @@ static std::string roomId(Response r);
  */
 class JoinRoomJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

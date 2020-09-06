@@ -19,6 +19,12 @@ class SetAccountDataJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Set some account_data for the user.
@@ -68,6 +74,12 @@ class GetAccountDataJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get some account_data for the user.
@@ -113,6 +125,12 @@ public:
  */
 class SetAccountDataPerRoomJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -165,6 +183,12 @@ public:
  */
 class GetAccountDataPerRoomJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

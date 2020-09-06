@@ -21,6 +21,12 @@ class GetProtocolsJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Retrieve metadata about all protocols that a homeserver supports.
@@ -68,6 +74,12 @@ public:
  */
 class GetProtocolMetadataJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -130,6 +142,12 @@ class QueryLocationByProtocolJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Retrieve Matrix-side portals rooms leading to a third party location.
@@ -186,6 +204,12 @@ public:
  */
 class QueryUserByProtocolJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -245,6 +269,12 @@ class QueryLocationByAliasJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Reverse-lookup third party locations given a Matrix room alias.
@@ -296,6 +326,12 @@ public:
  */
 class QueryUserByIDJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

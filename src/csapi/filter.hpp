@@ -19,6 +19,12 @@ class DefineFilterJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Upload a new filter.
@@ -70,6 +76,12 @@ static std::string filterId(Response r);
  */
 class GetFilterJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

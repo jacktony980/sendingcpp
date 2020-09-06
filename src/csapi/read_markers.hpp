@@ -18,6 +18,12 @@ class SetReadMarkerJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Set the position of the read marker for a room.

@@ -16,6 +16,12 @@ class UploadContentJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Upload some content to the content repository.
@@ -67,6 +73,12 @@ static std::string contentUri(Response r);
  */
 class GetContentJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -143,6 +155,12 @@ static std::string contentDisposition(Response r)
  */
 class GetContentOverrideNameJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -222,6 +240,12 @@ static std::string contentDisposition(Response r)
  */
 class GetContentThumbnailJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -310,6 +334,12 @@ class GetUrlPreviewJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get information about a URL for a client
@@ -374,6 +404,12 @@ static std::string ogImage(Response r);
  */
 class GetConfigJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

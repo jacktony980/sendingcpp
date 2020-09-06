@@ -25,6 +25,12 @@ class UpdateAppserviceRoomDirectoryVsibilityJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Updates a room's visibility in the application service's room directory.

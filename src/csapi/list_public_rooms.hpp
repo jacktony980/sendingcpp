@@ -17,6 +17,12 @@ class GetRoomVisibilityOnDirectoryJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Gets the visibility of a room in the directory
@@ -70,6 +76,12 @@ class SetRoomVisibilityOnDirectoryJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Sets the visibility of a room in the room directory
@@ -115,6 +127,12 @@ public:
  */
 class GetPublicRoomsJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -203,6 +221,12 @@ public:
           std::string genericSearchTerm;
         
         };
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

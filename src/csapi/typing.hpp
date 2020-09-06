@@ -20,6 +20,12 @@ class SetTypingJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Informs the server that the user has started or stopped typing.

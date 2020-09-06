@@ -58,6 +58,12 @@ class RegisterJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Register for an account on this homeserver.
@@ -161,6 +167,12 @@ class RequestTokenToRegisterEmailJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Begins the validation process for an email to be used during registration.
@@ -220,6 +232,12 @@ public:
  */
 class RequestTokenToRegisterMSISDNJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -292,6 +310,12 @@ class ChangePasswordJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Changes a user's password.
@@ -358,6 +382,12 @@ public:
  */
 class RequestTokenToResetPasswordEmailJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -448,6 +478,12 @@ class RequestTokenToResetPasswordMSISDNJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Requests a validation token be sent to the given phone number for the purpose of resetting a user's password.
@@ -531,6 +567,12 @@ class DeactivateAccountJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Deactivate a user's account.
@@ -603,6 +645,12 @@ static std::string idServerUnbindResult(Response r);
  */
 class CheckUsernameAvailabilityJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction

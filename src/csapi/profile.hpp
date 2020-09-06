@@ -18,6 +18,12 @@ class SetDisplayNameJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Set the user's display name.
@@ -61,6 +67,12 @@ public:
  */
 class GetDisplayNameJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -112,6 +124,12 @@ class SetAvatarUrlJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Set the user's avatar URL.
@@ -155,6 +173,12 @@ public:
  */
 class GetAvatarUrlJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction
@@ -206,6 +230,12 @@ static std::string avatarUrl(Response r);
  */
 class GetUserProfileJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction

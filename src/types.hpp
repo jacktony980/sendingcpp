@@ -89,6 +89,19 @@ namespace Kazv
 
     struct Null {};
     using Variant = std::variant<std::string, JsonWrap, Null>;
+
+    namespace detail
+    {
+        struct DefaultValT
+        {
+            template<class T>
+            constexpr operator T() const {
+                return T();
+            }
+        };
+    }
+
+    inline detail::DefaultValT defVal;
 }
 
 namespace nlohmann {

@@ -28,6 +28,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief List the tags for a room.
@@ -91,6 +97,12 @@ class SetRoomTagJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Add a tag to a room.
@@ -143,6 +155,12 @@ public:
  */
 class DeleteRoomTagJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

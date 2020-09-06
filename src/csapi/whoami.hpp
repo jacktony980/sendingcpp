@@ -24,6 +24,12 @@ class GetTokenOwnerJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Gets information about the owner of an access token.

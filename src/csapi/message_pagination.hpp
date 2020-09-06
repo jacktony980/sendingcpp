@@ -21,6 +21,12 @@ class GetRoomEventsJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get a list of events for this room

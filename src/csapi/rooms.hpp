@@ -18,6 +18,12 @@ class GetOneRoomEventJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get a single event by event ID.
@@ -80,6 +86,12 @@ class GetRoomStateWithKeyJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Get the state identified by the type and key.
@@ -125,6 +137,12 @@ public:
  */
 class GetRoomStateJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -178,6 +196,12 @@ public:
  */
 class GetMembersByRoomJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -253,6 +277,12 @@ public:
           std::string avatarUrl;
         
         };
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

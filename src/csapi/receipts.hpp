@@ -18,6 +18,12 @@ class PostReceiptJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Send a receipt for the given event ID.

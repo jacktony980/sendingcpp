@@ -62,6 +62,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Gets information about a particular user.

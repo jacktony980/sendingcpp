@@ -50,6 +50,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Gets information about the server's capabilities.

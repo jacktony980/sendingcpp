@@ -18,6 +18,12 @@ class GetDevicesJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// List registered devices for the current user
@@ -60,6 +66,12 @@ static immer::array<Device> devices(Response r);
  */
 class GetDeviceJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -115,6 +127,12 @@ class UpdateDeviceJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Update a device
@@ -161,6 +179,12 @@ class DeleteDeviceJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Delete a device
@@ -205,6 +229,12 @@ public:
  */
 class DeleteDevicesJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

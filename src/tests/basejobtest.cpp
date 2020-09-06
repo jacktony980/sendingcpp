@@ -18,9 +18,7 @@ TEST_CASE("Base job should fetch correctly", "[basejob]")
     CprJobHandler h(ioContext.get_executor());
     h.fetch(
         job,
-        [](auto futureResponse) {
-            BaseJob::Response r = futureResponse.get();
-
+        [](auto r) {
             if (r.statusCode == 200) {
                 REQUIRE( BaseJob::isBodyJson(r.body) );
 

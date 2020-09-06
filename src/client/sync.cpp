@@ -10,6 +10,14 @@ static const int syncInterval = 2000; // ms
 
 namespace Kazv
 {
+    // Atomicity guaranteed: if the sync action is created
+    // before an action that reasonably changes Client
+    // (e.g. roll back to an earlier state, obtain other
+    // events), but executed
+    // after that action, the sync will still give continuous
+    // data about the events. (Sync will not "skip" events)
+    // This is because this function takes the sync token
+    // from the Client model it is passed.
     Client::Effect syncEffect(Client m, Client::SyncAction)
     {
         return
@@ -22,8 +30,7 @@ namespace Kazv
                 auto &jobHandler = lager::get<JobInterface &>(ctx);
                 jobHandler.fetch(
                     job,
-                    [=](std::shared_future<BaseJob::Response> res) {
-                        auto r = res.get();
+                    [=](BaseJob::Response r) {
                         if (!SyncJob::success(r)) {
                             dbgClient << "Sync failed" << std::endl;
                             dbgClient << r.statusCode << std::endl;

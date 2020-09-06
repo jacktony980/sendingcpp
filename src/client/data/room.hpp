@@ -28,6 +28,9 @@ namespace Kazv
         immer::flex_vector<Event> timeline;
         immer::map<std::string, Event> accountData;
         Membership membership;
+        std::string paginateBackToken;
+        /// whether this room has earlier events to be fetched
+        bool canPaginateBack{true};
 
         struct AddStateEventsAction
         {
@@ -42,6 +45,7 @@ namespace Kazv
         struct PrependTimelineAction
         {
             immer::flex_vector<Event> events;
+            std::string paginateBackToken;
         };
 
         struct AddAccountDataAction
@@ -69,6 +73,8 @@ namespace Kazv
     {
         immer::map<std::string, Room> rooms;
 
+        inline auto at(std::string id) const { return rooms.at(id); }
+
         struct UpdateRoomAction
         {
             std::string roomId;
@@ -92,7 +98,13 @@ namespace Kazv
     template<class Archive>
     void serialize(Archive &ar, Room &r, std::uint32_t const /*version*/)
     {
-        ar(r.roomId, r.stateEvents, r.timeline, r.accountData, r.membership);
+        ar(r.roomId,
+           r.stateEvents,
+           r.timeline,
+           r.accountData,
+           r.membership,
+           r.paginateBackToken,
+           r.canPaginateBack);
     }
 
     template<class Archive>

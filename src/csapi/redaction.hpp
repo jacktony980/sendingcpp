@@ -24,6 +24,12 @@ class RedactEventJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Strips all non-integrity-critical information out of an event.

@@ -50,6 +50,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Gets a list of a user's third party identifiers.
@@ -147,6 +153,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Adds contact information to the user's account.
@@ -209,6 +221,12 @@ class Add3PIDJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Adds contact information to the user's account.
@@ -260,6 +278,12 @@ public:
  */
 class Bind3PIDJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -314,6 +338,12 @@ public:
  */
 class Delete3pidFromAccountJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction
@@ -383,6 +413,12 @@ class Unbind3pidFromAccountJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Removes a user's third party identifier from an identity server.
@@ -450,6 +486,12 @@ class RequestTokenTo3PIDEmailJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Begins the validation process for an email address for association with the user's account.
@@ -515,6 +557,12 @@ public:
  */
 class RequestTokenTo3PIDMSISDNJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
 
 
 // Construction/destruction

@@ -11,6 +11,7 @@ set(libkazv_SRCS
   job/basejob.cpp
   client/client.cpp
   client/sync.cpp
+  client/paginate.cpp
   client/data/room.cpp
   )
 

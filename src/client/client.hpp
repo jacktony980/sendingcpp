@@ -7,6 +7,7 @@
 #include <optional>
 
 #include <lager/context.hpp>
+#include <boost/hana.hpp>
 
 #ifndef NDEBUG
 #include <lager/debug/cereal/struct.hpp>
@@ -35,6 +36,34 @@ namespace Kazv
         immer::map<std::string /* sender */, Event> presence;
         immer::map<std::string /* type */, Event> accountData;
 
+        // helpers
+        template<class Job>
+        struct MakeJobT
+        {
+            template<class ...Args>
+            constexpr auto make(Args &&...args) const {
+                if constexpr (Job::needsAuth()) {
+                    return Job(
+                        serverUrl,
+                        token,
+                        std::forward<Args>(args)...);
+                } else {
+                    return Job(
+                        serverUrl,
+                        std::forward<Args>(args)...);
+                }
+            }
+
+            std::string serverUrl;
+            std::string token;
+        };
+
+        template<class Job>
+        constexpr auto job() const {
+            return MakeJobT<Job>{serverUrl, token};
+        }
+
+        // actions:
         struct LoginAction {
             std::string serverUrl;
             std::string username;
@@ -65,12 +94,27 @@ namespace Kazv
             immer::map<std::string, int> deviceOneTimeKeysCount;
         };
 
+        struct PaginateTimelineAction
+        {
+            std::string roomId;
+            std::optional<int> limit;
+        };
+
+        struct LoadPaginateTimelineResultAction
+        {
+            std::string roomId;
+            EventList events;
+            std::string paginateBackToken;
+        };
+
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
                                     SyncAction,
                                     Error::Action,
                                     LoadSyncResultAction,
+                                    PaginateTimelineAction,
+                                    LoadPaginateTimelineResultAction,
                                     RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
@@ -79,6 +123,7 @@ namespace Kazv
     };
 
     Client::Effect syncEffect(Client m, Client::SyncAction a);
+    Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
 
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(Client::LoginAction);
@@ -86,6 +131,8 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Client::LogoutAction);
     LAGER_CEREAL_STRUCT(Client::SyncAction);
     LAGER_CEREAL_STRUCT(Client::LoadSyncResultAction);
+    LAGER_CEREAL_STRUCT(Client::PaginateTimelineAction);
+    LAGER_CEREAL_STRUCT(Client::LoadPaginateTimelineResultAction);
 #endif
 
     template<class Archive>

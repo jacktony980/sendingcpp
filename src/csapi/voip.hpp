@@ -18,6 +18,12 @@ class GetTurnServerJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Obtain TURN server credentials.

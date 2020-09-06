@@ -20,6 +20,12 @@ class SetPresenceJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Update this user's presence state.
@@ -64,6 +70,12 @@ public:
  */
 class GetPresenceJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

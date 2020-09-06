@@ -18,6 +18,12 @@ class ReportContentJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Reports an event as inappropriate.

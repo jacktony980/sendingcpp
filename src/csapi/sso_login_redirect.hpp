@@ -20,6 +20,12 @@ class RedirectToSSOJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
   /*! \brief Redirect the user's browser to the SSO interface.

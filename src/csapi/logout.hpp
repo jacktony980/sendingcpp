@@ -19,6 +19,12 @@ class LogoutJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Invalidates a user access token
@@ -63,6 +69,12 @@ public:
  */
 class LogoutAllJob : public BaseJob {
 public:
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

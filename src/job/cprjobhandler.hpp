@@ -14,7 +14,7 @@ namespace Kazv
         void setTimeout(std::function<void()> func, int ms) override;
         void setInterval(std::function<void()> func, int ms) override;
         void fetch(const BaseJob &job,
-                   std::function<void(std::shared_future<BaseJob::Response>)> callback) override;
+                   std::function<void(BaseJob::Response)> callback) override;
     private:
         boost::asio::io_context::executor_type executor;
     };

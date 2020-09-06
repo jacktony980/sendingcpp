@@ -62,6 +62,12 @@ public:
         };
 
 
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
+
+
 // Construction/destruction
 
     /// Gets the current pushers for the authenticated user
@@ -172,6 +178,12 @@ public:
           std::string format;
         
         };
+
+
+          static constexpr auto needsAuth() {
+          return true
+            ;
+              }
 
 
 // Construction/destruction

@@ -35,6 +35,12 @@ class GetVersionsJob : public BaseJob {
 public:
 
 
+          static constexpr auto needsAuth() {
+          return 
+            false;
+              }
+
+
 // Construction/destruction
 
     /// Gets the versions of the specification supported by the server.
