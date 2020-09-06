@@ -29,6 +29,9 @@ endif()
 
 find_package(Boost REQUIRED)
 
+# Do not let the option()s override variables here
+cmake_policy(SET CMP0077 NEW)
+
 include(FetchContent)
 if(libkazv_BUILD_KAZVJOB)
   set(USE_SYSTEM_CURL ON)
@@ -62,13 +65,11 @@ set(zug_BUILD_DOCS OFF)
 FetchContent_Declare(zug GIT_REPOSITORY https://github.com/arximboldi/zug GIT_TAG 0bf540906165143eb8b195284c588be29438a16b)
 FetchContent_MakeAvailable(zug)
 
-# Do not let the option()s override variables here
-cmake_policy(SET CMP0077 NEW)
 set(lager_BUILD_TESTS OFF)
 set(lager_BUILD_EXAMPLES OFF)
 set(lager_BUILD_DOCS OFF)
 set(lager_EMBED_RESOURCES_PATH OFF)
-FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG a112eed88789bb2986b7924b5b1e71c8a410f81a)
+FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG 5beaaa757ad43313b9358c9e73e072cfc690653c)
 FetchContent_MakeAvailable(lager)
 
 set(JUST_INSTALL_CEREAL ON)
