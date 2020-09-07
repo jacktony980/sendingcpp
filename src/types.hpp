@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <variant>
+
 #include <nlohmann/json.hpp>
 #include <immer/array.hpp>
 #include <immer/flex_vector.hpp>
@@ -101,7 +102,7 @@ namespace Kazv
         };
     }
 
-    inline detail::DefaultValT defVal;
+    constexpr detail::DefaultValT DEFVAL;
 }
 
 namespace nlohmann {

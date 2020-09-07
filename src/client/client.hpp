@@ -122,6 +122,20 @@ namespace Kazv
         static Result update(Client m, Action a);
     };
 
+    inline bool operator==(Client a, Client b)
+    {
+        return a.serverUrl == b.serverUrl
+            && a.userId == b.userId
+            && a.token == b.token
+            && a.deviceId == b.deviceId
+            && a.loggedIn == b.loggedIn
+            && a.error == b.error
+            && a.syncToken == b.syncToken
+            && a.roomList == b.roomList
+            && a.presence == b.presence
+            && a.accountData == b.accountData;
+    }
+
     Client::Effect syncEffect(Client m, Client::SyncAction a);
     Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
 

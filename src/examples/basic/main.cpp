@@ -1,6 +1,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <lager/store.hpp>
 #include <lager/event_loop/boost_asio.hpp>
 #include <boost/asio.hpp>
@@ -13,6 +14,7 @@
 #include <client/client.hpp>
 #include <job/cprjobhandler.hpp>
 #include <eventemitter/lagerstoreeventemitter.hpp>
+#include "commands.hpp"
 
 using namespace std::string_literals;
 
@@ -39,25 +41,43 @@ int main(int argc, char *argv[])
 #endif
         );
 
+    if (argc <= 1) {
+        std::cerr << "Usage: basicexample <auth-file-name>\n\n"
+                  << "auth file is a text file with these three lines:\n"
+                  << "homeserver address\n"
+                  << "username\n"
+                  << "password\n\n"
+                  << "For example:\n"
+                  << "https://some.server.org\n"
+                  << "someUserName\n"
+                  << "somePa$$w0rd\n";
+        return 1;
+    }
+
     std::string homeserver;
     std::string username;
     std::string password;
-    std::cout << "Homeserver: ";
-    std::getline(std::cin, homeserver);
-    std::cout << "Username: ";
-    std::getline(std::cin, username);
-    std::cout << "Password: ";
-    std::getline(std::cin, password);
+    {
+        std::ifstream auth(argv[1]);
+        if (! auth) {
+            std::cerr << "Cannot open auth file " << argv[1] << "\n";
+            return 1;
+        }
+        std::getline(auth, homeserver);
+        std::getline(auth, username);
+        std::getline(auth, password);
+    }
     store.dispatch(Kazv::Client::LoginAction{homeserver, username, password, "libkazv basic example"s});
 
     auto watchable = eventEmitter.watchable();
     watchable.after<Kazv::ReceivingRoomTimelineEvent>(
         [](auto &&e) {
             auto [event, roomId] = e;
-            std::cout << "receiving event " << event.id()
+            std::cout << "\033[1;32mreceiving event " << event.id()
                       << " in " << roomId
                       << " from " << event.sender()
-                      << ": " << event.content().get().dump() << std::endl;
+                      << ": " << event.content().get().dump() << "\033[0m"
+                      << std::endl;
         });
 
     /*lager::reader<Kazv::RoomList> roomList = store
@@ -74,5 +94,21 @@ int main(int argc, char *argv[])
             std::cout << std::endl;
             });*/
 
-    ioContext.run();
+    std::thread([&] { ioContext.run(); }).detach();
+
+    lager::reader<Kazv::Client> c = store
+#ifndef NDEBUG
+        // get the client from the debugger
+        .xform(zug::map([](auto m) -> Kazv::Client { return m; }))
+#endif
+        ;
+
+    std::size_t command = 1;
+    while (true) {
+        std::cout << "\033[1;33mCommand[" << command << "]: \033[0m\n";
+        std::string l;
+        std::getline(std::cin, l);
+        std::optional<Kazv::Client::Action> a = intent(l, c);
+        ++command;
+    }
 }

@@ -1,11 +1,15 @@
 
 #pragma once
 
-#include "jsonwrap.hpp"
 #include <string>
+#include <cstdint>
+
+#include "jsonwrap.hpp"
 
 namespace Kazv
 {
+    using Timestamp = std::int_fast64_t;
+
     class Event
     {
     public:
@@ -27,7 +31,7 @@ namespace Kazv
 
         std::string sender() const;
 
-        std::string originServerTs() const;
+        Timestamp originServerTs() const;
 
         std::string type() const;
 
@@ -68,6 +72,7 @@ namespace Kazv
     };
 
     bool operator==(Event a, Event b);
+    inline bool operator!=(Event a, Event b) { return !(a == b); };
 
 }
 

@@ -34,6 +34,16 @@ namespace Kazv
             return !std::holds_alternative<JsonError>(error);
         }
     };
+
+    constexpr inline bool operator==(Error::NoError, Error::NoError)
+    {
+        return true;
+    }
+
+    inline bool operator==(Error a, Error b)
+    {
+        return a.error == b.error;
+    }
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(Error::SetErrorAction);
 #endif

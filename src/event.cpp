@@ -42,7 +42,7 @@ namespace Kazv
             : "";
     }
 
-    std::string Event::originServerTs() const {
+    Timestamp Event::originServerTs() const {
         return originalJson().get().contains("origin_server_ts")
             ? originalJson().get().at("origin_server_ts")
             : "";
@@ -97,12 +97,9 @@ namespace Kazv
 
     bool operator==(Event a, Event b)
     {
-        if (a.id().size() && b.id().size()) {
-            return a.id() == b.id();
-        } else if (a.id().size() || b.id().size()) {
-            return false;
-        }
-        return a.originalJson() == b.originalJson();
+        return a.id() == b.id()
+            && a.originalJson() == b.originalJson()
+            && a.raw() == b.raw();
     }
 
 }

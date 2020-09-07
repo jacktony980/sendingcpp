@@ -20,7 +20,7 @@ namespace Kazv
                     roomId,
                     paginateBackToken, // from
                     "b"s, // dir
-                    defVal, // to
+                    DEFVAL, // to
                     a.limit);
 
                 auto &jobHandler = lager::get<JobInterface &>(ctx);

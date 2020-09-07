@@ -69,6 +69,17 @@ namespace Kazv
         static Room update(Room r, Action a);
     };
 
+    inline bool operator==(Room a, Room b)
+    {
+        return a.roomId == b.roomId
+            && a.stateEvents == b.stateEvents
+            && a.timeline == b.timeline
+            && a.accountData == b.accountData
+            && a.membership == b.membership
+            && a.paginateBackToken == b.paginateBackToken
+            && a.canPaginateBack == b.canPaginateBack;
+    }
+
     struct RoomList
     {
         immer::map<std::string, Room> rooms;
@@ -86,6 +97,12 @@ namespace Kazv
             >;
         static RoomList update(RoomList l, Action a);
     };
+
+    inline bool operator==(RoomList a, RoomList b)
+    {
+        return a.rooms == b.rooms;
+    }
+
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(Room::AddStateEventsAction);
     LAGER_CEREAL_STRUCT(Room::AppendTimelineAction);
