@@ -2,12 +2,13 @@
 
 include(CTest)
 
-add_executable(basejobtest
-  testallapi.cpp
-
+add_executable(kazvtest
+  testmain.cpp
   basejobtest.cpp
+  cursorutiltest.cpp
   )
-target_link_libraries(basejobtest
+
+target_link_libraries(kazvtest
   PRIVATE Catch2::Catch2
   PRIVATE kazv
   PRIVATE kazvjob

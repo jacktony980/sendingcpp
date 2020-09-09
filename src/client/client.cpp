@@ -33,6 +33,7 @@
 #include "types.hpp"
 #include "debug.hpp"
 #include "job/jobinterface.hpp"
+#include "eventemitter/eventinterface.hpp"
 #include "client/util.hpp"
 
 namespace Kazv
@@ -65,8 +66,6 @@ namespace Kazv
                                     j.at("device_id"),
                                     /* loggedIn = */ true
                                 });
-                            // after user info is loaded, do first sync
-                            ctx.dispatch(Client::SyncAction{});
                         }
                     });
             };
@@ -179,7 +178,11 @@ namespace Kazv
 
                 return { std::move(m),
                          [](auto &&ctx) {
+                             auto &eventEmitter = lager::get<EventInterface &>(ctx);
+                             eventEmitter.emit(LoginSuccessful{});
                              ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
+                             // after user info is loaded, do first sync
+                             ctx.dispatch(Client::SyncAction{});
                          }
                 };
             },

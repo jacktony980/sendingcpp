@@ -19,8 +19,11 @@
 
 
 #include <lager/util.hpp>
+#include <zug/sequence.hpp>
+#include <zug/transducer/map.hpp>
 
 #include "room.hpp"
+#include "client/cursorutil.hpp"
 
 
 namespace Kazv
@@ -33,11 +36,17 @@ namespace Kazv
                 return r;
             },
             [&](AppendTimelineAction a) {
-                r.timeline = r.timeline + a.events;
+                auto eventIds = intoImmer(immer::flex_vector<std::string>(),
+                                          zug::map(keyOfTimeline), a.events);
+                r.timeline = r.timeline + eventIds;
+                r.messages = merge(std::move(r.messages), a.events, keyOfTimeline);
                 return r;
             },
             [&](PrependTimelineAction a) {
-                r.timeline = a.events + r.timeline;
+                auto eventIds = intoImmer(immer::flex_vector<std::string>(),
+                                          zug::map(keyOfTimeline), a.events);
+                r.timeline = eventIds + r.timeline;
+                r.messages = merge(std::move(r.messages), a.events, keyOfTimeline);
                 r.paginateBackToken = a.paginateBackToken;
                 // if there are no more events we should not allow further paginating
                 r.canPaginateBack = a.events.size() != 0;

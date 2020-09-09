@@ -12,7 +12,7 @@ set(libkazv_SRCS
   client/client.cpp
   client/sync.cpp
   client/paginate.cpp
-  client/data/room.cpp
+  client/room/room.cpp
   )
 
 add_library(kazv ${libkazv_SRCS})

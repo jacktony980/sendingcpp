@@ -36,7 +36,7 @@
 #include "job/jobinterface.hpp"
 #include "eventemitter/eventinterface.hpp"
 #include "error.hpp"
-#include "data/room.hpp"
+#include "room/room.hpp"
 
 namespace Kazv
 {

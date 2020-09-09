@@ -22,7 +22,7 @@
 
 #include <lager/debug/cereal/struct.hpp>
 #include <lager/debug/cereal/immer_flex_vector.hpp>
-#include "cereal_map.hpp"
+#include "client/data/cereal_map.hpp"
 
 #include <string>
 #include <variant>
@@ -44,7 +44,8 @@ namespace Kazv
 
         std::string roomId;
         immer::map<KeyOfState, Event> stateEvents;
-        immer::flex_vector<Event> timeline;
+        immer::flex_vector<std::string> timeline;
+        immer::map<std::string, Event> messages;
         immer::map<std::string, Event> accountData;
         Membership membership;
         std::string paginateBackToken;
@@ -93,6 +94,7 @@ namespace Kazv
         return a.roomId == b.roomId
             && a.stateEvents == b.stateEvents
             && a.timeline == b.timeline
+            && a.messages == b.messages
             && a.accountData == b.accountData
             && a.membership == b.membership
             && a.paginateBackToken == b.paginateBackToken
@@ -137,6 +139,7 @@ namespace Kazv
         ar(r.roomId,
            r.stateEvents,
            r.timeline,
+           r.messages,
            r.accountData,
            r.membership,
            r.paginateBackToken,

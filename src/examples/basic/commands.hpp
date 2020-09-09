@@ -19,11 +19,9 @@
 
 
 #pragma once
-#include <optional>
+
 #include <string>
-#include <lager/reader.hpp>
 
-#include <client/client.hpp>
+#include <client/clientwrap.hpp>
 
-
-std::optional<Kazv::Client::Action> intent(std::string l, lager::reader<Kazv::Client> c);
+void parse(std::string l, Kazv::ClientWrap c);

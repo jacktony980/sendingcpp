@@ -55,6 +55,9 @@ namespace Kazv
 
 
     using KazvEvent = std::variant<
+        // use this for placeholder of "no events yet"
+        // otherwise the first LoginSuccessful event cannot be detected
+        std::monostate,
         LoginSuccessful,
         ReceivingPresenceEvent,
         ReceivingAccountDataEvent,
