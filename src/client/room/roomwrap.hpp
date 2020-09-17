@@ -119,7 +119,26 @@ namespace Kazv
 
         lager::reader<bool> encrypted() const;
 
-        void sendMessage(Event msg) const;
+        /*lager::reader<std::string>*/
+        KAZV_WRAP_ATTR(Room, m_room, roomId);
+
+        inline void sendMessage(Event msg) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(Client::SendMessageAction{roomId().make().get(), msg});
+        }
+
+        inline void sendTextMessage(std::string text) const {
+            json j{
+                {"type", "m.room.message"},
+                {"content", {
+                        {"msgtype", "m.text"},
+                        {"body", text}
+                    }
+                }
+            };
+            Event e{j};
+            sendMessage(e);
+        }
 
         void sendStateEvent(Event state) const;
 

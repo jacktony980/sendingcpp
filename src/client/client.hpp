@@ -40,6 +40,8 @@
 
 namespace Kazv
 {
+    inline const std::string DEFTXNID{"0"};
+
     struct Client
     {
         std::string serverUrl;
@@ -54,6 +56,8 @@ namespace Kazv
         RoomList roomList;
         immer::map<std::string /* sender */, Event> presence;
         immer::map<std::string /* type */, Event> accountData;
+
+        std::string nextTxnId{DEFTXNID};
 
         // helpers
         template<class Job>
@@ -81,6 +85,8 @@ namespace Kazv
         constexpr auto job() const {
             return MakeJobT<Job>{serverUrl, token};
         }
+
+        static std::string increaseTxnId(std::string cur);
 
         // actions:
         struct LoginAction {
@@ -126,6 +132,12 @@ namespace Kazv
             std::string paginateBackToken;
         };
 
+        struct SendMessageAction
+        {
+            std::string roomId;
+            Event event;
+        };
+
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
@@ -134,6 +146,7 @@ namespace Kazv
                                     LoadSyncResultAction,
                                     PaginateTimelineAction,
                                     LoadPaginateTimelineResultAction,
+                                    SendMessageAction,
                                     RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
@@ -152,11 +165,13 @@ namespace Kazv
             && a.syncToken == b.syncToken
             && a.roomList == b.roomList
             && a.presence == b.presence
-            && a.accountData == b.accountData;
+            && a.accountData == b.accountData
+            && a.nextTxnId == b.nextTxnId;
     }
 
     Client::Effect syncEffect(Client m, Client::SyncAction a);
     Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
+    Client::Effect sendMessageEffect(Client m, Client::SendMessageAction a);
 
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(Client::LoginAction);
@@ -166,6 +181,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Client::LoadSyncResultAction);
     LAGER_CEREAL_STRUCT(Client::PaginateTimelineAction);
     LAGER_CEREAL_STRUCT(Client::LoadPaginateTimelineResultAction);
+    LAGER_CEREAL_STRUCT(Client::SendMessageAction);
 #endif
 
     template<class Archive>
@@ -176,7 +192,8 @@ namespace Kazv
            m.syncToken,
            m.roomList,
            m.presence,
-           m.accountData);
+           m.accountData,
+           m.nextTxnId);
     }
 }
 CEREAL_CLASS_VERSION(Kazv::Client, 0);

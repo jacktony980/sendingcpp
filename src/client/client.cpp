@@ -231,8 +231,27 @@ namespace Kazv
                     // May happen in debugger.
                     return { std::move(m), lager::noop };
                 }
+            },
+
+            [&](SendMessageAction a) -> Result {
+                // FIXME: This implementation is questionable
+                // as it causes problem for time travel:
+                // after you rolled back, the rolled-back txnIds
+                // are not usable again, and the first few messages
+                // will not be sent successfully.
+                // Maybe one wants to use a dependency to store
+                // this info, or to use a hash plus the timestamp
+                // as the txnId.
+                auto eff = sendMessageEffect(m, a);
+                m.nextTxnId = increaseTxnId(m.nextTxnId);
+                return {std::move(m), eff};
             }
             );
 
+    }
+
+    std::string Client::increaseTxnId(std::string cur)
+    {
+        return std::to_string(std::stoull(cur) + 1);
     }
 }

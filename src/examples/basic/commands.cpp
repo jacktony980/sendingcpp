@@ -36,6 +36,7 @@ using namespace std::string_literals;
 static std::regex roomMsgsRegex("room msgs (.+)");
 static std::regex roomStatesRegex("room states (.+)");
 static std::regex roomMemsRegex("room mems (.+)");
+static std::regex roomSendRegex("room send ([^\\s]+) (.+)");
 
 
 void parse(std::string l, Kazv::ClientWrap c)
@@ -43,7 +44,7 @@ void parse(std::string l, Kazv::ClientWrap c)
     using namespace Kazv::CursorOp;
     std::smatch m;
     if (l == "rooms") {
-        auto roomIds = c.roomIds().make().get();
+        auto roomIds = +c.roomIds();
 
         std::cout << "Room Id\tRoom Name\n";
         for (auto id : roomIds) {
@@ -55,7 +56,7 @@ void parse(std::string l, Kazv::ClientWrap c)
         auto roomId = m[1].str();
         auto room = c.room(roomId);
 
-        auto msgs = room.timelineEvents().make().get();
+        auto msgs = +room.timelineEvents();
 
         std::cout << "Messages in " << roomId << ":\n";
         for (auto msg : msgs) {
@@ -84,7 +85,7 @@ void parse(std::string l, Kazv::ClientWrap c)
     } else if (std::regex_match(l, m, roomStatesRegex)) {
         auto roomId = m[1].str();
         auto room = c.room(roomId);
-        auto states = room.stateEvents().make().get();
+        auto states = +room.stateEvents();
 
         std::cout << "States in " << roomId << ":\n";
         for (auto [k, st] : states) {
@@ -98,14 +99,20 @@ void parse(std::string l, Kazv::ClientWrap c)
             }
             std::cout << std::endl;
         }
+    } else if (std::regex_match(l, m, roomSendRegex)) {
+        auto roomId = m[1].str();
+        auto text = m[2].str();
+        auto room = c.room(roomId);
 
+        room.sendTextMessage(text);
     } else {
         // no valid action, display help
         std::cout << "Commands:\n"
                   << "rooms -- List rooms\n"
                   << "room msgs <roomId> -- List room messages\n"
                   << "room states <roomId> -- List room states\n"
-                  << "room mems <roomId> -- List room members\n\n";
+                  << "room mems <roomId> -- List room members\n"
+                  << "room send <roomId> <message text> -- Send a text message\n\n";
 
     }
 }

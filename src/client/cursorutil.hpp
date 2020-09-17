@@ -123,14 +123,12 @@ namespace Kazv
     {
         template<class Cursor>
         inline auto operator+(Cursor &&c)
-            -> decltype(std::forward<Cursor>(c).make().get())
         {
-            return std::forward<Cursor>(c).make().get();
+            return (~std::forward<Cursor>(c)).get();
         }
 
         template<class Cursor>
         inline auto operator~(Cursor &&c)
-            -> decltype(std::forward<Cursor>(c).make())
         {
             return std::forward<Cursor>(c).make();
         }
