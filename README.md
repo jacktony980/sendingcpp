@@ -4,6 +4,54 @@
 libkazv is a matrix client sdk built upon [lager](https://github.com/arximboldi/lager)
 and the value-oriented design it enables.
 
+# Functionalities
+
+libkazv support the following functionalities:
+
+- Logging in
+- Receiving room states
+- Receiving room messages
+- Receiving account data
+- Receiving presence
+- Sending messages
+- Send room state events
+
+These functionalities are currently not supported:
+
+- Create rooms
+- Join rooms
+- Redactions
+- Registering
+- VoIP
+- Typing notifications
+- Receipts and fully-read markers
+- Setting presence
+- Content repository
+- Send-to-device messages
+- Device management
+- E2EE
+- Room history visibility
+- Push notifications
+- Third-party invites
+- Searching
+- Guest access
+- Room previews
+- Room tagging
+- Server administration
+- Event context
+- Direct messages
+- Ignoring users
+- ↓Reporting content
+- Third party networks
+- Server notices
+- Mentions
+- Moderation policy lists
+
+libkazv is not planning to support these functionalities:
+
+- Single Sign On
+
+
 # Build and Use
 
 ## Dependencies

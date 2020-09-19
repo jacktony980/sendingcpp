@@ -138,6 +138,12 @@ namespace Kazv
             Event event;
         };
 
+        struct SendStateEventAction
+        {
+            std::string roomId;
+            Event event;
+        };
+
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
@@ -147,6 +153,7 @@ namespace Kazv
                                     PaginateTimelineAction,
                                     LoadPaginateTimelineResultAction,
                                     SendMessageAction,
+                                    SendStateEventAction,
                                     RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
@@ -169,10 +176,6 @@ namespace Kazv
             && a.nextTxnId == b.nextTxnId;
     }
 
-    Client::Effect syncEffect(Client m, Client::SyncAction a);
-    Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
-    Client::Effect sendMessageEffect(Client m, Client::SendMessageAction a);
-
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(Client::LoginAction);
     LAGER_CEREAL_STRUCT(Client::LoadUserInfoAction);
@@ -182,6 +185,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Client::PaginateTimelineAction);
     LAGER_CEREAL_STRUCT(Client::LoadPaginateTimelineResultAction);
     LAGER_CEREAL_STRUCT(Client::SendMessageAction);
+    LAGER_CEREAL_STRUCT(Client::SendStateEventAction);
 #endif
 
     template<class Archive>

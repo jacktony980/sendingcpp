@@ -35,6 +35,7 @@
 #include "job/jobinterface.hpp"
 #include "eventemitter/eventinterface.hpp"
 #include "client/util.hpp"
+#include "topleveleffects.hpp"
 
 namespace Kazv
 {
@@ -245,9 +246,12 @@ namespace Kazv
                 auto eff = sendMessageEffect(m, a);
                 m.nextTxnId = increaseTxnId(m.nextTxnId);
                 return {std::move(m), eff};
+            },
+            [&](SendStateEventAction a) -> Result {
+                auto eff = sendStateEventEffect(m, a);
+                return {std::move(m), eff};
             }
             );
-
     }
 
     std::string Client::increaseTxnId(std::string cur)

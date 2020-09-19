@@ -63,8 +63,7 @@ namespace Kazv
         /* lager::reader<std::string> */
         inline auto name() const {
             using namespace lager::lenses;
-            return m_room
-                [&Room::stateEvents]
+            return stateEvents()
                 [KeyOfState{"m.room.name", ""}]
                 [or_default]
                 .xform(zug::map([](Event ev) {
@@ -124,7 +123,7 @@ namespace Kazv
 
         inline void sendMessage(Event msg) const {
             using namespace CursorOp;
-            m_ctx.dispatch(Client::SendMessageAction{roomId().make().get(), msg});
+            m_ctx.dispatch(Client::SendMessageAction{+roomId(), msg});
         }
 
         inline void sendTextMessage(std::string text) const {
@@ -140,7 +139,44 @@ namespace Kazv
             sendMessage(e);
         }
 
-        void sendStateEvent(Event state) const;
+        inline void sendStateEvent(Event state) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(Client::SendStateEventAction{+roomId(), state});
+        }
+
+        inline void setName(std::string name) const {
+            json j{
+                {"type", "m.room.name"},
+                {"content", {
+                        {"name", name}
+                    }
+                }
+            };
+            Event e{j};
+            sendStateEvent(e);
+        }
+
+        // lager::reader<std::string>
+        inline auto topic() const {
+            using namespace lager::lenses;
+            return stateEvents()
+                [KeyOfState{"m.room.topic", ""}]
+                [or_default]
+                .xform(eventContent
+                       | jsonAtOr("topic"s, ""s));
+        }
+
+        inline void setTopic(std::string topic) const {
+            json j{
+                {"type", "m.room.topic"},
+                {"content", {
+                        {"topic", topic}
+                    }
+                }
+            };
+            Event e{j};
+            sendStateEvent(e);
+        }
 
     private:
         lager::reader<Room> m_room;

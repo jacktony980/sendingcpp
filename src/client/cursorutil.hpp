@@ -133,6 +133,35 @@ namespace Kazv
             return std::forward<Cursor>(c).make();
         }
     }
+
+    inline constexpr auto eventContent =
+        zug::map([](auto &&event) {
+                     return std::forward<decltype(event)>(event).content();
+                 });
+
+    namespace detail
+    {
+        inline auto isJsonWrap = boost::hana::is_valid(
+            [](auto t) -> decltype((void)t.get()) { });
+    }
+
+    template<class T, class V>
+    constexpr auto jsonAtOr(T &&key, V &&defaultValue)
+    {
+        return
+            zug::map([key=std::forward<T>(key), def=std::forward<V>(defaultValue)](auto &&j) -> V {
+                         using JsonT = decltype(j);
+                         if constexpr (isJsonWrap(j)) {
+                             return j.get().contains(key)
+                                 ? V(std::forward<JsonT>(j).get().at(std::forward<T>(key)))
+                                 : std::forward<V>(def);
+                         } else {
+                             return j.contains(key)
+                                 ? V(std::forward<JsonT>(j).at(std::forward<T>(key)))
+                                 : std::forward<V>(def);
+                         }
+                     });
+    }
 }
 
 #define KAZV_WRAP_ATTR(_type, _d, _attr)          \
