@@ -25,4 +25,5 @@ namespace Kazv
     Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
     Client::Effect sendMessageEffect(Client m, Client::SendMessageAction a);
     Client::Effect sendStateEventEffect(Client m, Client::SendStateEventAction a);
+    Client::Effect createRoomEffect(Client m, Client::CreateRoomAction a);
 }

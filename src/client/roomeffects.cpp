@@ -22,7 +22,10 @@
 
 #include "csapi/room_send.hpp"
 #include "csapi/room_state.hpp"
+#include "csapi/create_room.hpp"
 #include "debug.hpp"
+
+#include "client/cursorutil.hpp"
 
 namespace Kazv
 {
@@ -123,6 +126,93 @@ namespace Kazv
                                 ctx.dispatch(Error::SetErrorAction{
                                         Error::JsonError{json{
                                                 {"action", "SendMessageAction"},
+                                                {"reason", "Request to remote host failed"},
+                                                {"original", jsonBody(r).get()}
+                                            }}
+                                    });
+                            } else {
+                                dbgClient << std::get<BaseJob::BytesBody>(r.body) << std::endl;
+                            }
+                        }
+                        // if success, nothing to do
+                    });
+            };
+    }
+
+    static std::string visibilityToStr(Client::CreateRoomAction::Visibility v)
+    {
+        using V = Client::CreateRoomAction::Visibility;
+        switch (v) {
+        case V::Private:
+            return "private";
+        case V::Public:
+            return "public";
+        default:
+            // should not happen
+            return "";
+        }
+    }
+
+    static std::string presetToStr(Client::CreateRoomAction::Preset p)
+    {
+        using P = Client::CreateRoomAction::Preset;
+        switch (p) {
+        case P::PrivateChat:
+            return "private_chat";
+        case P::PublicChat:
+            return "public_chat";
+        case P::TrustedPrivateChat:
+            return "trusted_private_chat";
+        default:
+            // should not happen
+            return "";
+        }
+    }
+
+    Client::Effect createRoomEffect(Client m, Client::CreateRoomAction a)
+    {
+        return
+            [=](auto &&ctx) {
+                auto visibility = visibilityToStr(a.visibility);
+                auto preset = a.preset
+                    ? presetToStr(a.preset.value())
+                    : ""s;
+
+                using StateEvT = Kazv::CreateRoomJob::StateEvent;
+                auto initialState = intoImmer(
+                    immer::array<StateEvT>{},
+                    zug::map(
+                        [](Event e) {
+                            return StateEvT{e.type(), e.stateKey(), e.content()};
+                        }),
+                    a.initialState);
+
+                auto job = m.job<CreateRoomJob>().make(
+                    visibility,
+                    a.roomAliasName,
+                    a.name,
+                    a.topic,
+                    a.invite,
+                    DEFVAL, // invite3pid, not supported yet
+                    a.roomVersion,
+                    a.creationContent,
+                    initialState,
+                    preset,
+                    a.isDirect,
+                    a.powerLevelContentOverride);
+
+                auto &jobHandler = lager::get<JobInterface &>(ctx);
+
+                jobHandler.fetch(
+                    job,
+                    [=](BaseJob::Response r) {
+                        if (!CreateRoomJob::success(r)) {
+                            dbgClient << "Create room failed" << std::endl;
+                            if (BaseJob::isBodyJson(r.body)) {
+                                dbgClient << jsonBody(r).get().dump() << std::endl;
+                                ctx.dispatch(Error::SetErrorAction{
+                                        Error::JsonError{json{
+                                                {"action", "CreateRoomAction"},
                                                 {"reason", "Request to remote host failed"},
                                                 {"original", jsonBody(r).get()}
                                             }}

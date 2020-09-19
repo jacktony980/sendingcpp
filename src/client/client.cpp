@@ -250,6 +250,11 @@ namespace Kazv
             [&](SendStateEventAction a) -> Result {
                 auto eff = sendStateEventEffect(m, a);
                 return {std::move(m), eff};
+            },
+
+            [&](CreateRoomAction a) -> Result {
+                auto eff = createRoomEffect(m, a);
+                return {std::move(m), eff};
             }
             );
     }

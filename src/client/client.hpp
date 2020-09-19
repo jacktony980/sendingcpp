@@ -42,6 +42,20 @@ namespace Kazv
 {
     inline const std::string DEFTXNID{"0"};
 
+    enum RoomVisibility
+    {
+        Private,
+        Public,
+    };
+
+    enum CreateRoomPreset
+    {
+        PrivateChat,
+        PublicChat,
+        TrustedPrivateChat,
+    };
+
+
     struct Client
     {
         std::string serverUrl;
@@ -144,6 +158,25 @@ namespace Kazv
             Event event;
         };
 
+        struct CreateRoomAction
+        {
+            using Visibility = RoomVisibility;
+            using Preset = CreateRoomPreset;
+            Visibility visibility;
+            std::string roomAliasName;
+            std::string name;
+            std::string topic;
+            immer::array<std::string> invite;
+            //immer::array<Invite3pid> invite3pid;
+            std::string roomVersion;
+            JsonWrap creationContent;
+            immer::array<Event> initialState;
+            std::optional<Preset> preset;
+            std::optional<bool> isDirect;
+            JsonWrap powerLevelContentOverride;
+        };
+
+
         using Action = std::variant<LoginAction,
                                     LogoutAction,
                                     LoadUserInfoAction,
@@ -154,6 +187,7 @@ namespace Kazv
                                     LoadPaginateTimelineResultAction,
                                     SendMessageAction,
                                     SendStateEventAction,
+                                    CreateRoomAction,
                                     RoomList::Action
                                     >;
         using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
@@ -186,6 +220,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Client::LoadPaginateTimelineResultAction);
     LAGER_CEREAL_STRUCT(Client::SendMessageAction);
     LAGER_CEREAL_STRUCT(Client::SendStateEventAction);
+    LAGER_CEREAL_STRUCT(Client::CreateRoomAction);
 #endif
 
     template<class Archive>

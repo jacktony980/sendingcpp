@@ -81,6 +81,28 @@ namespace Kazv
                     homeserver, username, token, deviceId, /* loggedIn = */ true});
         }
 
+        inline void createRoom(RoomVisibility v,
+                               std::string name,
+                               std::string alias = {},
+                               immer::array<std::string> invite = {},
+                               std::optional<bool> isDirect = {},
+                               bool allowFederate = true,
+                               std::string topic = {}) const {
+            Client::CreateRoomAction a;
+            a.visibility = v;
+            a.name = name;
+            a.roomAliasName = alias;
+            a.invite = invite;
+            a.isDirect = isDirect;
+            a.topic = topic;
+            // Synapse won't buy it if we do not provide
+            // a creationContent object.
+            a.creationContent = json{
+                {"m.federate", allowFederate}
+            };
+            m_ctx.dispatch(std::move(a));
+        }
+
     private:
         lager::reader<Client> m_client;
         lager::context<Client::Action> m_ctx;

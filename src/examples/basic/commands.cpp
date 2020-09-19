@@ -39,6 +39,7 @@ static std::regex roomMemsRegex("room mems (.+)");
 static std::regex roomSendRegex("room send ([^\\s]+) (.+)");
 static std::regex roomNameRegex("room name ([^\\s]+) (.+)");
 static std::regex roomTopicRegex("room topic ([^\\s]+) (.+)");
+static std::regex roomNewRegex("room new (.+)");
 
 void parse(std::string l, Kazv::ClientWrap c)
 {
@@ -118,6 +119,10 @@ void parse(std::string l, Kazv::ClientWrap c)
         auto room = c.room(roomId);
 
         room.setTopic(text);
+    } else if (std::regex_match(l, m, roomNewRegex)) {
+        auto name = m[1].str();
+
+        c.createRoom(Kazv::RoomVisibility::Private, name);
     } else {
         // no valid action, display help
         std::cout << "Commands:\n"
@@ -128,6 +133,7 @@ void parse(std::string l, Kazv::ClientWrap c)
                   << "room send <roomId> <message text> -- Send a text message\n"
                   << "room name <roomId> <new name> -- Set room name\n"
                   << "room topic <roomId> <new topic> -- Set room topic\n"
+                  << "room new <name> -- Create new room\n"
                   << "\n";
 
     }

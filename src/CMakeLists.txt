@@ -12,7 +12,7 @@ set(libkazv_SRCS
   client/client.cpp
   client/sync.cpp
   client/paginate.cpp
-  client/send.cpp
+  client/roomeffects.cpp
   client/room/room.cpp
   )
 
