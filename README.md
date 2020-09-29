@@ -15,36 +15,40 @@ libkazv support the following functionalities:
 - Receiving presence
 - Sending messages
 - Send room state events
+- Create rooms
 
 These functionalities are currently not supported:
 
-- Create rooms
 - Join rooms
-- Redactions
-- Registering
-- VoIP
+- Room invites
 - Typing notifications
 - Receipts and fully-read markers
 - Setting presence
 - Content repository
 - Send-to-device messages
 - Device management
-- E2EE
+- Direct messages
+- Redactions
 - Room history visibility
+- Registering
+- VoIP
+- E2EE
+- Room tagging
+- Searching
+- Room previews
+- Mentions
+
+These functionalities may be implemented, but in a low priority:
+
 - Push notifications
 - Third-party invites
-- Searching
 - Guest access
-- Room previews
-- Room tagging
 - Server administration
 - Event context
-- Direct messages
 - Ignoring users
-- ↓Reporting content
+- Reporting content
 - Third party networks
 - Server notices
-- Mentions
 - Moderation policy lists
 
 libkazv is not planning to support these functionalities:
