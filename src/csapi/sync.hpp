@@ -26,12 +26,15 @@ namespace Kazv {
  * full state of rooms is requested, to aid discovering the user's avatar &
  * displayname.
  * 
- * Like other members, the user's own membership event is eligible
+ * Further, like other members, the user's own membership event is eligible
  * for being considered redundant by the server. When a sync is ``limited``,
  * the server MUST return membership events for events in the gap
  * (between ``since`` and the start of the returned timeline), regardless
- * as to whether or not they are redundant.  This ensures that joins/leaves
+ * as to whether or not they are redundant. This ensures that joins/leaves
  * and profile changes which occur during the gap are not lost.
+ * 
+ * Note that the default behaviour of ``state`` is to include all membership
+ * events, alongside other state, when lazy-loading is not enabled.
  */
 class SyncJob : public BaseJob {
 public:
@@ -97,12 +100,15 @@ public:
 /// full state of rooms is requested, to aid discovering the user's avatar &
 /// displayname.
 /// 
-/// Like other members, the user's own membership event is eligible
+/// Further, like other members, the user's own membership event is eligible
 /// for being considered redundant by the server. When a sync is ``limited``,
 /// the server MUST return membership events for events in the gap
 /// (between ``since`` and the start of the returned timeline), regardless
-/// as to whether or not they are redundant.  This ensures that joins/leaves
+/// as to whether or not they are redundant. This ensures that joins/leaves
 /// and profile changes which occur during the gap are not lost.
+/// 
+/// Note that the default behaviour of ``state`` is to include all membership
+/// events, alongside other state, when lazy-loading is not enabled.
     struct JoinedRoom
         {
 /// Information about the room which clients may need to
@@ -168,12 +174,15 @@ public:
 /// full state of rooms is requested, to aid discovering the user's avatar &
 /// displayname.
 /// 
-/// Like other members, the user's own membership event is eligible
+/// Further, like other members, the user's own membership event is eligible
 /// for being considered redundant by the server. When a sync is ``limited``,
 /// the server MUST return membership events for events in the gap
 /// (between ``since`` and the start of the returned timeline), regardless
-/// as to whether or not they are redundant.  This ensures that joins/leaves
+/// as to whether or not they are redundant. This ensures that joins/leaves
 /// and profile changes which occur during the gap are not lost.
+/// 
+/// Note that the default behaviour of ``state`` is to include all membership
+/// events, alongside other state, when lazy-loading is not enabled.
     struct InvitedRoom
         {
 /// The state of a room that the user has been invited
@@ -204,12 +213,15 @@ public:
 /// full state of rooms is requested, to aid discovering the user's avatar &
 /// displayname.
 /// 
-/// Like other members, the user's own membership event is eligible
+/// Further, like other members, the user's own membership event is eligible
 /// for being considered redundant by the server. When a sync is ``limited``,
 /// the server MUST return membership events for events in the gap
 /// (between ``since`` and the start of the returned timeline), regardless
-/// as to whether or not they are redundant.  This ensures that joins/leaves
+/// as to whether or not they are redundant. This ensures that joins/leaves
 /// and profile changes which occur during the gap are not lost.
+/// 
+/// Note that the default behaviour of ``state`` is to include all membership
+/// events, alongside other state, when lazy-loading is not enabled.
     struct LeftRoom
         {
 /// The state updates for the room up to the start of the timeline.
