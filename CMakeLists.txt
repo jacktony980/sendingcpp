@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.8)
+# Do not let the option()s override variables here
+cmake_minimum_required(VERSION 3.13)
 
 if(NOT DEFINED PROJECT_NAME)
   if(NOT DEFINED libkazv_INSTALL_HEADERS)
@@ -29,8 +30,6 @@ endif()
 
 find_package(Boost REQUIRED)
 
-# Do not let the option()s override variables here
-cmake_policy(SET CMP0077 NEW)
 
 include(FetchContent)
 if(libkazv_BUILD_KAZVJOB)
@@ -72,7 +71,6 @@ set(lager_EMBED_RESOURCES_PATH OFF)
 FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG 5beaaa757ad43313b9358c9e73e072cfc690653c)
 FetchContent_MakeAvailable(lager)
 
-cmake_policy(SET CMP0077 NEW)
 set(JUST_INSTALL_CEREAL ON)
 FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
 FetchContent_MakeAvailable(cereal)
