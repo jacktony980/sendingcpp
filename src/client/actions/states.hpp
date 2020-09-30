@@ -17,13 +17,13 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "client.hpp"
+#pragma once
+
+#include "client/client.hpp"
 
 namespace Kazv
 {
-    Client::Effect syncEffect(Client m, Client::SyncAction a);
-    Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a);
-    Client::Effect sendMessageEffect(Client m, Client::SendMessageAction a);
-    Client::Effect sendStateEventEffect(Client m, Client::SendStateEventAction a);
-    Client::Effect createRoomEffect(Client m, Client::CreateRoomAction a);
+    ClientResult updateClient(Client m, GetRoomStatesAction a);
+    ClientResult updateClient(Client m, LoadRoomStatesAction a);
+    ClientResult updateClient(Client m, SendStateEventAction a);
 }

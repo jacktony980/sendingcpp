@@ -23,7 +23,9 @@
 #include <string>
 #include <tuple>
 #include <immer/map.hpp>
+#include <lager/deps.hpp>
 #include <boost/container_hash/hash.hpp>
+#include "job/jobinterface.hpp"
 
 namespace Kazv
 {
@@ -67,7 +69,14 @@ namespace Kazv
     inline KeyOfState keyOfState(Event e) {
         return {e.type(), e.stateKey()};
     }
+
+    template<class Context>
+    JobInterface &getJobHandler(Context &&ctx)
+    {
+        return lager::get<JobInterface &>(std::forward<Context>(ctx));
+    }
 }
+
 namespace std
 {
     template<> struct hash<Kazv::KeyOfState>

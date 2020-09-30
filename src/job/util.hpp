@@ -46,7 +46,7 @@ namespace Kazv
             }
         }
         if (! errorCodeFromJson) {
-            auto c = r.statusCode;
+            auto c = res.statusCode;
             if (c == 408 // Request Timeout
                 || c == 429 // Too many requests
                 || c == 500 // Internal Server Error

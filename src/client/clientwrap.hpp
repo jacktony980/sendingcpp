@@ -71,13 +71,13 @@ namespace Kazv
 
         inline void passwordLogin(std::string homeserver, std::string username,
                                   std::string password, std::string deviceName) const {
-            m_ctx.dispatch(Client::LoginAction{
+            m_ctx.dispatch(LoginAction{
                     homeserver, username, password, deviceName});
         }
 
         inline void tokenLogin(std::string homeserver, std::string username,
                                std::string token, std::string deviceId) const {
-            m_ctx.dispatch(Client::LoadUserInfoAction{
+            m_ctx.dispatch(LoadUserInfoAction{
                     homeserver, username, token, deviceId, /* loggedIn = */ true});
         }
 
@@ -88,7 +88,7 @@ namespace Kazv
                                std::optional<bool> isDirect = {},
                                bool allowFederate = true,
                                std::string topic = {}) const {
-            Client::CreateRoomAction a;
+            CreateRoomAction a;
             a.visibility = v;
             a.name = name;
             a.roomAliasName = alias;

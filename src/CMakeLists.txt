@@ -10,9 +10,13 @@ set(libkazv_SRCS
   event.cpp
   job/basejob.cpp
   client/client.cpp
-  client/sync.cpp
-  client/paginate.cpp
-  client/roomeffects.cpp
+  client/actions/auth.cpp
+  client/actions/sync.cpp
+  client/actions/paginate.cpp
+  client/actions/membership.cpp
+  client/actions/states.cpp
+  client/actions/send.cpp
+  client/actions/sync.cpp
   client/room/room.cpp
   )
 

@@ -32,6 +32,7 @@
 #include <lager/debug/cereal/struct.hpp>
 #endif
 
+#include "clientfwd.hpp"
 #include "csapi/sync.hpp"
 #include "job/jobinterface.hpp"
 #include "eventemitter/eventinterface.hpp"
@@ -54,7 +55,6 @@ namespace Kazv
         PublicChat,
         TrustedPrivateChat,
     };
-
 
     struct Client
     {
@@ -100,99 +100,96 @@ namespace Kazv
             return MakeJobT<Job>{serverUrl, token};
         }
 
-        static std::string increaseTxnId(std::string cur);
+        using Action = ClientAction;
+        using Effect = ClientEffect;
+        using Result = ClientResult;
 
-        // actions:
-        struct LoginAction {
-            std::string serverUrl;
-            std::string username;
-            std::string password;
-            std::optional<std::string> deviceName;
-        };
-
-        struct LoadUserInfoAction {
-            std::string serverUrl;
-            std::string userId;
-            std::string token;
-            std::string deviceId;
-            bool loggedIn;
-        };
-
-        struct LogoutAction {};
-
-        struct SyncAction {};
-
-        struct LoadSyncResultAction
-        {
-            std::string syncToken;
-            std::optional<SyncJob::Rooms> rooms;
-            std::optional<EventBatch> presence;
-            std::optional<EventBatch> accountData;
-            JsonWrap toDevice;
-            JsonWrap deviceLists;
-            immer::map<std::string, int> deviceOneTimeKeysCount;
-        };
-
-        struct PaginateTimelineAction
-        {
-            std::string roomId;
-            std::optional<int> limit;
-        };
-
-        struct LoadPaginateTimelineResultAction
-        {
-            std::string roomId;
-            EventList events;
-            std::string paginateBackToken;
-        };
-
-        struct SendMessageAction
-        {
-            std::string roomId;
-            Event event;
-        };
-
-        struct SendStateEventAction
-        {
-            std::string roomId;
-            Event event;
-        };
-
-        struct CreateRoomAction
-        {
-            using Visibility = RoomVisibility;
-            using Preset = CreateRoomPreset;
-            Visibility visibility;
-            std::string roomAliasName;
-            std::string name;
-            std::string topic;
-            immer::array<std::string> invite;
-            //immer::array<Invite3pid> invite3pid;
-            std::string roomVersion;
-            JsonWrap creationContent;
-            immer::array<Event> initialState;
-            std::optional<Preset> preset;
-            std::optional<bool> isDirect;
-            JsonWrap powerLevelContentOverride;
-        };
-
-
-        using Action = std::variant<LoginAction,
-                                    LogoutAction,
-                                    LoadUserInfoAction,
-                                    SyncAction,
-                                    Error::Action,
-                                    LoadSyncResultAction,
-                                    PaginateTimelineAction,
-                                    LoadPaginateTimelineResultAction,
-                                    SendMessageAction,
-                                    SendStateEventAction,
-                                    CreateRoomAction,
-                                    RoomList::Action
-                                    >;
-        using Effect = lager::effect<Action, lager::deps<JobInterface &, EventInterface &>>;
-        using Result = std::pair<Client, Effect>;
         static Result update(Client m, Action a);
+    };
+
+    // actions:
+    struct LoginAction {
+        std::string serverUrl;
+        std::string username;
+        std::string password;
+        std::optional<std::string> deviceName;
+    };
+
+    struct LoadUserInfoAction {
+        std::string serverUrl;
+        std::string userId;
+        std::string token;
+        std::string deviceId;
+        bool loggedIn;
+    };
+
+    struct LogoutAction {};
+
+    struct SyncAction {};
+
+    struct LoadSyncResultAction
+    {
+        std::string syncToken;
+        std::optional<SyncJob::Rooms> rooms;
+        std::optional<EventBatch> presence;
+        std::optional<EventBatch> accountData;
+        JsonWrap toDevice;
+        JsonWrap deviceLists;
+        immer::map<std::string, int> deviceOneTimeKeysCount;
+    };
+
+    struct PaginateTimelineAction
+    {
+        std::string roomId;
+        std::optional<int> limit;
+    };
+
+    struct LoadPaginateTimelineResultAction
+    {
+        std::string roomId;
+        EventList events;
+        std::string paginateBackToken;
+    };
+
+    struct SendMessageAction
+    {
+        std::string roomId;
+        Event event;
+    };
+
+    struct SendStateEventAction
+    {
+        std::string roomId;
+        Event event;
+    };
+
+    struct CreateRoomAction
+    {
+        using Visibility = RoomVisibility;
+        using Preset = CreateRoomPreset;
+        Visibility visibility;
+        std::string roomAliasName;
+        std::string name;
+        std::string topic;
+        immer::array<std::string> invite;
+        //immer::array<Invite3pid> invite3pid;
+        std::string roomVersion;
+        JsonWrap creationContent;
+        immer::array<Event> initialState;
+        std::optional<Preset> preset;
+        std::optional<bool> isDirect;
+        JsonWrap powerLevelContentOverride;
+    };
+
+    struct GetRoomStatesAction
+    {
+        std::string roomId;
+    };
+
+    struct LoadRoomStatesAction
+    {
+        std::string roomId;
+        EventList events;
     };
 
     inline bool operator==(Client a, Client b)
@@ -211,16 +208,18 @@ namespace Kazv
     }
 
 #ifndef NDEBUG
-    LAGER_CEREAL_STRUCT(Client::LoginAction);
-    LAGER_CEREAL_STRUCT(Client::LoadUserInfoAction);
-    LAGER_CEREAL_STRUCT(Client::LogoutAction);
-    LAGER_CEREAL_STRUCT(Client::SyncAction);
-    LAGER_CEREAL_STRUCT(Client::LoadSyncResultAction);
-    LAGER_CEREAL_STRUCT(Client::PaginateTimelineAction);
-    LAGER_CEREAL_STRUCT(Client::LoadPaginateTimelineResultAction);
-    LAGER_CEREAL_STRUCT(Client::SendMessageAction);
-    LAGER_CEREAL_STRUCT(Client::SendStateEventAction);
-    LAGER_CEREAL_STRUCT(Client::CreateRoomAction);
+    LAGER_CEREAL_STRUCT(LoginAction);
+    LAGER_CEREAL_STRUCT(LoadUserInfoAction);
+    LAGER_CEREAL_STRUCT(LogoutAction);
+    LAGER_CEREAL_STRUCT(SyncAction);
+    LAGER_CEREAL_STRUCT(LoadSyncResultAction);
+    LAGER_CEREAL_STRUCT(PaginateTimelineAction);
+    LAGER_CEREAL_STRUCT(LoadPaginateTimelineResultAction);
+    LAGER_CEREAL_STRUCT(SendMessageAction);
+    LAGER_CEREAL_STRUCT(SendStateEventAction);
+    LAGER_CEREAL_STRUCT(CreateRoomAction);
+    LAGER_CEREAL_STRUCT(GetRoomStatesAction);
+    LAGER_CEREAL_STRUCT(LoadRoomStatesAction);
 #endif
 
     template<class Archive>

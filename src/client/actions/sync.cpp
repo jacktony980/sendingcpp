@@ -20,10 +20,11 @@
 
 #include <lager/util.hpp>
 
-#include "client.hpp"
 #include "csapi/sync.hpp"
 #include "job/jobinterface.hpp"
 #include "debug.hpp"
+
+#include "sync.hpp"
 
 static const int syncInterval = 2000; // ms
 
@@ -37,9 +38,10 @@ namespace Kazv
     // data about the events. (Sync will not "skip" events)
     // This is because this function takes the sync token
     // from the Client model it is passed.
-    Client::Effect syncEffect(Client m, Client::SyncAction)
+    ClientResult updateClient(Client m, SyncAction)
     {
-        return
+        return {
+            m,
             [=](auto &&ctx) {
                 dbgClient << "Start syncing with token " << m.syncToken << std::endl;
                 SyncJob job(m.serverUrl,
@@ -70,7 +72,7 @@ namespace Kazv
                         // load the info that has been sync'd
 
                         ctx.dispatch(
-                            Client::LoadSyncResultAction{
+                            LoadSyncResultAction{
                                 SyncJob::nextBatch(r),
                                 rooms,
                                 presence,
@@ -108,9 +110,86 @@ namespace Kazv
                         auto &jobHandler = lager::get<JobInterface &>(ctx);
                         jobHandler.setTimeout(
                             [=]() {
-                                ctx.dispatch(Client::SyncAction{});
+                                ctx.dispatch(SyncAction{});
                             }, syncInterval);
                     });
+            }
+        };
+    }
+
+
+    static void loadRoomsFromSyncInPlace(Client &m, SyncJob::Rooms rooms)
+    {
+        auto l = m.roomList;
+
+        auto updateRoomImpl =
+            [&l](auto id, auto a) {
+                l = RoomList::update(
+                    std::move(l),
+                    RoomList::UpdateRoomAction{id, a});
             };
+        auto updateSingleRoom =
+            [updateRoomImpl](auto id, auto room, auto membership) {
+                updateRoomImpl(id, Room::ChangeMembershipAction{membership});
+                updateRoomImpl(id, Room::AppendTimelineAction{room.timeline.events});
+                if (room.state) {
+                    updateRoomImpl(id, Room::AddStateEventsAction{room.state.value().events});
+                }
+                if (room.accountData) {
+                    updateRoomImpl(id, Room::AddAccountDataAction{room.accountData.value().events});
+                }
+            };
+
+        auto updateJoinedRoom =
+            [=](auto id, auto room) {
+                updateSingleRoom(id, room, Room::Membership::Join);
+            };
+
+        auto updateLeftRoom =
+            [=](auto id, auto room) {
+                updateSingleRoom(id, room, Room::Membership::Leave);
+            };
+
+        for (auto &&[id, room]: rooms.join) {
+            updateJoinedRoom(id, room);
+            // TODO update other info such as
+            // ephemeral, notification and summary
+        }
+
+        // TODO update info for invited rooms
+
+        for (auto &&[id, room]: rooms.leave) {
+            updateLeftRoom(id, room);
+        }
+
+        m.roomList = l;
+    }
+
+    static void loadPresenceFromSyncInPlace(Client &m, EventList presence)
+    {
+        m.presence = merge(std::move(m.presence), presence, keyOfPresence);
+    }
+
+    static void loadAccountDataFromSyncInPlace(Client &m, EventList accountData)
+    {
+        m.accountData = merge(std::move(m.accountData), accountData, keyOfAccountData);
+    }
+
+    ClientResult updateClient(Client m, LoadSyncResultAction a)
+    {
+        m.syncToken = a.syncToken;
+        if (a.rooms) {
+            loadRoomsFromSyncInPlace(m, a.rooms.value());
+        }
+
+        if (a.presence) {
+            loadPresenceFromSyncInPlace(m, a.presence.value().events);
+        }
+
+        if (a.accountData) {
+            loadAccountDataFromSyncInPlace(m, a.accountData.value().events);
+        }
+
+        return { std::move(m), lager::noop };
     }
 }

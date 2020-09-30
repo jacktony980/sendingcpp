@@ -17,19 +17,28 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// eager requires tuplify but did not include it.
+// This is a bug.
+#include <zug/tuplify.hpp>
+#include <zug/transducer/eager.hpp>
+#include <zug/into.hpp>
 
 #include <lager/util.hpp>
 
 #include "types.hpp"
 #include "debug.hpp"
-#include "client.hpp"
 #include "csapi/message_pagination.hpp"
+
+#include "client/cursorutil.hpp"
+
+#include "paginate.hpp"
 
 namespace Kazv
 {
-    Client::Effect paginateTimelineEffect(Client m, Client::PaginateTimelineAction a)
+    ClientResult updateClient(Client m, PaginateTimelineAction a)
     {
-        return
+        return {
+            m,
             [=](auto &&ctx) {
                 auto roomId = a.roomId;
                 auto room = m.roomList.at(roomId);
@@ -53,10 +62,37 @@ namespace Kazv
                         auto paginateBackToken = GetRoomEventsJob::end(r);
                         auto events = GetRoomEventsJob::chunk(r);
 
-                        Client::LoadPaginateTimelineResultAction
+                        LoadPaginateTimelineResultAction
                             action{roomId, events, paginateBackToken};
                         ctx.dispatch(action);
                     });
-            };
+            }
+        };
+    }
+
+    ClientResult updateClient(Client m, LoadPaginateTimelineResultAction a)
+    {
+        try {
+            auto room = m.roomList.at(a.roomId);
+            immer::flex_vector_transient<Event> events{};
+            // The timeline from paginate backwards is returned
+            // in reversed order, so restore the order.
+            zug::into(events, zug::reversed, a.events);
+
+            Room::PrependTimelineAction action
+                {events.persistent(), a.paginateBackToken};
+
+            auto roomList = RoomList::update(
+                std::move(m.roomList),
+                RoomList::UpdateRoomAction{a.roomId, action});
+            m.roomList = std::move(roomList);
+
+            return { std::move(m), lager::noop };
+        } catch (const std::out_of_range &e) {
+            // Ignore it, the client model is modified
+            // such that it knows nothing about this room.
+            // May happen in debugger.
+            return { std::move(m), lager::noop };
+        }
     }
 }

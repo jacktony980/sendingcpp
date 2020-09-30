@@ -35,7 +35,7 @@ namespace Kazv
     class RoomWrap
     {
     public:
-        inline RoomWrap(lager::reader<Room> room, lager::context<Client::Action> ctx)
+        inline RoomWrap(lager::reader<Room> room, lager::context<ClientAction> ctx)
             : m_room(room)
             , m_ctx(ctx) {}
 
@@ -123,7 +123,7 @@ namespace Kazv
 
         inline void sendMessage(Event msg) const {
             using namespace CursorOp;
-            m_ctx.dispatch(Client::SendMessageAction{+roomId(), msg});
+            m_ctx.dispatch(SendMessageAction{+roomId(), msg});
         }
 
         inline void sendTextMessage(std::string text) const {
@@ -141,7 +141,7 @@ namespace Kazv
 
         inline void sendStateEvent(Event state) const {
             using namespace CursorOp;
-            m_ctx.dispatch(Client::SendStateEventAction{+roomId(), state});
+            m_ctx.dispatch(SendStateEventAction{+roomId(), state});
         }
 
         inline void setName(std::string name) const {
@@ -180,6 +180,6 @@ namespace Kazv
 
     private:
         lager::reader<Room> m_room;
-        lager::context<Client::Action> m_ctx;
+        lager::context<ClientAction> m_ctx;
     };
 }
