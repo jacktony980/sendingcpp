@@ -103,6 +103,10 @@ namespace Kazv
             m_ctx.dispatch(std::move(a));
         }
 
+        inline void joinRoomById(std::string roomId) const {
+            m_ctx.dispatch(JoinRoomByIdAction{roomId});
+        }
+
     private:
         lager::reader<Client> m_client;
         lager::context<Client::Action> m_ctx;

@@ -59,6 +59,10 @@ namespace Kazv
             [&](ChangeMembershipAction a) {
                 r.membership = a.membership;
                 return r;
+            },
+            [&](ChangeInviteStateAction a) {
+                r.inviteState = merge(immer::map<KeyOfState, Event>{}, a.events, keyOfState);
+                return r;
             }
             );
     }

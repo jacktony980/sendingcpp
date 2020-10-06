@@ -44,6 +44,7 @@ namespace Kazv
 
         std::string roomId;
         immer::map<KeyOfState, Event> stateEvents;
+        immer::map<KeyOfState, Event> inviteState;
         immer::flex_vector<std::string> timeline;
         immer::map<std::string, Event> messages;
         immer::map<std::string, Event> accountData;
@@ -78,12 +79,18 @@ namespace Kazv
             Membership membership;
         };
 
+        struct ChangeInviteStateAction
+        {
+            immer::flex_vector<Event> events;
+        };
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,
             PrependTimelineAction,
             AddAccountDataAction,
-            ChangeMembershipAction
+            ChangeMembershipAction,
+            ChangeInviteStateAction
             >;
 
         static Room update(Room r, Action a);
@@ -93,6 +100,7 @@ namespace Kazv
     {
         return a.roomId == b.roomId
             && a.stateEvents == b.stateEvents
+            && a.inviteState == b.inviteState
             && a.timeline == b.timeline
             && a.messages == b.messages
             && a.accountData == b.accountData
@@ -130,6 +138,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(Room::PrependTimelineAction);
     LAGER_CEREAL_STRUCT(Room::AddAccountDataAction);
     LAGER_CEREAL_STRUCT(Room::ChangeMembershipAction);
+    LAGER_CEREAL_STRUCT(Room::ChangeInviteStateAction);
     LAGER_CEREAL_STRUCT(RoomList::UpdateRoomAction);
 #endif
 
@@ -138,6 +147,7 @@ namespace Kazv
     {
         ar(r.roomId,
            r.stateEvents,
+           r.inviteState,
            r.timeline,
            r.messages,
            r.accountData,

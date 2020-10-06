@@ -19,6 +19,7 @@
 
 #include "csapi/create_room.hpp"
 #include "csapi/inviting.hpp"
+#include "csapi/joining.hpp"
 #include "debug.hpp"
 
 #include "client/client.hpp"
@@ -135,6 +136,28 @@ namespace Kazv
                             return;
                         }
                         dbgClient << "Inviting user successful" << std::endl;
+                    });
+            }
+        };
+    }
+
+    ClientResult updateClient(Client m, JoinRoomByIdAction a)
+    {
+        return {
+            m,
+            [=](auto &&ctx) {
+                auto job = m.job<JoinRoomByIdJob>().make(a.roomId);
+
+                auto &jobHandler = getJobHandler(ctx);
+                jobHandler.fetch(
+                    job,
+                    [=](BaseJob::Response r) {
+                        if (! JoinRoomByIdJob::success(r)) {
+                            // Error
+                            dbgClient << "Error joining room" << std::endl;
+                            return;
+                        }
+                        dbgClient << "Successfully joined room" << std::endl;
                     });
             }
         };

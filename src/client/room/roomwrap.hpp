@@ -120,6 +120,8 @@ namespace Kazv
 
         /*lager::reader<std::string>*/
         KAZV_WRAP_ATTR(Room, m_room, roomId);
+        /*lager::reader<Room::Membership>*/
+        KAZV_WRAP_ATTR(Room, m_room, membership);
 
         inline void sendMessage(Event msg) const {
             using namespace CursorOp;

@@ -41,6 +41,7 @@ static std::regex roomNameRegex("room name ([^\\s]+) (.+)");
 static std::regex roomTopicRegex("room topic ([^\\s]+) (.+)");
 static std::regex roomNewRegex("room new (.+)");
 static std::regex roomInviteRegex("room invite ([^\\s]+) (.+)");
+static std::regex roomJoinRegex("room join (.+)");
 
 void parse(std::string l, Kazv::ClientWrap c)
 {
@@ -130,6 +131,9 @@ void parse(std::string l, Kazv::ClientWrap c)
         auto room = c.room(roomId);
 
         room.invite(userId);
+    } else if (std::regex_match(l, m, roomJoinRegex)) {
+        auto roomId = m[1].str();
+        c.joinRoomById(roomId);
     } else {
         // no valid action, display help
         std::cout << "Commands:\n"
@@ -142,6 +146,7 @@ void parse(std::string l, Kazv::ClientWrap c)
                   << "room topic <roomId> <new topic> -- Set room topic\n"
                   << "room new <name> -- Create new room\n"
                   << "room invite <roomId> <userId> -- Invite user to room\n"
+                  << "room join <roomId> -- Join room by id\n"
                   << "\n";
 
     }
