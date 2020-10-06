@@ -16,11 +16,11 @@ libkazv support the following functionalities:
 - Sending messages
 - Send room state events
 - Create rooms
+- Room invites
 
 These functionalities are currently not supported:
 
 - Join rooms
-- Room invites
 - Typing notifications
 - Receipts and fully-read markers
 - Setting presence

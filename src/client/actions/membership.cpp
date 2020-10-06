@@ -17,12 +17,14 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "client/client.hpp"
-
 #include "csapi/create_room.hpp"
+#include "csapi/inviting.hpp"
 #include "debug.hpp"
 
+#include "client/client.hpp"
+#include "client/util.hpp"
 #include "client/cursorutil.hpp"
+
 #include "membership.hpp"
 
 namespace Kazv
@@ -111,6 +113,28 @@ namespace Kazv
                             }
                         }
                         // if success, nothing to do
+                    });
+            }
+        };
+    }
+
+    ClientResult updateClient(Client m, InviteToRoomAction a)
+    {
+        return {
+            m,
+            [=](auto &&ctx) {
+                auto job = m.job<InviteUserJob>().make(a.roomId, a.userId);
+
+                auto &jobHandler = getJobHandler(ctx);
+                jobHandler.fetch(
+                    job,
+                    [=](BaseJob::Response r) {
+                        if (! InviteUserJob::success(r)) {
+                            // Error
+                            dbgClient << "Error inviting user" << std::endl;
+                            return;
+                        }
+                        dbgClient << "Inviting user successful" << std::endl;
                     });
             }
         };

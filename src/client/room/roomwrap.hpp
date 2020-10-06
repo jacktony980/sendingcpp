@@ -178,6 +178,11 @@ namespace Kazv
             sendStateEvent(e);
         }
 
+        inline void invite(std::string userId) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(InviteToRoomAction{+roomId(), userId});
+        }
+
     private:
         lager::reader<Room> m_room;
         lager::context<ClientAction> m_ctx;

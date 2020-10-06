@@ -24,4 +24,5 @@
 namespace Kazv
 {
     ClientResult updateClient(Client m, CreateRoomAction a);
+    ClientResult updateClient(Client m, InviteToRoomAction a);
 }
