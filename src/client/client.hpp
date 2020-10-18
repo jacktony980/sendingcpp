@@ -203,6 +203,11 @@ namespace Kazv
         std::string roomId;
     };
 
+    struct EmitKazvEventsAction
+    {
+        KazvEventList events;
+    };
+
     inline bool operator==(Client a, Client b)
     {
         return a.serverUrl == b.serverUrl
@@ -233,6 +238,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(LoadRoomStatesAction);
     LAGER_CEREAL_STRUCT(InviteToRoomAction);
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
+    LAGER_CEREAL_STRUCT(EmitKazvEventsAction);
 #endif
 
     template<class Archive>

@@ -23,6 +23,8 @@
 #include "types.hpp"
 #include "event.hpp"
 
+#include "client/room/room.hpp"
+
 namespace Kazv
 {
     struct LoginSuccessful {};
@@ -43,6 +45,16 @@ namespace Kazv
         return a.event == b.event;
     }
 
+    struct ReceivingRoomStateEvent {
+        Event event;
+        std::string roomId;
+    };
+
+    inline bool operator==(ReceivingRoomStateEvent a, ReceivingRoomStateEvent b)
+    {
+        return a.event == b.event && a.roomId == b.roomId;
+    }
+
     struct ReceivingRoomTimelineEvent {
         Event event;
         std::string roomId;
@@ -53,6 +65,25 @@ namespace Kazv
         return a.event == b.event && a.roomId == b.roomId;
     }
 
+    struct ReceivingRoomAccountDataEvent {
+        Event event;
+        std::string roomId;
+    };
+
+    inline bool operator==(ReceivingRoomAccountDataEvent a, ReceivingRoomAccountDataEvent b)
+    {
+        return a.event == b.event && a.roomId == b.roomId;
+    }
+
+    struct RoomMembershipChanged {
+        Room::Membership membership;
+        std::string roomId;
+    };
+
+    inline bool operator==(RoomMembershipChanged a, RoomMembershipChanged b)
+    {
+        return a.membership == b.membership && a.roomId == b.roomId;
+    }
 
     using KazvEvent = std::variant<
         // use this for placeholder of "no events yet"
@@ -61,8 +92,13 @@ namespace Kazv
         LoginSuccessful,
         ReceivingPresenceEvent,
         ReceivingAccountDataEvent,
-        ReceivingRoomTimelineEvent
+        ReceivingRoomTimelineEvent,
+        ReceivingRoomStateEvent,
+        RoomMembershipChanged,
+        ReceivingRoomAccountDataEvent
         >;
+
+    using KazvEventList = immer::flex_vector<KazvEvent>;
 
     class EventInterface
     {

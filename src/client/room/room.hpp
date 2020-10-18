@@ -48,7 +48,7 @@ namespace Kazv
         immer::flex_vector<std::string> timeline;
         immer::map<std::string, Event> messages;
         immer::map<std::string, Event> accountData;
-        Membership membership;
+        Membership membership{};
         std::string paginateBackToken;
         /// whether this room has earlier events to be fetched
         bool canPaginateBack{true};
@@ -114,6 +114,8 @@ namespace Kazv
         immer::map<std::string, Room> rooms;
 
         inline auto at(std::string id) const { return rooms.at(id); }
+        inline auto operator[](std::string id) const { return rooms[id]; }
+        inline bool has(std::string id) const { return rooms.find(id); }
 
         struct UpdateRoomAction
         {

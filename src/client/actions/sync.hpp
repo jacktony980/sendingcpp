@@ -25,4 +25,5 @@ namespace Kazv
 {
     ClientResult updateClient(Client m, SyncAction a);
     ClientResult updateClient(Client m, LoadSyncResultAction a);
+    ClientResult updateClient(Client m, EmitKazvEventsAction a);
 }
