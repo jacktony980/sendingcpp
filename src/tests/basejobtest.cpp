@@ -23,8 +23,8 @@
 #include <iostream>
 #include <future>
 
-#include <job/basejob.hpp>
-#include <job/cprjobhandler.hpp>
+#include <basejob.hpp>
+#include <cprjobhandler.hpp>
 #include "tests.hpp"
 
 using namespace Kazv;

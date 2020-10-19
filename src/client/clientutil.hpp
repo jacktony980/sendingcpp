@@ -25,7 +25,8 @@
 #include <immer/map.hpp>
 #include <lager/deps.hpp>
 #include <boost/container_hash/hash.hpp>
-#include "job/jobinterface.hpp"
+
+#include <jobinterface.hpp>
 
 namespace Kazv
 {

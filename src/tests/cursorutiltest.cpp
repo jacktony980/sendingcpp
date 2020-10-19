@@ -33,7 +33,7 @@
 #include <lager/reader.hpp>
 #include <lager/event_loop/manual.hpp>
 
-#include <client/cursorutil.hpp>
+#include <cursorutil.hpp>
 
 using namespace Kazv;
 

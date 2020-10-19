@@ -22,25 +22,24 @@
 
 #include <lager/debug/cereal/struct.hpp>
 #include <lager/debug/cereal/immer_flex_vector.hpp>
-#include "client/data/cereal_map.hpp"
 
 #include <string>
 #include <variant>
 #include <immer/flex_vector.hpp>
 #include <immer/map.hpp>
 
-#include "csapi/sync.hpp"
-#include "event.hpp"
-#include "client/util.hpp"
+#include <csapi/sync.hpp>
+#include <event.hpp>
+
+#include "data/cereal_map.hpp"
+
+#include "clientutil.hpp"
 
 namespace Kazv
 {
     struct Room
     {
-        enum Membership
-        {
-            Invite, Join, Leave
-        };
+        using Membership = RoomMembership;
 
         std::string roomId;
         immer::map<KeyOfState, Event> stateEvents;

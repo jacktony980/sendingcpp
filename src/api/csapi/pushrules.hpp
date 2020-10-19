@@ -6,8 +6,8 @@
 
 #include "basejob.hpp"
 #include "csapi/definitions/push_condition.hpp"
-#include "csapi/definitions/push_rule.hpp"
 #include "csapi/definitions/push_ruleset.hpp"
+#include "csapi/definitions/push_rule.hpp"
 
 namespace Kazv {
 

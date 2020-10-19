@@ -7,8 +7,8 @@
 #include "basejob.hpp"
 #include "csapi/definitions/request_msisdn_validation.hpp"
 #include "csapi/definitions/request_token_response.hpp"
-#include "csapi/definitions/request_email_validation.hpp"
 #include "csapi/definitions/auth_data.hpp"
+#include "csapi/definitions/request_email_validation.hpp"
 
 namespace Kazv {
 

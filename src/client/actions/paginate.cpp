@@ -25,11 +25,11 @@
 
 #include <lager/util.hpp>
 
-#include "types.hpp"
-#include "debug.hpp"
-#include "csapi/message_pagination.hpp"
+#include <types.hpp>
+#include <debug.hpp>
+#include <csapi/message_pagination.hpp>
 
-#include "client/cursorutil.hpp"
+#include <cursorutil.hpp>
 
 #include "paginate.hpp"
 

@@ -17,14 +17,14 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "csapi/create_room.hpp"
-#include "csapi/inviting.hpp"
-#include "csapi/joining.hpp"
-#include "debug.hpp"
+#include <csapi/create_room.hpp>
+#include <csapi/inviting.hpp>
+#include <csapi/joining.hpp>
+#include <debug.hpp>
 
-#include "client/client.hpp"
-#include "client/util.hpp"
-#include "client/cursorutil.hpp"
+#include "client.hpp"
+#include "clientutil.hpp"
+#include "cursorutil.hpp"
 
 #include "membership.hpp"
 

@@ -18,12 +18,13 @@
  */
 
 
-#include "csapi/rooms.hpp"
-#include "csapi/room_state.hpp"
+#include <csapi/rooms.hpp>
+#include <csapi/room_state.hpp>
 
-#include "util.hpp"
-#include "client/cursorutil.hpp"
-#include "debug.hpp"
+#include <debug.hpp>
+
+#include "clientutil.hpp"
+#include "cursorutil.hpp"
 
 #include "states.hpp"
 

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "client/client.hpp"
+#include "client.hpp"
 
 namespace Kazv
 {

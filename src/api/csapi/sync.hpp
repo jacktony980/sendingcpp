@@ -5,10 +5,10 @@
 #pragma once
 
 #include "basejob.hpp"
-#include "csapi/definitions/event-schemas/schema/stripped_state.hpp"
+#include "event.hpp"
 #include "csapi/definitions/event_batch.hpp"
-#include "csapi/definitions/timeline_batch.hpp"
 #include "csapi/definitions/state_event_batch.hpp"
+#include "csapi/definitions/timeline_batch.hpp"
 
 namespace Kazv {
 
@@ -158,7 +158,7 @@ public:
     struct InviteState
         {
 /// The StrippedState events that form the invite state.
-          immer::array<StrippedState> events;
+          EventList events;
         
         };
 

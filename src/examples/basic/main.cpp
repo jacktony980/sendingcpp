@@ -30,9 +30,9 @@
 #include <lager/debug/http_server.hpp>
 #endif
 
-#include <job/cprjobhandler.hpp>
-#include <eventemitter/lagerstoreeventemitter.hpp>
-#include <client/sdk.hpp>
+#include <cprjobhandler.hpp>
+#include <lagerstoreeventemitter.hpp>
+#include <sdk.hpp>
 
 #include "commands.hpp"
 

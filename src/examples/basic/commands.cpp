@@ -28,7 +28,7 @@
 #include <immer/flex_vector_transient.hpp>
 #include <immer/flex_vector.hpp>
 
-#include <client/clientwrap.hpp>
+#include <clientwrap.hpp>
 #include "commands.hpp"
 
 using namespace std::string_literals;

@@ -81,6 +81,7 @@ analyzer:
         title: MsisdnValidationData
     - /_filter.yaml$/: # Event/RoomEventFilters do NOT need Omittable<>
     - /public_rooms_response.yaml$/: { _inline: true }
+    - '/event-schemas/schema/': { type: Event, imports: "event.hpp" }
     - //: *UseOmittable # Also apply "avoidCopy" to all other ref'ed types
   - schema:
     - getTurnServer<: *Json # It's used as an opaque JSON object
@@ -102,6 +103,7 @@ analyzer:
 #    - /state_event.yaml$/: StateEvents
 #    - /room_event.yaml$/: RoomEvents
     - /event.yaml$/: EventList
+    - '/event-schemas/schema/': EventList
     - //: "immer::array<{{1}}>"
   - map: # `additionalProperties` in OpenAPI
     - RoomState:

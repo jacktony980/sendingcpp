@@ -32,10 +32,11 @@
 #include <lager/debug/cereal/struct.hpp>
 #endif
 
+#include <csapi/sync.hpp>
+#include <jobinterface.hpp>
+#include <eventinterface.hpp>
+
 #include "clientfwd.hpp"
-#include "csapi/sync.hpp"
-#include "job/jobinterface.hpp"
-#include "eventemitter/eventinterface.hpp"
 #include "error.hpp"
 #include "room/room.hpp"
 

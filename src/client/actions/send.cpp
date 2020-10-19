@@ -17,10 +17,10 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "csapi/room_send.hpp"
+#include <csapi/room_send.hpp>
 
-#include "debug.hpp"
-#include "types.hpp"
+#include <debug.hpp>
+#include <types.hpp>
 
 #include "send.hpp"
 

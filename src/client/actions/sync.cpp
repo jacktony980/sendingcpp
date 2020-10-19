@@ -21,11 +21,11 @@
 #include <lager/util.hpp>
 #include <zug/transducer/map.hpp>
 
-#include "csapi/sync.hpp"
-#include "job/jobinterface.hpp"
-#include "debug.hpp"
+#include <csapi/sync.hpp>
+#include <jobinterface.hpp>
+#include <debug.hpp>
 
-#include "client/cursorutil.hpp"
+#include "cursorutil.hpp"
 
 #include "sync.hpp"
 
@@ -144,13 +144,7 @@ namespace Kazv
             [=](auto id, auto room) {
                 updateRoomImpl(id, Room::ChangeMembershipAction{Room::Membership::Invite});
                 if (room.inviteState) {
-                    auto events = intoImmer(EventList{},
-                                            zug::map([](StrippedState s) {
-                                                json j(s);
-                                                return Event(j);
-                                            }),
-                                            room.inviteState.value().events);
-                    updateRoomImpl(id, Room::ChangeInviteStateAction{events});
+                    updateRoomImpl(id, Room::ChangeInviteStateAction{room.inviteState.value().events});
                 }
             };
 

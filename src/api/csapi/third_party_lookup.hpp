@@ -6,8 +6,8 @@
 
 #include "basejob.hpp"
 #include "csapi/../application-service/definitions/user.hpp"
-#include "csapi/../application-service/definitions/location.hpp"
 #include "csapi/../application-service/definitions/protocol.hpp"
+#include "csapi/../application-service/definitions/location.hpp"
 
 namespace Kazv {
 

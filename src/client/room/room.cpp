@@ -23,7 +23,7 @@
 #include <zug/transducer/map.hpp>
 
 #include "room.hpp"
-#include "client/cursorutil.hpp"
+#include "cursorutil.hpp"
 
 
 namespace Kazv

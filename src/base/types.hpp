@@ -122,6 +122,11 @@ namespace Kazv
     }
 
     constexpr detail::DefaultValT DEFVAL;
+
+    enum RoomMembership
+    {
+        Invite, Join, Leave
+    };
 }
 
 namespace nlohmann {
@@ -202,5 +207,4 @@ namespace nlohmann {
             }
         }
     };
-
 }

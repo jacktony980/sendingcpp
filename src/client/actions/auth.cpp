@@ -17,10 +17,10 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "debug.hpp"
-#include "job/jobinterface.hpp"
-#include "eventemitter/eventinterface.hpp"
-#include "csapi/login.hpp"
+#include <debug.hpp>
+#include <jobinterface.hpp>
+#include <eventinterface.hpp>
+#include <csapi/login.hpp>
 
 #include "auth.hpp"
 

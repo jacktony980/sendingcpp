@@ -202,14 +202,14 @@ GetMembersByRoomJob::GetMembersByRoomJob(
 
 
     
-    immer::array<TheCurrentMembershipStateOfAUserInTheRoom> GetMembersByRoomJob::chunk(Response r)
+    EventList GetMembersByRoomJob::chunk(Response r)
     {
     if (jsonBody(r).get()
     .contains("chunk"s)) {
     return
     jsonBody(r).get()["chunk"s]
-    /*.get<immer::array<TheCurrentMembershipStateOfAUserInTheRoom>>()*/;}
-    else { return immer::array<TheCurrentMembershipStateOfAUserInTheRoom>(  );}
+    /*.get<EventList>()*/;}
+    else { return EventList(  );}
     }
 
 

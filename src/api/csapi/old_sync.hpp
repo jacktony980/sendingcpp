@@ -5,7 +5,7 @@
 #pragma once
 
 #include "basejob.hpp"
-#include "csapi/definitions/event-schemas/schema/m.room.member.hpp"
+#include "event.hpp"
 
 namespace Kazv {
 
@@ -129,7 +129,7 @@ public:
 /// The user's membership state in this room.
           std::string membership;
 /// The invite event if ``membership`` is ``invite``
-          std::optional<TheCurrentMembershipStateOfAUserInTheRoom> invite;
+          Event invite;
 /// The pagination chunk for this room.
           std::optional<PaginationChunk> messages;
 /// If the user is a member of the room this will be the

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "basejob.hpp"
-#include "csapi/definitions/event-schemas/schema/m.room.member.hpp"
+#include "event.hpp"
 
 namespace Kazv {
 
@@ -239,7 +239,7 @@ public:
 
     
 /// Get the list of members for this room.
-static immer::array<TheCurrentMembershipStateOfAUserInTheRoom> chunk(Response r);
+static EventList chunk(Response r);
 
     static BaseJob::Query buildQuery(
     std::string at, std::string membership, std::string notMembership);

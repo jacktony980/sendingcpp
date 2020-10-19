@@ -5,5 +5,6 @@ if [[ -z "$GTAD" || -z "$CSAPIDIR" ]]; then
     exit 1
 fi
 
-cd "$(dirname "$0")/src" &&
-"$GTAD" --config ../gtad/gtad.yaml --out csapi "$CSAPIDIR" key_backup.yaml-
+scriptDir="$(dirname "$(realpath "$0")")"
+cd "$scriptDir/src/api" &&
+"$GTAD" --config "$scriptDir/gtad/gtad.yaml" --out csapi "$CSAPIDIR" key_backup.yaml-

@@ -23,8 +23,6 @@
 #include "types.hpp"
 #include "event.hpp"
 
-#include "client/room/room.hpp"
-
 namespace Kazv
 {
     struct LoginSuccessful {};
@@ -76,7 +74,7 @@ namespace Kazv
     }
 
     struct RoomMembershipChanged {
-        Room::Membership membership;
+        RoomMembership membership;
         std::string roomId;
     };
 
