@@ -62,7 +62,7 @@ namespace Kazv
             });
     }
 
-    void CprJobHandler::fetch(const BaseJob &job, std::function<void(BaseJob::Response)> userCallback)
+    void CprJobHandler::fetch(const BaseJob &job, std::function<void(Response)> userCallback)
     {
         cpr::Url url{job.url()};
         cpr::Body body(job.requestBody());

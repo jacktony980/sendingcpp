@@ -35,6 +35,22 @@
 
 namespace Kazv
 {
+    using Header = immer::box<std::map<std::string, std::string>>;
+
+    using BytesBody = Bytes;
+    using JsonBody = JsonWrap;
+    struct EmptyBody {};
+    using Body = std::variant<EmptyBody, JsonBody, BytesBody>;
+
+    struct Response {
+        using StatusCode = int;
+        StatusCode statusCode;
+        Body body;
+        Header header;
+        std::string errorCode() const;
+        std::string errorMessage() const;
+    };
+
     class BaseJob
     {
     public:
@@ -59,23 +75,16 @@ namespace Kazv
             }
         };
 
-        using BytesBody = Bytes;
-        using JsonBody = JsonWrap;
-        struct EmptyBody {};
-        using Body = std::variant<EmptyBody, JsonBody, BytesBody>;
-
         static constexpr bool isBodyJson(const Body &body) {
             return std::holds_alternative<JsonBody>(body);
         };
 
-        using Header = immer::box<std::map<std::string, std::string>>;
-
-        using StatusCode = int;
-        struct Response {
-            StatusCode statusCode;
-            Body body;
-            Header header;
-        };
+        using Body = ::Kazv::Body;
+        using BytesBody = ::Kazv::BytesBody;
+        using JsonBody = ::Kazv::JsonBody;
+        using EmptyBody = ::Kazv::EmptyBody;
+        using Header = ::Kazv::Header;
+        using Response = ::Kazv::Response;
 
         static constexpr bool success(const Response &res) {
             return res.statusCode < 400;

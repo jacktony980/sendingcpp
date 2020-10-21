@@ -17,10 +17,10 @@ libkazv support the following functionalities:
 - Send room state events
 - Create rooms
 - Room invites
+- Join rooms
 
 These functionalities are currently not supported:
 
-- Join rooms
 - Typing notifications
 - Receipts and fully-read markers
 - Setting presence
@@ -98,9 +98,9 @@ libkazv offers the following CMake options:
   as a subproject.
 
 libkazv can be incorporated into your project using CMake `FetchContent()`.
-It has two libraries you can link to:
+It has a few libraries you can link to:
 
-- `libkazv::kazv` is the one that contains API call definitions
+- `libkazv::kazvall` is the one that contains API call definitions
   and client logic. It does not, however, define how the jobs are
   fetched.
 - `libkazv::kazvjob` is a tiny library that provides async

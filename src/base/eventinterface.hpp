@@ -19,85 +19,10 @@
 
 
 #pragma once
-#include <variant>
-#include "types.hpp"
-#include "event.hpp"
+#include "kazvevents.hpp"
 
 namespace Kazv
 {
-    struct LoginSuccessful {};
-    inline bool operator==(LoginSuccessful, LoginSuccessful)
-    {
-        return true;
-    }
-
-    struct ReceivingPresenceEvent { Event event; };
-    inline bool operator==(ReceivingPresenceEvent a, ReceivingPresenceEvent b)
-    {
-        return a.event == b.event;
-    }
-
-    struct ReceivingAccountDataEvent { Event event; };
-    inline bool operator==(ReceivingAccountDataEvent a, ReceivingAccountDataEvent b)
-    {
-        return a.event == b.event;
-    }
-
-    struct ReceivingRoomStateEvent {
-        Event event;
-        std::string roomId;
-    };
-
-    inline bool operator==(ReceivingRoomStateEvent a, ReceivingRoomStateEvent b)
-    {
-        return a.event == b.event && a.roomId == b.roomId;
-    }
-
-    struct ReceivingRoomTimelineEvent {
-        Event event;
-        std::string roomId;
-    };
-
-    inline bool operator==(ReceivingRoomTimelineEvent a, ReceivingRoomTimelineEvent b)
-    {
-        return a.event == b.event && a.roomId == b.roomId;
-    }
-
-    struct ReceivingRoomAccountDataEvent {
-        Event event;
-        std::string roomId;
-    };
-
-    inline bool operator==(ReceivingRoomAccountDataEvent a, ReceivingRoomAccountDataEvent b)
-    {
-        return a.event == b.event && a.roomId == b.roomId;
-    }
-
-    struct RoomMembershipChanged {
-        RoomMembership membership;
-        std::string roomId;
-    };
-
-    inline bool operator==(RoomMembershipChanged a, RoomMembershipChanged b)
-    {
-        return a.membership == b.membership && a.roomId == b.roomId;
-    }
-
-    using KazvEvent = std::variant<
-        // use this for placeholder of "no events yet"
-        // otherwise the first LoginSuccessful event cannot be detected
-        std::monostate,
-        LoginSuccessful,
-        ReceivingPresenceEvent,
-        ReceivingAccountDataEvent,
-        ReceivingRoomTimelineEvent,
-        ReceivingRoomStateEvent,
-        RoomMembershipChanged,
-        ReceivingRoomAccountDataEvent
-        >;
-
-    using KazvEventList = immer::flex_vector<KazvEvent>;
-
     class EventInterface
     {
     public:

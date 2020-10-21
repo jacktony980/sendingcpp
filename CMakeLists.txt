@@ -9,6 +9,11 @@ endif()
 
 project(libkazv)
 
+set(libkazv_VERSION_MAJOR 0)
+set(libkazv_VERSION_MINOR 0)
+set(libkazv_VERSION_PATCH 0)
+set(libkazv_VERSION_STRING ${libkazv_VERSION_MAJOR}.${libkazv_VERSION_MINOR}.${libkazv_VERSION_PATCH})
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")

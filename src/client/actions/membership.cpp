@@ -141,6 +141,34 @@ namespace Kazv
         };
     }
 
+    ClientResult updateClient(Client m, JoinRoomAction a)
+    {
+        return {
+            m,
+            [=](auto &&ctx) {
+                auto job = m.job<JoinRoomJob>().make(a.roomIdOrAlias, a.serverName);
+
+                auto &jobHandler = getJobHandler(ctx);
+                jobHandler.fetch(
+                    job,
+                    [=](BaseJob::Response r) {
+                        if (! JoinRoomJob::success(r)) {
+                            // Error
+                            auto &eventEmitter = getEventEmitter(ctx);
+                            eventEmitter.emit(FailedToJoinRoom{
+                                    a.roomIdOrAlias,
+                                    r.errorCode(),
+                                    r.errorMessage()
+                                });
+                            dbgClient << "Error joining room" << std::endl;
+                            return;
+                        }
+                        dbgClient << "Successfully joined room" << std::endl;
+                    });
+            }
+        };
+    }
+
     ClientResult updateClient(Client m, JoinRoomByIdAction a)
     {
         return {

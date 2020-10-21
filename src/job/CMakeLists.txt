@@ -7,6 +7,8 @@ set(libkazvjob_SRCS
 
 add_library(kazvjob ${libkazvjob_SRCS})
 add_library(libkazv::kazvjob ALIAS kazvjob)
+set_target_properties(kazvjob PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION 0)
+
 target_link_libraries(kazvjob PUBLIC Threads::Threads kazvbase)
 target_link_libraries_system(kazvjob PUBLIC
   cpr::cpr

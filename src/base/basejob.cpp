@@ -151,4 +151,31 @@ namespace Kazv
         }
         return false;
     }
+
+    std::string Response::errorCode() const
+    {
+        // https://matrix.org/docs/spec/client_server/latest#api-standards
+        if (BaseJob::isBodyJson(body)) {
+            auto jb = jsonBody(*this);
+            if (jb.get().contains("errcode")) {
+                auto code = jb.get()["errcode"].get<std::string>();
+                if (code != "M_UNKNOWN") {
+                    return code;
+                }
+            }
+        }
+        return std::to_string(statusCode);
+    }
+
+    std::string Response::errorMessage() const
+    {
+        if (BaseJob::isBodyJson(body)) {
+            auto jb = jsonBody(*this);
+            if (jb.get().contains("error")) {
+                auto msg = jb.get()["error"].get<std::string>();
+                return msg;
+            }
+        }
+        return "";
+    }
 }

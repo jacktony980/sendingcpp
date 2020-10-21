@@ -27,6 +27,7 @@
 #include <boost/container_hash/hash.hpp>
 
 #include <jobinterface.hpp>
+#include <eventinterface.hpp>
 
 namespace Kazv
 {
@@ -75,6 +76,12 @@ namespace Kazv
     JobInterface &getJobHandler(Context &&ctx)
     {
         return lager::get<JobInterface &>(std::forward<Context>(ctx));
+    }
+
+    template<class Context>
+    EventInterface &getEventEmitter(Context &&ctx)
+    {
+        return lager::get<EventInterface &>(std::forward<Context>(ctx));
     }
 }
 

@@ -6,6 +6,7 @@ file(GLOB_RECURSE kazvapi_SRCS ${FULL_CSAPI_DIR}/*.cpp)
 
 add_library(kazvapi ${kazvapi_SRCS})
 add_library(libkazv::kazvapi ALIAS kazvapi)
+set_target_properties(kazvapi PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION 0)
 
 target_link_libraries(kazvapi PUBLIC kazvbase)
 

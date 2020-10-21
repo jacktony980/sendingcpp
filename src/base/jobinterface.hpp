@@ -33,7 +33,7 @@ namespace Kazv
         virtual void setInterval(std::function<void()> func, int ms) = 0;
         /// makes an async fetch.
         /// callback will not block the current thread.
-        virtual void fetch(const BaseJob &job, std::function<void(BaseJob::Response)> callback) = 0;
+        virtual void fetch(const BaseJob &job, std::function<void(Response)> callback) = 0;
     };
 
 }
