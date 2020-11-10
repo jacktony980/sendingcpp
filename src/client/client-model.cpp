@@ -24,7 +24,7 @@
 
 #include <immer/flex_vector_transient.hpp>
 
-#include "client.hpp"
+#include "client-model.hpp"
 
 #include "actions/states.hpp"
 #include "actions/auth.hpp"
@@ -36,7 +36,7 @@
 
 namespace Kazv
 {
-    auto Client::update(Client m, Action a) -> Result
+    auto ClientModel::update(ClientModel m, Action a) -> Result
     {
         return lager::match(std::move(a))(
             [&](Error::Action a) -> Result {
@@ -44,8 +44,8 @@ namespace Kazv
                 return {std::move(m), lager::noop};
             },
 
-            [&](RoomList::Action a) -> Result {
-                m.roomList = RoomList::update(std::move(m.roomList), a);
+            [&](RoomListAction a) -> Result {
+                m.roomList = RoomListModel::update(std::move(m.roomList), a);
                 return {std::move(m), lager::noop};
             },
             [&](auto a) -> decltype(updateClient(m, a)) {

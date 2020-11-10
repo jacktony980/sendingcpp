@@ -38,7 +38,7 @@
 
 #include "clientfwd.hpp"
 #include "error.hpp"
-#include "room/room.hpp"
+#include "room/room-model.hpp"
 
 namespace Kazv
 {
@@ -57,7 +57,7 @@ namespace Kazv
         TrustedPrivateChat,
     };
 
-    struct Client
+    struct ClientModel
     {
         std::string serverUrl;
         std::string userId;
@@ -68,7 +68,7 @@ namespace Kazv
 
         std::string syncToken;
 
-        RoomList roomList;
+        RoomListModel roomList;
         immer::map<std::string /* sender */, Event> presence;
         immer::map<std::string /* type */, Event> accountData;
 
@@ -105,7 +105,7 @@ namespace Kazv
         using Effect = ClientEffect;
         using Result = ClientResult;
 
-        static Result update(Client m, Action a);
+        static Result update(ClientModel m, Action a);
     };
 
     // actions:
@@ -215,7 +215,7 @@ namespace Kazv
         immer::array<std::string> serverName;
     };
 
-    inline bool operator==(Client a, Client b)
+    inline bool operator==(ClientModel a, ClientModel b)
     {
         return a.serverUrl == b.serverUrl
             && a.userId == b.userId
@@ -250,7 +250,7 @@ namespace Kazv
 #endif
 
     template<class Archive>
-    void serialize(Archive &ar, Client &m, std::uint32_t const /*version*/)
+    void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)
     {
         ar(m.serverUrl, m.userId, m.token, m.deviceId, m.loggedIn,
            m.error,
@@ -261,4 +261,4 @@ namespace Kazv
            m.nextTxnId);
     }
 }
-CEREAL_CLASS_VERSION(Kazv::Client, 0);
+CEREAL_CLASS_VERSION(Kazv::ClientModel, 0);

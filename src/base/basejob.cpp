@@ -127,7 +127,7 @@ namespace Kazv
         return m_d->method;
     }
 
-    JsonWrap jsonBody(const BaseJob::Response &res)
+    JsonWrap Response::jsonBody() const
     {
         return std::get<JsonWrap>(res.body);
     }

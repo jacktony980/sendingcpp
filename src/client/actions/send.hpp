@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "client.hpp"
+#include "client-model.hpp"
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, SendMessageAction a);
+    ClientResult updateClient(ClientModel m, SendMessageAction a);
 }

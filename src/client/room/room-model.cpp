@@ -22,13 +22,13 @@
 #include <zug/sequence.hpp>
 #include <zug/transducer/map.hpp>
 
-#include "room.hpp"
+#include "room-model.hpp"
 #include "cursorutil.hpp"
 
 
 namespace Kazv
 {
-    Room Room::update(Room r, Action a)
+    RoomModel RoomModel::update(RoomModel r, Action a)
     {
         return lager::match(std::move(a))(
             [&](AddStateEventsAction a) {
@@ -67,15 +67,15 @@ namespace Kazv
             );
     }
 
-    RoomList RoomList::update(RoomList l, Action a)
+    RoomListModel RoomListModel::update(RoomListModel l, Action a)
     {
         return lager::match(std::move(a))(
             [=](UpdateRoomAction a) mutable {
                 l.rooms = std::move(l.rooms)
                     .update(a.roomId,
-                            [=](Room oldRoom) {
+                            [=](RoomModel oldRoom) {
                                 oldRoom.roomId = a.roomId; // in case it is a new room
-                                return Room::update(std::move(oldRoom), a.roomAction);
+                                return RoomModel::update(std::move(oldRoom), a.roomAction);
                             });
                 return l;
             }

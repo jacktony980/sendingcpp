@@ -40,8 +40,8 @@ namespace Kazv
     // after that action, the sync will still give continuous
     // data about the events. (Sync will not "skip" events)
     // This is because this function takes the sync token
-    // from the Client model it is passed.
-    ClientResult updateClient(Client m, SyncAction)
+    // from the ClientModel model it is passed.
+    ClientResult updateClient(ClientModel m, SyncAction)
     {
         return {
             m,
@@ -97,60 +97,60 @@ namespace Kazv
     }
 
 
-    static KazvEventList loadRoomsFromSyncInPlace(Client &m, SyncJob::Rooms rooms)
+    static KazvEventList loadRoomsFromSyncInPlace(ClientModel &m, SyncJob::Rooms rooms)
     {
         auto l = m.roomList;
         auto eventsToEmit = KazvEventList{};
 
         auto updateRoomImpl =
             [&l](auto id, auto a) {
-                l = RoomList::update(
+                l = RoomListModel::update(
                     std::move(l),
-                    RoomList::UpdateRoomAction{id, a});
+                    UpdateRoomAction{id, a});
             };
         auto updateSingleRoom =
             [&, updateRoomImpl](auto id, auto room, auto membership) {
                 if (!l.has(id) || l[id].membership != membership) {
                     eventsToEmit = eventsToEmit.push_back(RoomMembershipChanged{membership, id});
                 }
-                updateRoomImpl(id, Room::ChangeMembershipAction{membership});
+                updateRoomImpl(id, ChangeMembershipAction{membership});
                 eventsToEmit = std::move(eventsToEmit) + intoImmer(
                     KazvEventList{},
                     zug::map([=](Event e) -> KazvEvent { return ReceivingRoomTimelineEvent{e, id}; }),
                     room.timeline.events);
-                updateRoomImpl(id, Room::AppendTimelineAction{room.timeline.events});
+                updateRoomImpl(id, AppendTimelineAction{room.timeline.events});
                 if (room.state) {
                     eventsToEmit = std::move(eventsToEmit) + intoImmer(
                         KazvEventList{},
                         zug::map([=](Event e) -> KazvEvent { return ReceivingRoomStateEvent{e, id}; }),
                         room.state.value().events);
-                    updateRoomImpl(id, Room::AddStateEventsAction{room.state.value().events});
+                    updateRoomImpl(id, AddStateEventsAction{room.state.value().events});
                 }
                 if (room.accountData) {
                     eventsToEmit = std::move(eventsToEmit) + intoImmer(
                         KazvEventList{},
                         zug::map([=](Event e) -> KazvEvent { return ReceivingRoomAccountDataEvent{e, id}; }),
                         room.state.value().events);
-                    updateRoomImpl(id, Room::AddAccountDataAction{room.accountData.value().events});
+                    updateRoomImpl(id, AddAccountDataAction{room.accountData.value().events});
                 }
             };
 
         auto updateJoinedRoom =
             [=](auto id, auto room) {
-                updateSingleRoom(id, room, Room::Membership::Join);
+                updateSingleRoom(id, room, RoomMembership::Join);
             };
 
         auto updateInvitedRoom =
             [=](auto id, auto room) {
-                updateRoomImpl(id, Room::ChangeMembershipAction{Room::Membership::Invite});
+                updateRoomImpl(id, ChangeMembershipAction{RoomMembership::Invite});
                 if (room.inviteState) {
-                    updateRoomImpl(id, Room::ChangeInviteStateAction{room.inviteState.value().events});
+                    updateRoomImpl(id, ChangeInviteStateAction{room.inviteState.value().events});
                 }
             };
 
         auto updateLeftRoom =
             [=](auto id, auto room) {
-                updateSingleRoom(id, room, Room::Membership::Leave);
+                updateSingleRoom(id, room, RoomMembership::Leave);
             };
 
         for (auto &&[id, room]: rooms.join) {
@@ -172,7 +172,7 @@ namespace Kazv
         return eventsToEmit;
     }
 
-    static KazvEventList loadPresenceFromSyncInPlace(Client &m, EventList presence)
+    static KazvEventList loadPresenceFromSyncInPlace(ClientModel &m, EventList presence)
     {
         auto eventsToEmit = intoImmer(
             KazvEventList{},
@@ -182,7 +182,7 @@ namespace Kazv
         return eventsToEmit;
     }
 
-    static KazvEventList loadAccountDataFromSyncInPlace(Client &m, EventList accountData)
+    static KazvEventList loadAccountDataFromSyncInPlace(ClientModel &m, EventList accountData)
     {
         auto eventsToEmit = intoImmer(
             KazvEventList{},
@@ -192,7 +192,7 @@ namespace Kazv
         return eventsToEmit;
     }
 
-    ClientResult updateClient(Client m, LoadSyncResultAction a)
+    ClientResult updateClient(ClientModel m, LoadSyncResultAction a)
     {
         auto eventsToEmit = KazvEventList{};
         m.syncToken = a.syncToken;
@@ -218,7 +218,7 @@ namespace Kazv
         };
     }
 
-    Client::Result updateClient(Client m, EmitKazvEventsAction a)
+    ClientResult updateClient(ClientModel m, EmitKazvEventsAction a)
     {
         return { std::move(m),
                  [=](auto &&ctx) {

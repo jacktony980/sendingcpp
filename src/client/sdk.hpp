@@ -20,7 +20,7 @@
 #pragma once
 #include <lager/store.hpp>
 
-#include "client/client.hpp"
+#include "client/client-model.hpp"
 #include "clientwrap.hpp"
 
 namespace Kazv
@@ -35,7 +35,7 @@ namespace Kazv
     template<class EventLoop, class Xform, class ...Enhancers>
     class Sdk
     {
-        using ClientT = ::Kazv::Client;
+        using ClientT = ::Kazv::ClientModel;
         using ActionT = typename ClientT::Action;
 
         using StoreT = decltype(
@@ -50,7 +50,7 @@ namespace Kazv
                 std::declval<Enhancers>()...)
             );
 
-        using ContextT = lager::context<Client::Action>;
+        using ContextT = lager::context<ActionT>;
     public:
         Sdk(ClientT client,
             JobInterface &jobHandler,
@@ -82,7 +82,7 @@ namespace Kazv
     };
 
     template<class EventLoop, class Xform, class ...Enhancers>
-    inline auto makeSdk(Client client,
+    inline auto makeSdk(ClientModel client,
                         JobInterface &jobHandler,
                         EventInterface &eventEmitter,
                         EventLoop &&eventLoop,

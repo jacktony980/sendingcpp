@@ -27,7 +27,7 @@
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, LoginAction a)
+    ClientResult updateClient(ClientModel m, LoginAction a)
     {
         return {
             m,
@@ -62,7 +62,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, LogoutAction)
+    ClientResult updateClient(ClientModel m, LogoutAction)
     {
         return {
             m,
@@ -78,7 +78,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, LoadUserInfoAction a)
+    ClientResult updateClient(ClientModel m, LoadUserInfoAction a)
     {
         dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
 

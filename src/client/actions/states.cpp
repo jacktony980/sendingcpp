@@ -30,7 +30,7 @@
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, GetRoomStatesAction a)
+    ClientResult updateClient(ClientModel m, GetRoomStatesAction a)
     {
         auto eff =
             [=, roomId=a.roomId](auto &&ctx) {
@@ -49,17 +49,17 @@ namespace Kazv
         return {std::move(m), std::move(eff)};
     }
 
-    ClientResult updateClient(Client m, LoadRoomStatesAction a)
+    ClientResult updateClient(ClientModel m, LoadRoomStatesAction a)
     {
-        auto action = RoomList::UpdateRoomAction{
+        auto action = UpdateRoomAction{
             std::move(a.roomId),
-            Room::AddStateEventsAction{std::move(a.events)}
+            AddStateEventsAction{std::move(a.events)}
         };
-        m.roomList = RoomList::update(std::move(m.roomList), action);
+        m.roomList = RoomListModel::update(std::move(m.roomList), action);
         return {std::move(m), lager::noop};
     }
 
-    ClientResult updateClient(Client m, SendStateEventAction a)
+    ClientResult updateClient(ClientModel m, SendStateEventAction a)
     {
         return {
             m,

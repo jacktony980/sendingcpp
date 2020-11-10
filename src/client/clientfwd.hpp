@@ -25,7 +25,7 @@
 #include <lager/context.hpp>
 
 #include "error.hpp"
-#include "room/room.hpp"
+#include "room/room-model.hpp"
 
 namespace Kazv
 {
@@ -49,7 +49,7 @@ namespace Kazv
     struct EmitKazvEventsAction;
     struct JoinRoomAction;
 
-    struct Client;
+    struct ClientModel;
 
     using ClientAction = std::variant<
         LoginAction,
@@ -68,11 +68,11 @@ namespace Kazv
         InviteToRoomAction,
         JoinRoomByIdAction,
         EmitKazvEventsAction,
-        RoomList::Action,
+        RoomListAction,
         JoinRoomAction
         >;
 
     using ClientEffect = lager::effect<ClientAction, lager::deps<JobInterface &, EventInterface &>>;
 
-    using ClientResult = std::pair<Client, ClientEffect>;
+    using ClientResult = std::pair<ClientModel, ClientEffect>;
 }

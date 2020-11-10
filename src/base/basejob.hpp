@@ -49,6 +49,7 @@ namespace Kazv
         Header header;
         std::string errorCode() const;
         std::string errorMessage() const;
+        JsonWrap jsonBody() const;
     };
 
     class BaseJob
@@ -125,10 +126,6 @@ namespace Kazv
         struct Private;
         Descendent<Private> m_d;
     };
-
-    JsonWrap jsonBody(const BaseJob::Response &res);
-
-
 
     namespace detail
     {

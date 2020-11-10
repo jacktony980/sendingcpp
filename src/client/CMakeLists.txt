@@ -1,5 +1,5 @@
 set(kazvclient_SRCS
-  client.cpp
+  client-model.cpp
   actions/auth.cpp
   actions/sync.cpp
   actions/paginate.cpp
@@ -7,7 +7,7 @@ set(kazvclient_SRCS
   actions/states.cpp
   actions/send.cpp
   actions/sync.cpp
-  room/room.cpp
+  room/room-model.cpp
   )
 
 add_library(kazvclient ${kazvclient_SRCS})

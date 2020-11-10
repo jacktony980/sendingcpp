@@ -22,7 +22,7 @@
 #include <csapi/joining.hpp>
 #include <debug.hpp>
 
-#include "client.hpp"
+#include "client-model.hpp"
 #include "clientutil.hpp"
 #include "cursorutil.hpp"
 
@@ -60,7 +60,7 @@ namespace Kazv
         }
     }
 
-    ClientResult updateClient(Client m, CreateRoomAction a)
+    ClientResult updateClient(ClientModel m, CreateRoomAction a)
     {
         return {
             m,
@@ -119,7 +119,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, InviteToRoomAction a)
+    ClientResult updateClient(ClientModel m, InviteToRoomAction a)
     {
         return {
             m,
@@ -141,7 +141,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, JoinRoomAction a)
+    ClientResult updateClient(ClientModel m, JoinRoomAction a)
     {
         return {
             m,
@@ -169,7 +169,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, JoinRoomByIdAction a)
+    ClientResult updateClient(ClientModel m, JoinRoomByIdAction a)
     {
         return {
             m,

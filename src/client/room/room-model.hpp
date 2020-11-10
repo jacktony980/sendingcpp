@@ -37,7 +37,40 @@
 
 namespace Kazv
 {
-    struct Room
+    struct AddStateEventsAction
+    {
+        immer::flex_vector<Event> stateEvents;
+    };
+
+    struct AppendTimelineAction
+    {
+        immer::flex_vector<Event> events;
+    };
+
+    struct PrependTimelineAction
+    {
+        immer::flex_vector<Event> events;
+        std::string paginateBackToken;
+    };
+
+    struct AddAccountDataAction
+    {
+        immer::flex_vector<Event> events;
+    };
+
+    struct ChangeMembershipAction
+    {
+        RoomMembership membership;
+    };
+
+    struct ChangeInviteStateAction
+    {
+        immer::flex_vector<Event> events;
+    };
+
+
+
+    struct RoomModel
     {
         using Membership = RoomMembership;
 
@@ -52,37 +85,6 @@ namespace Kazv
         /// whether this room has earlier events to be fetched
         bool canPaginateBack{true};
 
-        struct AddStateEventsAction
-        {
-            immer::flex_vector<Event> stateEvents;
-        };
-
-        struct AppendTimelineAction
-        {
-            immer::flex_vector<Event> events;
-        };
-
-        struct PrependTimelineAction
-        {
-            immer::flex_vector<Event> events;
-            std::string paginateBackToken;
-        };
-
-        struct AddAccountDataAction
-        {
-            immer::flex_vector<Event> events;
-        };
-
-        struct ChangeMembershipAction
-        {
-            Membership membership;
-        };
-
-        struct ChangeInviteStateAction
-        {
-            immer::flex_vector<Event> events;
-        };
-
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,
@@ -92,10 +94,12 @@ namespace Kazv
             ChangeInviteStateAction
             >;
 
-        static Room update(Room r, Action a);
+        static RoomModel update(RoomModel r, Action a);
     };
 
-    inline bool operator==(Room a, Room b)
+    using RoomAction = RoomModel::Action;
+
+    inline bool operator==(RoomModel a, RoomModel b)
     {
         return a.roomId == b.roomId
             && a.stateEvents == b.stateEvents
@@ -108,43 +112,45 @@ namespace Kazv
             && a.canPaginateBack == b.canPaginateBack;
     }
 
-    struct RoomList
+    struct UpdateRoomAction
     {
-        immer::map<std::string, Room> rooms;
+        std::string roomId;
+        RoomAction roomAction;
+    };
+
+    struct RoomListModel
+    {
+        immer::map<std::string, RoomModel> rooms;
 
         inline auto at(std::string id) const { return rooms.at(id); }
         inline auto operator[](std::string id) const { return rooms[id]; }
         inline bool has(std::string id) const { return rooms.find(id); }
 
-        struct UpdateRoomAction
-        {
-            std::string roomId;
-            Room::Action roomAction;
-        };
-
         using Action = std::variant<
             UpdateRoomAction
             >;
-        static RoomList update(RoomList l, Action a);
+        static RoomListModel update(RoomListModel l, Action a);
     };
 
-    inline bool operator==(RoomList a, RoomList b)
+    using RoomListAction = RoomListModel::Action;
+
+    inline bool operator==(RoomListModel a, RoomListModel b)
     {
         return a.rooms == b.rooms;
     }
 
 #ifndef NDEBUG
-    LAGER_CEREAL_STRUCT(Room::AddStateEventsAction);
-    LAGER_CEREAL_STRUCT(Room::AppendTimelineAction);
-    LAGER_CEREAL_STRUCT(Room::PrependTimelineAction);
-    LAGER_CEREAL_STRUCT(Room::AddAccountDataAction);
-    LAGER_CEREAL_STRUCT(Room::ChangeMembershipAction);
-    LAGER_CEREAL_STRUCT(Room::ChangeInviteStateAction);
-    LAGER_CEREAL_STRUCT(RoomList::UpdateRoomAction);
+    LAGER_CEREAL_STRUCT(AddStateEventsAction);
+    LAGER_CEREAL_STRUCT(AppendTimelineAction);
+    LAGER_CEREAL_STRUCT(PrependTimelineAction);
+    LAGER_CEREAL_STRUCT(AddAccountDataAction);
+    LAGER_CEREAL_STRUCT(ChangeMembershipAction);
+    LAGER_CEREAL_STRUCT(ChangeInviteStateAction);
+    LAGER_CEREAL_STRUCT(UpdateRoomAction);
 #endif
 
     template<class Archive>
-    void serialize(Archive &ar, Room &r, std::uint32_t const /*version*/)
+    void serialize(Archive &ar, RoomModel &r, std::uint32_t const /*version*/)
     {
         ar(r.roomId,
            r.stateEvents,
@@ -158,11 +164,11 @@ namespace Kazv
     }
 
     template<class Archive>
-    void serialize(Archive &ar, RoomList &l, std::uint32_t const /*version*/)
+    void serialize(Archive &ar, RoomListModel &l, std::uint32_t const /*version*/)
     {
         ar(l.rooms);
     }
 }
 
-CEREAL_CLASS_VERSION(Kazv::Room, 0);
-CEREAL_CLASS_VERSION(Kazv::RoomList, 0);
+CEREAL_CLASS_VERSION(Kazv::RoomModel, 0);
+CEREAL_CLASS_VERSION(Kazv::RoomListModel, 0);

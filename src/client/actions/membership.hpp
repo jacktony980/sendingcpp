@@ -19,12 +19,12 @@
 
 #pragma once
 
-#include "client.hpp"
+#include "client-model.hpp"
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, CreateRoomAction a);
-    ClientResult updateClient(Client m, InviteToRoomAction a);
-    ClientResult updateClient(Client m, JoinRoomByIdAction a);
-    ClientResult updateClient(Client m, JoinRoomAction a);
+    ClientResult updateClient(ClientModel m, CreateRoomAction a);
+    ClientResult updateClient(ClientModel m, InviteToRoomAction a);
+    ClientResult updateClient(ClientModel m, JoinRoomByIdAction a);
+    ClientResult updateClient(ClientModel m, JoinRoomAction a);
 }

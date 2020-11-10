@@ -35,7 +35,7 @@
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, PaginateTimelineAction a)
+    ClientResult updateClient(ClientModel m, PaginateTimelineAction a)
     {
         return {
             m,
@@ -70,7 +70,7 @@ namespace Kazv
         };
     }
 
-    ClientResult updateClient(Client m, LoadPaginateTimelineResultAction a)
+    ClientResult updateClient(ClientModel m, LoadPaginateTimelineResultAction a)
     {
         try {
             auto room = m.roomList.at(a.roomId);
@@ -79,12 +79,12 @@ namespace Kazv
             // in reversed order, so restore the order.
             zug::into(events, zug::reversed, a.events);
 
-            Room::PrependTimelineAction action
+            PrependTimelineAction action
                 {events.persistent(), a.paginateBackToken};
 
-            auto roomList = RoomList::update(
+            auto roomList = RoomListModel::update(
                 std::move(m.roomList),
-                RoomList::UpdateRoomAction{a.roomId, action});
+                UpdateRoomAction{a.roomId, action});
             m.roomList = std::move(roomList);
 
             return { std::move(m), lager::noop };

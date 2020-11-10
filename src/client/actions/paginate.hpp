@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "client.hpp"
+#include "client-model.hpp"
 
 namespace Kazv
 {
-    ClientResult updateClient(Client m, PaginateTimelineAction a);
-    ClientResult updateClient(Client m, LoadPaginateTimelineResultAction a);
+    ClientResult updateClient(ClientModel m, PaginateTimelineAction a);
+    ClientResult updateClient(ClientModel m, LoadPaginateTimelineResultAction a);
 }

@@ -67,12 +67,12 @@ int main(int argc, char *argv[])
     auto debugger = lager::http_debug_server{argc, (const char **)argv, 8080, "./_deps/lager-src/resources"};
 #endif
     auto sdk = Kazv::makeSdk(
-        Kazv::Client{},
+        Kazv::ClientModel{},
         *jobHandler.data(),
         static_cast<Kazv::EventInterface &>(eventEmitter),
         lager::with_boost_asio_event_loop{ioContext.get_executor()},
 #ifndef NDEBUG
-        zug::map([](auto &&m) -> Kazv::Client {
+        zug::map([](auto &&m) -> Kazv::ClientModel {
                      return std::forward<decltype(m)>(m);
                  }),
         lager::with_debugger(debugger)

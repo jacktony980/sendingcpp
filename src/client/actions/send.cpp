@@ -32,9 +32,9 @@ namespace Kazv
         return std::to_string(std::stoull(cur) + 1);
     }
 
-    ClientResult updateClient(Client m, SendMessageAction a)
+    ClientResult updateClient(ClientModel m, SendMessageAction a)
     {
-        Client c = m;
+        ClientModel c = m;
         c.nextTxnId = increaseTxnId(c.nextTxnId);
 
         return {

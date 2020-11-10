@@ -27,7 +27,7 @@
 #include <zug/sequence.hpp>
 #include <immer/flex_vector_transient.hpp>
 
-#include "room.hpp"
+#include "room-model.hpp"
 #include "client/cursorutil.hpp"
 
 namespace Kazv
@@ -35,14 +35,14 @@ namespace Kazv
     class RoomWrap
     {
     public:
-        inline RoomWrap(lager::reader<Room> room, lager::context<ClientAction> ctx)
+        inline RoomWrap(lager::reader<RoomModel> room, lager::context<ClientAction> ctx)
             : m_room(room)
             , m_ctx(ctx) {}
 
         /* lager::reader<MapT<KeyOfState, Event>> */
         inline auto stateEvents() const {
             return m_room
-                [&Room::stateEvents];
+                [&RoomModel::stateEvents];
         }
 
         /* lager::reader<RangeT<Event>> */
@@ -105,7 +105,7 @@ namespace Kazv
                     });
 
             return m_room
-                [&Room::stateEvents]
+                [&RoomModel::stateEvents]
                 .xform(zug::map(
                            [=](auto eventMap) {
                                return intoImmer(
@@ -119,9 +119,9 @@ namespace Kazv
         lager::reader<bool> encrypted() const;
 
         /*lager::reader<std::string>*/
-        KAZV_WRAP_ATTR(Room, m_room, roomId);
-        /*lager::reader<Room::Membership>*/
-        KAZV_WRAP_ATTR(Room, m_room, membership);
+        KAZV_WRAP_ATTR(RoomModel, m_room, roomId);
+        /*lager::reader<RoomMembership>*/
+        KAZV_WRAP_ATTR(RoomModel, m_room, membership);
 
         inline void sendMessage(Event msg) const {
             using namespace CursorOp;
@@ -186,7 +186,7 @@ namespace Kazv
         }
 
     private:
-        lager::reader<Room> m_room;
+        lager::reader<RoomModel> m_room;
         lager::context<ClientAction> m_ctx;
     };
 }
