@@ -28,7 +28,6 @@
 #include <immer/flex_vector_transient.hpp>
 #include <immer/flex_vector.hpp>
 
-#include <clientwrap.hpp>
 #include "commands.hpp"
 
 using namespace std::string_literals;
@@ -43,7 +42,7 @@ static std::regex roomNewRegex("room new (.+)");
 static std::regex roomInviteRegex("room invite ([^\\s]+) (.+)");
 static std::regex roomJoinRegex("room join (.+)");
 
-void parse(std::string l, Kazv::ClientWrap c)
+void parse(std::string l, Kazv::Client c)
 {
     using namespace Kazv::CursorOp;
     std::smatch m;

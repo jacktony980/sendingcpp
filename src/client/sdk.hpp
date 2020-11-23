@@ -20,8 +20,8 @@
 #pragma once
 #include <lager/store.hpp>
 
-#include "client/sdk-model.hpp"
-#include "clientwrap.hpp"
+#include "sdk-model.hpp"
+#include "client.hpp"
 
 namespace Kazv
 {
@@ -74,7 +74,7 @@ namespace Kazv
             return m_store;
         }
 
-        ClientWrap client() const {
+        Client client() const {
             return {m_client, m_store};
         }
 

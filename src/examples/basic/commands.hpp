@@ -22,6 +22,6 @@
 
 #include <string>
 
-#include <client/clientwrap.hpp>
+#include <client/client.hpp>
 
-void parse(std::string l, Kazv::ClientWrap c);
+void parse(std::string l, Kazv::Client c);

@@ -32,10 +32,10 @@
 
 namespace Kazv
 {
-    class RoomWrap
+    class Room
     {
     public:
-        inline RoomWrap(lager::reader<RoomModel> room, lager::context<ClientAction> ctx)
+        inline Room(lager::reader<RoomModel> room, lager::context<ClientAction> ctx)
             : m_room(room)
             , m_ctx(ctx) {}
 

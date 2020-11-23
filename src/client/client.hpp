@@ -26,15 +26,15 @@
 #include <immer/flex_vector_transient.hpp>
 
 #include "client/client-model.hpp"
-#include "room/roomwrap.hpp"
+#include "room/room.hpp"
 
 namespace Kazv
 {
-    class ClientWrap
+    class Client
     {
     public:
-        inline ClientWrap(lager::reader<ClientModel> client,
-                          lager::context<ClientAction> ctx)
+        inline Client(lager::reader<ClientModel> client,
+                      lager::context<ClientAction> ctx)
             : m_client(std::move(client))
             , m_ctx(std::move(ctx)) {}
 
@@ -62,11 +62,11 @@ namespace Kazv
         KAZV_WRAP_ATTR(ClientModel, m_client, token)
         KAZV_WRAP_ATTR(ClientModel, m_client, deviceId)
 
-        /* RoomWrap */
+        /* Room */
         inline auto room(std::string id) const {
-            return RoomWrap(rooms()[std::move(id)]
-                            [lager::lenses::or_default].make(),
-                            m_ctx);
+            return Room(rooms()[std::move(id)]
+                        [lager::lenses::or_default].make(),
+                        m_ctx);
         }
 
         inline void passwordLogin(std::string homeserver, std::string username,
