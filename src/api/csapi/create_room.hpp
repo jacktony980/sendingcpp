@@ -166,6 +166,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The created room's ID.
+std::string roomId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -260,23 +277,17 @@ public:
         std::string visibility  = {}, std::string roomAliasName  = {}, std::string name  = {}, std::string topic  = {}, immer::array<std::string> invite  = {}, immer::array<Invite3pid> invite3pid  = {}, std::string roomVersion  = {}, JsonWrap creationContent  = {}, immer::array<StateEvent> initialState  = {}, std::string preset  = {}, std::optional<bool> isDirect  = std::nullopt, JsonWrap powerLevelContentOverride  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// The created room's ID.
-static std::string roomId(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride);
 
-        static bool success(Response r);
         
-      };
 
+      CreateRoomJob withData(JsonWrap j) &&;
+      CreateRoomJob withData(JsonWrap j) const &;
+      };
+      using CreateRoomResponse = CreateRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

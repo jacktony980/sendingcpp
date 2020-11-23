@@ -40,13 +40,16 @@ namespace Kazv
                 ReturnType returnType,
                 Body body,
                 Query query,
-                Header header);
+                Header header,
+                std::string jobId);
         std::string fullRequestUrl;
         Method method;
         ReturnType returnType;
         BytesBody body;
         Query query;
         Header header;
+        JsonWrap data;
+        std::string jobId;
     };
 
     BaseJob::Private::Private(std::string serverUrl,
@@ -56,12 +59,14 @@ namespace Kazv
                               ReturnType returnType,
                               Body body,
                               Query query,
-                              Header header)
+                              Header header,
+                              std::string jobId)
         : fullRequestUrl(serverUrl + requestUrl)
         , method(std::move(method))
         , returnType(returnType)
         , body()
         , query(std::move(query))
+        , jobId(std::move(jobId))
     {
         auto header_ = header.get();
         if (token.size()) {
@@ -83,12 +88,14 @@ namespace Kazv
     BaseJob::BaseJob(std::string serverUrl,
                      std::string requestUrl,
                      Method method,
+                     std::string jobId,
                      std::string token,
                      ReturnType returnType,
                      Body body,
                      Query query,
                      Header header)
-        : m_d(std::move(Private(serverUrl, requestUrl, method, token, returnType, body, query, header)))
+        : m_d(std::move(Private(serverUrl, requestUrl, method, token,
+                                returnType, body, query, header, jobId)))
     {
     }
 
@@ -129,7 +136,7 @@ namespace Kazv
 
     JsonWrap Response::jsonBody() const
     {
-        return std::get<JsonWrap>(res.body);
+        return std::get<JsonWrap>(body);
     }
 
     bool BaseJob::contentTypeMatches(immer::array<std::string> expected, std::string actual)
@@ -152,11 +159,39 @@ namespace Kazv
         return false;
     }
 
+    Response BaseJob::genResponse(Response r) const
+    {
+        auto j = m_d->data.get();
+        j["-job-id"] = m_d->jobId;
+        r.extraData = j;
+        return r;
+    }
+
+    void BaseJob::attachData(JsonWrap j)
+    {
+        m_d->data = j;
+    }
+
+    BaseJob BaseJob::withData(JsonWrap j) &&
+    {
+        auto ret = BaseJob(std::move(*this));
+        ret.attachData(j);
+        return ret;
+    }
+
+    BaseJob BaseJob::withData(JsonWrap j) const &
+    {
+        auto ret = BaseJob(*this);
+        ret.attachData(j);
+        return ret;
+    }
+
+
     std::string Response::errorCode() const
     {
         // https://matrix.org/docs/spec/client_server/latest#api-standards
-        if (BaseJob::isBodyJson(body)) {
-            auto jb = jsonBody(*this);
+        if (isBodyJson(body)) {
+            auto jb = jsonBody();
             if (jb.get().contains("errcode")) {
                 auto code = jb.get()["errcode"].get<std::string>();
                 if (code != "M_UNKNOWN") {
@@ -169,13 +204,30 @@ namespace Kazv
 
     std::string Response::errorMessage() const
     {
-        if (BaseJob::isBodyJson(body)) {
-            auto jb = jsonBody(*this);
+        if (isBodyJson(body)) {
+            auto jb = jsonBody();
             if (jb.get().contains("error")) {
                 auto msg = jb.get()["error"].get<std::string>();
                 return msg;
             }
         }
         return "";
+    }
+
+    bool operator==(BaseJob a, BaseJob b)
+    {
+        return a.m_d->fullRequestUrl == b.m_d->fullRequestUrl
+            && a.m_d->method == b.m_d->method
+            && a.m_d->returnType == b.m_d->returnType
+            && a.m_d->body == b.m_d->body
+            && a.m_d->query == b.m_d->query
+            && a.m_d->header == b.m_d->header
+            && a.m_d->data == b.m_d->data
+            && a.m_d->jobId == b.m_d->jobId;
+    }
+
+    bool operator!=(BaseJob a, BaseJob b)
+    {
+        return !(a == b);
     }
 }

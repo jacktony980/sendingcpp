@@ -58,6 +58,47 @@ class RegisterJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The fully-qualified Matrix user ID (MXID) that has been registered.
+/// 
+/// Any user ID returned by this API must conform to the grammar given in the
+/// `Matrix specification <../appendices.html#user-identifiers>`_.
+std::string userId() const;
+
+    
+/// An access token for the account.
+/// This access token can then be used to authorize other requests.
+/// Required if the ``inhibit_login`` option is false.
+std::string accessToken() const;
+
+    
+/// The server_name of the homeserver on which the account has
+/// been registered.
+/// 
+/// **Deprecated**. Clients should extract the server_name from
+/// ``user_id`` (by splitting at the first colon) if they require
+/// it. Note also that ``homeserver`` is not spelt this way.
+std::string homeServer() const;
+
+    
+/// ID of the registered device. Will be the same as the
+/// corresponding parameter in the request, if one was specified.
+/// Required if the ``inhibit_login`` option is false.
+std::string deviceId() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -105,47 +146,17 @@ public:
         std::string kind  = std::string("user"), std::optional<AuthenticationData> auth  = std::nullopt, std::string username  = {}, std::string password  = {}, std::string deviceId  = {}, std::string initialDeviceDisplayName  = {}, std::optional<bool> inhibitLogin  = std::nullopt);
     
 
-    // Result properties
-        
-        
-
-    
-/// The fully-qualified Matrix user ID (MXID) that has been registered.
-/// 
-/// Any user ID returned by this API must conform to the grammar given in the
-/// `Matrix specification <../appendices.html#user-identifiers>`_.
-static std::string userId(Response r);
-
-    
-/// An access token for the account.
-/// This access token can then be used to authorize other requests.
-/// Required if the ``inhibit_login`` option is false.
-static std::string accessToken(Response r);
-
-    
-/// The server_name of the homeserver on which the account has
-/// been registered.
-/// 
-/// **Deprecated**. Clients should extract the server_name from
-/// ``user_id`` (by splitting at the first colon) if they require
-/// it. Note also that ``homeserver`` is not spelt this way.
-static std::string homeServer(Response r);
-
-    
-/// ID of the registered device. Will be the same as the
-/// corresponding parameter in the request, if one was specified.
-/// Required if the ``inhibit_login`` option is false.
-static std::string deviceId(Response r);
-
     static BaseJob::Query buildQuery(
     std::string kind);
 
       static BaseJob::Body buildBody(std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin);
 
-        static bool success(Response r);
         
-      };
 
+      RegisterJob withData(JsonWrap j) &&;
+      RegisterJob withData(JsonWrap j) const &;
+      };
+      using RegisterResponse = RegisterJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -167,6 +178,30 @@ class RequestTokenToRegisterEmailJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An email has been sent to the specified address. Note that this
+/// may be an email containing the validation token or it may be
+/// informing the user of an error.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -189,30 +224,17 @@ public:
         EmailValidationData body );
     
 
-    // Result properties
-        
-
-/// An email has been sent to the specified address. Note that this
-/// may be an email containing the validation token or it may be
-/// informing the user of an error.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(EmailValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenToRegisterEmailJob withData(JsonWrap j) &&;
+      RequestTokenToRegisterEmailJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenToRegisterEmailResponse = RequestTokenToRegisterEmailJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -234,6 +256,30 @@ class RequestTokenToRegisterMSISDNJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An SMS message has been sent to the specified phone number. Note
+/// that this may be an SMS message containing the validation token or
+/// it may be informing the user of an error.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -256,30 +302,17 @@ public:
         MsisdnValidationData body );
     
 
-    // Result properties
-        
-
-/// An SMS message has been sent to the specified phone number. Note
-/// that this may be an SMS message containing the validation token or
-/// it may be informing the user of an error.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(MsisdnValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenToRegisterMSISDNJob withData(JsonWrap j) &&;
+      RequestTokenToRegisterMSISDNJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenToRegisterMSISDNResponse = RequestTokenToRegisterMSISDNJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -310,6 +343,15 @@ class ChangePasswordJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -344,10 +386,12 @@ public:
 
       static BaseJob::Body buildBody(std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth);
 
-        static bool success(Response r);
         
-      };
 
+      ChangePasswordJob withData(JsonWrap j) &&;
+      ChangePasswordJob withData(JsonWrap j) const &;
+      };
+      using ChangePasswordResponse = ChangePasswordJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -384,6 +428,28 @@ class RequestTokenToResetPasswordEmailJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An email was sent to the given address.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -421,28 +487,17 @@ public:
         EmailValidationData body );
     
 
-    // Result properties
-        
-
-/// An email was sent to the given address.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(EmailValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenToResetPasswordEmailJob withData(JsonWrap j) &&;
+      RequestTokenToResetPasswordEmailJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenToResetPasswordEmailResponse = RequestTokenToResetPasswordEmailJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -478,6 +533,28 @@ class RequestTokenToResetPasswordMSISDNJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An SMS message was sent to the given phone number.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -514,28 +591,17 @@ public:
         MsisdnValidationData body );
     
 
-    // Result properties
-        
-
-/// An SMS message was sent to the given phone number.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(MsisdnValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenToResetPasswordMSISDNJob withData(JsonWrap j) &&;
+      RequestTokenToResetPasswordMSISDNJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenToResetPasswordMSISDNResponse = RequestTokenToResetPasswordMSISDNJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -567,6 +633,30 @@ class DeactivateAccountJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// An indicator as to whether or not the homeserver was able to unbind
+/// the user's 3PIDs from the identity server(s). ``success`` indicates
+/// that all identifiers have been unbound from the identity server while
+/// ``no-support`` indicates that one or more identifiers failed to unbind
+/// due to the identity server refusing the request or the homeserver
+/// being unable to determine an identity server to unbind from. This
+/// must be ``success`` if the homeserver has no identifiers to unbind
+/// for the user.
+std::string idServerUnbindResult() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -594,30 +684,17 @@ public:
         std::optional<AuthenticationData> auth  = std::nullopt, std::string idServer  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// An indicator as to whether or not the homeserver was able to unbind
-/// the user's 3PIDs from the identity server(s). ``success`` indicates
-/// that all identifiers have been unbound from the identity server while
-/// ``no-support`` indicates that one or more identifiers failed to unbind
-/// due to the identity server refusing the request or the homeserver
-/// being unable to determine an identity server to unbind from. This
-/// must be ``success`` if the homeserver has no identifiers to unbind
-/// for the user.
-static std::string idServerUnbindResult(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::optional<AuthenticationData> auth, std::string idServer);
 
-        static bool success(Response r);
         
-      };
 
+      DeactivateAccountJob withData(JsonWrap j) &&;
+      DeactivateAccountJob withData(JsonWrap j) const &;
+      };
+      using DeactivateAccountResponse = DeactivateAccountJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -647,6 +724,24 @@ class CheckUsernameAvailabilityJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A flag to indicate that the username is available. This should always
+/// be ``true`` when the server replies with 200 OK.
+std::optional<bool> available() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -666,24 +761,17 @@ public:
         std::string username );
 
 
-    // Result properties
-        
-        
-
-    
-/// A flag to indicate that the username is available. This should always
-/// be ``true`` when the server replies with 200 OK.
-static std::optional<bool> available(Response r);
-
     static BaseJob::Query buildQuery(
     std::string username);
 
       static BaseJob::Body buildBody(std::string username);
 
-        static bool success(Response r);
         
-      };
 
+      CheckUsernameAvailabilityJob withData(JsonWrap j) &&;
+      CheckUsernameAvailabilityJob withData(JsonWrap j) const &;
+      };
+      using CheckUsernameAvailabilityResponse = CheckUsernameAvailabilityJob::JobResponse;
       } 
       namespace nlohmann
       {

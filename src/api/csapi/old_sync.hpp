@@ -23,6 +23,33 @@ class GetEventsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A token which correlates to the first value in ``chunk``. This
+/// is usually the same token supplied to ``from=``.
+std::string start() const;
+
+    
+/// A token which correlates to the last value in ``chunk``. This
+/// token should be used in the next request to ``/events``.
+std::string end() const;
+
+    
+/// An array of events.
+EventList chunk() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -46,33 +73,17 @@ public:
         std::string from  = {}, std::optional<int> timeout  = std::nullopt);
 
 
-    // Result properties
-        
-        
-
-    
-/// A token which correlates to the first value in ``chunk``. This
-/// is usually the same token supplied to ``from=``.
-static std::string start(Response r);
-
-    
-/// A token which correlates to the last value in ``chunk``. This
-/// token should be used in the next request to ``/events``.
-static std::string end(Response r);
-
-    
-/// An array of events.
-static EventList chunk(Response r);
-
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> timeout);
 
       static BaseJob::Body buildBody(std::string from, std::optional<int> timeout);
 
-        static bool success(Response r);
         
-      };
 
+      GetEventsJob withData(JsonWrap j) &&;
+      GetEventsJob withData(JsonWrap j) const &;
+      };
+      using GetEventsResponse = GetEventsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -147,6 +158,43 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A token which correlates to the last value in ``chunk``. This
+/// token should be used with the ``/events`` API to listen for new
+/// events.
+std::string end() const;
+
+    
+/// A list of presence events.
+EventList presence() const;
+
+    
+/// This returns the full state for this user, with an optional limit on the
+/// number of messages per room to return.
+/// 
+/// This endpoint was deprecated in r0 of this specification. Clients
+/// should instead call the |/sync|_ API with no ``since`` parameter. See
+/// the `migration guide
+/// <https://matrix.org/docs/guides/client-server-migrating-from-v1.html#deprecated-endpoints>`_.
+immer::array<RoomInfo> rooms() const;
+
+    
+/// The global private data created by this user.
+EventList accountData() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -172,43 +220,17 @@ public:
         std::optional<int> limit  = std::nullopt, std::optional<bool> archived  = std::nullopt);
 
 
-    // Result properties
-        
-        
-
-    
-/// A token which correlates to the last value in ``chunk``. This
-/// token should be used with the ``/events`` API to listen for new
-/// events.
-static std::string end(Response r);
-
-    
-/// A list of presence events.
-static EventList presence(Response r);
-
-    
-/// This returns the full state for this user, with an optional limit on the
-/// number of messages per room to return.
-/// 
-/// This endpoint was deprecated in r0 of this specification. Clients
-/// should instead call the |/sync|_ API with no ``since`` parameter. See
-/// the `migration guide
-/// <https://matrix.org/docs/guides/client-server-migrating-from-v1.html#deprecated-endpoints>`_.
-static immer::array<RoomInfo> rooms(Response r);
-
-    
-/// The global private data created by this user.
-static EventList accountData(Response r);
-
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::optional<bool> archived);
 
       static BaseJob::Body buildBody(std::optional<int> limit, std::optional<bool> archived);
 
-        static bool success(Response r);
         
-      };
 
+      InitialSyncJob withData(JsonWrap j) &&;
+      InitialSyncJob withData(JsonWrap j) const &;
+      };
+      using InitialSyncResponse = InitialSyncJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -279,6 +301,28 @@ class GetOneEventJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The full event.
+    JsonWrap data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<JsonWrap>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -298,28 +342,17 @@ public:
         std::string eventId );
 
 
-    // Result properties
-        
-
-/// The full event.
-    static JsonWrap data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<JsonWrap>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string eventId);
 
-        static bool success(Response r);
         
-      };
 
+      GetOneEventJob withData(JsonWrap j) &&;
+      GetOneEventJob withData(JsonWrap j) const &;
+      };
+      using GetOneEventResponse = GetOneEventJob::JobResponse;
       } 
       namespace nlohmann
       {

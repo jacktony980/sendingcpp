@@ -43,6 +43,7 @@ InviteUserJob::InviteUserJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
+          std::string("InviteUser"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId)
@@ -51,11 +52,28 @@ InviteUserJob::InviteUserJob(
         {
         }
 
-          bool InviteUserJob::success(Response r)
+        InviteUserJob InviteUserJob::withData(JsonWrap j) &&
+        {
+          auto ret = InviteUserJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        InviteUserJob InviteUserJob::withData(JsonWrap j) const &
+        {
+          auto ret = InviteUserJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        InviteUserJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool InviteUserResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

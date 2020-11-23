@@ -18,6 +18,15 @@ class SetReadMarkerJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -51,10 +60,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string mFullyRead, std::string mRead);
 
-        static bool success(Response r);
         
-      };
 
+      SetReadMarkerJob withData(JsonWrap j) &&;
+      SetReadMarkerJob withData(JsonWrap j) const &;
+      };
+      using SetReadMarkerResponse = SetReadMarkerJob::JobResponse;
       } 
       namespace nlohmann
       {

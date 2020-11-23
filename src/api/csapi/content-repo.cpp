@@ -40,6 +40,7 @@ UploadContentJob::UploadContentJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/upload",
           POST,
+          std::string("UploadContent"),
           _accessToken,
           ReturnType::Json,
             buildBody(content, filename, contentType)
@@ -50,23 +51,40 @@ UploadContentJob::UploadContentJob(
         {
         }
 
-          bool UploadContentJob::success(Response r)
+        UploadContentJob UploadContentJob::withData(JsonWrap j) &&
+        {
+          auto ret = UploadContentJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UploadContentJob UploadContentJob::withData(JsonWrap j) const &
+        {
+          auto ret = UploadContentJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UploadContentJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UploadContentResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("content_uri"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("content_uri"s)
           ;
           }
 
 
     
-    std::string UploadContentJob::contentUri(Response r)
+    std::string UploadContentResponse::contentUri() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("content_uri"s)) {
     return
-    jsonBody(r).get()["content_uri"s]
+    jsonBody().get()["content_uri"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -102,6 +120,7 @@ GetContentJob::GetContentJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId,
           GET,
+          std::string("GetContent"),
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, allowRemote)
@@ -110,10 +129,27 @@ GetContentJob::GetContentJob(
         {
         }
 
-          bool GetContentJob::success(Response r)
+        GetContentJob GetContentJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetContentJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentJob GetContentJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetContentJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetContentResponse::success() const
           {
-            return BaseJob::success(r)
-              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            return Response::success()
+              && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;
           }
@@ -150,6 +186,7 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId + "/" + fileName,
           GET,
+          std::string("GetContentOverrideName"),
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, fileName, allowRemote)
@@ -158,10 +195,27 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
         {
         }
 
-          bool GetContentOverrideNameJob::success(Response r)
+        GetContentOverrideNameJob GetContentOverrideNameJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetContentOverrideNameJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentOverrideNameJob GetContentOverrideNameJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetContentOverrideNameJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentOverrideNameJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetContentOverrideNameResponse::success() const
           {
-            return BaseJob::success(r)
-              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            return Response::success()
+              && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;
           }
@@ -204,6 +258,7 @@ GetContentThumbnailJob::GetContentThumbnailJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/thumbnail/" + serverName + "/" + mediaId,
           GET,
+          std::string("GetContentThumbnail"),
            {} ,
           ReturnType::Byte,
             buildBody(serverName, mediaId, width, height, method, allowRemote)
@@ -212,10 +267,27 @@ GetContentThumbnailJob::GetContentThumbnailJob(
         {
         }
 
-          bool GetContentThumbnailJob::success(Response r)
+        GetContentThumbnailJob GetContentThumbnailJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetContentThumbnailJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentThumbnailJob GetContentThumbnailJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetContentThumbnailJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetContentThumbnailJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetContentThumbnailResponse::success() const
           {
-            return BaseJob::success(r)
-              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+            return Response::success()
+              && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;
           }
@@ -254,6 +326,7 @@ GetUrlPreviewJob::GetUrlPreviewJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/preview_url",
           GET,
+          std::string("GetUrlPreview"),
           _accessToken,
           ReturnType::Json,
             buildBody(url, ts)
@@ -262,33 +335,50 @@ GetUrlPreviewJob::GetUrlPreviewJob(
         {
         }
 
-          bool GetUrlPreviewJob::success(Response r)
+        GetUrlPreviewJob GetUrlPreviewJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetUrlPreviewJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetUrlPreviewJob GetUrlPreviewJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetUrlPreviewJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetUrlPreviewJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetUrlPreviewResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::optional<std::int_fast64_t> GetUrlPreviewJob::matrixImageSize(Response r)
+    std::optional<std::int_fast64_t> GetUrlPreviewResponse::matrixImageSize() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("matrix:image:size"s)) {
     return
-    jsonBody(r).get()["matrix:image:size"s]
+    jsonBody().get()["matrix:image:size"s]
     /*.get<std::int_fast64_t>()*/;}
     else { return std::optional<std::int_fast64_t>(  );}
     }
 
     
-    std::string GetUrlPreviewJob::ogImage(Response r)
+    std::string GetUrlPreviewResponse::ogImage() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("og:image"s)) {
     return
-    jsonBody(r).get()["og:image"s]
+    jsonBody().get()["og:image"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -323,6 +413,7 @@ GetConfigJob::GetConfigJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/config",
           GET,
+          std::string("GetConfig"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -331,22 +422,39 @@ GetConfigJob::GetConfigJob(
         {
         }
 
-          bool GetConfigJob::success(Response r)
+        GetConfigJob GetConfigJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetConfigJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetConfigJob GetConfigJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetConfigJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetConfigJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetConfigResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::optional<std::int_fast64_t> GetConfigJob::uploadSize(Response r)
+    std::optional<std::int_fast64_t> GetConfigResponse::uploadSize() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("m.upload.size"s)) {
     return
-    jsonBody(r).get()["m.upload.size"s]
+    jsonBody().get()["m.upload.size"s]
     /*.get<std::int_fast64_t>()*/;}
     else { return std::optional<std::int_fast64_t>(  );}
     }

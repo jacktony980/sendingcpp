@@ -20,6 +20,7 @@ class RedirectToSSOJob : public BaseJob {
 public:
 
 
+
           static constexpr auto needsAuth() {
           return 
             false;
@@ -39,17 +40,18 @@ public:
       ,
         std::string redirectUrl );
 
-    
 
     static BaseJob::Query buildQuery(
     std::string redirectUrl);
 
       static BaseJob::Body buildBody(std::string redirectUrl);
 
-        static bool success(Response r);
         
-      };
 
+      RedirectToSSOJob withData(JsonWrap j) &&;
+      RedirectToSSOJob withData(JsonWrap j) const &;
+      };
+      
       } 
       namespace nlohmann
       {

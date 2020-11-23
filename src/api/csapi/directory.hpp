@@ -16,6 +16,15 @@ class SetRoomAliasJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -43,10 +52,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomAlias, std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      SetRoomAliasJob withData(JsonWrap j) &&;
+      SetRoomAliasJob withData(JsonWrap j) const &;
+      };
+      using SetRoomAliasResponse = SetRoomAliasJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -69,6 +80,27 @@ class GetRoomIdByAliasJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The room ID for this room alias.
+std::string roomId() const;
+
+    
+/// A list of servers that are aware of this room alias.
+immer::array<std::string> servers() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -88,27 +120,17 @@ public:
         std::string roomAlias );
 
 
-    // Result properties
-        
-        
-
-    
-/// The room ID for this room alias.
-static std::string roomId(Response r);
-
-    
-/// A list of servers that are aware of this room alias.
-static immer::array<std::string> servers(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomAlias);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomIdByAliasJob withData(JsonWrap j) &&;
+      GetRoomIdByAliasJob withData(JsonWrap j) const &;
+      };
+      using GetRoomIdByAliasResponse = GetRoomIdByAliasJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -137,6 +159,15 @@ class DeleteRoomAliasJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -161,10 +192,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomAlias);
 
-        static bool success(Response r);
         
-      };
 
+      DeleteRoomAliasJob withData(JsonWrap j) &&;
+      DeleteRoomAliasJob withData(JsonWrap j) const &;
+      };
+      using DeleteRoomAliasResponse = DeleteRoomAliasJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -198,6 +231,23 @@ class GetLocalAliasesJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The server's local aliases on the room. Can be empty.
+immer::array<std::string> aliases() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -217,23 +267,17 @@ public:
         std::string roomId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The server's local aliases on the room. Can be empty.
-static immer::array<std::string> aliases(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      GetLocalAliasesJob withData(JsonWrap j) &&;
+      GetLocalAliasesJob withData(JsonWrap j) const &;
+      };
+      using GetLocalAliasesResponse = GetLocalAliasesJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -19,6 +19,15 @@ class LogoutJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -39,10 +48,12 @@ public:
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      LogoutJob withData(JsonWrap j) &&;
+      LogoutJob withData(JsonWrap j) const &;
+      };
+      using LogoutResponse = LogoutJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -71,6 +82,15 @@ class LogoutAllJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -91,10 +111,12 @@ public:
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      LogoutAllJob withData(JsonWrap j) &&;
+      LogoutAllJob withData(JsonWrap j) const &;
+      };
+      using LogoutAllResponse = LogoutAllJob::JobResponse;
       } 
       namespace nlohmann
       {

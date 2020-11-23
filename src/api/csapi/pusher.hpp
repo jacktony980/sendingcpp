@@ -62,6 +62,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// An array containing the current pushers for the user
+immer::array<Pusher> pushers() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -77,23 +94,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// An array containing the current pushers for the user
-static immer::array<Pusher> pushers(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetPushersJob withData(JsonWrap j) &&;
+      GetPushersJob withData(JsonWrap j) const &;
+      };
+      using GetPushersResponse = GetPushersJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -180,6 +191,15 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -253,10 +273,12 @@ public:
 
       static BaseJob::Body buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append);
 
-        static bool success(Response r);
         
-      };
 
+      PostPusherJob withData(JsonWrap j) &&;
+      PostPusherJob withData(JsonWrap j) const &;
+      };
+      using PostPusherResponse = PostPusherJob::JobResponse;
       } 
       namespace nlohmann
       {

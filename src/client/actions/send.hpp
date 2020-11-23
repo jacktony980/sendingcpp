@@ -19,9 +19,12 @@
 
 #pragma once
 
+#include <csapi/room_send.hpp>
+
 #include "client-model.hpp"
 
 namespace Kazv
 {
     ClientResult updateClient(ClientModel m, SendMessageAction a);
+    ClientResult processResponse(ClientModel m, SendMessageResponse r);
 }

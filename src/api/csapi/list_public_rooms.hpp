@@ -17,6 +17,23 @@ class GetRoomVisibilityOnDirectoryJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The visibility of the room in the directory.
+std::string visibility() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -36,23 +53,17 @@ public:
         std::string roomId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The visibility of the room in the directory.
-static std::string visibility(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomVisibilityOnDirectoryJob withData(JsonWrap j) &&;
+      GetRoomVisibilityOnDirectoryJob withData(JsonWrap j) const &;
+      };
+      using GetRoomVisibilityOnDirectoryResponse = GetRoomVisibilityOnDirectoryJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -76,6 +87,15 @@ class SetRoomVisibilityOnDirectoryJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -104,10 +124,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string visibility);
 
-        static bool success(Response r);
         
-      };
 
+      SetRoomVisibilityOnDirectoryJob withData(JsonWrap j) &&;
+      SetRoomVisibilityOnDirectoryJob withData(JsonWrap j) const &;
+      };
+      using SetRoomVisibilityOnDirectoryResponse = SetRoomVisibilityOnDirectoryJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -129,6 +151,40 @@ class GetPublicRoomsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A paginated chunk of public rooms.
+immer::array<PublicRoomsChunk> chunk() const;
+
+    
+/// A pagination token for the response. The absence of this token
+/// means there are no more results to fetch and the client should
+/// stop paginating.
+std::string nextBatch() const;
+
+    
+/// A pagination token that allows fetching previous results. The
+/// absence of this token means there are no results before this
+/// batch, i.e. this is the first batch.
+std::string prevBatch() const;
+
+    
+/// An estimate on the total number of public rooms, if the
+/// server has an estimate.
+std::optional<int> totalRoomCountEstimate() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -158,40 +214,17 @@ public:
         std::optional<int> limit  = std::nullopt, std::string since  = {}, std::string server  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// A paginated chunk of public rooms.
-static immer::array<PublicRoomsChunk> chunk(Response r);
-
-    
-/// A pagination token for the response. The absence of this token
-/// means there are no more results to fetch and the client should
-/// stop paginating.
-static std::string nextBatch(Response r);
-
-    
-/// A pagination token that allows fetching previous results. The
-/// absence of this token means there are no results before this
-/// batch, i.e. this is the first batch.
-static std::string prevBatch(Response r);
-
-    
-/// An estimate on the total number of public rooms, if the
-/// server has an estimate.
-static std::optional<int> totalRoomCountEstimate(Response r);
-
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::string since, std::string server);
 
       static BaseJob::Body buildBody(std::optional<int> limit, std::string since, std::string server);
 
-        static bool success(Response r);
         
-      };
 
+      GetPublicRoomsJob withData(JsonWrap j) &&;
+      GetPublicRoomsJob withData(JsonWrap j) const &;
+      };
+      using GetPublicRoomsResponse = GetPublicRoomsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -223,6 +256,40 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A paginated chunk of public rooms.
+immer::array<PublicRoomsChunk> chunk() const;
+
+    
+/// A pagination token for the response. The absence of this token
+/// means there are no more results to fetch and the client should
+/// stop paginating.
+std::string nextBatch() const;
+
+    
+/// A pagination token that allows fetching previous results. The
+/// absence of this token means there are no results before this
+/// batch, i.e. this is the first batch.
+std::string prevBatch() const;
+
+    
+/// An estimate on the total number of public rooms, if the
+/// server has an estimate.
+std::optional<int> totalRoomCountEstimate() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -263,40 +330,17 @@ public:
         std::string server  = {}, std::optional<int> limit  = std::nullopt, std::string since  = {}, std::optional<Filter> filter  = std::nullopt, std::optional<bool> includeAllNetworks  = std::nullopt, std::string thirdPartyInstanceId  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// A paginated chunk of public rooms.
-static immer::array<PublicRoomsChunk> chunk(Response r);
-
-    
-/// A pagination token for the response. The absence of this token
-/// means there are no more results to fetch and the client should
-/// stop paginating.
-static std::string nextBatch(Response r);
-
-    
-/// A pagination token that allows fetching previous results. The
-/// absence of this token means there are no results before this
-/// batch, i.e. this is the first batch.
-static std::string prevBatch(Response r);
-
-    
-/// An estimate on the total number of public rooms, if the
-/// server has an estimate.
-static std::optional<int> totalRoomCountEstimate(Response r);
-
     static BaseJob::Query buildQuery(
     std::string server);
 
       static BaseJob::Body buildBody(std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId);
 
-        static bool success(Response r);
         
-      };
 
+      QueryPublicRoomsJob withData(JsonWrap j) &&;
+      QueryPublicRoomsJob withData(JsonWrap j) const &;
+      };
+      using QueryPublicRoomsResponse = QueryPublicRoomsJob::JobResponse;
       } 
       namespace nlohmann
       {

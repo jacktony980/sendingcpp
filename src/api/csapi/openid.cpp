@@ -39,6 +39,7 @@ RequestOpenIdTokenJob::RequestOpenIdTokenJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/openid/request_token",
           POST,
+          std::string("RequestOpenIdToken"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, body)
@@ -47,11 +48,28 @@ RequestOpenIdTokenJob::RequestOpenIdTokenJob(
         {
         }
 
-          bool RequestOpenIdTokenJob::success(Response r)
+        RequestOpenIdTokenJob RequestOpenIdTokenJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestOpenIdTokenJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestOpenIdTokenJob RequestOpenIdTokenJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestOpenIdTokenJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestOpenIdTokenJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestOpenIdTokenResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

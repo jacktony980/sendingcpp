@@ -17,7 +17,6 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <csapi/room_send.hpp>
 
 #include <debug.hpp>
 #include <types.hpp>
@@ -34,68 +33,44 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, SendMessageAction a)
     {
-        ClientModel c = m;
-        c.nextTxnId = increaseTxnId(c.nextTxnId);
+        auto origJson = a.event.originalJson().get();
+        if (!origJson.contains("type") || !origJson.contains("content")) {
+            m.addTrigger(InvalidMessageFormat{});
+            return { std::move(m), lager::noop };
+        }
 
-        return {
-            std::move(c),
-            [=](auto &&ctx) {
-                auto origJson = a.event.originalJson().get();
-                if (!origJson.contains("type") || !origJson.contains("content")) {
-                    ctx.dispatch(Error::SetErrorAction{
-                            Error::JsonError{json{
-                                    {"action", "SendMessageAction"},
-                                    {"reason", "Event has no type or no content"}
-                                }}
-                        });
-                }
+        // We do not use event.type() etc. because we want
+        // encrypted events stay encrypted.
+        auto type = origJson["type"];
+        auto content = origJson["content"];
 
-                // We do not use event.type() etc. because we want
-                // encrypted events stay encrypted.
-                auto type = origJson["type"];
-                auto content = origJson["content"];
+        dbgClient << "Sending message of type " << type
+                  << " with content " << content.dump()
+                  << " to " << a.roomId
+                  << " as #" << m.nextTxnId << std::endl;
 
-                dbgClient << "Sending message of type " << type
-                          << " with content " << content.dump()
-                          << " to " << a.roomId
-                          << " as #" << m.nextTxnId << std::endl;
+        // We combine the hash of json, the timestamp,
+        // and a numeric count in the client to avoid collision.
+        auto txnId = std::to_string(std::hash<json>{}(origJson))
+            + std::to_string(std::chrono::system_clock::now()
+                             .time_since_epoch().count())
+            + m.nextTxnId;
 
-                // We combine the hash of json, the timestamp,
-                // and a numeric count in the client to avoid collision.
-                auto txnId = std::to_string(std::hash<json>{}(origJson))
-                    + std::to_string(std::chrono::system_clock::now()
-                                     .time_since_epoch().count())
-                    + m.nextTxnId;
+        m.nextTxnId = increaseTxnId(m.nextTxnId);
 
-                auto job = m.job<SendMessageJob>().make(
-                    a.roomId,
-                    type,
-                    txnId,
-                    content);
+        return { std::move(m), lager::noop };
+    }
 
-                auto &jobHandler = lager::get<JobInterface &>(ctx);
+    ClientResult processResponse(ClientModel m, SendMessageResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        if (! r.success()) {
+            dbgClient << "Send message failed" << std::endl;
+            m.addTrigger(SendMessageFailed{roomId, r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
 
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (!SendMessageJob::success(r)) {
-                            dbgClient << "Send message failed" << std::endl;
-                            if (BaseJob::isBodyJson(r.body)) {
-                                dbgClient << jsonBody(r).get().dump() << std::endl;
-                                ctx.dispatch(Error::SetErrorAction{
-                                        Error::JsonError{json{
-                                                {"action", "SendMessageAction"},
-                                                {"reason", "Request to remote host failed"},
-                                                {"original", jsonBody(r).get()}
-                                            }}
-                                    });
-                            } else {
-                                dbgClient << std::get<BaseJob::BytesBody>(r.body) << std::endl;
-                            }
-                        }
-                        // if success, nothing to do
-                    });
-            }
-        };
+        m.addTrigger(SendMessageSuccessful{roomId, r.eventId()});
+        return { std::move(m), lager::noop };
     }
 }

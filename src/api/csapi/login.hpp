@@ -30,6 +30,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The homeserver's supported login types
+immer::array<LoginFlow> flows() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -45,23 +62,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The homeserver's supported login types
-static immer::array<LoginFlow> flows(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetLoginFlowsJob withData(JsonWrap j) &&;
+      GetLoginFlowsJob withData(JsonWrap j) const &;
+      };
+      using GetLoginFlowsResponse = GetLoginFlowsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -100,6 +111,49 @@ class LoginJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The fully-qualified Matrix ID for the account.
+std::string userId() const;
+
+    
+/// An access token for the account.
+/// This access token can then be used to authorize other requests.
+std::string accessToken() const;
+
+    
+/// The server_name of the homeserver on which the account has
+/// been registered.
+/// 
+/// **Deprecated**. Clients should extract the server_name from
+/// ``user_id`` (by splitting at the first colon) if they require
+/// it. Note also that ``homeserver`` is not spelt this way.
+std::string homeServer() const;
+
+    
+/// ID of the logged-in device. Will be the same as the
+/// corresponding parameter in the request, if one was specified.
+std::string deviceId() const;
+
+    
+/// Optional client configuration provided by the server. If present,
+/// clients SHOULD use the provided object to reconfigure themselves,
+/// optionally validating the URLs within. This object takes the same
+/// form as the one returned from .well-known autodiscovery.
+std::optional<DiscoveryInformation> wellKnown() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -147,49 +201,17 @@ public:
         std::string type , std::optional<UserIdentifier> identifier  = std::nullopt, std::string password  = {}, std::string token  = {}, std::string deviceId  = {}, std::string initialDeviceDisplayName  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// The fully-qualified Matrix ID for the account.
-static std::string userId(Response r);
-
-    
-/// An access token for the account.
-/// This access token can then be used to authorize other requests.
-static std::string accessToken(Response r);
-
-    
-/// The server_name of the homeserver on which the account has
-/// been registered.
-/// 
-/// **Deprecated**. Clients should extract the server_name from
-/// ``user_id`` (by splitting at the first colon) if they require
-/// it. Note also that ``homeserver`` is not spelt this way.
-static std::string homeServer(Response r);
-
-    
-/// ID of the logged-in device. Will be the same as the
-/// corresponding parameter in the request, if one was specified.
-static std::string deviceId(Response r);
-
-    
-/// Optional client configuration provided by the server. If present,
-/// clients SHOULD use the provided object to reconfigure themselves,
-/// optionally validating the URLs within. This object takes the same
-/// form as the one returned from .well-known autodiscovery.
-static std::optional<DiscoveryInformation> wellKnown(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName);
 
-        static bool success(Response r);
         
-      };
 
+      LoginJob withData(JsonWrap j) &&;
+      LoginJob withData(JsonWrap j) const &;
+      };
+      using LoginResponse = LoginJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -34,6 +34,48 @@ public:
 
 {{/models}}
 
+{{#responses}}
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+  {{#normalResponse?}}{{#allProperties?}}
+
+    // Result properties
+        {{#headers}}
+/*
+    {{>nonInlineResponseSignature}}
+    {
+        return reply()->rawHeader("{{baseName}}");
+    }
+*/        {{/headers}}
+        {{#inlineResponse}}
+
+    {{>docCommentShort}}
+    {{dataType.name}} {{paramName}}() const
+    {
+    return
+    {{#producesNonJson?}}
+      std::get<Bytes>(body)
+    {{/producesNonJson?}}
+    {{^producesNonJson?}}
+      std::move(jsonBody().get()).get<{{dataType.name}}>()
+    {{/producesNonJson?}}
+    ;
+    }
+        {{/inlineResponse}}
+        {{#properties}}
+
+    {{!there's nothing in #properties if the response is inline}}
+    {{>nonInlineResponseSignature}};
+        {{/properties}}
+    {{/allProperties?}}{{/normalResponse?}}
+
+};
+{{/responses}}
           static constexpr auto needsAuth() {
           return {{^skipAuth}}true{{/skipAuth}}
             {{#skipAuth}}false{{/skipAuth}};
@@ -62,49 +104,22 @@ public:
     {{^hasBody?}}
 
     {{/hasBody?}}
-    {{#responses}}{{#normalResponse?}}{{#allProperties?}}
-
-    // Result properties
-        {{#headers}}
-/*
-    {{>nonInlineResponseSignature}}
-    {
-        return reply()->rawHeader("{{baseName}}");
-    }
-*/        {{/headers}}
-        {{#inlineResponse}}
-
-    {{>docCommentShort}}
-    static {{dataType.name}} {{paramName}}(Response r)
-    {
-    return
-    {{#producesNonJson?}}
-      std::get<Bytes>(r.body)
-    {{/producesNonJson?}}
-    {{^producesNonJson?}}
-      std::move(jsonBody(r).get()).get<{{dataType.name}}>()
-    {{/producesNonJson?}}
-    ;
-    }
-        {{/inlineResponse}}
-        {{#properties}}
-
-    {{!there's nothing in #properties if the response is inline}}
-    {{>nonInlineResponseSignature}};
-        {{/properties}}
-    {{/allProperties?}}{{/normalResponse?}}{{/responses}}
 
     static BaseJob::Query buildQuery(
     {{#queryParams}}{{>joinedParamDef}}{{/queryParams}});
 
       static BaseJob::Body buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}});
 
-        static bool success(Response r);
         {{#producesNonJson?}}
           static const immer::array<std::string> expectedContentTypes;
         {{/producesNonJson?}}
-      };
 
+      {{camelCaseOperationId}}Job withData(JsonWrap j) &&;
+      {{camelCaseOperationId}}Job withData(JsonWrap j) const &;
+      };
+      {{#responses}}
+      using {{camelCaseOperationId}}Response = {{camelCaseOperationId}}Job::JobResponse;
+      {{/responses}}
       } {{! namespace Kazv}}
       namespace nlohmann
       {

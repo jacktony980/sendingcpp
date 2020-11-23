@@ -27,6 +27,15 @@ class LeaveRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -51,10 +60,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      LeaveRoomJob withData(JsonWrap j) &&;
+      LeaveRoomJob withData(JsonWrap j) const &;
+      };
+      using LeaveRoomResponse = LeaveRoomJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -81,6 +92,15 @@ class ForgetRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -105,10 +125,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      ForgetRoomJob withData(JsonWrap j) &&;
+      ForgetRoomJob withData(JsonWrap j) const &;
+      };
+      using ForgetRoomResponse = ForgetRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -38,6 +38,7 @@ GetTurnServerJob::GetTurnServerJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/voip/turnServer",
           GET,
+          std::string("GetTurnServer"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,11 +47,28 @@ GetTurnServerJob::GetTurnServerJob(
         {
         }
 
-          bool GetTurnServerJob::success(Response r)
+        GetTurnServerJob GetTurnServerJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetTurnServerJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetTurnServerJob GetTurnServerJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetTurnServerJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetTurnServerJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetTurnServerResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

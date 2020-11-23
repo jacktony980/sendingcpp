@@ -38,6 +38,7 @@ GetWhoIsJob::GetWhoIsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/admin/whois/" + userId,
           GET,
+          std::string("GetWhoIs"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId)
@@ -46,33 +47,50 @@ GetWhoIsJob::GetWhoIsJob(
         {
         }
 
-          bool GetWhoIsJob::success(Response r)
+        GetWhoIsJob GetWhoIsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetWhoIsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetWhoIsJob GetWhoIsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetWhoIsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetWhoIsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetWhoIsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetWhoIsJob::userId(Response r)
+    std::string GetWhoIsResponse::userId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("user_id"s)) {
     return
-    jsonBody(r).get()["user_id"s]
+    jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    immer::map<std::string, GetWhoIsJob::DeviceInfo> GetWhoIsJob::devices(Response r)
+    immer::map<std::string, GetWhoIsJob::DeviceInfo> GetWhoIsResponse::devices() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("devices"s)) {
     return
-    jsonBody(r).get()["devices"s]
+    jsonBody().get()["devices"s]
     /*.get<immer::map<std::string, DeviceInfo>>()*/;}
     else { return immer::map<std::string, DeviceInfo>(  );}
     }

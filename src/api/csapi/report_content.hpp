@@ -18,6 +18,15 @@ class ReportContentJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -52,10 +61,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventId, int score, std::string reason);
 
-        static bool success(Response r);
         
-      };
 
+      ReportContentJob withData(JsonWrap j) &&;
+      ReportContentJob withData(JsonWrap j) const &;
+      };
+      using ReportContentResponse = ReportContentJob::JobResponse;
       } 
       namespace nlohmann
       {

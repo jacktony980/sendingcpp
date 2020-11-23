@@ -38,6 +38,7 @@ GetWellknownJob::GetWellknownJob(
       : BaseJob(std::move(serverUrl),
           std::string("/.well-known") + "/matrix/client",
           GET,
+          std::string("GetWellknown"),
            {} ,
           ReturnType::Json,
             buildBody()
@@ -46,11 +47,28 @@ GetWellknownJob::GetWellknownJob(
         {
         }
 
-          bool GetWellknownJob::success(Response r)
+        GetWellknownJob GetWellknownJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetWellknownJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetWellknownJob GetWellknownJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetWellknownJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetWellknownJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetWellknownResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

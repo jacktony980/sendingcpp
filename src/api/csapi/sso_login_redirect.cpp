@@ -39,12 +39,27 @@ RedirectToSSOJob::RedirectToSSOJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login/sso/redirect",
           GET,
+          std::string("RedirectToSSO"),
            {} ,
           ReturnType::Json,
             buildBody(redirectUrl)
               , buildQuery(redirectUrl)
                 )
         {
+        }
+
+        RedirectToSSOJob RedirectToSSOJob::withData(JsonWrap j) &&
+        {
+          auto ret = RedirectToSSOJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RedirectToSSOJob RedirectToSSOJob::withData(JsonWrap j) const &
+        {
+          auto ret = RedirectToSSOJob(*this);
+          ret.attachData(j);
+          return ret;
         }
 
         

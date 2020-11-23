@@ -22,6 +22,45 @@ class GetEventContextJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A token that can be used to paginate backwards with.
+std::string start() const;
+
+    
+/// A token that can be used to paginate forwards with.
+std::string end() const;
+
+    
+/// A list of room events that happened just before the
+/// requested event, in reverse-chronological order.
+EventList eventsBefore() const;
+
+    
+/// Details of the requested event.
+JsonWrap event() const;
+
+    
+/// A list of room events that happened just after the
+/// requested event, in chronological order.
+EventList eventsAfter() const;
+
+    
+/// The state of the room at the last event returned.
+EventList state() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -56,45 +95,17 @@ public:
         std::string roomId , std::string eventId , std::optional<int> limit  = std::nullopt, std::string filter  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// A token that can be used to paginate backwards with.
-static std::string start(Response r);
-
-    
-/// A token that can be used to paginate forwards with.
-static std::string end(Response r);
-
-    
-/// A list of room events that happened just before the
-/// requested event, in reverse-chronological order.
-static EventList eventsBefore(Response r);
-
-    
-/// Details of the requested event.
-static JsonWrap event(Response r);
-
-    
-/// A list of room events that happened just after the
-/// requested event, in chronological order.
-static EventList eventsAfter(Response r);
-
-    
-/// The state of the room at the last event returned.
-static EventList state(Response r);
-
     static BaseJob::Query buildQuery(
     std::optional<int> limit, std::string filter);
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::string filter);
 
-        static bool success(Response r);
         
-      };
 
+      GetEventContextJob withData(JsonWrap j) &&;
+      GetEventContextJob withData(JsonWrap j) const &;
+      };
+      using GetEventContextResponse = GetEventContextJob::JobResponse;
       } 
       namespace nlohmann
       {

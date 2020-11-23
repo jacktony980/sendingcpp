@@ -18,6 +18,15 @@ class SetDisplayNameJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -45,10 +54,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string displayname);
 
-        static bool success(Response r);
         
-      };
 
+      SetDisplayNameJob withData(JsonWrap j) &&;
+      SetDisplayNameJob withData(JsonWrap j) const &;
+      };
+      using SetDisplayNameResponse = SetDisplayNameJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -69,6 +80,23 @@ class GetDisplayNameJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The user's display name if they have set one, otherwise not present.
+std::string displayname() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -88,23 +116,17 @@ public:
         std::string userId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The user's display name if they have set one, otherwise not present.
-static std::string displayname(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      GetDisplayNameJob withData(JsonWrap j) &&;
+      GetDisplayNameJob withData(JsonWrap j) const &;
+      };
+      using GetDisplayNameResponse = GetDisplayNameJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -124,6 +146,15 @@ class SetAvatarUrlJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -151,10 +182,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string avatarUrl);
 
-        static bool success(Response r);
         
-      };
 
+      SetAvatarUrlJob withData(JsonWrap j) &&;
+      SetAvatarUrlJob withData(JsonWrap j) const &;
+      };
+      using SetAvatarUrlResponse = SetAvatarUrlJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -175,6 +208,23 @@ class GetAvatarUrlJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The user's avatar URL if they have set one, otherwise not present.
+std::string avatarUrl() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -194,23 +244,17 @@ public:
         std::string userId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The user's avatar URL if they have set one, otherwise not present.
-static std::string avatarUrl(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      GetAvatarUrlJob withData(JsonWrap j) &&;
+      GetAvatarUrlJob withData(JsonWrap j) const &;
+      };
+      using GetAvatarUrlResponse = GetAvatarUrlJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -232,6 +276,27 @@ class GetUserProfileJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The user's avatar URL if they have set one, otherwise not present.
+std::string avatarUrl() const;
+
+    
+/// The user's display name if they have set one, otherwise not present.
+std::string displayname() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -251,27 +316,17 @@ public:
         std::string userId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The user's avatar URL if they have set one, otherwise not present.
-static std::string avatarUrl(Response r);
-
-    
-/// The user's display name if they have set one, otherwise not present.
-static std::string displayname(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      GetUserProfileJob withData(JsonWrap j) &&;
+      GetUserProfileJob withData(JsonWrap j) const &;
+      };
+      using GetUserProfileResponse = GetUserProfileJob::JobResponse;
       } 
       namespace nlohmann
       {

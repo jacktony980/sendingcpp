@@ -21,6 +21,47 @@ class GetRoomEventsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The token the pagination starts from. If ``dir=b`` this will be
+/// the token supplied in ``from``.
+std::string start() const;
+
+    
+/// The token the pagination ends at. If ``dir=b`` this token should
+/// be used again to request even earlier events.
+std::string end() const;
+
+    
+/// A list of room events. The order depends on the ``dir`` parameter.
+/// For ``dir=b`` events will be in reverse-chronological order,
+/// for ``dir=f`` in chronological order, so that events start
+/// at the ``from`` point.
+EventList chunk() const;
+
+    
+/// A list of state events relevant to showing the ``chunk``. For example, if
+/// ``lazy_load_members`` is enabled in the filter then this may contain
+/// the membership events for the senders of events in the ``chunk``.
+/// 
+/// Unless ``include_redundant_members`` is ``true``, the server
+/// may remove membership events which would have already been
+/// sent to the client in prior calls to this endpoint, assuming
+/// the membership of those members has not changed.
+EventList state() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -61,47 +102,17 @@ public:
         std::string roomId , std::string from , std::string dir , std::string to  = {}, std::optional<int> limit  = std::nullopt, std::string filter  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// The token the pagination starts from. If ``dir=b`` this will be
-/// the token supplied in ``from``.
-static std::string start(Response r);
-
-    
-/// The token the pagination ends at. If ``dir=b`` this token should
-/// be used again to request even earlier events.
-static std::string end(Response r);
-
-    
-/// A list of room events. The order depends on the ``dir`` parameter.
-/// For ``dir=b`` events will be in reverse-chronological order,
-/// for ``dir=f`` in chronological order, so that events start
-/// at the ``from`` point.
-static EventList chunk(Response r);
-
-    
-/// A list of state events relevant to showing the ``chunk``. For example, if
-/// ``lazy_load_members`` is enabled in the filter then this may contain
-/// the membership events for the senders of events in the ``chunk``.
-/// 
-/// Unless ``include_redundant_members`` is ``true``, the server
-/// may remove membership events which would have already been
-/// sent to the client in prior calls to this endpoint, assuming
-/// the membership of those members has not changed.
-static EventList state(Response r);
-
     static BaseJob::Query buildQuery(
     std::string from, std::string to, std::string dir, std::optional<int> limit, std::string filter);
 
       static BaseJob::Body buildBody(std::string roomId, std::string from, std::string dir, std::string to, std::optional<int> limit, std::string filter);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomEventsJob withData(JsonWrap j) &&;
+      GetRoomEventsJob withData(JsonWrap j) const &;
+      };
+      using GetRoomEventsResponse = GetRoomEventsJob::JobResponse;
       } 
       namespace nlohmann
       {

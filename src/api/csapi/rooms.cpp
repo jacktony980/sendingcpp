@@ -38,6 +38,7 @@ GetOneRoomEventJob::GetOneRoomEventJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/event/" + eventId,
           GET,
+          std::string("GetOneRoomEvent"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId)
@@ -46,11 +47,28 @@ GetOneRoomEventJob::GetOneRoomEventJob(
         {
         }
 
-          bool GetOneRoomEventJob::success(Response r)
+        GetOneRoomEventJob GetOneRoomEventJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetOneRoomEventJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetOneRoomEventJob GetOneRoomEventJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetOneRoomEventJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetOneRoomEventJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetOneRoomEventResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -85,6 +103,7 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
           GET,
+          std::string("GetRoomStateWithKey"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey)
@@ -93,11 +112,28 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
         {
         }
 
-          bool GetRoomStateWithKeyJob::success(Response r)
+        GetRoomStateWithKeyJob GetRoomStateWithKeyJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomStateWithKeyJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomStateWithKeyJob GetRoomStateWithKeyJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomStateWithKeyJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomStateWithKeyJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomStateWithKeyResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -132,6 +168,7 @@ GetRoomStateJob::GetRoomStateJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state",
           GET,
+          std::string("GetRoomState"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -140,11 +177,28 @@ GetRoomStateJob::GetRoomStateJob(
         {
         }
 
-          bool GetRoomStateJob::success(Response r)
+        GetRoomStateJob GetRoomStateJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomStateJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomStateJob GetRoomStateJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomStateJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomStateJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomStateResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -184,6 +238,7 @@ GetMembersByRoomJob::GetMembersByRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/members",
           GET,
+          std::string("GetMembersByRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, at, membership, notMembership)
@@ -192,22 +247,39 @@ GetMembersByRoomJob::GetMembersByRoomJob(
         {
         }
 
-          bool GetMembersByRoomJob::success(Response r)
+        GetMembersByRoomJob GetMembersByRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetMembersByRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetMembersByRoomJob GetMembersByRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetMembersByRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetMembersByRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetMembersByRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    EventList GetMembersByRoomJob::chunk(Response r)
+    EventList GetMembersByRoomResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
@@ -242,6 +314,7 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/joined_members",
           GET,
+          std::string("GetJoinedMembersByRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -250,22 +323,39 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
         {
         }
 
-          bool GetJoinedMembersByRoomJob::success(Response r)
+        GetJoinedMembersByRoomJob GetJoinedMembersByRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetJoinedMembersByRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetJoinedMembersByRoomJob GetJoinedMembersByRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetJoinedMembersByRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetJoinedMembersByRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetJoinedMembersByRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::map<std::string, GetJoinedMembersByRoomJob::RoomMember> GetJoinedMembersByRoomJob::joined(Response r)
+    immer::map<std::string, GetJoinedMembersByRoomJob::RoomMember> GetJoinedMembersByRoomResponse::joined() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("joined"s)) {
     return
-    jsonBody(r).get()["joined"s]
+    jsonBody().get()["joined"s]
     /*.get<immer::map<std::string, RoomMember>>()*/;}
     else { return immer::map<std::string, RoomMember>(  );}
     }

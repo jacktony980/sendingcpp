@@ -38,6 +38,7 @@ GetDevicesJob::GetDevicesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices",
           GET,
+          std::string("GetDevices"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,22 +47,39 @@ GetDevicesJob::GetDevicesJob(
         {
         }
 
-          bool GetDevicesJob::success(Response r)
+        GetDevicesJob GetDevicesJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetDevicesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDevicesJob GetDevicesJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetDevicesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDevicesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetDevicesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::array<Device> GetDevicesJob::devices(Response r)
+    immer::array<Device> GetDevicesResponse::devices() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("devices"s)) {
     return
-    jsonBody(r).get()["devices"s]
+    jsonBody().get()["devices"s]
     /*.get<immer::array<Device>>()*/;}
     else { return immer::array<Device>(  );}
     }
@@ -96,6 +114,7 @@ GetDeviceJob::GetDeviceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           GET,
+          std::string("GetDevice"),
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId)
@@ -104,11 +123,28 @@ GetDeviceJob::GetDeviceJob(
         {
         }
 
-          bool GetDeviceJob::success(Response r)
+        GetDeviceJob GetDeviceJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetDeviceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDeviceJob GetDeviceJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetDeviceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDeviceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetDeviceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -148,6 +184,7 @@ UpdateDeviceJob::UpdateDeviceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           PUT,
+          std::string("UpdateDevice"),
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId, displayName)
@@ -156,11 +193,28 @@ UpdateDeviceJob::UpdateDeviceJob(
         {
         }
 
-          bool UpdateDeviceJob::success(Response r)
+        UpdateDeviceJob UpdateDeviceJob::withData(JsonWrap j) &&
+        {
+          auto ret = UpdateDeviceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpdateDeviceJob UpdateDeviceJob::withData(JsonWrap j) const &
+        {
+          auto ret = UpdateDeviceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpdateDeviceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UpdateDeviceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -200,6 +254,7 @@ DeleteDeviceJob::DeleteDeviceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           DELETE,
+          std::string("DeleteDevice"),
           _accessToken,
           ReturnType::Json,
             buildBody(deviceId, auth)
@@ -208,11 +263,28 @@ DeleteDeviceJob::DeleteDeviceJob(
         {
         }
 
-          bool DeleteDeviceJob::success(Response r)
+        DeleteDeviceJob DeleteDeviceJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeleteDeviceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteDeviceJob DeleteDeviceJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeleteDeviceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteDeviceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeleteDeviceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -254,6 +326,7 @@ DeleteDevicesJob::DeleteDevicesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/delete_devices",
           POST,
+          std::string("DeleteDevices"),
           _accessToken,
           ReturnType::Json,
             buildBody(devices, auth)
@@ -262,11 +335,28 @@ DeleteDevicesJob::DeleteDevicesJob(
         {
         }
 
-          bool DeleteDevicesJob::success(Response r)
+        DeleteDevicesJob DeleteDevicesJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeleteDevicesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteDevicesJob DeleteDevicesJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeleteDevicesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteDevicesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeleteDevicesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

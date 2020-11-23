@@ -24,6 +24,23 @@ class GetTokenOwnerJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The user id that owns the access token.
+std::string userId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -39,23 +56,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The user id that owns the access token.
-static std::string userId(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetTokenOwnerJob withData(JsonWrap j) &&;
+      GetTokenOwnerJob withData(JsonWrap j) const &;
+      };
+      using GetTokenOwnerResponse = GetTokenOwnerJob::JobResponse;
       } 
       namespace nlohmann
       {

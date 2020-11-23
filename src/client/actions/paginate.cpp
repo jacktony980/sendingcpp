@@ -27,7 +27,6 @@
 
 #include <types.hpp>
 #include <debug.hpp>
-#include <csapi/message_pagination.hpp>
 
 #include <cursorutil.hpp>
 
@@ -37,55 +36,50 @@ namespace Kazv
 {
     ClientResult updateClient(ClientModel m, PaginateTimelineAction a)
     {
-        return {
-            m,
-            [=](auto &&ctx) {
-                auto roomId = a.roomId;
-                auto room = m.roomList.at(roomId);
-                auto paginateBackToken = room.paginateBackToken;
+        auto roomId = a.roomId;
+        auto room = m.roomList.at(roomId);
+        auto paginateBackToken = room.paginateBackToken;
 
-                auto job = m.job<GetRoomEventsJob>().make(
-                    roomId,
-                    paginateBackToken, // from
-                    "b"s, // dir
-                    DEFVAL, // to
-                    a.limit);
+        auto job = m.job<GetRoomEventsJob>().make(
+            roomId,
+            paginateBackToken, // from
+            "b"s, // dir
+            DEFVAL, // to
+            a.limit).withData(json{{"roomId", roomId}});
 
-                auto &jobHandler = lager::get<JobInterface &>(ctx);
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (! GetRoomEventsJob::success(r)) {
-                            dbgClient << "Get room events failed" << std::endl;
-                            return;
-                        }
-                        auto paginateBackToken = GetRoomEventsJob::end(r);
-                        auto events = GetRoomEventsJob::chunk(r);
+        m.addJob(std::move(job));
 
-                        LoadPaginateTimelineResultAction
-                            action{roomId, events, paginateBackToken};
-                        ctx.dispatch(action);
-                    });
-            }
-        };
+        return { m, lager::noop };
     }
 
-    ClientResult updateClient(ClientModel m, LoadPaginateTimelineResultAction a)
+    ClientResult processResponse(ClientModel m, GetRoomEventsResponse r)
     {
+        auto roomId = r.dataStr("roomId");
+
+        if (! r.success()) {
+            dbgClient << "Get room events failed" << std::endl;
+            m.addTrigger(PaginateFailed{roomId});
+            return { m, lager::noop };
+        }
+
+        auto paginateBackToken = r.end();
+        auto chunk = r.chunk();
+
         try {
-            auto room = m.roomList.at(a.roomId);
+            auto room = m.roomList.at(roomId);
             immer::flex_vector_transient<Event> events{};
             // The timeline from paginate backwards is returned
             // in reversed order, so restore the order.
-            zug::into(events, zug::reversed, a.events);
+            zug::into(events, zug::reversed, chunk);
 
             PrependTimelineAction action
-                {events.persistent(), a.paginateBackToken};
+                {events.persistent(), paginateBackToken};
 
             auto roomList = RoomListModel::update(
                 std::move(m.roomList),
-                UpdateRoomAction{a.roomId, action});
+                UpdateRoomAction{roomId, action});
             m.roomList = std::move(roomList);
+            m.addTrigger(PaginateSuccessful{roomId});
 
             return { std::move(m), lager::noop };
         } catch (const std::out_of_range &e) {

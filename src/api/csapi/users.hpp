@@ -48,6 +48,27 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// Ordered by rank and then whether or not profile info is available.
+immer::array<User> results() const;
+
+    
+/// Indicates if the result list has been truncated by the limit.
+bool limited() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -70,27 +91,17 @@ public:
         std::string searchTerm , std::optional<int> limit  = std::nullopt);
     
 
-    // Result properties
-        
-        
-
-    
-/// Ordered by rank and then whether or not profile info is available.
-static immer::array<User> results(Response r);
-
-    
-/// Indicates if the result list has been truncated by the limit.
-static bool limited(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string searchTerm, std::optional<int> limit);
 
-        static bool success(Response r);
         
-      };
 
+      SearchUserDirectoryJob withData(JsonWrap j) &&;
+      SearchUserDirectoryJob withData(JsonWrap j) const &;
+      };
+      using SearchUserDirectoryResponse = SearchUserDirectoryJob::JobResponse;
       } 
       namespace nlohmann
       {

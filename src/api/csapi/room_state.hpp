@@ -36,6 +36,23 @@ class SetRoomStateWithKeyJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A unique identifier for the event.
+std::string eventId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -84,23 +101,17 @@ public:
         std::string roomId , std::string eventType , std::string stateKey , JsonWrap body  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// A unique identifier for the event.
-static std::string eventId(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventType, std::string stateKey, JsonWrap body);
 
-        static bool success(Response r);
         
-      };
 
+      SetRoomStateWithKeyJob withData(JsonWrap j) &&;
+      SetRoomStateWithKeyJob withData(JsonWrap j) const &;
+      };
+      using SetRoomStateWithKeyResponse = SetRoomStateWithKeyJob::JobResponse;
       } 
       namespace nlohmann
       {

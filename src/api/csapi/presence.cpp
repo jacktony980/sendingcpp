@@ -45,6 +45,7 @@ SetPresenceJob::SetPresenceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
           PUT,
+          std::string("SetPresence"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, presence, statusMsg)
@@ -53,11 +54,28 @@ SetPresenceJob::SetPresenceJob(
         {
         }
 
-          bool SetPresenceJob::success(Response r)
+        SetPresenceJob SetPresenceJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetPresenceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPresenceJob SetPresenceJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetPresenceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPresenceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetPresenceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -92,6 +110,7 @@ GetPresenceJob::GetPresenceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
           GET,
+          std::string("GetPresence"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId)
@@ -100,56 +119,73 @@ GetPresenceJob::GetPresenceJob(
         {
         }
 
-          bool GetPresenceJob::success(Response r)
+        GetPresenceJob GetPresenceJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPresenceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPresenceJob GetPresenceJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPresenceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPresenceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPresenceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("presence"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("presence"s)
           ;
           }
 
 
     
-    std::string GetPresenceJob::presence(Response r)
+    std::string GetPresenceResponse::presence() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("presence"s)) {
     return
-    jsonBody(r).get()["presence"s]
+    jsonBody().get()["presence"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<int> GetPresenceJob::lastActiveAgo(Response r)
+    std::optional<int> GetPresenceResponse::lastActiveAgo() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("last_active_ago"s)) {
     return
-    jsonBody(r).get()["last_active_ago"s]
+    jsonBody().get()["last_active_ago"s]
     /*.get<int>()*/;}
     else { return std::optional<int>(  );}
     }
 
     
-    Variant GetPresenceJob::statusMsg(Response r)
+    Variant GetPresenceResponse::statusMsg() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("status_msg"s)) {
     return
-    jsonBody(r).get()["status_msg"s]
+    jsonBody().get()["status_msg"s]
     /*.get<Variant>()*/;}
     else { return Variant(  );}
     }
 
     
-    std::optional<bool> GetPresenceJob::currentlyActive(Response r)
+    std::optional<bool> GetPresenceResponse::currentlyActive() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("currently_active"s)) {
     return
-    jsonBody(r).get()["currently_active"s]
+    jsonBody().get()["currently_active"s]
     /*.get<bool>()*/;}
     else { return std::optional<bool>(  );}
     }

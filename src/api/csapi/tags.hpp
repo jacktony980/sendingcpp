@@ -28,6 +28,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// List the tags set by a user on a room.
+immer::map<std::string, Tag> tags() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -51,23 +68,17 @@ public:
         std::string userId , std::string roomId );
 
 
-    // Result properties
-        
-        
-
-    
-/// List the tags set by a user on a room.
-static immer::map<std::string, Tag> tags(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomTagsJob withData(JsonWrap j) &&;
+      GetRoomTagsJob withData(JsonWrap j) const &;
+      };
+      using GetRoomTagsResponse = GetRoomTagsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -97,6 +108,15 @@ class SetRoomTagJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -135,10 +155,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties);
 
-        static bool success(Response r);
         
-      };
 
+      SetRoomTagJob withData(JsonWrap j) &&;
+      SetRoomTagJob withData(JsonWrap j) const &;
+      };
+      using SetRoomTagResponse = SetRoomTagJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -157,6 +179,15 @@ class DeleteRoomTagJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -188,10 +219,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag);
 
-        static bool success(Response r);
         
-      };
 
+      DeleteRoomTagJob withData(JsonWrap j) &&;
+      DeleteRoomTagJob withData(JsonWrap j) const &;
+      };
+      using DeleteRoomTagResponse = DeleteRoomTagJob::JobResponse;
       } 
       namespace nlohmann
       {

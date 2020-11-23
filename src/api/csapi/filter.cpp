@@ -39,6 +39,7 @@ DefineFilterJob::DefineFilterJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/filter",
           POST,
+          std::string("DefineFilter"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, filter)
@@ -47,23 +48,40 @@ DefineFilterJob::DefineFilterJob(
         {
         }
 
-          bool DefineFilterJob::success(Response r)
+        DefineFilterJob DefineFilterJob::withData(JsonWrap j) &&
+        {
+          auto ret = DefineFilterJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DefineFilterJob DefineFilterJob::withData(JsonWrap j) const &
+        {
+          auto ret = DefineFilterJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DefineFilterJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DefineFilterResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("filter_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("filter_id"s)
           ;
           }
 
 
     
-    std::string DefineFilterJob::filterId(Response r)
+    std::string DefineFilterResponse::filterId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("filter_id"s)) {
     return
-    jsonBody(r).get()["filter_id"s]
+    jsonBody().get()["filter_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -98,6 +116,7 @@ GetFilterJob::GetFilterJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/filter/" + filterId,
           GET,
+          std::string("GetFilter"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, filterId)
@@ -106,11 +125,28 @@ GetFilterJob::GetFilterJob(
         {
         }
 
-          bool GetFilterJob::success(Response r)
+        GetFilterJob GetFilterJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetFilterJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetFilterJob GetFilterJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetFilterJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetFilterJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetFilterResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

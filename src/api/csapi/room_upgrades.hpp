@@ -17,6 +17,23 @@ class UpgradeRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The ID of the new room.
+std::string replacementRoom() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -39,23 +56,17 @@ public:
         std::string roomId , std::string newVersion );
     
 
-    // Result properties
-        
-        
-
-    
-/// The ID of the new room.
-static std::string replacementRoom(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId, std::string newVersion);
 
-        static bool success(Response r);
         
-      };
 
+      UpgradeRoomJob withData(JsonWrap j) &&;
+      UpgradeRoomJob withData(JsonWrap j) const &;
+      };
+      using UpgradeRoomResponse = UpgradeRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -19,11 +19,15 @@
 
 #pragma once
 
+#include <csapi/rooms.hpp>
+#include <csapi/room_state.hpp>
+
 #include "client-model.hpp"
 
 namespace Kazv
 {
     ClientResult updateClient(ClientModel m, GetRoomStatesAction a);
-    ClientResult updateClient(ClientModel m, LoadRoomStatesAction a);
+    ClientResult processResponse(ClientModel m, GetRoomStateResponse r);
     ClientResult updateClient(ClientModel m, SendStateEventAction a);
+    ClientResult processResponse(ClientModel m, SetRoomStateWithKeyResponse r);
 }

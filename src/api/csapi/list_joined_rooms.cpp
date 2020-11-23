@@ -38,6 +38,7 @@ GetJoinedRoomsJob::GetJoinedRoomsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/joined_rooms",
           GET,
+          std::string("GetJoinedRooms"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,23 +47,40 @@ GetJoinedRoomsJob::GetJoinedRoomsJob(
         {
         }
 
-          bool GetJoinedRoomsJob::success(Response r)
+        GetJoinedRoomsJob GetJoinedRoomsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetJoinedRoomsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetJoinedRoomsJob GetJoinedRoomsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetJoinedRoomsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetJoinedRoomsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetJoinedRoomsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("joined_rooms"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("joined_rooms"s)
           ;
           }
 
 
     
-    immer::array<std::string> GetJoinedRoomsJob::joinedRooms(Response r)
+    immer::array<std::string> GetJoinedRoomsResponse::joinedRooms() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("joined_rooms"s)) {
     return
-    jsonBody(r).get()["joined_rooms"s]
+    jsonBody().get()["joined_rooms"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }

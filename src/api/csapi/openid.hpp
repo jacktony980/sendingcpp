@@ -24,6 +24,31 @@ class RequestOpenIdTokenJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// OpenID token information. This response is nearly compatible with the
+/// response documented in the `OpenID Connect 1.0 Specification <http://openid.net/specs/openid-connect-core-1_0.html#TokenResponse>`_
+/// with the only difference being the lack of an ``id_token``. Instead,
+/// the Matrix homeserver's name is provided.
+    OpenidToken data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<OpenidToken>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -47,31 +72,17 @@ public:
         std::string userId , JsonWrap body  = {});
     
 
-    // Result properties
-        
-
-/// OpenID token information. This response is nearly compatible with the
-/// response documented in the `OpenID Connect 1.0 Specification <http://openid.net/specs/openid-connect-core-1_0.html#TokenResponse>`_
-/// with the only difference being the lack of an ``id_token``. Instead,
-/// the Matrix homeserver's name is provided.
-    static OpenidToken data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<OpenidToken>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId, JsonWrap body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestOpenIdTokenJob withData(JsonWrap j) &&;
+      RequestOpenIdTokenJob withData(JsonWrap j) const &;
+      };
+      using RequestOpenIdTokenResponse = RequestOpenIdTokenJob::JobResponse;
       } 
       namespace nlohmann
       {

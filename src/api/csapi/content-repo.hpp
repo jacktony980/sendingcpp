@@ -16,6 +16,23 @@ class UploadContentJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The `MXC URI`_ to the uploaded content.
+std::string contentUri() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -41,23 +58,17 @@ public:
         Bytes content , std::string filename  = {}, std::string contentType  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// The `MXC URI`_ to the uploaded content.
-static std::string contentUri(Response r);
-
     static BaseJob::Query buildQuery(
     std::string filename);
 
       static BaseJob::Body buildBody(Bytes content, std::string filename, std::string contentType);
 
-        static bool success(Response r);
         
-      };
 
+      UploadContentJob withData(JsonWrap j) &&;
+      UploadContentJob withData(JsonWrap j) const &;
+      };
+      using UploadContentResponse = UploadContentJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -75,6 +86,41 @@ class GetContentJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+/*
+/// The content type of the file that was previously uploaded.
+std::string contentType() const
+    {
+        return reply()->rawHeader("Content-Type");
+    }
+*/        
+/*
+/// The name of the file that was previously uploaded, if set.
+std::string contentDisposition() const
+    {
+        return reply()->rawHeader("Content-Disposition");
+    }
+*/        
+
+/// The content that was previously uploaded.
+    Bytes data() const
+    {
+    return
+      std::get<Bytes>(body)
+    
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -102,41 +148,17 @@ public:
         std::string serverName , std::string mediaId , bool allowRemote  = true);
 
 
-    // Result properties
-/*
-/// The content type of the file that was previously uploaded.
-static std::string contentType(Response r)
-    {
-        return reply()->rawHeader("Content-Type");
-    }
-*/        
-/*
-/// The name of the file that was previously uploaded, if set.
-static std::string contentDisposition(Response r)
-    {
-        return reply()->rawHeader("Content-Disposition");
-    }
-*/        
-
-/// The content that was previously uploaded.
-    static Bytes data(Response r)
-    {
-    return
-      std::get<Bytes>(r.body)
-    
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     bool allowRemote);
 
       static BaseJob::Body buildBody(std::string serverName, std::string mediaId, bool allowRemote);
 
-        static bool success(Response r);
           static const immer::array<std::string> expectedContentTypes;
-      };
 
+      GetContentJob withData(JsonWrap j) &&;
+      GetContentJob withData(JsonWrap j) const &;
+      };
+      using GetContentResponse = GetContentJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -157,6 +179,42 @@ class GetContentOverrideNameJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+/*
+/// The content type of the file that was previously uploaded.
+std::string contentType() const
+    {
+        return reply()->rawHeader("Content-Type");
+    }
+*/        
+/*
+/// The ``fileName`` requested or the name of the file that was previously
+/// uploaded, if set.
+std::string contentDisposition() const
+    {
+        return reply()->rawHeader("Content-Disposition");
+    }
+*/        
+
+/// The content that was previously uploaded.
+    Bytes data() const
+    {
+    return
+      std::get<Bytes>(body)
+    
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -187,42 +245,17 @@ public:
         std::string serverName , std::string mediaId , std::string fileName , bool allowRemote  = true);
 
 
-    // Result properties
-/*
-/// The content type of the file that was previously uploaded.
-static std::string contentType(Response r)
-    {
-        return reply()->rawHeader("Content-Type");
-    }
-*/        
-/*
-/// The ``fileName`` requested or the name of the file that was previously
-/// uploaded, if set.
-static std::string contentDisposition(Response r)
-    {
-        return reply()->rawHeader("Content-Disposition");
-    }
-*/        
-
-/// The content that was previously uploaded.
-    static Bytes data(Response r)
-    {
-    return
-      std::get<Bytes>(r.body)
-    
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     bool allowRemote);
 
       static BaseJob::Body buildBody(std::string serverName, std::string mediaId, std::string fileName, bool allowRemote);
 
-        static bool success(Response r);
           static const immer::array<std::string> expectedContentTypes;
-      };
 
+      GetContentOverrideNameJob withData(JsonWrap j) &&;
+      GetContentOverrideNameJob withData(JsonWrap j) const &;
+      };
+      using GetContentOverrideNameResponse = GetContentOverrideNameJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -242,6 +275,34 @@ class GetContentThumbnailJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+/*
+/// The content type of the thumbnail.
+std::string contentType() const
+    {
+        return reply()->rawHeader("Content-Type");
+    }
+*/        
+
+/// A thumbnail of the requested content.
+    Bytes data() const
+    {
+    return
+      std::get<Bytes>(body)
+    
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -281,34 +342,17 @@ public:
         std::string serverName , std::string mediaId , int width , int height , std::string method  = {}, bool allowRemote  = true);
 
 
-    // Result properties
-/*
-/// The content type of the thumbnail.
-static std::string contentType(Response r)
-    {
-        return reply()->rawHeader("Content-Type");
-    }
-*/        
-
-/// A thumbnail of the requested content.
-    static Bytes data(Response r)
-    {
-    return
-      std::get<Bytes>(r.body)
-    
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     int width, int height, std::string method, bool allowRemote);
 
       static BaseJob::Body buildBody(std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote);
 
-        static bool success(Response r);
           static const immer::array<std::string> expectedContentTypes;
-      };
 
+      GetContentThumbnailJob withData(JsonWrap j) &&;
+      GetContentThumbnailJob withData(JsonWrap j) const &;
+      };
+      using GetContentThumbnailResponse = GetContentThumbnailJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -334,6 +378,27 @@ class GetUrlPreviewJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The byte-size of the image. Omitted if there is no image attached.
+std::optional<std::int_fast64_t> matrixImageSize() const;
+
+    
+/// An `MXC URI`_ to the image. Omitted if there is no image.
+std::string ogImage() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -358,27 +423,17 @@ public:
         std::string url , std::optional<std::int_fast64_t> ts  = std::nullopt);
 
 
-    // Result properties
-        
-        
-
-    
-/// The byte-size of the image. Omitted if there is no image attached.
-static std::optional<std::int_fast64_t> matrixImageSize(Response r);
-
-    
-/// An `MXC URI`_ to the image. Omitted if there is no image.
-static std::string ogImage(Response r);
-
     static BaseJob::Query buildQuery(
     std::string url, std::optional<std::int_fast64_t> ts);
 
       static BaseJob::Body buildBody(std::string url, std::optional<std::int_fast64_t> ts);
 
-        static bool success(Response r);
         
-      };
 
+      GetUrlPreviewJob withData(JsonWrap j) &&;
+      GetUrlPreviewJob withData(JsonWrap j) const &;
+      };
+      using GetUrlPreviewResponse = GetUrlPreviewJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -406,6 +461,25 @@ class GetConfigJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The maximum size an upload can be in bytes.
+/// Clients SHOULD use this as a guide when uploading content.
+/// If not listed or null, the size limit should be treated as unknown.
+std::optional<std::int_fast64_t> uploadSize() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -421,25 +495,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The maximum size an upload can be in bytes.
-/// Clients SHOULD use this as a guide when uploading content.
-/// If not listed or null, the size limit should be treated as unknown.
-static std::optional<std::int_fast64_t> uploadSize(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetConfigJob withData(JsonWrap j) &&;
+      GetConfigJob withData(JsonWrap j) const &;
+      };
+      using GetConfigResponse = GetConfigJob::JobResponse;
       } 
       namespace nlohmann
       {

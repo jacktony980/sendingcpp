@@ -23,6 +23,23 @@ class SendMessageJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A unique identifier for the event.
+std::string eventId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -59,23 +76,17 @@ public:
         std::string roomId , std::string eventType , std::string txnId , JsonWrap body  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// A unique identifier for the event.
-static std::string eventId(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventType, std::string txnId, JsonWrap body);
 
-        static bool success(Response r);
         
-      };
 
+      SendMessageJob withData(JsonWrap j) &&;
+      SendMessageJob withData(JsonWrap j) const &;
+      };
+      using SendMessageResponse = SendMessageJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -45,6 +45,7 @@ SetTypingJob::SetTypingJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/typing/" + userId,
           PUT,
+          std::string("SetTyping"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, typing, timeout)
@@ -53,11 +54,28 @@ SetTypingJob::SetTypingJob(
         {
         }
 
-          bool SetTypingJob::success(Response r)
+        SetTypingJob SetTypingJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetTypingJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetTypingJob SetTypingJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetTypingJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetTypingJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetTypingResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

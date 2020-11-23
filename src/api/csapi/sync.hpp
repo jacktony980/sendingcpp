@@ -251,6 +251,51 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The batch token to supply in the ``since`` param of the next
+/// ``/sync`` request.
+std::string nextBatch() const;
+
+    
+/// Updates to rooms.
+std::optional<Rooms> rooms() const;
+
+    
+/// The updates to the presence status of other users.
+std::optional<EventBatch> presence() const;
+
+    
+/// The global private data created by this user.
+std::optional<EventBatch> accountData() const;
+
+    
+/// Information on the send-to-device messages for the client
+/// device, as defined in |send_to_device_sync|_.
+JsonWrap toDevice() const;
+
+    
+/// Information on end-to-end device updates, as specified in
+/// |device_lists_sync|_.
+JsonWrap deviceLists() const;
+
+    
+/// Information on end-to-end encryption keys, as specified
+/// in |device_lists_sync|_.
+immer::map<std::string, int> deviceOneTimeKeysCount() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -312,51 +357,17 @@ public:
         std::string filter  = {}, std::string since  = {}, std::optional<bool> fullState  = std::nullopt, std::string setPresence  = {}, std::optional<int> timeout  = std::nullopt);
 
 
-    // Result properties
-        
-        
-
-    
-/// The batch token to supply in the ``since`` param of the next
-/// ``/sync`` request.
-static std::string nextBatch(Response r);
-
-    
-/// Updates to rooms.
-static std::optional<Rooms> rooms(Response r);
-
-    
-/// The updates to the presence status of other users.
-static std::optional<EventBatch> presence(Response r);
-
-    
-/// The global private data created by this user.
-static std::optional<EventBatch> accountData(Response r);
-
-    
-/// Information on the send-to-device messages for the client
-/// device, as defined in |send_to_device_sync|_.
-static JsonWrap toDevice(Response r);
-
-    
-/// Information on end-to-end device updates, as specified in
-/// |device_lists_sync|_.
-static JsonWrap deviceLists(Response r);
-
-    
-/// Information on end-to-end encryption keys, as specified
-/// in |device_lists_sync|_.
-static immer::map<std::string, int> deviceOneTimeKeysCount(Response r);
-
     static BaseJob::Query buildQuery(
     std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
 
       static BaseJob::Body buildBody(std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
 
-        static bool success(Response r);
         
-      };
 
+      SyncJob withData(JsonWrap j) &&;
+      SyncJob withData(JsonWrap j) const &;
+      };
+      using SyncResponse = SyncJob::JobResponse;
       } 
       namespace nlohmann
       {

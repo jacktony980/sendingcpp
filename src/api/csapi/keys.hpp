@@ -17,6 +17,24 @@ class UploadKeysJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// For each key algorithm, the number of unclaimed one-time keys
+/// of that type currently held on the server for this device.
+immer::map<std::string, int> oneTimeKeyCounts() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -45,24 +63,17 @@ public:
         std::optional<DeviceKeys> deviceKeys  = std::nullopt, immer::map<std::string, Variant> oneTimeKeys  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// For each key algorithm, the number of unclaimed one-time keys
-/// of that type currently held on the server for this device.
-static immer::map<std::string, int> oneTimeKeyCounts(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys);
 
-        static bool success(Response r);
         
-      };
 
+      UploadKeysJob withData(JsonWrap j) &&;
+      UploadKeysJob withData(JsonWrap j) const &;
+      };
+      using UploadKeysResponse = UploadKeysJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -103,6 +114,37 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// If any remote homeservers could not be reached, they are
+/// recorded here. The names of the properties are the names of
+/// the unreachable servers.
+/// 
+/// If the homeserver could be reached, but the user or device
+/// was unknown, no failure is recorded. Instead, the corresponding
+/// user or device is missing from the ``device_keys`` result.
+immer::map<std::string, JsonWrap> failures() const;
+
+    
+/// Information on the queried devices. A map from user ID, to a
+/// map from device ID to device information.  For each device,
+/// the information returned will be the same as uploaded via
+/// ``/keys/upload``, with the addition of an ``unsigned``
+/// property.
+immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -134,37 +176,17 @@ public:
         immer::map<std::string, immer::array<std::string>> deviceKeys , std::optional<int> timeout  = std::nullopt, std::string token  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// If any remote homeservers could not be reached, they are
-/// recorded here. The names of the properties are the names of
-/// the unreachable servers.
-/// 
-/// If the homeserver could be reached, but the user or device
-/// was unknown, no failure is recorded. Instead, the corresponding
-/// user or device is missing from the ``device_keys`` result.
-static immer::map<std::string, JsonWrap> failures(Response r);
-
-    
-/// Information on the queried devices. A map from user ID, to a
-/// map from device ID to device information.  For each device,
-/// the information returned will be the same as uploaded via
-/// ``/keys/upload``, with the addition of an ``unsigned``
-/// property.
-static immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token);
 
-        static bool success(Response r);
         
-      };
 
+      QueryKeysJob withData(JsonWrap j) &&;
+      QueryKeysJob withData(JsonWrap j) const &;
+      };
+      using QueryKeysResponse = QueryKeysJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -207,6 +229,37 @@ class ClaimKeysJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// If any remote homeservers could not be reached, they are
+/// recorded here. The names of the properties are the names of
+/// the unreachable servers.
+/// 
+/// If the homeserver could be reached, but the user or device
+/// was unknown, no failure is recorded. Instead, the corresponding
+/// user or device is missing from the ``one_time_keys`` result.
+immer::map<std::string, JsonWrap> failures() const;
+
+    
+/// One-time keys for the queried devices. A map from user ID, to a
+/// map from devices to a map from ``<algorithm>:<key_id>`` to the key object.
+/// 
+/// See the `key algorithms <#key-algorithms>`_ section for information
+/// on the Key Object format.
+immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -231,37 +284,17 @@ public:
         immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys , std::optional<int> timeout  = std::nullopt);
     
 
-    // Result properties
-        
-        
-
-    
-/// If any remote homeservers could not be reached, they are
-/// recorded here. The names of the properties are the names of
-/// the unreachable servers.
-/// 
-/// If the homeserver could be reached, but the user or device
-/// was unknown, no failure is recorded. Instead, the corresponding
-/// user or device is missing from the ``one_time_keys`` result.
-static immer::map<std::string, JsonWrap> failures(Response r);
-
-    
-/// One-time keys for the queried devices. A map from user ID, to a
-/// map from devices to a map from ``<algorithm>:<key_id>`` to the key object.
-/// 
-/// See the `key algorithms <#key-algorithms>`_ section for information
-/// on the Key Object format.
-static immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout);
 
-        static bool success(Response r);
         
-      };
 
+      ClaimKeysJob withData(JsonWrap j) &&;
+      ClaimKeysJob withData(JsonWrap j) const &;
+      };
+      using ClaimKeysResponse = ClaimKeysJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -288,6 +321,30 @@ class GetKeysChangesJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The Matrix User IDs of all users who updated their device
+/// identity keys.
+immer::array<std::string> changed() const;
+
+    
+/// The Matrix User IDs of all users who may have left all
+/// the end-to-end encrypted rooms they previously shared
+/// with the user.
+immer::array<std::string> left() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -317,30 +374,17 @@ public:
         std::string from , std::string to );
 
 
-    // Result properties
-        
-        
-
-    
-/// The Matrix User IDs of all users who updated their device
-/// identity keys.
-static immer::array<std::string> changed(Response r);
-
-    
-/// The Matrix User IDs of all users who may have left all
-/// the end-to-end encrypted rooms they previously shared
-/// with the user.
-static immer::array<std::string> left(Response r);
-
     static BaseJob::Query buildQuery(
     std::string from, std::string to);
 
       static BaseJob::Body buildBody(std::string from, std::string to);
 
-        static bool success(Response r);
         
-      };
 
+      GetKeysChangesJob withData(JsonWrap j) &&;
+      GetKeysChangesJob withData(JsonWrap j) const &;
+      };
+      using GetKeysChangesResponse = GetKeysChangesJob::JobResponse;
       } 
       namespace nlohmann
       {

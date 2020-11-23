@@ -182,6 +182,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// Describes which categories to search in and their criteria.
+ResultCategories searchCategories() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -205,23 +222,17 @@ public:
         Categories searchCategories , std::string nextBatch  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// Describes which categories to search in and their criteria.
-static ResultCategories searchCategories(Response r);
-
     static BaseJob::Query buildQuery(
     std::string nextBatch);
 
       static BaseJob::Body buildBody(Categories searchCategories, std::string nextBatch);
 
-        static bool success(Response r);
         
-      };
 
+      SearchJob withData(JsonWrap j) &&;
+      SearchJob withData(JsonWrap j) const &;
+      };
+      using SearchResponse = SearchJob::JobResponse;
       } 
       namespace nlohmann
       {

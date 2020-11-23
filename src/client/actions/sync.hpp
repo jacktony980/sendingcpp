@@ -19,11 +19,12 @@
 
 #pragma once
 
+#include <csapi/sync.hpp>
+
 #include "client-model.hpp"
 
 namespace Kazv
 {
     ClientResult updateClient(ClientModel m, SyncAction a);
-    ClientResult updateClient(ClientModel m, LoadSyncResultAction a);
-    ClientResult updateClient(ClientModel m, EmitKazvEventsAction a);
+    ClientResult processResponse(ClientModel m, SyncResponse r);
 }

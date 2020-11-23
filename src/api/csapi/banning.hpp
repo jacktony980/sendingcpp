@@ -21,6 +21,15 @@ class BanJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -51,10 +60,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string userId, std::string reason);
 
-        static bool success(Response r);
         
-      };
 
+      BanJob withData(JsonWrap j) &&;
+      BanJob withData(JsonWrap j) const &;
+      };
+      using BanResponse = BanJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -76,6 +87,15 @@ class UnbanJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -103,10 +123,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      UnbanJob withData(JsonWrap j) &&;
+      UnbanJob withData(JsonWrap j) const &;
+      };
+      using UnbanResponse = UnbanJob::JobResponse;
       } 
       namespace nlohmann
       {

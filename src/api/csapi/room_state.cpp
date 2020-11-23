@@ -39,6 +39,7 @@ SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
           PUT,
+          std::string("SetRoomStateWithKey"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey, body)
@@ -47,23 +48,40 @@ SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
         {
         }
 
-          bool SetRoomStateWithKeyJob::success(Response r)
+        SetRoomStateWithKeyJob SetRoomStateWithKeyJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetRoomStateWithKeyJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomStateWithKeyJob SetRoomStateWithKeyJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetRoomStateWithKeyJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomStateWithKeyJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetRoomStateWithKeyResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("event_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("event_id"s)
           ;
           }
 
 
     
-    std::string SetRoomStateWithKeyJob::eventId(Response r)
+    std::string SetRoomStateWithKeyResponse::eventId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("event_id"s)) {
     return
-    jsonBody(r).get()["event_id"s]
+    jsonBody().get()["event_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

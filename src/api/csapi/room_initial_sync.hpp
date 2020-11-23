@@ -41,6 +41,47 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The ID of this room.
+std::string roomId() const;
+
+    
+/// The user's membership state in this room.
+std::string membership() const;
+
+    
+/// The pagination chunk for this room.
+std::optional<PaginationChunk> messages() const;
+
+    
+/// If the user is a member of the room this will be the
+/// current state of the room as a list of events. If the
+/// user has left the room this will be the state of the
+/// room when they left it.
+EventList state() const;
+
+    
+/// Whether this room is visible to the ``/publicRooms`` API
+/// or not."
+std::string visibility() const;
+
+    
+/// The private data that this user has attached to this room.
+EventList accountData() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -60,47 +101,17 @@ public:
         std::string roomId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The ID of this room.
-static std::string roomId(Response r);
-
-    
-/// The user's membership state in this room.
-static std::string membership(Response r);
-
-    
-/// The pagination chunk for this room.
-static std::optional<PaginationChunk> messages(Response r);
-
-    
-/// If the user is a member of the room this will be the
-/// current state of the room as a list of events. If the
-/// user has left the room this will be the state of the
-/// room when they left it.
-static EventList state(Response r);
-
-    
-/// Whether this room is visible to the ``/publicRooms`` API
-/// or not."
-static std::string visibility(Response r);
-
-    
-/// The private data that this user has attached to this room.
-static EventList accountData(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      RoomInitialSyncJob withData(JsonWrap j) &&;
+      RoomInitialSyncJob withData(JsonWrap j) const &;
+      };
+      using RoomInitialSyncResponse = RoomInitialSyncJob::JobResponse;
       } 
       namespace nlohmann
       {

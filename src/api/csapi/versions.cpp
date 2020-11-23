@@ -38,6 +38,7 @@ GetVersionsJob::GetVersionsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client") + "/versions",
           GET,
+          std::string("GetVersions"),
            {} ,
           ReturnType::Json,
             buildBody()
@@ -46,34 +47,51 @@ GetVersionsJob::GetVersionsJob(
         {
         }
 
-          bool GetVersionsJob::success(Response r)
+        GetVersionsJob GetVersionsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetVersionsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetVersionsJob GetVersionsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetVersionsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetVersionsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetVersionsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("versions"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("versions"s)
           ;
           }
 
 
     
-    immer::array<std::string> GetVersionsJob::versions(Response r)
+    immer::array<std::string> GetVersionsResponse::versions() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("versions"s)) {
     return
-    jsonBody(r).get()["versions"s]
+    jsonBody().get()["versions"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }
 
     
-    immer::map<std::string, bool> GetVersionsJob::unstableFeatures(Response r)
+    immer::map<std::string, bool> GetVersionsResponse::unstableFeatures() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("unstable_features"s)) {
     return
-    jsonBody(r).get()["unstable_features"s]
+    jsonBody().get()["unstable_features"s]
     /*.get<immer::map<std::string, bool>>()*/;}
     else { return immer::map<std::string, bool>(  );}
     }

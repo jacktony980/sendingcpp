@@ -43,6 +43,7 @@ UpdateAppserviceRoomDirectoryVsibilityJob::UpdateAppserviceRoomDirectoryVsibilit
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/appservice/" + networkId + "/" + roomId,
           PUT,
+          std::string("UpdateAppserviceRoomDirectoryVsibility"),
           _accessToken,
           ReturnType::Json,
             buildBody(networkId, roomId, visibility)
@@ -51,11 +52,28 @@ UpdateAppserviceRoomDirectoryVsibilityJob::UpdateAppserviceRoomDirectoryVsibilit
         {
         }
 
-          bool UpdateAppserviceRoomDirectoryVsibilityJob::success(Response r)
+        UpdateAppserviceRoomDirectoryVsibilityJob UpdateAppserviceRoomDirectoryVsibilityJob::withData(JsonWrap j) &&
+        {
+          auto ret = UpdateAppserviceRoomDirectoryVsibilityJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpdateAppserviceRoomDirectoryVsibilityJob UpdateAppserviceRoomDirectoryVsibilityJob::withData(JsonWrap j) const &
+        {
+          auto ret = UpdateAppserviceRoomDirectoryVsibilityJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpdateAppserviceRoomDirectoryVsibilityJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UpdateAppserviceRoomDirectoryVsibilityResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

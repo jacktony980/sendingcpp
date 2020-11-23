@@ -34,6 +34,15 @@ class InviteUserJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -61,10 +70,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      InviteUserJob withData(JsonWrap j) &&;
+      InviteUserJob withData(JsonWrap j) const &;
+      };
+      using InviteUserResponse = InviteUserJob::JobResponse;
       } 
       namespace nlohmann
       {

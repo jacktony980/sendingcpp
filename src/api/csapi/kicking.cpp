@@ -45,6 +45,7 @@ KickJob::KickJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/kick",
           POST,
+          std::string("Kick"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId, reason)
@@ -53,11 +54,28 @@ KickJob::KickJob(
         {
         }
 
-          bool KickJob::success(Response r)
+        KickJob KickJob::withData(JsonWrap j) &&
+        {
+          auto ret = KickJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        KickJob KickJob::withData(JsonWrap j) const &
+        {
+          auto ret = KickJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        KickJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool KickResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -43,6 +43,7 @@ GetNotificationsJob::GetNotificationsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/notifications",
           GET,
+          std::string("GetNotifications"),
           _accessToken,
           ReturnType::Json,
             buildBody(from, limit, only)
@@ -51,34 +52,51 @@ GetNotificationsJob::GetNotificationsJob(
         {
         }
 
-          bool GetNotificationsJob::success(Response r)
+        GetNotificationsJob GetNotificationsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetNotificationsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetNotificationsJob GetNotificationsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetNotificationsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetNotificationsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetNotificationsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("notifications"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("notifications"s)
           ;
           }
 
 
     
-    std::string GetNotificationsJob::nextToken(Response r)
+    std::string GetNotificationsResponse::nextToken() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("next_token"s)) {
     return
-    jsonBody(r).get()["next_token"s]
+    jsonBody().get()["next_token"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    immer::array<GetNotificationsJob::Notification> GetNotificationsJob::notifications(Response r)
+    immer::array<GetNotificationsJob::Notification> GetNotificationsResponse::notifications() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("notifications"s)) {
     return
-    jsonBody(r).get()["notifications"s]
+    jsonBody().get()["notifications"s]
     /*.get<immer::array<Notification>>()*/;}
     else { return immer::array<Notification>(  );}
     }

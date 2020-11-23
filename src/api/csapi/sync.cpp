@@ -47,6 +47,7 @@ SyncJob::SyncJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/sync",
           GET,
+          std::string("Sync"),
           _accessToken,
           ReturnType::Json,
             buildBody(filter, since, fullState, setPresence, timeout)
@@ -55,89 +56,106 @@ SyncJob::SyncJob(
         {
         }
 
-          bool SyncJob::success(Response r)
+        SyncJob SyncJob::withData(JsonWrap j) &&
+        {
+          auto ret = SyncJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SyncJob SyncJob::withData(JsonWrap j) const &
+        {
+          auto ret = SyncJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SyncJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SyncResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("next_batch"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("next_batch"s)
           ;
           }
 
 
     
-    std::string SyncJob::nextBatch(Response r)
+    std::string SyncResponse::nextBatch() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("next_batch"s)) {
     return
-    jsonBody(r).get()["next_batch"s]
+    jsonBody().get()["next_batch"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<SyncJob::Rooms> SyncJob::rooms(Response r)
+    std::optional<SyncJob::Rooms> SyncResponse::rooms() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("rooms"s)) {
     return
-    jsonBody(r).get()["rooms"s]
+    jsonBody().get()["rooms"s]
     /*.get<Rooms>()*/;}
     else { return std::optional<Rooms>(  );}
     }
 
     
-    std::optional<EventBatch> SyncJob::presence(Response r)
+    std::optional<EventBatch> SyncResponse::presence() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("presence"s)) {
     return
-    jsonBody(r).get()["presence"s]
+    jsonBody().get()["presence"s]
     /*.get<EventBatch>()*/;}
     else { return std::optional<EventBatch>(  );}
     }
 
     
-    std::optional<EventBatch> SyncJob::accountData(Response r)
+    std::optional<EventBatch> SyncResponse::accountData() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("account_data"s)) {
     return
-    jsonBody(r).get()["account_data"s]
+    jsonBody().get()["account_data"s]
     /*.get<EventBatch>()*/;}
     else { return std::optional<EventBatch>(  );}
     }
 
     
-    JsonWrap SyncJob::toDevice(Response r)
+    JsonWrap SyncResponse::toDevice() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("to_device"s)) {
     return
-    jsonBody(r).get()["to_device"s]
+    jsonBody().get()["to_device"s]
     /*.get<JsonWrap>()*/;}
     else { return JsonWrap(  );}
     }
 
     
-    JsonWrap SyncJob::deviceLists(Response r)
+    JsonWrap SyncResponse::deviceLists() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("device_lists"s)) {
     return
-    jsonBody(r).get()["device_lists"s]
+    jsonBody().get()["device_lists"s]
     /*.get<JsonWrap>()*/;}
     else { return JsonWrap(  );}
     }
 
     
-    immer::map<std::string, int> SyncJob::deviceOneTimeKeysCount(Response r)
+    immer::map<std::string, int> SyncResponse::deviceOneTimeKeysCount() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("device_one_time_keys_count"s)) {
     return
-    jsonBody(r).get()["device_one_time_keys_count"s]
+    jsonBody().get()["device_one_time_keys_count"s]
     /*.get<immer::map<std::string, int>>()*/;}
     else { return immer::map<std::string, int>(  );}
     }

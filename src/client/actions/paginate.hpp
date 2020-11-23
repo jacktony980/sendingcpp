@@ -19,10 +19,12 @@
 
 #pragma once
 
+#include <csapi/message_pagination.hpp>
+
 #include "client-model.hpp"
 
 namespace Kazv
 {
     ClientResult updateClient(ClientModel m, PaginateTimelineAction a);
-    ClientResult updateClient(ClientModel m, LoadPaginateTimelineResultAction a);
+    ClientResult processResponse(ClientModel m, GetRoomEventsResponse a);
 }

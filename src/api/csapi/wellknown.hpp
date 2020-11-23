@@ -24,6 +24,28 @@ class GetWellknownJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// Server discovery information.
+    DiscoveryInformation data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<DiscoveryInformation>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -39,28 +61,17 @@ public:
         );
 
 
-    // Result properties
-        
-
-/// Server discovery information.
-    static DiscoveryInformation data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<DiscoveryInformation>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetWellknownJob withData(JsonWrap j) &&;
+      GetWellknownJob withData(JsonWrap j) const &;
+      };
+      using GetWellknownResponse = GetWellknownJob::JobResponse;
       } 
       namespace nlohmann
       {

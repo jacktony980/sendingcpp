@@ -18,6 +18,28 @@ class GetOneRoomEventJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The full event.
+    JsonWrap data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<JsonWrap>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -40,28 +62,17 @@ public:
         std::string roomId , std::string eventId );
 
 
-    // Result properties
-        
-
-/// The full event.
-    static JsonWrap data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<JsonWrap>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventId);
 
-        static bool success(Response r);
         
-      };
 
+      GetOneRoomEventJob withData(JsonWrap j) &&;
+      GetOneRoomEventJob withData(JsonWrap j) const &;
+      };
+      using GetOneRoomEventResponse = GetOneRoomEventJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -86,6 +97,15 @@ class GetRoomStateWithKeyJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -117,10 +137,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string eventType, std::string stateKey);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomStateWithKeyJob withData(JsonWrap j) &&;
+      GetRoomStateWithKeyJob withData(JsonWrap j) const &;
+      };
+      using GetRoomStateWithKeyResponse = GetRoomStateWithKeyJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -139,6 +161,28 @@ class GetRoomStateJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The current state of the room
+    EventList data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<EventList>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -158,28 +202,17 @@ public:
         std::string roomId );
 
 
-    // Result properties
-        
-
-/// The current state of the room
-    static EventList data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<EventList>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      GetRoomStateJob withData(JsonWrap j) &&;
+      GetRoomStateJob withData(JsonWrap j) const &;
+      };
+      using GetRoomStateResponse = GetRoomStateJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -198,6 +231,23 @@ class GetMembersByRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// Get the list of members for this room.
+EventList chunk() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -233,23 +283,17 @@ public:
         std::string roomId , std::string at  = {}, std::string membership  = {}, std::string notMembership  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// Get the list of members for this room.
-static EventList chunk(Response r);
-
     static BaseJob::Query buildQuery(
     std::string at, std::string membership, std::string notMembership);
 
       static BaseJob::Body buildBody(std::string roomId, std::string at, std::string membership, std::string notMembership);
 
-        static bool success(Response r);
         
-      };
 
+      GetMembersByRoomJob withData(JsonWrap j) &&;
+      GetMembersByRoomJob withData(JsonWrap j) const &;
+      };
+      using GetMembersByRoomResponse = GetMembersByRoomJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -279,6 +323,23 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A map from user ID to a RoomMember object.
+immer::map<std::string, RoomMember> joined() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -298,23 +359,17 @@ public:
         std::string roomId );
 
 
-    // Result properties
-        
-        
-
-    
-/// A map from user ID to a RoomMember object.
-static immer::map<std::string, RoomMember> joined(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      GetJoinedMembersByRoomJob withData(JsonWrap j) &&;
+      GetJoinedMembersByRoomJob withData(JsonWrap j) const &;
+      };
+      using GetJoinedMembersByRoomResponse = GetJoinedMembersByRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

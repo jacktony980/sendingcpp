@@ -38,6 +38,7 @@ GetLoginFlowsJob::GetLoginFlowsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login",
           GET,
+          std::string("GetLoginFlows"),
            {} ,
           ReturnType::Json,
             buildBody()
@@ -46,22 +47,39 @@ GetLoginFlowsJob::GetLoginFlowsJob(
         {
         }
 
-          bool GetLoginFlowsJob::success(Response r)
+        GetLoginFlowsJob GetLoginFlowsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetLoginFlowsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetLoginFlowsJob GetLoginFlowsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetLoginFlowsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetLoginFlowsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetLoginFlowsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::array<GetLoginFlowsJob::LoginFlow> GetLoginFlowsJob::flows(Response r)
+    immer::array<GetLoginFlowsJob::LoginFlow> GetLoginFlowsResponse::flows() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("flows"s)) {
     return
-    jsonBody(r).get()["flows"s]
+    jsonBody().get()["flows"s]
     /*.get<immer::array<LoginFlow>>()*/;}
     else { return immer::array<LoginFlow>(  );}
     }
@@ -111,6 +129,7 @@ LoginJob::LoginJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login",
           POST,
+          std::string("Login"),
            {} ,
           ReturnType::Json,
             buildBody(type, identifier, password, token, deviceId, initialDeviceDisplayName)
@@ -119,66 +138,83 @@ LoginJob::LoginJob(
         {
         }
 
-          bool LoginJob::success(Response r)
+        LoginJob LoginJob::withData(JsonWrap j) &&
+        {
+          auto ret = LoginJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        LoginJob LoginJob::withData(JsonWrap j) const &
+        {
+          auto ret = LoginJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        LoginJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool LoginResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string LoginJob::userId(Response r)
+    std::string LoginResponse::userId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("user_id"s)) {
     return
-    jsonBody(r).get()["user_id"s]
+    jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string LoginJob::accessToken(Response r)
+    std::string LoginResponse::accessToken() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("access_token"s)) {
     return
-    jsonBody(r).get()["access_token"s]
+    jsonBody().get()["access_token"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string LoginJob::homeServer(Response r)
+    std::string LoginResponse::homeServer() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("home_server"s)) {
     return
-    jsonBody(r).get()["home_server"s]
+    jsonBody().get()["home_server"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string LoginJob::deviceId(Response r)
+    std::string LoginResponse::deviceId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("device_id"s)) {
     return
-    jsonBody(r).get()["device_id"s]
+    jsonBody().get()["device_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<DiscoveryInformation> LoginJob::wellKnown(Response r)
+    std::optional<DiscoveryInformation> LoginResponse::wellKnown() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("well_known"s)) {
     return
-    jsonBody(r).get()["well_known"s]
+    jsonBody().get()["well_known"s]
     /*.get<DiscoveryInformation>()*/;}
     else { return std::optional<DiscoveryInformation>(  );}
     }

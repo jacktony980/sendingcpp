@@ -43,6 +43,7 @@ SetRoomAliasJob::SetRoomAliasJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           PUT,
+          std::string("SetRoomAlias"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomAlias, roomId)
@@ -51,11 +52,28 @@ SetRoomAliasJob::SetRoomAliasJob(
         {
         }
 
-          bool SetRoomAliasJob::success(Response r)
+        SetRoomAliasJob SetRoomAliasJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetRoomAliasJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomAliasJob SetRoomAliasJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetRoomAliasJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomAliasJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetRoomAliasResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -90,6 +108,7 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           GET,
+          std::string("GetRoomIdByAlias"),
            {} ,
           ReturnType::Json,
             buildBody(roomAlias)
@@ -98,33 +117,50 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
         {
         }
 
-          bool GetRoomIdByAliasJob::success(Response r)
+        GetRoomIdByAliasJob GetRoomIdByAliasJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomIdByAliasJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomIdByAliasJob GetRoomIdByAliasJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomIdByAliasJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomIdByAliasJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomIdByAliasResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetRoomIdByAliasJob::roomId(Response r)
+    std::string GetRoomIdByAliasResponse::roomId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("room_id"s)) {
     return
-    jsonBody(r).get()["room_id"s]
+    jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    immer::array<std::string> GetRoomIdByAliasJob::servers(Response r)
+    immer::array<std::string> GetRoomIdByAliasResponse::servers() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("servers"s)) {
     return
-    jsonBody(r).get()["servers"s]
+    jsonBody().get()["servers"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }
@@ -159,6 +195,7 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           DELETE,
+          std::string("DeleteRoomAlias"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomAlias)
@@ -167,11 +204,28 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
         {
         }
 
-          bool DeleteRoomAliasJob::success(Response r)
+        DeleteRoomAliasJob DeleteRoomAliasJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeleteRoomAliasJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteRoomAliasJob DeleteRoomAliasJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeleteRoomAliasJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteRoomAliasJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeleteRoomAliasResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -206,6 +260,7 @@ GetLocalAliasesJob::GetLocalAliasesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/aliases",
           GET,
+          std::string("GetLocalAliases"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -214,23 +269,40 @@ GetLocalAliasesJob::GetLocalAliasesJob(
         {
         }
 
-          bool GetLocalAliasesJob::success(Response r)
+        GetLocalAliasesJob GetLocalAliasesJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetLocalAliasesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetLocalAliasesJob GetLocalAliasesJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetLocalAliasesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetLocalAliasesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetLocalAliasesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("aliases"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("aliases"s)
           ;
           }
 
 
     
-    immer::array<std::string> GetLocalAliasesJob::aliases(Response r)
+    immer::array<std::string> GetLocalAliasesResponse::aliases() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("aliases"s)) {
     return
-    jsonBody(r).get()["aliases"s]
+    jsonBody().get()["aliases"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }

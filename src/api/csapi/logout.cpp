@@ -38,6 +38,7 @@ LogoutJob::LogoutJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/logout",
           POST,
+          std::string("Logout"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,11 +47,28 @@ LogoutJob::LogoutJob(
         {
         }
 
-          bool LogoutJob::success(Response r)
+        LogoutJob LogoutJob::withData(JsonWrap j) &&
+        {
+          auto ret = LogoutJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        LogoutJob LogoutJob::withData(JsonWrap j) const &
+        {
+          auto ret = LogoutJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        LogoutJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool LogoutResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -85,6 +103,7 @@ LogoutAllJob::LogoutAllJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/logout/all",
           POST,
+          std::string("LogoutAll"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -93,11 +112,28 @@ LogoutAllJob::LogoutAllJob(
         {
         }
 
-          bool LogoutAllJob::success(Response r)
+        LogoutAllJob LogoutAllJob::withData(JsonWrap j) &&
+        {
+          auto ret = LogoutAllJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        LogoutAllJob LogoutAllJob::withData(JsonWrap j) const &
+        {
+          auto ret = LogoutAllJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        LogoutAllJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool LogoutAllResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

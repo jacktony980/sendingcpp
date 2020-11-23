@@ -20,7 +20,7 @@
 #pragma once
 #include <lager/store.hpp>
 
-#include "client/client-model.hpp"
+#include "client/sdk-model.hpp"
 #include "clientwrap.hpp"
 
 namespace Kazv
@@ -35,13 +35,14 @@ namespace Kazv
     template<class EventLoop, class Xform, class ...Enhancers>
     class Sdk
     {
+        using ModelT = ::Kazv::SdkModel;
         using ClientT = ::Kazv::ClientModel;
-        using ActionT = typename ClientT::Action;
+        using ActionT = typename ModelT::Action;
 
         using StoreT = decltype(
             lager::make_store<ActionT>(
-                std::declval<ClientT>(),
-                &ClientT::update,
+                std::declval<ModelT>(),
+                &ModelT::update,
                 std::declval<EventLoop>(),
                 lager::with_deps(
                     std::ref(detail::declref<JobInterface>()),
@@ -52,21 +53,22 @@ namespace Kazv
 
         using ContextT = lager::context<ActionT>;
     public:
-        Sdk(ClientT client,
+        Sdk(ModelT model,
             JobInterface &jobHandler,
             EventInterface &eventEmitter,
             EventLoop &&eventLoop,
             Xform &&xform,
             Enhancers &&...enhancers)
             : m_store(lager::make_store<ActionT>(
-                          std::move(client),
-                          &ClientT::update,
+                          std::move(model),
+                          &ModelT::update,
                           std::forward<EventLoop>(eventLoop),
                           lager::with_deps(
                               std::ref(jobHandler),
                               std::ref(eventEmitter)),
                           std::forward<Enhancers>(enhancers)...))
-            , m_client(m_store.xform(std::forward<Xform>(xform))) {}
+            , m_sdk(m_store.xform(std::forward<Xform>(xform)))
+            , m_client(m_sdk[&ModelT::client]) {}
 
         ContextT context() const {
             return m_store;
@@ -78,11 +80,12 @@ namespace Kazv
 
     private:
         StoreT m_store;
+        lager::reader<ModelT> m_sdk;
         lager::reader<ClientT> m_client;
     };
 
     template<class EventLoop, class Xform, class ...Enhancers>
-    inline auto makeSdk(ClientModel client,
+    inline auto makeSdk(SdkModel sdk,
                         JobInterface &jobHandler,
                         EventInterface &eventEmitter,
                         EventLoop &&eventLoop,
@@ -90,7 +93,7 @@ namespace Kazv
                         Enhancers &&...enhancers)
         -> Sdk<EventLoop, Xform, Enhancers...>
     {
-        return { std::move(client),
+        return { std::move(sdk),
                  jobHandler,
                  eventEmitter,
                  std::forward<EventLoop>(eventLoop),

@@ -41,6 +41,7 @@ GetEventContextJob::GetEventContextJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/context/" + eventId,
           GET,
+          std::string("GetEventContext"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, limit, filter)
@@ -49,77 +50,94 @@ GetEventContextJob::GetEventContextJob(
         {
         }
 
-          bool GetEventContextJob::success(Response r)
+        GetEventContextJob GetEventContextJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetEventContextJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetEventContextJob GetEventContextJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetEventContextJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetEventContextJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetEventContextResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetEventContextJob::start(Response r)
+    std::string GetEventContextResponse::start() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("start"s)) {
     return
-    jsonBody(r).get()["start"s]
+    jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string GetEventContextJob::end(Response r)
+    std::string GetEventContextResponse::end() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("end"s)) {
     return
-    jsonBody(r).get()["end"s]
+    jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList GetEventContextJob::eventsBefore(Response r)
+    EventList GetEventContextResponse::eventsBefore() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("events_before"s)) {
     return
-    jsonBody(r).get()["events_before"s]
+    jsonBody().get()["events_before"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
 
     
-    JsonWrap GetEventContextJob::event(Response r)
+    JsonWrap GetEventContextResponse::event() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("event"s)) {
     return
-    jsonBody(r).get()["event"s]
+    jsonBody().get()["event"s]
     /*.get<JsonWrap>()*/;}
     else { return JsonWrap(  );}
     }
 
     
-    EventList GetEventContextJob::eventsAfter(Response r)
+    EventList GetEventContextResponse::eventsAfter() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("events_after"s)) {
     return
-    jsonBody(r).get()["events_after"s]
+    jsonBody().get()["events_after"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
 
     
-    EventList GetEventContextJob::state(Response r)
+    EventList GetEventContextResponse::state() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("state"s)) {
     return
-    jsonBody(r).get()["state"s]
+    jsonBody().get()["state"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }

@@ -18,6 +18,28 @@ class GetTurnServerJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The TURN server credentials.
+    JsonWrap data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<JsonWrap>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -33,28 +55,17 @@ public:
         );
 
 
-    // Result properties
-        
-
-/// The TURN server credentials.
-    static JsonWrap data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<JsonWrap>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetTurnServerJob withData(JsonWrap j) &&;
+      GetTurnServerJob withData(JsonWrap j) const &;
+      };
+      using GetTurnServerResponse = GetTurnServerJob::JobResponse;
       } 
       namespace nlohmann
       {

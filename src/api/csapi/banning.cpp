@@ -45,6 +45,7 @@ BanJob::BanJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/ban",
           POST,
+          std::string("Ban"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId, reason)
@@ -53,11 +54,28 @@ BanJob::BanJob(
         {
         }
 
-          bool BanJob::success(Response r)
+        BanJob BanJob::withData(JsonWrap j) &&
+        {
+          auto ret = BanJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        BanJob BanJob::withData(JsonWrap j) const &
+        {
+          auto ret = BanJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        BanJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool BanResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -97,6 +115,7 @@ UnbanJob::UnbanJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/unban",
           POST,
+          std::string("Unban"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, userId)
@@ -105,11 +124,28 @@ UnbanJob::UnbanJob(
         {
         }
 
-          bool UnbanJob::success(Response r)
+        UnbanJob UnbanJob::withData(JsonWrap j) &&
+        {
+          auto ret = UnbanJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UnbanJob UnbanJob::withData(JsonWrap j) const &
+        {
+          auto ret = UnbanJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UnbanJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UnbanResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

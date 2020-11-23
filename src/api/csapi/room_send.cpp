@@ -39,6 +39,7 @@ SendMessageJob::SendMessageJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/send/" + eventType + "/" + txnId,
           PUT,
+          std::string("SendMessage"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventType, txnId, body)
@@ -47,23 +48,40 @@ SendMessageJob::SendMessageJob(
         {
         }
 
-          bool SendMessageJob::success(Response r)
+        SendMessageJob SendMessageJob::withData(JsonWrap j) &&
+        {
+          auto ret = SendMessageJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SendMessageJob SendMessageJob::withData(JsonWrap j) const &
+        {
+          auto ret = SendMessageJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SendMessageJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SendMessageResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("event_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("event_id"s)
           ;
           }
 
 
     
-    std::string SendMessageJob::eventId(Response r)
+    std::string SendMessageResponse::eventId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("event_id"s)) {
     return
-    jsonBody(r).get()["event_id"s]
+    jsonBody().get()["event_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

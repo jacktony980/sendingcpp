@@ -43,6 +43,7 @@ RedactEventJob::RedactEventJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/redact/" + eventId + "/" + txnId,
           PUT,
+          std::string("RedactEvent"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, txnId, reason)
@@ -51,22 +52,39 @@ RedactEventJob::RedactEventJob(
         {
         }
 
-          bool RedactEventJob::success(Response r)
+        RedactEventJob RedactEventJob::withData(JsonWrap j) &&
+        {
+          auto ret = RedactEventJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RedactEventJob RedactEventJob::withData(JsonWrap j) const &
+        {
+          auto ret = RedactEventJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RedactEventJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RedactEventResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string RedactEventJob::eventId(Response r)
+    std::string RedactEventResponse::eventId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("event_id"s)) {
     return
-    jsonBody(r).get()["event_id"s]
+    jsonBody().get()["event_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

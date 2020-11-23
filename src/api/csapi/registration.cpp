@@ -54,6 +54,7 @@ RegisterJob::RegisterJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register",
           POST,
+          std::string("Register"),
            {} ,
           ReturnType::Json,
             buildBody(kind, auth, username, password, deviceId, initialDeviceDisplayName, inhibitLogin)
@@ -62,56 +63,73 @@ RegisterJob::RegisterJob(
         {
         }
 
-          bool RegisterJob::success(Response r)
+        RegisterJob RegisterJob::withData(JsonWrap j) &&
+        {
+          auto ret = RegisterJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RegisterJob RegisterJob::withData(JsonWrap j) const &
+        {
+          auto ret = RegisterJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RegisterJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RegisterResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("user_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("user_id"s)
           ;
           }
 
 
     
-    std::string RegisterJob::userId(Response r)
+    std::string RegisterResponse::userId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("user_id"s)) {
     return
-    jsonBody(r).get()["user_id"s]
+    jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string RegisterJob::accessToken(Response r)
+    std::string RegisterResponse::accessToken() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("access_token"s)) {
     return
-    jsonBody(r).get()["access_token"s]
+    jsonBody().get()["access_token"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string RegisterJob::homeServer(Response r)
+    std::string RegisterResponse::homeServer() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("home_server"s)) {
     return
-    jsonBody(r).get()["home_server"s]
+    jsonBody().get()["home_server"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string RegisterJob::deviceId(Response r)
+    std::string RegisterResponse::deviceId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("device_id"s)) {
     return
-    jsonBody(r).get()["device_id"s]
+    jsonBody().get()["device_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -147,6 +165,7 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/email/requestToken",
           POST,
+          std::string("RequestTokenToRegisterEmail"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -155,11 +174,28 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
         {
         }
 
-          bool RequestTokenToRegisterEmailJob::success(Response r)
+        RequestTokenToRegisterEmailJob RequestTokenToRegisterEmailJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenToRegisterEmailJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToRegisterEmailJob RequestTokenToRegisterEmailJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenToRegisterEmailJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToRegisterEmailJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenToRegisterEmailResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -195,6 +231,7 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/msisdn/requestToken",
           POST,
+          std::string("RequestTokenToRegisterMSISDN"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -203,11 +240,28 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
         {
         }
 
-          bool RequestTokenToRegisterMSISDNJob::success(Response r)
+        RequestTokenToRegisterMSISDNJob RequestTokenToRegisterMSISDNJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenToRegisterMSISDNJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToRegisterMSISDNJob RequestTokenToRegisterMSISDNJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenToRegisterMSISDNJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToRegisterMSISDNJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenToRegisterMSISDNResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -251,6 +305,7 @@ ChangePasswordJob::ChangePasswordJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password",
           POST,
+          std::string("ChangePassword"),
           _accessToken,
           ReturnType::Json,
             buildBody(newPassword, logoutDevices, auth)
@@ -259,11 +314,28 @@ ChangePasswordJob::ChangePasswordJob(
         {
         }
 
-          bool ChangePasswordJob::success(Response r)
+        ChangePasswordJob ChangePasswordJob::withData(JsonWrap j) &&
+        {
+          auto ret = ChangePasswordJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        ChangePasswordJob ChangePasswordJob::withData(JsonWrap j) const &
+        {
+          auto ret = ChangePasswordJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        ChangePasswordJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool ChangePasswordResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -299,6 +371,7 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password/email/requestToken",
           POST,
+          std::string("RequestTokenToResetPasswordEmail"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -307,11 +380,28 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
         {
         }
 
-          bool RequestTokenToResetPasswordEmailJob::success(Response r)
+        RequestTokenToResetPasswordEmailJob RequestTokenToResetPasswordEmailJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenToResetPasswordEmailJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToResetPasswordEmailJob RequestTokenToResetPasswordEmailJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenToResetPasswordEmailJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToResetPasswordEmailJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenToResetPasswordEmailResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -347,6 +437,7 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password/msisdn/requestToken",
           POST,
+          std::string("RequestTokenToResetPasswordMSISDN"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -355,11 +446,28 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
         {
         }
 
-          bool RequestTokenToResetPasswordMSISDNJob::success(Response r)
+        RequestTokenToResetPasswordMSISDNJob RequestTokenToResetPasswordMSISDNJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenToResetPasswordMSISDNJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToResetPasswordMSISDNJob RequestTokenToResetPasswordMSISDNJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenToResetPasswordMSISDNJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenToResetPasswordMSISDNJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenToResetPasswordMSISDNResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -401,6 +509,7 @@ DeactivateAccountJob::DeactivateAccountJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/deactivate",
           POST,
+          std::string("DeactivateAccount"),
           _accessToken,
           ReturnType::Json,
             buildBody(auth, idServer)
@@ -409,23 +518,40 @@ DeactivateAccountJob::DeactivateAccountJob(
         {
         }
 
-          bool DeactivateAccountJob::success(Response r)
+        DeactivateAccountJob DeactivateAccountJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeactivateAccountJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeactivateAccountJob DeactivateAccountJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeactivateAccountJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeactivateAccountJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeactivateAccountResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("id_server_unbind_result"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("id_server_unbind_result"s)
           ;
           }
 
 
     
-    std::string DeactivateAccountJob::idServerUnbindResult(Response r)
+    std::string DeactivateAccountResponse::idServerUnbindResult() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("id_server_unbind_result"s)) {
     return
-    jsonBody(r).get()["id_server_unbind_result"s]
+    jsonBody().get()["id_server_unbind_result"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -461,6 +587,7 @@ CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/available",
           GET,
+          std::string("CheckUsernameAvailability"),
            {} ,
           ReturnType::Json,
             buildBody(username)
@@ -469,22 +596,39 @@ CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
         {
         }
 
-          bool CheckUsernameAvailabilityJob::success(Response r)
+        CheckUsernameAvailabilityJob CheckUsernameAvailabilityJob::withData(JsonWrap j) &&
+        {
+          auto ret = CheckUsernameAvailabilityJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        CheckUsernameAvailabilityJob CheckUsernameAvailabilityJob::withData(JsonWrap j) const &
+        {
+          auto ret = CheckUsernameAvailabilityJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        CheckUsernameAvailabilityJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool CheckUsernameAvailabilityResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::optional<bool> CheckUsernameAvailabilityJob::available(Response r)
+    std::optional<bool> CheckUsernameAvailabilityResponse::available() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("available"s)) {
     return
-    jsonBody(r).get()["available"s]
+    jsonBody().get()["available"s]
     /*.get<bool>()*/;}
     else { return std::optional<bool>(  );}
     }

@@ -20,6 +20,15 @@ class SetTypingJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -54,10 +63,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, bool typing, std::optional<int> timeout);
 
-        static bool success(Response r);
         
-      };
 
+      SetTypingJob withData(JsonWrap j) &&;
+      SetTypingJob withData(JsonWrap j) const &;
+      };
+      using SetTypingResponse = SetTypingJob::JobResponse;
       } 
       namespace nlohmann
       {

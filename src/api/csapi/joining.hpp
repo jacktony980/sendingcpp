@@ -26,6 +26,23 @@ class JoinRoomByIdJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The joined room ID.
+std::string roomId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -50,23 +67,17 @@ public:
         std::string roomId , std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt);
     
 
-    // Result properties
-        
-        
-
-    
-/// The joined room ID.
-static std::string roomId(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned);
 
-        static bool success(Response r);
         
-      };
 
+      JoinRoomByIdJob withData(JsonWrap j) &&;
+      JoinRoomByIdJob withData(JsonWrap j) const &;
+      };
+      using JoinRoomByIdResponse = JoinRoomByIdJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -93,6 +104,23 @@ class JoinRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The joined room ID.
+std::string roomId() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -121,23 +149,17 @@ public:
         std::string roomIdOrAlias , immer::array<std::string> serverName  = {}, std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt);
     
 
-    // Result properties
-        
-        
-
-    
-/// The joined room ID.
-static std::string roomId(Response r);
-
     static BaseJob::Query buildQuery(
     immer::array<std::string> serverName);
 
       static BaseJob::Body buildBody(std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned);
 
-        static bool success(Response r);
         
-      };
 
+      JoinRoomJob withData(JsonWrap j) &&;
+      JoinRoomJob withData(JsonWrap j) const &;
+      };
+      using JoinRoomResponse = JoinRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -33,46 +33,41 @@ namespace Kazv
     class EventInterface;
 
     struct LoginAction;
+    struct TokenLoginAction;
     struct LogoutAction;
-    struct LoadUserInfoAction;
     struct SyncAction;
-    struct LoadSyncResultAction;
     struct PaginateTimelineAction;
-    struct LoadPaginateTimelineResultAction;
     struct SendMessageAction;
     struct SendStateEventAction;
     struct CreateRoomAction;
     struct GetRoomStatesAction;
-    struct LoadRoomStatesAction;
     struct InviteToRoomAction;
     struct JoinRoomByIdAction;
     struct EmitKazvEventsAction;
     struct JoinRoomAction;
+    struct ProcessResponseAction;
 
     struct ClientModel;
 
     using ClientAction = std::variant<
         LoginAction,
+        TokenLoginAction,
         LogoutAction,
-        LoadUserInfoAction,
         SyncAction,
         Error::Action,
-        LoadSyncResultAction,
         PaginateTimelineAction,
-        LoadPaginateTimelineResultAction,
         SendMessageAction,
         SendStateEventAction,
         CreateRoomAction,
         GetRoomStatesAction,
-        LoadRoomStatesAction,
         InviteToRoomAction,
         JoinRoomByIdAction,
-        EmitKazvEventsAction,
         RoomListAction,
-        JoinRoomAction
+        JoinRoomAction,
+        ProcessResponseAction
         >;
 
-    using ClientEffect = lager::effect<ClientAction, lager::deps<JobInterface &, EventInterface &>>;
+    using ClientEffect = lager::effect<ClientAction, lager::deps<>>;
 
     using ClientResult = std::pair<ClientModel, ClientEffect>;
 }

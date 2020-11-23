@@ -71,6 +71,7 @@ return _q;
       : BaseJob(std::move(serverUrl),
           std::string("{{basePathWithoutHost}}"){{#pathParts}} + {{_}}{{/pathParts}},
           {{#_toupper}}{{httpMethod}}{{/_toupper}},
+          std::string("{{camelCaseOperationId}}"),
           {{^skipAuth}}_accessToken{{/skipAuth}}{{#skipAuth}} {} {{/skipAuth}},
           ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}Byte{{/producesNonJson?}},
             buildBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
@@ -83,17 +84,34 @@ return _q;
         {
         }
 
+        {{camelCaseOperationId}}Job {{camelCaseOperationId}}Job::withData(JsonWrap j) &&
+        {
+          auto ret = {{camelCaseOperationId}}Job(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        {{camelCaseOperationId}}Job {{camelCaseOperationId}}Job::withData(JsonWrap j) const &
+        {
+          auto ret = {{camelCaseOperationId}}Job(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
         {{#responses}}
-          bool {{camelCaseOperationId}}Job::success(Response r)
+        {{camelCaseOperationId}}Job::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool {{camelCaseOperationId}}Response::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             {{#producesNonJson?}}
-              && contentTypeMatches(expectedContentTypes, r.header.get().at("Content-Type"))
+              && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             {{/producesNonJson?}}
             {{^producesNonJson?}}
-              && isBodyJson(r.body)
+              && isBodyJson(body)
               {{#normalResponse?}}{{#properties}}{{#required?}}
-            && jsonBody(r).get().contains("{{baseName}}"s)
+            && jsonBody().get().contains("{{baseName}}"s)
             {{/required?}}{{/properties}}{{/normalResponse?}}
             {{/producesNonJson?}}
           ;
@@ -103,12 +121,12 @@ return _q;
                 {{#properties}}
 
     {{!there's nothing in #properties if the response is inline}}
-    {{>qualifiedMaybeOmittableType}} {{camelCaseOperationId}}Job::{{paramName}}(Response r)
+    {{>qualifiedMaybeOmittableType}} {{camelCaseOperationId}}Response::{{paramName}}() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("{{baseName}}"s)) {
     return
-    jsonBody(r).get()["{{baseName}}"s]
+    jsonBody().get()["{{baseName}}"s]
     /*.get<{{dataType.name}}>()*/;}
     else { return {{>maybeOmittableType}}( {{defaultValue}} );}
     }

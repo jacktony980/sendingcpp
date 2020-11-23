@@ -18,6 +18,23 @@ class GetDevicesJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A list of all registered devices for this user.
+immer::array<Device> devices() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -33,23 +50,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// A list of all registered devices for this user.
-static immer::array<Device> devices(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetDevicesJob withData(JsonWrap j) &&;
+      GetDevicesJob withData(JsonWrap j) const &;
+      };
+      using GetDevicesResponse = GetDevicesJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -68,6 +79,28 @@ class GetDeviceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// Device information
+    Device data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<Device>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -87,28 +120,17 @@ public:
         std::string deviceId );
 
 
-    // Result properties
-        
-
-/// Device information
-    static Device data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<Device>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string deviceId);
 
-        static bool success(Response r);
         
-      };
 
+      GetDeviceJob withData(JsonWrap j) &&;
+      GetDeviceJob withData(JsonWrap j) const &;
+      };
+      using GetDeviceResponse = GetDeviceJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -127,6 +149,15 @@ class UpdateDeviceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -155,10 +186,12 @@ public:
 
       static BaseJob::Body buildBody(std::string deviceId, std::string displayName);
 
-        static bool success(Response r);
         
-      };
 
+      UpdateDeviceJob withData(JsonWrap j) &&;
+      UpdateDeviceJob withData(JsonWrap j) const &;
+      };
+      using UpdateDeviceResponse = UpdateDeviceJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -179,6 +212,15 @@ class DeleteDeviceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -207,10 +249,12 @@ public:
 
       static BaseJob::Body buildBody(std::string deviceId, std::optional<AuthenticationData> auth);
 
-        static bool success(Response r);
         
-      };
 
+      DeleteDeviceJob withData(JsonWrap j) &&;
+      DeleteDeviceJob withData(JsonWrap j) const &;
+      };
+      using DeleteDeviceResponse = DeleteDeviceJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -231,6 +275,15 @@ class DeleteDevicesJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -259,10 +312,12 @@ public:
 
       static BaseJob::Body buildBody(immer::array<std::string> devices, std::optional<AuthenticationData> auth);
 
-        static bool success(Response r);
         
-      };
 
+      DeleteDevicesJob withData(JsonWrap j) &&;
+      DeleteDevicesJob withData(JsonWrap j) const &;
+      };
+      using DeleteDevicesResponse = DeleteDevicesJob::JobResponse;
       } 
       namespace nlohmann
       {

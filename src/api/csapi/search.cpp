@@ -44,6 +44,7 @@ SearchJob::SearchJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/search",
           POST,
+          std::string("Search"),
           _accessToken,
           ReturnType::Json,
             buildBody(searchCategories, nextBatch)
@@ -52,23 +53,40 @@ SearchJob::SearchJob(
         {
         }
 
-          bool SearchJob::success(Response r)
+        SearchJob SearchJob::withData(JsonWrap j) &&
+        {
+          auto ret = SearchJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SearchJob SearchJob::withData(JsonWrap j) const &
+        {
+          auto ret = SearchJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SearchJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SearchResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("search_categories"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("search_categories"s)
           ;
           }
 
 
     
-    SearchJob::ResultCategories SearchJob::searchCategories(Response r)
+    SearchJob::ResultCategories SearchResponse::searchCategories() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("search_categories"s)) {
     return
-    jsonBody(r).get()["search_categories"s]
+    jsonBody().get()["search_categories"s]
     /*.get<ResultCategories>()*/;}
     else { return ResultCategories(  );}
     }

@@ -38,6 +38,7 @@ GetPushersJob::GetPushersJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushers",
           GET,
+          std::string("GetPushers"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,22 +47,39 @@ GetPushersJob::GetPushersJob(
         {
         }
 
-          bool GetPushersJob::success(Response r)
+        GetPushersJob GetPushersJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPushersJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushersJob GetPushersJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPushersJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushersJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPushersResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::array<GetPushersJob::Pusher> GetPushersJob::pushers(Response r)
+    immer::array<GetPushersJob::Pusher> GetPushersResponse::pushers() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("pushers"s)) {
     return
-    jsonBody(r).get()["pushers"s]
+    jsonBody().get()["pushers"s]
     /*.get<immer::array<Pusher>>()*/;}
     else { return immer::array<Pusher>(  );}
     }
@@ -117,6 +135,7 @@ PostPusherJob::PostPusherJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushers/set",
           POST,
+          std::string("PostPusher"),
           _accessToken,
           ReturnType::Json,
             buildBody(pushkey, kind, appId, appDisplayName, deviceDisplayName, lang, data, profileTag, append)
@@ -125,11 +144,28 @@ PostPusherJob::PostPusherJob(
         {
         }
 
-          bool PostPusherJob::success(Response r)
+        PostPusherJob PostPusherJob::withData(JsonWrap j) &&
+        {
+          auto ret = PostPusherJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        PostPusherJob PostPusherJob::withData(JsonWrap j) const &
+        {
+          auto ret = PostPusherJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        PostPusherJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool PostPusherResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

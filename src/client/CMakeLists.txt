@@ -1,4 +1,5 @@
 set(kazvclient_SRCS
+  sdk-model.cpp
   client-model.cpp
   actions/auth.cpp
   actions/sync.cpp

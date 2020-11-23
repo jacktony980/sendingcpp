@@ -49,6 +49,7 @@ InviteBy3PIDJob::InviteBy3PIDJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
+          std::string("InviteBy3PID"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, idServer, idAccessToken, medium, address)
@@ -57,11 +58,28 @@ InviteBy3PIDJob::InviteBy3PIDJob(
         {
         }
 
-          bool InviteBy3PIDJob::success(Response r)
+        InviteBy3PIDJob InviteBy3PIDJob::withData(JsonWrap j) &&
+        {
+          auto ret = InviteBy3PIDJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        InviteBy3PIDJob InviteBy3PIDJob::withData(JsonWrap j) const &
+        {
+          auto ret = InviteBy3PIDJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        InviteBy3PIDJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool InviteBy3PIDResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

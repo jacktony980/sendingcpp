@@ -26,6 +26,33 @@ class PeekEventsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// A token which correlates to the first value in ``chunk``. This
+/// is usually the same token supplied to ``from=``.
+std::string start() const;
+
+    
+/// A token which correlates to the last value in ``chunk``. This
+/// token should be used in the next request to ``/events``.
+std::string end() const;
+
+    
+/// An array of events.
+EventList chunk() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -52,33 +79,17 @@ public:
         std::string from  = {}, std::optional<int> timeout  = std::nullopt, std::string roomId  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// A token which correlates to the first value in ``chunk``. This
-/// is usually the same token supplied to ``from=``.
-static std::string start(Response r);
-
-    
-/// A token which correlates to the last value in ``chunk``. This
-/// token should be used in the next request to ``/events``.
-static std::string end(Response r);
-
-    
-/// An array of events.
-static EventList chunk(Response r);
-
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> timeout, std::string roomId);
 
       static BaseJob::Body buildBody(std::string from, std::optional<int> timeout, std::string roomId);
 
-        static bool success(Response r);
         
-      };
 
+      PeekEventsJob withData(JsonWrap j) &&;
+      PeekEventsJob withData(JsonWrap j) const &;
+      };
+      using PeekEventsResponse = PeekEventsJob::JobResponse;
       } 
       namespace nlohmann
       {

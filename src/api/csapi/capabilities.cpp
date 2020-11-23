@@ -38,6 +38,7 @@ GetCapabilitiesJob::GetCapabilitiesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/capabilities",
           GET,
+          std::string("GetCapabilities"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,23 +47,40 @@ GetCapabilitiesJob::GetCapabilitiesJob(
         {
         }
 
-          bool GetCapabilitiesJob::success(Response r)
+        GetCapabilitiesJob GetCapabilitiesJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetCapabilitiesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetCapabilitiesJob GetCapabilitiesJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetCapabilitiesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetCapabilitiesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetCapabilitiesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("capabilities"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("capabilities"s)
           ;
           }
 
 
     
-    GetCapabilitiesJob::Capabilities GetCapabilitiesJob::capabilities(Response r)
+    GetCapabilitiesJob::Capabilities GetCapabilitiesResponse::capabilities() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("capabilities"s)) {
     return
-    jsonBody(r).get()["capabilities"s]
+    jsonBody().get()["capabilities"s]
     /*.get<Capabilities>()*/;}
     else { return Capabilities(  );}
     }

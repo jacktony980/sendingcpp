@@ -62,6 +62,27 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The Matrix user ID of the user.
+std::string userId() const;
+
+    
+/// Each key is an identifier for one of the user's devices.
+immer::map<std::string, DeviceInfo> devices() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -81,27 +102,17 @@ public:
         std::string userId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The Matrix user ID of the user.
-static std::string userId(Response r);
-
-    
-/// Each key is an identifier for one of the user's devices.
-static immer::map<std::string, DeviceInfo> devices(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      GetWhoIsJob withData(JsonWrap j) &&;
+      GetWhoIsJob withData(JsonWrap j) const &;
+      };
+      using GetWhoIsResponse = GetWhoIsJob::JobResponse;
       } 
       namespace nlohmann
       {

@@ -38,6 +38,7 @@ GetPushRulesJob::GetPushRulesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules",
           GET,
+          std::string("GetPushRules"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,23 +47,40 @@ GetPushRulesJob::GetPushRulesJob(
         {
         }
 
-          bool GetPushRulesJob::success(Response r)
+        GetPushRulesJob GetPushRulesJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPushRulesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRulesJob GetPushRulesJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPushRulesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRulesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPushRulesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("global"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("global"s)
           ;
           }
 
 
     
-    PushRuleset GetPushRulesJob::global(Response r)
+    PushRuleset GetPushRulesResponse::global() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("global"s)) {
     return
-    jsonBody(r).get()["global"s]
+    jsonBody().get()["global"s]
     /*.get<PushRuleset>()*/;}
     else { return PushRuleset(  );}
     }
@@ -97,6 +115,7 @@ GetPushRuleJob::GetPushRuleJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           GET,
+          std::string("GetPushRule"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
@@ -105,11 +124,28 @@ GetPushRuleJob::GetPushRuleJob(
         {
         }
 
-          bool GetPushRuleJob::success(Response r)
+        GetPushRuleJob GetPushRuleJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPushRuleJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRuleJob GetPushRuleJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPushRuleJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRuleJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPushRuleResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -144,6 +180,7 @@ DeletePushRuleJob::DeletePushRuleJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           DELETE,
+          std::string("DeletePushRule"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
@@ -152,11 +189,28 @@ DeletePushRuleJob::DeletePushRuleJob(
         {
         }
 
-          bool DeletePushRuleJob::success(Response r)
+        DeletePushRuleJob DeletePushRuleJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeletePushRuleJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeletePushRuleJob DeletePushRuleJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeletePushRuleJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeletePushRuleJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeletePushRuleResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -203,6 +257,7 @@ SetPushRuleJob::SetPushRuleJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           PUT,
+          std::string("SetPushRule"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions, before, after, conditions, pattern)
@@ -211,11 +266,28 @@ SetPushRuleJob::SetPushRuleJob(
         {
         }
 
-          bool SetPushRuleJob::success(Response r)
+        SetPushRuleJob SetPushRuleJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetPushRuleJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleJob SetPushRuleJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetPushRuleJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetPushRuleResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -250,6 +322,7 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           GET,
+          std::string("IsPushRuleEnabled"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
@@ -258,23 +331,40 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
         {
         }
 
-          bool IsPushRuleEnabledJob::success(Response r)
+        IsPushRuleEnabledJob IsPushRuleEnabledJob::withData(JsonWrap j) &&
+        {
+          auto ret = IsPushRuleEnabledJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        IsPushRuleEnabledJob IsPushRuleEnabledJob::withData(JsonWrap j) const &
+        {
+          auto ret = IsPushRuleEnabledJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        IsPushRuleEnabledJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool IsPushRuleEnabledResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("enabled"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("enabled"s)
           ;
           }
 
 
     
-    bool IsPushRuleEnabledJob::enabled(Response r)
+    bool IsPushRuleEnabledResponse::enabled() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("enabled"s)) {
     return
-    jsonBody(r).get()["enabled"s]
+    jsonBody().get()["enabled"s]
     /*.get<bool>()*/;}
     else { return bool(  );}
     }
@@ -314,6 +404,7 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           PUT,
+          std::string("SetPushRuleEnabled"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, enabled)
@@ -322,11 +413,28 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
         {
         }
 
-          bool SetPushRuleEnabledJob::success(Response r)
+        SetPushRuleEnabledJob SetPushRuleEnabledJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetPushRuleEnabledJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleEnabledJob SetPushRuleEnabledJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetPushRuleEnabledJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleEnabledJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetPushRuleEnabledResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -361,6 +469,7 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           GET,
+          std::string("GetPushRuleActions"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
@@ -369,23 +478,40 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
         {
         }
 
-          bool GetPushRuleActionsJob::success(Response r)
+        GetPushRuleActionsJob GetPushRuleActionsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPushRuleActionsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRuleActionsJob GetPushRuleActionsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPushRuleActionsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPushRuleActionsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPushRuleActionsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("actions"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("actions"s)
           ;
           }
 
 
     
-    immer::array<Variant> GetPushRuleActionsJob::actions(Response r)
+    immer::array<Variant> GetPushRuleActionsResponse::actions() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("actions"s)) {
     return
-    jsonBody(r).get()["actions"s]
+    jsonBody().get()["actions"s]
     /*.get<immer::array<Variant>>()*/;}
     else { return immer::array<Variant>(  );}
     }
@@ -425,6 +551,7 @@ SetPushRuleActionsJob::SetPushRuleActionsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           PUT,
+          std::string("SetPushRuleActions"),
           _accessToken,
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions)
@@ -433,11 +560,28 @@ SetPushRuleActionsJob::SetPushRuleActionsJob(
         {
         }
 
-          bool SetPushRuleActionsJob::success(Response r)
+        SetPushRuleActionsJob SetPushRuleActionsJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetPushRuleActionsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleActionsJob SetPushRuleActionsJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetPushRuleActionsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetPushRuleActionsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetPushRuleActionsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -41,6 +41,7 @@ GetEventsJob::GetEventsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
+          std::string("GetEvents"),
           _accessToken,
           ReturnType::Json,
             buildBody(from, timeout)
@@ -49,44 +50,61 @@ GetEventsJob::GetEventsJob(
         {
         }
 
-          bool GetEventsJob::success(Response r)
+        GetEventsJob GetEventsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetEventsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetEventsJob GetEventsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetEventsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetEventsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetEventsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetEventsJob::start(Response r)
+    std::string GetEventsResponse::start() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("start"s)) {
     return
-    jsonBody(r).get()["start"s]
+    jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string GetEventsJob::end(Response r)
+    std::string GetEventsResponse::end() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("end"s)) {
     return
-    jsonBody(r).get()["end"s]
+    jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList GetEventsJob::chunk(Response r)
+    EventList GetEventsResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
@@ -124,6 +142,7 @@ InitialSyncJob::InitialSyncJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/initialSync",
           GET,
+          std::string("InitialSync"),
           _accessToken,
           ReturnType::Json,
             buildBody(limit, archived)
@@ -132,58 +151,75 @@ InitialSyncJob::InitialSyncJob(
         {
         }
 
-          bool InitialSyncJob::success(Response r)
+        InitialSyncJob InitialSyncJob::withData(JsonWrap j) &&
+        {
+          auto ret = InitialSyncJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        InitialSyncJob InitialSyncJob::withData(JsonWrap j) const &
+        {
+          auto ret = InitialSyncJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        InitialSyncJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool InitialSyncResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("end"s)
-            && jsonBody(r).get().contains("presence"s)
-            && jsonBody(r).get().contains("rooms"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("end"s)
+            && jsonBody().get().contains("presence"s)
+            && jsonBody().get().contains("rooms"s)
           ;
           }
 
 
     
-    std::string InitialSyncJob::end(Response r)
+    std::string InitialSyncResponse::end() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("end"s)) {
     return
-    jsonBody(r).get()["end"s]
+    jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList InitialSyncJob::presence(Response r)
+    EventList InitialSyncResponse::presence() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("presence"s)) {
     return
-    jsonBody(r).get()["presence"s]
+    jsonBody().get()["presence"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
 
     
-    immer::array<InitialSyncJob::RoomInfo> InitialSyncJob::rooms(Response r)
+    immer::array<InitialSyncJob::RoomInfo> InitialSyncResponse::rooms() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("rooms"s)) {
     return
-    jsonBody(r).get()["rooms"s]
+    jsonBody().get()["rooms"s]
     /*.get<immer::array<RoomInfo>>()*/;}
     else { return immer::array<RoomInfo>(  );}
     }
 
     
-    EventList InitialSyncJob::accountData(Response r)
+    EventList InitialSyncResponse::accountData() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("account_data"s)) {
     return
-    jsonBody(r).get()["account_data"s]
+    jsonBody().get()["account_data"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
@@ -218,6 +254,7 @@ GetOneEventJob::GetOneEventJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events/" + eventId,
           GET,
+          std::string("GetOneEvent"),
           _accessToken,
           ReturnType::Json,
             buildBody(eventId)
@@ -226,11 +263,28 @@ GetOneEventJob::GetOneEventJob(
         {
         }
 
-          bool GetOneEventJob::success(Response r)
+        GetOneEventJob GetOneEventJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetOneEventJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetOneEventJob GetOneEventJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetOneEventJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetOneEventJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetOneEventResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

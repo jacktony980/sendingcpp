@@ -45,6 +45,7 @@ SetReadMarkerJob::SetReadMarkerJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/read_markers",
           POST,
+          std::string("SetReadMarker"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, mFullyRead, mRead)
@@ -53,11 +54,28 @@ SetReadMarkerJob::SetReadMarkerJob(
         {
         }
 
-          bool SetReadMarkerJob::success(Response r)
+        SetReadMarkerJob SetReadMarkerJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetReadMarkerJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetReadMarkerJob SetReadMarkerJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetReadMarkerJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetReadMarkerJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetReadMarkerResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

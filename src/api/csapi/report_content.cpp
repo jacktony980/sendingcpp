@@ -45,6 +45,7 @@ ReportContentJob::ReportContentJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/report/" + eventId,
           POST,
+          std::string("ReportContent"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, eventId, score, reason)
@@ -53,11 +54,28 @@ ReportContentJob::ReportContentJob(
         {
         }
 
-          bool ReportContentJob::success(Response r)
+        ReportContentJob ReportContentJob::withData(JsonWrap j) &&
+        {
+          auto ret = ReportContentJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        ReportContentJob ReportContentJob::withData(JsonWrap j) const &
+        {
+          auto ret = ReportContentJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        ReportContentJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool ReportContentResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

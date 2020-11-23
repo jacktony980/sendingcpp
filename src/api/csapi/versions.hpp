@@ -35,6 +35,29 @@ class GetVersionsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The supported versions.
+immer::array<std::string> versions() const;
+
+    
+/// Experimental features the server supports. Features not listed here,
+/// or the lack of this property all together, indicate that a feature is
+/// not supported.
+immer::map<std::string, bool> unstableFeatures() const;
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -50,29 +73,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The supported versions.
-static immer::array<std::string> versions(Response r);
-
-    
-/// Experimental features the server supports. Features not listed here,
-/// or the lack of this property all together, indicate that a feature is
-/// not supported.
-static immer::map<std::string, bool> unstableFeatures(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetVersionsJob withData(JsonWrap j) &&;
+      GetVersionsJob withData(JsonWrap j) const &;
+      };
+      using GetVersionsResponse = GetVersionsJob::JobResponse;
       } 
       namespace nlohmann
       {

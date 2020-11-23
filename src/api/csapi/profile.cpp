@@ -43,6 +43,7 @@ SetDisplayNameJob::SetDisplayNameJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
           PUT,
+          std::string("SetDisplayName"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, displayname)
@@ -51,11 +52,28 @@ SetDisplayNameJob::SetDisplayNameJob(
         {
         }
 
-          bool SetDisplayNameJob::success(Response r)
+        SetDisplayNameJob SetDisplayNameJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetDisplayNameJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetDisplayNameJob SetDisplayNameJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetDisplayNameJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetDisplayNameJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetDisplayNameResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -90,6 +108,7 @@ GetDisplayNameJob::GetDisplayNameJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
           GET,
+          std::string("GetDisplayName"),
            {} ,
           ReturnType::Json,
             buildBody(userId)
@@ -98,22 +117,39 @@ GetDisplayNameJob::GetDisplayNameJob(
         {
         }
 
-          bool GetDisplayNameJob::success(Response r)
+        GetDisplayNameJob GetDisplayNameJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetDisplayNameJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDisplayNameJob GetDisplayNameJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetDisplayNameJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetDisplayNameJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetDisplayNameResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetDisplayNameJob::displayname(Response r)
+    std::string GetDisplayNameResponse::displayname() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("displayname"s)) {
     return
-    jsonBody(r).get()["displayname"s]
+    jsonBody().get()["displayname"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -153,6 +189,7 @@ SetAvatarUrlJob::SetAvatarUrlJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
           PUT,
+          std::string("SetAvatarUrl"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, avatarUrl)
@@ -161,11 +198,28 @@ SetAvatarUrlJob::SetAvatarUrlJob(
         {
         }
 
-          bool SetAvatarUrlJob::success(Response r)
+        SetAvatarUrlJob SetAvatarUrlJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetAvatarUrlJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAvatarUrlJob SetAvatarUrlJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetAvatarUrlJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAvatarUrlJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetAvatarUrlResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -200,6 +254,7 @@ GetAvatarUrlJob::GetAvatarUrlJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
           GET,
+          std::string("GetAvatarUrl"),
            {} ,
           ReturnType::Json,
             buildBody(userId)
@@ -208,22 +263,39 @@ GetAvatarUrlJob::GetAvatarUrlJob(
         {
         }
 
-          bool GetAvatarUrlJob::success(Response r)
+        GetAvatarUrlJob GetAvatarUrlJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetAvatarUrlJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAvatarUrlJob GetAvatarUrlJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetAvatarUrlJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAvatarUrlJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetAvatarUrlResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetAvatarUrlJob::avatarUrl(Response r)
+    std::string GetAvatarUrlResponse::avatarUrl() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("avatar_url"s)) {
     return
-    jsonBody(r).get()["avatar_url"s]
+    jsonBody().get()["avatar_url"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -258,6 +330,7 @@ GetUserProfileJob::GetUserProfileJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId,
           GET,
+          std::string("GetUserProfile"),
            {} ,
           ReturnType::Json,
             buildBody(userId)
@@ -266,33 +339,50 @@ GetUserProfileJob::GetUserProfileJob(
         {
         }
 
-          bool GetUserProfileJob::success(Response r)
+        GetUserProfileJob GetUserProfileJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetUserProfileJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetUserProfileJob GetUserProfileJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetUserProfileJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetUserProfileJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetUserProfileResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetUserProfileJob::avatarUrl(Response r)
+    std::string GetUserProfileResponse::avatarUrl() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("avatar_url"s)) {
     return
-    jsonBody(r).get()["avatar_url"s]
+    jsonBody().get()["avatar_url"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string GetUserProfileJob::displayname(Response r)
+    std::string GetUserProfileResponse::displayname() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("displayname"s)) {
     return
-    jsonBody(r).get()["displayname"s]
+    jsonBody().get()["displayname"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

@@ -38,6 +38,7 @@ GetTokenOwnerJob::GetTokenOwnerJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/whoami",
           GET,
+          std::string("GetTokenOwner"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,23 +47,40 @@ GetTokenOwnerJob::GetTokenOwnerJob(
         {
         }
 
-          bool GetTokenOwnerJob::success(Response r)
+        GetTokenOwnerJob GetTokenOwnerJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetTokenOwnerJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetTokenOwnerJob GetTokenOwnerJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetTokenOwnerJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetTokenOwnerJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetTokenOwnerResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("user_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("user_id"s)
           ;
           }
 
 
     
-    std::string GetTokenOwnerJob::userId(Response r)
+    std::string GetTokenOwnerResponse::userId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("user_id"s)) {
     return
-    jsonBody(r).get()["user_id"s]
+    jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

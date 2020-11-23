@@ -43,6 +43,7 @@ SendToDeviceJob::SendToDeviceJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/sendToDevice/" + eventType + "/" + txnId,
           PUT,
+          std::string("SendToDevice"),
           _accessToken,
           ReturnType::Json,
             buildBody(eventType, txnId, messages)
@@ -51,11 +52,28 @@ SendToDeviceJob::SendToDeviceJob(
         {
         }
 
-          bool SendToDeviceJob::success(Response r)
+        SendToDeviceJob SendToDeviceJob::withData(JsonWrap j) &&
+        {
+          auto ret = SendToDeviceJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SendToDeviceJob SendToDeviceJob::withData(JsonWrap j) const &
+        {
+          auto ret = SendToDeviceJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SendToDeviceJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SendToDeviceResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -20,6 +20,15 @@ class SetPresenceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -50,10 +59,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string presence, std::string statusMsg);
 
-        static bool success(Response r);
         
-      };
 
+      SetPresenceJob withData(JsonWrap j) &&;
+      SetPresenceJob withData(JsonWrap j) const &;
+      };
+      using SetPresenceResponse = SetPresenceJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -72,6 +83,36 @@ class GetPresenceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// This user's presence.
+std::string presence() const;
+
+    
+/// The length of time in milliseconds since an action was performed
+/// by this user.
+std::optional<int> lastActiveAgo() const;
+
+    
+/// The state message for this user if one was set.
+Variant statusMsg() const;
+
+    
+/// Whether the user is currently active
+std::optional<bool> currentlyActive() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -91,36 +132,17 @@ public:
         std::string userId );
 
 
-    // Result properties
-        
-        
-
-    
-/// This user's presence.
-static std::string presence(Response r);
-
-    
-/// The length of time in milliseconds since an action was performed
-/// by this user.
-static std::optional<int> lastActiveAgo(Response r);
-
-    
-/// The state message for this user if one was set.
-static Variant statusMsg(Response r);
-
-    
-/// Whether the user is currently active
-static std::optional<bool> currentlyActive(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string userId);
 
-        static bool success(Response r);
         
-      };
 
+      GetPresenceJob withData(JsonWrap j) &&;
+      GetPresenceJob withData(JsonWrap j) const &;
+      };
+      using GetPresenceResponse = GetPresenceJob::JobResponse;
       } 
       namespace nlohmann
       {

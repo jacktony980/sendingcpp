@@ -65,6 +65,7 @@ CreateRoomJob::CreateRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/createRoom",
           POST,
+          std::string("CreateRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(visibility, roomAliasName, name, topic, invite, invite3pid, roomVersion, creationContent, initialState, preset, isDirect, powerLevelContentOverride)
@@ -73,23 +74,40 @@ CreateRoomJob::CreateRoomJob(
         {
         }
 
-          bool CreateRoomJob::success(Response r)
+        CreateRoomJob CreateRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = CreateRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        CreateRoomJob CreateRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = CreateRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        CreateRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool CreateRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("room_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("room_id"s)
           ;
           }
 
 
     
-    std::string CreateRoomJob::roomId(Response r)
+    std::string CreateRoomResponse::roomId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("room_id"s)) {
     return
-    jsonBody(r).get()["room_id"s]
+    jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

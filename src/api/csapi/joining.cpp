@@ -43,6 +43,7 @@ JoinRoomByIdJob::JoinRoomByIdJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/join",
           POST,
+          std::string("JoinRoomById"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, thirdPartySigned)
@@ -51,23 +52,40 @@ JoinRoomByIdJob::JoinRoomByIdJob(
         {
         }
 
-          bool JoinRoomByIdJob::success(Response r)
+        JoinRoomByIdJob JoinRoomByIdJob::withData(JsonWrap j) &&
+        {
+          auto ret = JoinRoomByIdJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        JoinRoomByIdJob JoinRoomByIdJob::withData(JsonWrap j) const &
+        {
+          auto ret = JoinRoomByIdJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        JoinRoomByIdJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool JoinRoomByIdResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("room_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("room_id"s)
           ;
           }
 
 
     
-    std::string JoinRoomByIdJob::roomId(Response r)
+    std::string JoinRoomByIdResponse::roomId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("room_id"s)) {
     return
-    jsonBody(r).get()["room_id"s]
+    jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -108,6 +126,7 @@ JoinRoomJob::JoinRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/join/" + roomIdOrAlias,
           POST,
+          std::string("JoinRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomIdOrAlias, serverName, thirdPartySigned)
@@ -116,23 +135,40 @@ JoinRoomJob::JoinRoomJob(
         {
         }
 
-          bool JoinRoomJob::success(Response r)
+        JoinRoomJob JoinRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = JoinRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        JoinRoomJob JoinRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = JoinRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        JoinRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool JoinRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("room_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("room_id"s)
           ;
           }
 
 
     
-    std::string JoinRoomJob::roomId(Response r)
+    std::string JoinRoomResponse::roomId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("room_id"s)) {
     return
-    jsonBody(r).get()["room_id"s]
+    jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

@@ -50,7 +50,32 @@ namespace Kazv
             },
             [&](auto a) -> decltype(updateClient(m, a)) {
                 return updateClient(m, a);
+            },
+#define RESPONSE_FOR(_jobId)                                            \
+            if (r.jobId() == #_jobId) {                                 \
+                return processResponse(m, _jobId##Response{std::move(r)}); \
             }
+
+            [&](ProcessResponseAction a) -> Result {
+                auto r = std::move(a.response);
+
+                RESPONSE_FOR(Login);
+                RESPONSE_FOR(GetRoomEvents);
+                RESPONSE_FOR(Sync);
+                RESPONSE_FOR(CreateRoom);
+                RESPONSE_FOR(InviteUser);
+                RESPONSE_FOR(JoinRoomById);
+                RESPONSE_FOR(JoinRoom);
+                RESPONSE_FOR(SendMessage);
+                //RESPONSE_FOR();
+                //RESPONSE_FOR();
+
+
+                m.addTrigger(UnrecognizedResponse{r});
+                return { m, lager::noop };
+            }
+
+#undef RESPONSE_FOR
             );
     }
 }

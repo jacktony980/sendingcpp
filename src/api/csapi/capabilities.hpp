@@ -50,6 +50,24 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The custom capabilities the server supports, using the
+/// Java package naming convention.
+Capabilities capabilities() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -65,24 +83,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The custom capabilities the server supports, using the
-/// Java package naming convention.
-static Capabilities capabilities(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetCapabilitiesJob withData(JsonWrap j) &&;
+      GetCapabilitiesJob withData(JsonWrap j) const &;
+      };
+      using GetCapabilitiesResponse = GetCapabilitiesJob::JobResponse;
       } 
       namespace nlohmann
       {

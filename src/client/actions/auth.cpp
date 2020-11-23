@@ -20,7 +20,6 @@
 #include <debug.hpp>
 #include <jobinterface.hpp>
 #include <eventinterface.hpp>
-#include <csapi/login.hpp>
 
 #include "auth.hpp"
 
@@ -29,75 +28,67 @@ namespace Kazv
 {
     ClientResult updateClient(ClientModel m, LoginAction a)
     {
-        return {
-            m,
-            [=](auto &&ctx) {
-                LoginJob job(a.serverUrl,
-                             "m.login.password"s, // type
-                             UserIdentifier{ "m.id.user"s, json{{"user", a.username}} }, // identifier
-                             a.password,
-                             {}, // token, not used
-                             {}, // device id, not used
-                             a.deviceName.value_or("libkazv"));
-                auto &jobHandler = lager::get<JobInterface &>(ctx);
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (LoginJob::success(r)) {
-                            dbgClient << "Job success" << std::endl;
-                            const json &j = jsonBody(r).get();
-                            std::string serverUrl = j.contains("well_known")
-                                ? j.at("well_known").at("m.homeserver").at("base_url").get<std::string>()
-                                : a.serverUrl;
-                            ctx.dispatch(LoadUserInfoAction{
-                                    serverUrl,
-                                    j.at("user_id"),
-                                    j.at("access_token"),
-                                    j.at("device_id"),
-                                    /* loggedIn = */ true
-                                });
-                        }
-                    });
-            }
-        };
+        m.addJob(LoginJob{a.serverUrl,
+                          "m.login.password"s, // type
+                          UserIdentifier{ "m.id.user"s, json{{"user", a.username}} }, // identifier
+                          a.password,
+                          {}, // token, not used
+                          {}, // device id, not used
+                          a.deviceName.value_or("libkazv")}
+            .withData(json{
+                    {"serverUrl", a.serverUrl},
+                }));
+        return { m, lager::noop };
     }
+
+    ClientResult processResponse(ClientModel m, LoginResponse r)
+    {
+        if (! r.success()) {
+            // TODO: add LoginFailed trigger
+            return { std::move(m), lager::noop };
+        }
+
+        dbgClient << "Job success" << std::endl;
+        const json &j = r.jsonBody().get();
+        // TODO: replace this with r.wellKnown()
+        std::string serverUrl = j.contains("well_known")
+            ? j.at("well_known").at("m.homeserver").at("base_url").get<std::string>()
+            : r.dataStr("serverUrl");
+
+        m.serverUrl = serverUrl;
+        m.userId = r.userId();
+        m.token = r.accessToken();
+        m.deviceId = r.deviceId();
+        m.loggedIn = true;
+
+        m.addTrigger(LoginSuccessful{});
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, TokenLoginAction a)
+    {
+        m.serverUrl = a.serverUrl;
+        m.userId = a.username;
+        m.token = a.token;
+        m.deviceId = a.deviceId;
+        m.loggedIn = true;
+
+        m.addTrigger(LoginSuccessful{});
+        return { std::move(m), lager::noop };
+    }
+
 
     ClientResult updateClient(ClientModel m, LogoutAction)
     {
-        return {
-            m,
-            [=](auto &&ctx) {
-                ctx.dispatch(LoadUserInfoAction{
-                        ""s,
-                        ""s,
-                        ""s,
-                        ""s,
-                        /* loggedIn = */ true
-                    });
-            }
-        };
-    }
+        // Note: this only performs a soft-logout.
+        m.serverUrl = "";
+        m.userId = "";
+        m.token = "";
+        m.deviceId = "";
+        m.loggedIn = false;
 
-    ClientResult updateClient(ClientModel m, LoadUserInfoAction a)
-    {
-        dbgClient << "LoadUserInfoAction: " << a.userId << std::endl;
-
-        m.serverUrl = a.serverUrl;
-        m.userId = a.userId;
-        m.token = a.token;
-        m.deviceId = a.deviceId;
-        m.loggedIn = a.loggedIn;
-
-        return {
-            std::move(m),
-            [](auto &&ctx) {
-                auto &eventEmitter = lager::get<EventInterface &>(ctx);
-                eventEmitter.emit(LoginSuccessful{});
-                ctx.dispatch(Error::SetErrorAction{Error::NoError{}});
-                // after user info is loaded, do first sync
-                ctx.dispatch(SyncAction{});
-            }
-        };
+        return { std::move(m), lager::noop };
     }
 
 }

@@ -19,6 +19,15 @@ class SetAccountDataJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -51,10 +60,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string type, JsonWrap content);
 
-        static bool success(Response r);
         
-      };
 
+      SetAccountDataJob withData(JsonWrap j) &&;
+      SetAccountDataJob withData(JsonWrap j) const &;
+      };
+      using SetAccountDataResponse = SetAccountDataJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -74,6 +85,15 @@ class GetAccountDataJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -103,10 +123,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string type);
 
-        static bool success(Response r);
         
-      };
 
+      GetAccountDataJob withData(JsonWrap j) &&;
+      GetAccountDataJob withData(JsonWrap j) const &;
+      };
+      using GetAccountDataResponse = GetAccountDataJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -127,6 +149,15 @@ class SetAccountDataPerRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -162,10 +193,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type, JsonWrap content);
 
-        static bool success(Response r);
         
-      };
 
+      SetAccountDataPerRoomJob withData(JsonWrap j) &&;
+      SetAccountDataPerRoomJob withData(JsonWrap j) const &;
+      };
+      using SetAccountDataPerRoomResponse = SetAccountDataPerRoomJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -185,6 +218,15 @@ class GetAccountDataPerRoomJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -217,10 +259,12 @@ public:
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type);
 
-        static bool success(Response r);
         
-      };
 
+      GetAccountDataPerRoomJob withData(JsonWrap j) &&;
+      GetAccountDataPerRoomJob withData(JsonWrap j) const &;
+      };
+      using GetAccountDataPerRoomResponse = GetAccountDataPerRoomJob::JobResponse;
       } 
       namespace nlohmann
       {

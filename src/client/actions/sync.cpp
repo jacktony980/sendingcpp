@@ -21,7 +21,6 @@
 #include <lager/util.hpp>
 #include <zug/transducer/map.hpp>
 
-#include <csapi/sync.hpp>
 #include <jobinterface.hpp>
 #include <debug.hpp>
 
@@ -29,7 +28,6 @@
 
 #include "sync.hpp"
 
-static const int syncInterval = 2000; // ms
 
 namespace Kazv
 {
@@ -43,57 +41,12 @@ namespace Kazv
     // from the ClientModel model it is passed.
     ClientResult updateClient(ClientModel m, SyncAction)
     {
-        return {
-            m,
-            [=](auto &&ctx) {
-                dbgClient << "Start syncing with token " << m.syncToken << std::endl;
-                SyncJob job(m.serverUrl,
-                            m.token,
-                            {}, // filter
-                            m.syncToken);
-                auto &jobHandler = lager::get<JobInterface &>(ctx);
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (!SyncJob::success(r)) {
-                            dbgClient << "Sync failed" << std::endl;
-                            dbgClient << r.statusCode << std::endl;
-                            if (BaseJob::isBodyJson(r.body)) {
-                                auto j = jsonBody(r);
-                                dbgClient << "Json says: " << j.get().dump() << std::endl;
-                            } else {
-                                dbgClient << "Response body: "
-                                          << std::get<BaseJob::BytesBody>(r.body) << std::endl;
-                            }
-                            return;
-                        }
-                        dbgClient << "Sync successful" << std::endl;
-
-                        auto rooms = SyncJob::rooms(r);
-                        auto accountData = SyncJob::accountData(r);
-                        auto presence = SyncJob::presence(r);
-                        // load the info that has been sync'd
-
-                        ctx.dispatch(
-                            LoadSyncResultAction{
-                                SyncJob::nextBatch(r),
-                                rooms,
-                                presence,
-                                accountData,
-                                SyncJob::toDevice(r),
-                                SyncJob::deviceLists(r),
-                                SyncJob::deviceOneTimeKeysCount(r),
-                            });
-
-                        // kick off next sync
-                        auto &jobHandler = lager::get<JobInterface &>(ctx);
-                        jobHandler.setTimeout(
-                            [=]() {
-                                ctx.dispatch(SyncAction{});
-                            }, syncInterval);
-                    });
-            }
-        };
+        dbgClient << "Start syncing with token " << m.syncToken << std::endl;
+        m.addJob(SyncJob(m.serverUrl,
+                         m.token,
+                         {}, // filter
+                         m.syncToken));
+        return { m, lager::noop };
     }
 
 
@@ -192,41 +145,47 @@ namespace Kazv
         return eventsToEmit;
     }
 
-    ClientResult updateClient(ClientModel m, LoadSyncResultAction a)
+    ClientResult processResponse(ClientModel m, SyncResponse r)
     {
-        auto eventsToEmit = KazvEventList{};
-        m.syncToken = a.syncToken;
-        if (a.rooms) {
-            eventsToEmit = std::move(eventsToEmit) + loadRoomsFromSyncInPlace(m, a.rooms.value());
-        }
-
-        if (a.presence) {
-            eventsToEmit = std::move(eventsToEmit) + loadPresenceFromSyncInPlace(m, a.presence.value().events);
-        }
-
-        if (a.accountData) {
-            eventsToEmit = std::move(eventsToEmit) + loadAccountDataFromSyncInPlace(m, a.accountData.value().events);
-        }
-
-        auto eventAction = EmitKazvEventsAction{eventsToEmit};
-
-        return {
-            std::move(m),
-            [=](auto &&ctx) {
-                ctx.dispatch(eventAction);
+        if (! r.success()) {
+            m.addTrigger(SyncFailed{});
+            dbgClient << "Sync failed" << std::endl;
+            dbgClient << r.statusCode << std::endl;
+            if (isBodyJson(r.body)) {
+                auto j = r.jsonBody();
+                dbgClient << "Json says: " << j.get().dump() << std::endl;
+            } else {
+                dbgClient << "Response body: "
+                          << std::get<BaseJob::BytesBody>(r.body) << std::endl;
             }
-        };
-    }
+            return { m, lager::noop };
+        }
 
-    ClientResult updateClient(ClientModel m, EmitKazvEventsAction a)
-    {
-        return { std::move(m),
-                 [=](auto &&ctx) {
-                     auto &eventEmitter = lager::get<EventInterface &>(ctx);
-                     for (auto ev: a.events) {
-                         eventEmitter.emit(ev);
-                     }
-                 }
-        };
+        dbgClient << "Sync successful" << std::endl;
+
+        auto rooms = r.rooms();
+        auto accountData = r.accountData();
+        auto presence = r.presence();
+        // load the info that has been sync'd
+
+        m.syncToken = r.nextBatch();
+
+        m.addTrigger(SyncSuccessful{m.syncToken});
+
+        if (rooms) {
+            m.addTriggers(loadRoomsFromSyncInPlace(m, rooms.value()));
+        }
+
+        if (presence) {
+            m.addTriggers(loadPresenceFromSyncInPlace(m, presence.value().events));
+        }
+
+        if (accountData) {
+            m.addTriggers(loadAccountDataFromSyncInPlace(m, accountData.value().events));
+        }
+
+        // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
+
+        return { std::move(m), lager::noop };
     }
 }

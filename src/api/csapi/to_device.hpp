@@ -18,6 +18,15 @@ class SendToDeviceJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -52,10 +61,12 @@ public:
 
       static BaseJob::Body buildBody(std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages);
 
-        static bool success(Response r);
         
-      };
 
+      SendToDeviceJob withData(JsonWrap j) &&;
+      SendToDeviceJob withData(JsonWrap j) const &;
+      };
+      using SendToDeviceResponse = SendToDeviceJob::JobResponse;
       } 
       namespace nlohmann
       {

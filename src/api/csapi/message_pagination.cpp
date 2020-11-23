@@ -47,6 +47,7 @@ GetRoomEventsJob::GetRoomEventsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/messages",
           GET,
+          std::string("GetRoomEvents"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, from, dir, to, limit, filter)
@@ -55,55 +56,72 @@ GetRoomEventsJob::GetRoomEventsJob(
         {
         }
 
-          bool GetRoomEventsJob::success(Response r)
+        GetRoomEventsJob GetRoomEventsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomEventsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomEventsJob GetRoomEventsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomEventsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomEventsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomEventsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetRoomEventsJob::start(Response r)
+    std::string GetRoomEventsResponse::start() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("start"s)) {
     return
-    jsonBody(r).get()["start"s]
+    jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string GetRoomEventsJob::end(Response r)
+    std::string GetRoomEventsResponse::end() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("end"s)) {
     return
-    jsonBody(r).get()["end"s]
+    jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList GetRoomEventsJob::chunk(Response r)
+    EventList GetRoomEventsResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
 
     
-    EventList GetRoomEventsJob::state(Response r)
+    EventList GetRoomEventsResponse::state() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("state"s)) {
     return
-    jsonBody(r).get()["state"s]
+    jsonBody().get()["state"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }

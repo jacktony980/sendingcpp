@@ -18,9 +18,6 @@
  */
 
 
-#include <csapi/rooms.hpp>
-#include <csapi/room_state.hpp>
-
 #include <debug.hpp>
 
 #include "clientutil.hpp"
@@ -32,28 +29,32 @@ namespace Kazv
 {
     ClientResult updateClient(ClientModel m, GetRoomStatesAction a)
     {
-        auto eff =
-            [=, roomId=a.roomId](auto &&ctx) {
-                auto job = m.job<GetRoomStateJob>().make(roomId);
-                auto &jobHandler = getJobHandler(ctx);
+        auto roomId = a.roomId;
+        auto job = m.job<GetRoomStateJob>()
+            .make(roomId)
+            .withData(json{{"roomId", roomId}});
 
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (GetRoomStateJob::success(r)) {
-                            auto events = GetRoomStateJob::data(r);
-                            ctx.dispatch(LoadRoomStatesAction{roomId, events});
-                        }
-                    });
-            };
-        return {std::move(m), std::move(eff)};
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
     }
 
-    ClientResult updateClient(ClientModel m, LoadRoomStatesAction a)
+    ClientResult processResponse(ClientModel m, GetRoomStateResponse r)
     {
+        auto roomId = r.dataStr("roomId");
+
+        if (! r.success()) {
+            m.addTrigger(GetRoomStatesFailed{roomId, r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
+
+        m.addTrigger(GetRoomStatesSuccessful{roomId});
+
+        auto events = r.data();
+
         auto action = UpdateRoomAction{
-            std::move(a.roomId),
-            AddStateEventsAction{std::move(a.events)}
+            std::move(roomId),
+            AddStateEventsAction{std::move(events)}
         };
         m.roomList = RoomListModel::update(std::move(m.roomList), action);
         return {std::move(m), lager::noop};
@@ -61,58 +62,52 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, SendStateEventAction a)
     {
-        return {
-            m,
-            [=](auto &&ctx) {
-                auto event = a.event;
+        auto event = a.event;
 
-                if (event.type() == ""s) {
-                    ctx.dispatch(Error::SetErrorAction{
-                            Error::JsonError{json{
-                                    {"action", "SendStateEventAction"},
-                                    {"reason", "Event has no type"}
-                                }}
-                        });
-                }
+        if (event.type() == ""s) {
+            m.addTrigger(InvalidMessageFormat{});
+            return { std::move(m), lager::noop };
+        }
 
-                auto type = event.type();
-                auto content = event.content();
-                auto stateKey = event.stateKey();
+        auto type = event.type();
+        auto content = event.content();
+        auto stateKey = event.stateKey();
 
-                dbgClient << "Sending state event of type " << type
-                          << " with content " << content.get().dump()
-                          << " to " << a.roomId
-                          << " with state key #" << stateKey << std::endl;
+        dbgClient << "Sending state event of type " << type
+                  << " with content " << content.get().dump()
+                  << " to " << a.roomId
+                  << " with state key #" << stateKey << std::endl;
 
-                auto job = m.job<SetRoomStateWithKeyJob>().make(
-                    a.roomId,
-                    type,
-                    stateKey,
-                    content);
+        auto job = m.job<SetRoomStateWithKeyJob>().make(
+            a.roomId,
+            type,
+            stateKey,
+            content)
+            .withData(json{
+                    {"roomId", a.roomId},
+                    {"eventType", type},
+                    {"stateKey", stateKey},
+                });
 
-                auto &jobHandler = lager::get<JobInterface &>(ctx);
+        m.addJob(std::move(job));
 
-                jobHandler.fetch(
-                    job,
-                    [=](BaseJob::Response r) {
-                        if (!SetRoomStateWithKeyJob::success(r)) {
-                            dbgClient << "Send state event failed" << std::endl;
-                            if (BaseJob::isBodyJson(r.body)) {
-                                dbgClient << jsonBody(r).get().dump() << std::endl;
-                                ctx.dispatch(Error::SetErrorAction{
-                                        Error::JsonError{json{
-                                                {"action", "SendMessageAction"},
-                                                {"reason", "Request to remote host failed"},
-                                                {"original", jsonBody(r).get()}
-                                            }}
-                                    });
-                            } else {
-                                dbgClient << std::get<BaseJob::BytesBody>(r.body) << std::endl;
-                            }
-                        }
-                        // if success, nothing to do
-                    });
-            }
-        };
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, SetRoomStateWithKeyResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        auto eventType = r.dataStr("eventType");
+        auto stateKey = r.dataStr("stateKey");
+
+        if (! r.success()) {
+            dbgClient << "Send state event failed" << std::endl;
+            m.addTrigger(SendStateEventFailed{roomId, eventType, stateKey, r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
+
+        m.addTrigger(SendStateEventSuccessful{roomId, r.eventId(), eventType, stateKey});
+
+        return { std::move(m), lager::noop };
     }
 }

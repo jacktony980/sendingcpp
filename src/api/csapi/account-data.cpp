@@ -39,6 +39,7 @@ SetAccountDataJob::SetAccountDataJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/account_data/" + type,
           PUT,
+          std::string("SetAccountData"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, type, content)
@@ -47,11 +48,28 @@ SetAccountDataJob::SetAccountDataJob(
         {
         }
 
-          bool SetAccountDataJob::success(Response r)
+        SetAccountDataJob SetAccountDataJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetAccountDataJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAccountDataJob SetAccountDataJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetAccountDataJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAccountDataJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetAccountDataResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -86,6 +104,7 @@ GetAccountDataJob::GetAccountDataJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/account_data/" + type,
           GET,
+          std::string("GetAccountData"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, type)
@@ -94,11 +113,28 @@ GetAccountDataJob::GetAccountDataJob(
         {
         }
 
-          bool GetAccountDataJob::success(Response r)
+        GetAccountDataJob GetAccountDataJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetAccountDataJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccountDataJob GetAccountDataJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetAccountDataJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccountDataJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetAccountDataResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -134,6 +170,7 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
           PUT,
+          std::string("SetAccountDataPerRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, type, content)
@@ -142,11 +179,28 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
         {
         }
 
-          bool SetAccountDataPerRoomJob::success(Response r)
+        SetAccountDataPerRoomJob SetAccountDataPerRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetAccountDataPerRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAccountDataPerRoomJob SetAccountDataPerRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetAccountDataPerRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetAccountDataPerRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetAccountDataPerRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -181,6 +235,7 @@ GetAccountDataPerRoomJob::GetAccountDataPerRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
           GET,
+          std::string("GetAccountDataPerRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, type)
@@ -189,11 +244,28 @@ GetAccountDataPerRoomJob::GetAccountDataPerRoomJob(
         {
         }
 
-          bool GetAccountDataPerRoomJob::success(Response r)
+        GetAccountDataPerRoomJob GetAccountDataPerRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetAccountDataPerRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccountDataPerRoomJob GetAccountDataPerRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetAccountDataPerRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccountDataPerRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetAccountDataPerRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

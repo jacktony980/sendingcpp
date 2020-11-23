@@ -38,6 +38,7 @@ GetProtocolsJob::GetProtocolsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/protocols",
           GET,
+          std::string("GetProtocols"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,11 +47,28 @@ GetProtocolsJob::GetProtocolsJob(
         {
         }
 
-          bool GetProtocolsJob::success(Response r)
+        GetProtocolsJob GetProtocolsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetProtocolsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetProtocolsJob GetProtocolsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetProtocolsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetProtocolsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetProtocolsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -85,6 +103,7 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/protocol/" + protocol,
           GET,
+          std::string("GetProtocolMetadata"),
           _accessToken,
           ReturnType::Json,
             buildBody(protocol)
@@ -93,11 +112,28 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
         {
         }
 
-          bool GetProtocolMetadataJob::success(Response r)
+        GetProtocolMetadataJob GetProtocolMetadataJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetProtocolMetadataJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetProtocolMetadataJob GetProtocolMetadataJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetProtocolMetadataJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetProtocolMetadataJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetProtocolMetadataResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -133,6 +169,7 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/location/" + protocol,
           GET,
+          std::string("QueryLocationByProtocol"),
           _accessToken,
           ReturnType::Json,
             buildBody(protocol, searchFields)
@@ -141,11 +178,28 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
         {
         }
 
-          bool QueryLocationByProtocolJob::success(Response r)
+        QueryLocationByProtocolJob QueryLocationByProtocolJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryLocationByProtocolJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryLocationByProtocolJob QueryLocationByProtocolJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryLocationByProtocolJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryLocationByProtocolJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryLocationByProtocolResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -181,6 +235,7 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/user/" + protocol,
           GET,
+          std::string("QueryUserByProtocol"),
           _accessToken,
           ReturnType::Json,
             buildBody(protocol, fields)
@@ -189,11 +244,28 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
         {
         }
 
-          bool QueryUserByProtocolJob::success(Response r)
+        QueryUserByProtocolJob QueryUserByProtocolJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryUserByProtocolJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryUserByProtocolJob QueryUserByProtocolJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryUserByProtocolJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryUserByProtocolJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryUserByProtocolResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -229,6 +301,7 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/location",
           GET,
+          std::string("QueryLocationByAlias"),
           _accessToken,
           ReturnType::Json,
             buildBody(alias)
@@ -237,11 +310,28 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
         {
         }
 
-          bool QueryLocationByAliasJob::success(Response r)
+        QueryLocationByAliasJob QueryLocationByAliasJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryLocationByAliasJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryLocationByAliasJob QueryLocationByAliasJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryLocationByAliasJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryLocationByAliasJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryLocationByAliasResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -277,6 +367,7 @@ QueryUserByIDJob::QueryUserByIDJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/user",
           GET,
+          std::string("QueryUserByID"),
           _accessToken,
           ReturnType::Json,
             buildBody(userid)
@@ -285,11 +376,28 @@ QueryUserByIDJob::QueryUserByIDJob(
         {
         }
 
-          bool QueryUserByIDJob::success(Response r)
+        QueryUserByIDJob QueryUserByIDJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryUserByIDJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryUserByIDJob QueryUserByIDJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryUserByIDJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryUserByIDJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryUserByIDResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

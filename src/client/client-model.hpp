@@ -73,6 +73,8 @@ namespace Kazv
         immer::map<std::string /* type */, Event> accountData;
 
         std::string nextTxnId{DEFTXNID};
+        immer::flex_vector<BaseJob> nextJobs;
+        immer::flex_vector<KazvEvent> nextTriggers;
 
         // helpers
         template<class Job>
@@ -101,6 +103,30 @@ namespace Kazv
             return MakeJobT<Job>{serverUrl, token};
         }
 
+        inline void addJob(BaseJob j) {
+            nextJobs = std::move(nextJobs).push_back(std::move(j));
+        }
+
+        inline auto popAllJobs() {
+            auto jobs = std::move(nextJobs);
+            nextJobs = DEFVAL;
+            return jobs;
+        };
+
+        inline void addTrigger(KazvEvent t) {
+            addTriggers({t});
+        }
+
+        inline void addTriggers(immer::flex_vector<KazvEvent> c) {
+            nextTriggers = std::move(nextTriggers) + c;
+        }
+
+        inline auto popAllTriggers() {
+            auto triggers = std::move(nextTriggers);
+            nextTriggers = DEFVAL;
+            return triggers;
+        }
+
         using Action = ClientAction;
         using Effect = ClientEffect;
         using Result = ClientResult;
@@ -116,40 +142,22 @@ namespace Kazv
         std::optional<std::string> deviceName;
     };
 
-    struct LoadUserInfoAction {
+    struct TokenLoginAction
+    {
         std::string serverUrl;
-        std::string userId;
+        std::string username;
         std::string token;
         std::string deviceId;
-        bool loggedIn;
     };
 
     struct LogoutAction {};
 
     struct SyncAction {};
 
-    struct LoadSyncResultAction
-    {
-        std::string syncToken;
-        std::optional<SyncJob::Rooms> rooms;
-        std::optional<EventBatch> presence;
-        std::optional<EventBatch> accountData;
-        JsonWrap toDevice;
-        JsonWrap deviceLists;
-        immer::map<std::string, int> deviceOneTimeKeysCount;
-    };
-
     struct PaginateTimelineAction
     {
         std::string roomId;
         std::optional<int> limit;
-    };
-
-    struct LoadPaginateTimelineResultAction
-    {
-        std::string roomId;
-        EventList events;
-        std::string paginateBackToken;
     };
 
     struct SendMessageAction
@@ -187,12 +195,6 @@ namespace Kazv
         std::string roomId;
     };
 
-    struct LoadRoomStatesAction
-    {
-        std::string roomId;
-        EventList events;
-    };
-
     struct InviteToRoomAction
     {
         std::string roomId;
@@ -204,15 +206,15 @@ namespace Kazv
         std::string roomId;
     };
 
-    struct EmitKazvEventsAction
-    {
-        KazvEventList events;
-    };
-
     struct JoinRoomAction
     {
         std::string roomIdOrAlias;
         immer::array<std::string> serverName;
+    };
+
+    struct ProcessResponseAction
+    {
+        Response response;
     };
 
     inline bool operator==(ClientModel a, ClientModel b)
@@ -227,26 +229,25 @@ namespace Kazv
             && a.roomList == b.roomList
             && a.presence == b.presence
             && a.accountData == b.accountData
-            && a.nextTxnId == b.nextTxnId;
+            && a.nextTxnId == b.nextTxnId
+            && a.nextJobs == b.nextJobs
+            && a.nextTriggers == b.nextTriggers;
     }
 
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(LoginAction);
-    LAGER_CEREAL_STRUCT(LoadUserInfoAction);
+    LAGER_CEREAL_STRUCT(TokenLoginAction);
     LAGER_CEREAL_STRUCT(LogoutAction);
     LAGER_CEREAL_STRUCT(SyncAction);
-    LAGER_CEREAL_STRUCT(LoadSyncResultAction);
     LAGER_CEREAL_STRUCT(PaginateTimelineAction);
-    LAGER_CEREAL_STRUCT(LoadPaginateTimelineResultAction);
     LAGER_CEREAL_STRUCT(SendMessageAction);
     LAGER_CEREAL_STRUCT(SendStateEventAction);
     LAGER_CEREAL_STRUCT(CreateRoomAction);
     LAGER_CEREAL_STRUCT(GetRoomStatesAction);
-    LAGER_CEREAL_STRUCT(LoadRoomStatesAction);
     LAGER_CEREAL_STRUCT(InviteToRoomAction);
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
-    LAGER_CEREAL_STRUCT(EmitKazvEventsAction);
     LAGER_CEREAL_STRUCT(JoinRoomAction);
+    LAGER_CEREAL_STRUCT(ProcessResponseAction);
 #endif
 
     template<class Archive>

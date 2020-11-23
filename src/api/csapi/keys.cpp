@@ -45,6 +45,7 @@ UploadKeysJob::UploadKeysJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/upload",
           POST,
+          std::string("UploadKeys"),
           _accessToken,
           ReturnType::Json,
             buildBody(deviceKeys, oneTimeKeys)
@@ -53,23 +54,40 @@ UploadKeysJob::UploadKeysJob(
         {
         }
 
-          bool UploadKeysJob::success(Response r)
+        UploadKeysJob UploadKeysJob::withData(JsonWrap j) &&
+        {
+          auto ret = UploadKeysJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UploadKeysJob UploadKeysJob::withData(JsonWrap j) const &
+        {
+          auto ret = UploadKeysJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UploadKeysJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UploadKeysResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("one_time_key_counts"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("one_time_key_counts"s)
           ;
           }
 
 
     
-    immer::map<std::string, int> UploadKeysJob::oneTimeKeyCounts(Response r)
+    immer::map<std::string, int> UploadKeysResponse::oneTimeKeyCounts() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("one_time_key_counts"s)) {
     return
-    jsonBody(r).get()["one_time_key_counts"s]
+    jsonBody().get()["one_time_key_counts"s]
     /*.get<immer::map<std::string, int>>()*/;}
     else { return immer::map<std::string, int>(  );}
     }
@@ -113,6 +131,7 @@ QueryKeysJob::QueryKeysJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/query",
           POST,
+          std::string("QueryKeys"),
           _accessToken,
           ReturnType::Json,
             buildBody(deviceKeys, timeout, token)
@@ -121,33 +140,50 @@ QueryKeysJob::QueryKeysJob(
         {
         }
 
-          bool QueryKeysJob::success(Response r)
+        QueryKeysJob QueryKeysJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryKeysJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryKeysJob QueryKeysJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryKeysJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryKeysJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryKeysResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::map<std::string, JsonWrap> QueryKeysJob::failures(Response r)
+    immer::map<std::string, JsonWrap> QueryKeysResponse::failures() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("failures"s)) {
     return
-    jsonBody(r).get()["failures"s]
+    jsonBody().get()["failures"s]
     /*.get<immer::map<std::string, JsonWrap>>()*/;}
     else { return immer::map<std::string, JsonWrap>(  );}
     }
 
     
-    immer::map<std::string, immer::map<std::string, QueryKeysJob::DeviceInformation>> QueryKeysJob::deviceKeys(Response r)
+    immer::map<std::string, immer::map<std::string, QueryKeysJob::DeviceInformation>> QueryKeysResponse::deviceKeys() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("device_keys"s)) {
     return
-    jsonBody(r).get()["device_keys"s]
+    jsonBody().get()["device_keys"s]
     /*.get<immer::map<std::string, immer::map<std::string, DeviceInformation>>>()*/;}
     else { return immer::map<std::string, immer::map<std::string, DeviceInformation>>(  );}
     }
@@ -189,6 +225,7 @@ ClaimKeysJob::ClaimKeysJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/claim",
           POST,
+          std::string("ClaimKeys"),
           _accessToken,
           ReturnType::Json,
             buildBody(oneTimeKeys, timeout)
@@ -197,34 +234,51 @@ ClaimKeysJob::ClaimKeysJob(
         {
         }
 
-          bool ClaimKeysJob::success(Response r)
+        ClaimKeysJob ClaimKeysJob::withData(JsonWrap j) &&
+        {
+          auto ret = ClaimKeysJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        ClaimKeysJob ClaimKeysJob::withData(JsonWrap j) const &
+        {
+          auto ret = ClaimKeysJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        ClaimKeysJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool ClaimKeysResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("one_time_keys"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("one_time_keys"s)
           ;
           }
 
 
     
-    immer::map<std::string, JsonWrap> ClaimKeysJob::failures(Response r)
+    immer::map<std::string, JsonWrap> ClaimKeysResponse::failures() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("failures"s)) {
     return
-    jsonBody(r).get()["failures"s]
+    jsonBody().get()["failures"s]
     /*.get<immer::map<std::string, JsonWrap>>()*/;}
     else { return immer::map<std::string, JsonWrap>(  );}
     }
 
     
-    immer::map<std::string, immer::map<std::string, Variant>> ClaimKeysJob::oneTimeKeys(Response r)
+    immer::map<std::string, immer::map<std::string, Variant>> ClaimKeysResponse::oneTimeKeys() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("one_time_keys"s)) {
     return
-    jsonBody(r).get()["one_time_keys"s]
+    jsonBody().get()["one_time_keys"s]
     /*.get<immer::map<std::string, immer::map<std::string, Variant>>>()*/;}
     else { return immer::map<std::string, immer::map<std::string, Variant>>(  );}
     }
@@ -262,6 +316,7 @@ GetKeysChangesJob::GetKeysChangesJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/changes",
           GET,
+          std::string("GetKeysChanges"),
           _accessToken,
           ReturnType::Json,
             buildBody(from, to)
@@ -270,33 +325,50 @@ GetKeysChangesJob::GetKeysChangesJob(
         {
         }
 
-          bool GetKeysChangesJob::success(Response r)
+        GetKeysChangesJob GetKeysChangesJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetKeysChangesJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetKeysChangesJob GetKeysChangesJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetKeysChangesJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetKeysChangesJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetKeysChangesResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::array<std::string> GetKeysChangesJob::changed(Response r)
+    immer::array<std::string> GetKeysChangesResponse::changed() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("changed"s)) {
     return
-    jsonBody(r).get()["changed"s]
+    jsonBody().get()["changed"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }
 
     
-    immer::array<std::string> GetKeysChangesJob::left(Response r)
+    immer::array<std::string> GetKeysChangesResponse::left() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("left"s)) {
     return
-    jsonBody(r).get()["left"s]
+    jsonBody().get()["left"s]
     /*.get<immer::array<std::string>>()*/;}
     else { return immer::array<std::string>(  );}
     }

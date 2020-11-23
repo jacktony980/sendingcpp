@@ -50,6 +50,30 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// Gets a list of the third party identifiers that the homeserver has
+/// associated with the user's account.
+/// 
+/// This is *not* the same as the list of third party identifiers bound to
+/// the user's Matrix ID in identity servers.
+/// 
+/// Identifiers in this list may be used by the homeserver as, for example,
+/// identifiers that it will accept to reset the user's account password.
+immer::array<ThirdPartyIdentifier> threepids() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -65,30 +89,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// Gets a list of the third party identifiers that the homeserver has
-/// associated with the user's account.
-/// 
-/// This is *not* the same as the list of third party identifiers bound to
-/// the user's Matrix ID in identity servers.
-/// 
-/// Identifiers in this list may be used by the homeserver as, for example,
-/// identifiers that it will accept to reset the user's account password.
-static immer::array<ThirdPartyIdentifier> threepids(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetAccount3PIDsJob withData(JsonWrap j) &&;
+      GetAccount3PIDsJob withData(JsonWrap j) const &;
+      };
+      using GetAccount3PIDsResponse = GetAccount3PIDsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -153,6 +164,15 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -177,10 +197,12 @@ public:
 
       static BaseJob::Body buildBody(ThreePidCredentials threePidCreds);
 
-        static bool success(Response r);
         
-      };
 
+      Post3PIDsJob withData(JsonWrap j) &&;
+      Post3PIDsJob withData(JsonWrap j) const &;
+      };
+      using Post3PIDsResponse = Post3PIDsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -221,6 +243,15 @@ class Add3PIDJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -252,10 +283,12 @@ public:
 
       static BaseJob::Body buildBody(std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth);
 
-        static bool success(Response r);
         
-      };
 
+      Add3PIDJob withData(JsonWrap j) &&;
+      Add3PIDJob withData(JsonWrap j) const &;
+      };
+      using Add3PIDResponse = Add3PIDJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -280,6 +313,15 @@ class Bind3PIDJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -313,10 +355,12 @@ public:
 
       static BaseJob::Body buildBody(std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid);
 
-        static bool success(Response r);
         
-      };
 
+      Bind3PIDJob withData(JsonWrap j) &&;
+      Bind3PIDJob withData(JsonWrap j) const &;
+      };
+      using Bind3PIDResponse = Bind3PIDJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -340,6 +384,28 @@ class Delete3pidFromAccountJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// An indicator as to whether or not the homeserver was able to unbind
+/// the 3PID from the identity server. ``success`` indicates that the
+/// indentity server has unbound the identifier whereas ``no-support``
+/// indicates that the identity server refuses to support the request
+/// or the homeserver was not able to determine an identity server to
+/// unbind from.
+std::string idServerUnbindResult() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -368,28 +434,17 @@ public:
         std::string medium , std::string address , std::string idServer  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// An indicator as to whether or not the homeserver was able to unbind
-/// the 3PID from the identity server. ``success`` indicates that the
-/// indentity server has unbound the identifier whereas ``no-support``
-/// indicates that the identity server refuses to support the request
-/// or the homeserver was not able to determine an identity server to
-/// unbind from.
-static std::string idServerUnbindResult(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
 
-        static bool success(Response r);
         
-      };
 
+      Delete3pidFromAccountJob withData(JsonWrap j) &&;
+      Delete3pidFromAccountJob withData(JsonWrap j) const &;
+      };
+      using Delete3pidFromAccountResponse = Delete3pidFromAccountJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -413,6 +468,27 @@ class Unbind3pidFromAccountJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// An indicator as to whether or not the identity server was able to unbind
+/// the 3PID. ``success`` indicates that the identity server has unbound the
+/// identifier whereas ``no-support`` indicates that the identity server
+/// refuses to support the request or the homeserver was not able to determine
+/// an identity server to unbind from.
+std::string idServerUnbindResult() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -441,27 +517,17 @@ public:
         std::string medium , std::string address , std::string idServer  = {});
     
 
-    // Result properties
-        
-        
-
-    
-/// An indicator as to whether or not the identity server was able to unbind
-/// the 3PID. ``success`` indicates that the identity server has unbound the
-/// identifier whereas ``no-support`` indicates that the identity server
-/// refuses to support the request or the homeserver was not able to determine
-/// an identity server to unbind from.
-static std::string idServerUnbindResult(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
 
-        static bool success(Response r);
         
-      };
 
+      Unbind3pidFromAccountJob withData(JsonWrap j) &&;
+      Unbind3pidFromAccountJob withData(JsonWrap j) const &;
+      };
+      using Unbind3pidFromAccountResponse = Unbind3pidFromAccountJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -486,6 +552,30 @@ class RequestTokenTo3PIDEmailJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An email was sent to the given address. Note that this may be an
+/// email containing the validation token or it may be informing the
+/// user of an error.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -511,30 +601,17 @@ public:
         EmailValidationData body );
     
 
-    // Result properties
-        
-
-/// An email was sent to the given address. Note that this may be an
-/// email containing the validation token or it may be informing the
-/// user of an error.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(EmailValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenTo3PIDEmailJob withData(JsonWrap j) &&;
+      RequestTokenTo3PIDEmailJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenTo3PIDEmailResponse = RequestTokenTo3PIDEmailJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -559,6 +636,28 @@ class RequestTokenTo3PIDMSISDNJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An SMS message was sent to the given phone number.
+    RequestTokenResponse data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<RequestTokenResponse>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return 
             false;
@@ -584,28 +683,17 @@ public:
         MsisdnValidationData body );
     
 
-    // Result properties
-        
-
-/// An SMS message was sent to the given phone number.
-    static RequestTokenResponse data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<RequestTokenResponse>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(MsisdnValidationData body);
 
-        static bool success(Response r);
         
-      };
 
+      RequestTokenTo3PIDMSISDNJob withData(JsonWrap j) &&;
+      RequestTokenTo3PIDMSISDNJob withData(JsonWrap j) const &;
+      };
+      using RequestTokenTo3PIDMSISDNResponse = RequestTokenTo3PIDMSISDNJob::JobResponse;
       } 
       namespace nlohmann
       {

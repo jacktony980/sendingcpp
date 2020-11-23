@@ -38,6 +38,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/initialSync",
           GET,
+          std::string("RoomInitialSync"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -46,78 +47,95 @@ RoomInitialSyncJob::RoomInitialSyncJob(
         {
         }
 
-          bool RoomInitialSyncJob::success(Response r)
+        RoomInitialSyncJob RoomInitialSyncJob::withData(JsonWrap j) &&
+        {
+          auto ret = RoomInitialSyncJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RoomInitialSyncJob RoomInitialSyncJob::withData(JsonWrap j) const &
+        {
+          auto ret = RoomInitialSyncJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RoomInitialSyncJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RoomInitialSyncResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("room_id"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("room_id"s)
           ;
           }
 
 
     
-    std::string RoomInitialSyncJob::roomId(Response r)
+    std::string RoomInitialSyncResponse::roomId() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("room_id"s)) {
     return
-    jsonBody(r).get()["room_id"s]
+    jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string RoomInitialSyncJob::membership(Response r)
+    std::string RoomInitialSyncResponse::membership() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("membership"s)) {
     return
-    jsonBody(r).get()["membership"s]
+    jsonBody().get()["membership"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<RoomInitialSyncJob::PaginationChunk> RoomInitialSyncJob::messages(Response r)
+    std::optional<RoomInitialSyncJob::PaginationChunk> RoomInitialSyncResponse::messages() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("messages"s)) {
     return
-    jsonBody(r).get()["messages"s]
+    jsonBody().get()["messages"s]
     /*.get<PaginationChunk>()*/;}
     else { return std::optional<PaginationChunk>(  );}
     }
 
     
-    EventList RoomInitialSyncJob::state(Response r)
+    EventList RoomInitialSyncResponse::state() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("state"s)) {
     return
-    jsonBody(r).get()["state"s]
+    jsonBody().get()["state"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }
 
     
-    std::string RoomInitialSyncJob::visibility(Response r)
+    std::string RoomInitialSyncResponse::visibility() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("visibility"s)) {
     return
-    jsonBody(r).get()["visibility"s]
+    jsonBody().get()["visibility"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList RoomInitialSyncJob::accountData(Response r)
+    EventList RoomInitialSyncResponse::accountData() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("account_data"s)) {
     return
-    jsonBody(r).get()["account_data"s]
+    jsonBody().get()["account_data"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }

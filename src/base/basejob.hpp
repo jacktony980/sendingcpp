@@ -41,16 +41,46 @@ namespace Kazv
     using JsonBody = JsonWrap;
     struct EmptyBody {};
     using Body = std::variant<EmptyBody, JsonBody, BytesBody>;
+    inline bool operator==(EmptyBody, EmptyBody)
+    {
+        return true;
+    }
+
+    inline bool isBodyJson(Body body) {
+        return std::holds_alternative<JsonBody>(body);
+    };
 
     struct Response {
         using StatusCode = int;
         StatusCode statusCode;
         Body body;
         Header header;
+        JsonWrap extraData;
         std::string errorCode() const;
         std::string errorMessage() const;
         JsonWrap jsonBody() const;
+        constexpr bool success() const {
+            return statusCode < 400;
+        }
+        inline json dataJson(const std::string &key) const {
+            return extraData.get()[key];
+        }
+        inline std::string dataStr(const std::string &key) const {
+            return dataJson(key);
+        }
+        inline std::string jobId() const {
+            return dataStr("-job-id");
+        }
     };
+
+    inline bool operator==(Response a, Response b)
+    {
+        return a.statusCode == b.statusCode
+            && a.body == b.body
+            && a.header == b.header
+            && a.extraData == b.extraData;
+    }
+
 
     class BaseJob
     {
@@ -76,20 +106,12 @@ namespace Kazv
             }
         };
 
-        static constexpr bool isBodyJson(const Body &body) {
-            return std::holds_alternative<JsonBody>(body);
-        };
-
         using Body = ::Kazv::Body;
         using BytesBody = ::Kazv::BytesBody;
         using JsonBody = ::Kazv::JsonBody;
         using EmptyBody = ::Kazv::EmptyBody;
         using Header = ::Kazv::Header;
         using Response = ::Kazv::Response;
-
-        static constexpr bool success(const Response &res) {
-            return res.statusCode < 400;
-        }
 
         enum ReturnType {
             Json,
@@ -99,6 +121,7 @@ namespace Kazv
         BaseJob(std::string serverUrl,
                 std::string requestUrl,
                 Method method,
+                std::string jobId,
                 std::string token = {},
                 ReturnType returnType = ReturnType::Json,
                 Body body = EmptyBody{},
@@ -122,10 +145,27 @@ namespace Kazv
 
         static bool contentTypeMatches(immer::array<std::string> expected, std::string actual);
 
+        Response genResponse(Response r) const;
+
+        BaseJob withData(JsonWrap j) &&;
+        BaseJob withData(JsonWrap j) const &;
+
+    protected:
+        void attachData(JsonWrap data);
+
     private:
+        friend bool operator==(BaseJob a, BaseJob b);
         struct Private;
         Descendent<Private> m_d;
     };
+
+    bool operator==(BaseJob a, BaseJob b);
+    bool operator!=(BaseJob a, BaseJob b);
+    inline bool operator==(BaseJob::Get, BaseJob::Get) { return true; }
+    inline bool operator==(BaseJob::Post, BaseJob::Post) { return true; }
+    inline bool operator==(BaseJob::Put, BaseJob::Put) { return true; }
+    inline bool operator==(BaseJob::Delete, BaseJob::Delete) { return true; }
+
 
     namespace detail
     {

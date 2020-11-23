@@ -43,6 +43,7 @@ PeekEventsJob::PeekEventsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
+          std::string("PeekEvents"),
           _accessToken,
           ReturnType::Json,
             buildBody(from, timeout, roomId)
@@ -51,44 +52,61 @@ PeekEventsJob::PeekEventsJob(
         {
         }
 
-          bool PeekEventsJob::success(Response r)
+        PeekEventsJob PeekEventsJob::withData(JsonWrap j) &&
+        {
+          auto ret = PeekEventsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        PeekEventsJob PeekEventsJob::withData(JsonWrap j) const &
+        {
+          auto ret = PeekEventsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        PeekEventsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool PeekEventsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string PeekEventsJob::start(Response r)
+    std::string PeekEventsResponse::start() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("start"s)) {
     return
-    jsonBody(r).get()["start"s]
+    jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string PeekEventsJob::end(Response r)
+    std::string PeekEventsResponse::end() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("end"s)) {
     return
-    jsonBody(r).get()["end"s]
+    jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    EventList PeekEventsJob::chunk(Response r)
+    EventList PeekEventsResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<EventList>()*/;}
     else { return EventList(  );}
     }

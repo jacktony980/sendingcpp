@@ -18,6 +18,15 @@ class PostReceiptJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -52,10 +61,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt);
 
-        static bool success(Response r);
         
-      };
 
+      PostReceiptJob withData(JsonWrap j) &&;
+      PostReceiptJob withData(JsonWrap j) const &;
+      };
+      using PostReceiptResponse = PostReceiptJob::JobResponse;
       } 
       namespace nlohmann
       {

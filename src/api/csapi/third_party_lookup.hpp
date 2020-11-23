@@ -21,6 +21,28 @@ class GetProtocolsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The protocols supported by the homeserver.
+    immer::map<std::string, ThirdPartyProtocol> data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<immer::map<std::string, ThirdPartyProtocol>>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -36,28 +58,17 @@ public:
         );
 
 
-    // Result properties
-        
-
-/// The protocols supported by the homeserver.
-    static immer::map<std::string, ThirdPartyProtocol> data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<immer::map<std::string, ThirdPartyProtocol>>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetProtocolsJob withData(JsonWrap j) &&;
+      GetProtocolsJob withData(JsonWrap j) const &;
+      };
+      using GetProtocolsResponse = GetProtocolsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -76,6 +87,28 @@ class GetProtocolMetadataJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The protocol was found and metadata returned.
+    ThirdPartyProtocol data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<ThirdPartyProtocol>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -95,28 +128,17 @@ public:
         std::string protocol );
 
 
-    // Result properties
-        
-
-/// The protocol was found and metadata returned.
-    static ThirdPartyProtocol data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<ThirdPartyProtocol>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string protocol);
 
-        static bool success(Response r);
         
-      };
 
+      GetProtocolMetadataJob withData(JsonWrap j) &&;
+      GetProtocolMetadataJob withData(JsonWrap j) const &;
+      };
+      using GetProtocolMetadataResponse = GetProtocolMetadataJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -142,6 +164,28 @@ class QueryLocationByProtocolJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// At least one portal room was found.
+    immer::array<ThirdPartyLocation> data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<immer::array<ThirdPartyLocation>>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -165,28 +209,17 @@ public:
         std::string protocol , std::string searchFields  = {});
 
 
-    // Result properties
-        
-
-/// At least one portal room was found.
-    static immer::array<ThirdPartyLocation> data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<immer::array<ThirdPartyLocation>>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     std::string searchFields);
 
       static BaseJob::Body buildBody(std::string protocol, std::string searchFields);
 
-        static bool success(Response r);
         
-      };
 
+      QueryLocationByProtocolJob withData(JsonWrap j) &&;
+      QueryLocationByProtocolJob withData(JsonWrap j) const &;
+      };
+      using QueryLocationByProtocolResponse = QueryLocationByProtocolJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -206,6 +239,28 @@ class QueryUserByProtocolJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The Matrix User IDs found with the given parameters.
+    immer::array<ThirdPartyUser> data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<immer::array<ThirdPartyUser>>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -228,28 +283,17 @@ public:
         std::string protocol , std::string fields  = {});
 
 
-    // Result properties
-        
-
-/// The Matrix User IDs found with the given parameters.
-    static immer::array<ThirdPartyUser> data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<immer::array<ThirdPartyUser>>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     std::string fields);
 
       static BaseJob::Body buildBody(std::string protocol, std::string fields);
 
-        static bool success(Response r);
         
-      };
 
+      QueryUserByProtocolJob withData(JsonWrap j) &&;
+      QueryUserByProtocolJob withData(JsonWrap j) const &;
+      };
+      using QueryUserByProtocolResponse = QueryUserByProtocolJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -269,6 +313,28 @@ class QueryLocationByAliasJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// All found third party locations.
+    immer::array<ThirdPartyLocation> data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<immer::array<ThirdPartyLocation>>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -288,28 +354,17 @@ public:
         std::string alias );
 
 
-    // Result properties
-        
-
-/// All found third party locations.
-    static immer::array<ThirdPartyLocation> data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<immer::array<ThirdPartyLocation>>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     std::string alias);
 
       static BaseJob::Body buildBody(std::string alias);
 
-        static bool success(Response r);
         
-      };
 
+      QueryLocationByAliasJob withData(JsonWrap j) &&;
+      QueryLocationByAliasJob withData(JsonWrap j) const &;
+      };
+      using QueryLocationByAliasResponse = QueryLocationByAliasJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -328,6 +383,28 @@ class QueryUserByIDJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// An array of third party users.
+    immer::array<ThirdPartyUser> data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<immer::array<ThirdPartyUser>>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -347,28 +424,17 @@ public:
         std::string userid );
 
 
-    // Result properties
-        
-
-/// An array of third party users.
-    static immer::array<ThirdPartyUser> data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<immer::array<ThirdPartyUser>>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     std::string userid);
 
       static BaseJob::Body buildBody(std::string userid);
 
-        static bool success(Response r);
         
-      };
 
+      QueryUserByIDJob withData(JsonWrap j) &&;
+      QueryUserByIDJob withData(JsonWrap j) const &;
+      };
+      using QueryUserByIDResponse = QueryUserByIDJob::JobResponse;
       } 
       namespace nlohmann
       {

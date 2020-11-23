@@ -38,6 +38,7 @@ GetRoomTagsJob::GetRoomTagsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags",
           GET,
+          std::string("GetRoomTags"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId)
@@ -46,22 +47,39 @@ GetRoomTagsJob::GetRoomTagsJob(
         {
         }
 
-          bool GetRoomTagsJob::success(Response r)
+        GetRoomTagsJob GetRoomTagsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomTagsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomTagsJob GetRoomTagsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomTagsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomTagsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomTagsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::map<std::string, GetRoomTagsJob::Tag> GetRoomTagsJob::tags(Response r)
+    immer::map<std::string, GetRoomTagsJob::Tag> GetRoomTagsResponse::tags() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("tags"s)) {
     return
-    jsonBody(r).get()["tags"s]
+    jsonBody().get()["tags"s]
     /*.get<immer::map<std::string, Tag>>()*/;}
     else { return immer::map<std::string, Tag>(  );}
     }
@@ -101,6 +119,7 @@ SetRoomTagJob::SetRoomTagJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           PUT,
+          std::string("SetRoomTag"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, tag, order, additionalProperties)
@@ -109,11 +128,28 @@ SetRoomTagJob::SetRoomTagJob(
         {
         }
 
-          bool SetRoomTagJob::success(Response r)
+        SetRoomTagJob SetRoomTagJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetRoomTagJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomTagJob SetRoomTagJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetRoomTagJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomTagJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetRoomTagResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -148,6 +184,7 @@ DeleteRoomTagJob::DeleteRoomTagJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           DELETE,
+          std::string("DeleteRoomTag"),
           _accessToken,
           ReturnType::Json,
             buildBody(userId, roomId, tag)
@@ -156,11 +193,28 @@ DeleteRoomTagJob::DeleteRoomTagJob(
         {
         }
 
-          bool DeleteRoomTagJob::success(Response r)
+        DeleteRoomTagJob DeleteRoomTagJob::withData(JsonWrap j) &&
+        {
+          auto ret = DeleteRoomTagJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteRoomTagJob DeleteRoomTagJob::withData(JsonWrap j) const &
+        {
+          auto ret = DeleteRoomTagJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        DeleteRoomTagJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool DeleteRoomTagResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

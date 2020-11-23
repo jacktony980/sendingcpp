@@ -38,6 +38,7 @@ LeaveRoomJob::LeaveRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/leave",
           POST,
+          std::string("LeaveRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -46,11 +47,28 @@ LeaveRoomJob::LeaveRoomJob(
         {
         }
 
-          bool LeaveRoomJob::success(Response r)
+        LeaveRoomJob LeaveRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = LeaveRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        LeaveRoomJob LeaveRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = LeaveRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        LeaveRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool LeaveRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -85,6 +103,7 @@ ForgetRoomJob::ForgetRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/forget",
           POST,
+          std::string("ForgetRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId)
@@ -93,11 +112,28 @@ ForgetRoomJob::ForgetRoomJob(
         {
         }
 
-          bool ForgetRoomJob::success(Response r)
+        ForgetRoomJob ForgetRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = ForgetRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        ForgetRoomJob ForgetRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = ForgetRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        ForgetRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool ForgetRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -22,6 +22,23 @@ class GetPushRulesJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The global ruleset.
+PushRuleset global() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -37,23 +54,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The global ruleset.
-static PushRuleset global(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetPushRulesJob withData(JsonWrap j) &&;
+      GetPushRulesJob withData(JsonWrap j) const &;
+      };
+      using GetPushRulesResponse = GetPushRulesJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -72,6 +83,29 @@ class GetPushRuleJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+
+/// The specific push rule. This will also include keys specific to the
+/// rule itself such as the rule's ``actions`` and ``conditions`` if set.
+    PushRule data() const
+    {
+    return
+    
+      std::move(jsonBody().get()).get<PushRule>()
+    ;
+    }
+        
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -97,29 +131,17 @@ public:
         std::string scope , std::string kind , std::string ruleId );
 
 
-    // Result properties
-        
-
-/// The specific push rule. This will also include keys specific to the
-/// rule itself such as the rule's ``actions`` and ``conditions`` if set.
-    static PushRule data(Response r)
-    {
-    return
-    
-      std::move(jsonBody(r).get()).get<PushRule>()
-    ;
-    }
-        
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
 
-        static bool success(Response r);
         
-      };
 
+      GetPushRuleJob withData(JsonWrap j) &&;
+      GetPushRuleJob withData(JsonWrap j) const &;
+      };
+      using GetPushRuleResponse = GetPushRuleJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -138,6 +160,15 @@ class DeletePushRuleJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -168,10 +199,12 @@ public:
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
 
-        static bool success(Response r);
         
-      };
 
+      DeletePushRuleJob withData(JsonWrap j) &&;
+      DeletePushRuleJob withData(JsonWrap j) const &;
+      };
+      using DeletePushRuleResponse = DeletePushRuleJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -194,6 +227,15 @@ class SetPushRuleJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -245,10 +287,12 @@ public:
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern);
 
-        static bool success(Response r);
         
-      };
 
+      SetPushRuleJob withData(JsonWrap j) &&;
+      SetPushRuleJob withData(JsonWrap j) const &;
+      };
+      using SetPushRuleResponse = SetPushRuleJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -267,6 +311,23 @@ class IsPushRuleEnabledJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// Whether the push rule is enabled or not.
+bool enabled() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -293,23 +354,17 @@ public:
         std::string scope , std::string kind , std::string ruleId );
 
 
-    // Result properties
-        
-        
-
-    
-/// Whether the push rule is enabled or not.
-static bool enabled(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
 
-        static bool success(Response r);
         
-      };
 
+      IsPushRuleEnabledJob withData(JsonWrap j) &&;
+      IsPushRuleEnabledJob withData(JsonWrap j) const &;
+      };
+      using IsPushRuleEnabledResponse = IsPushRuleEnabledJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -328,6 +383,15 @@ class SetPushRuleEnabledJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -361,10 +425,12 @@ public:
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, bool enabled);
 
-        static bool success(Response r);
         
-      };
 
+      SetPushRuleEnabledJob withData(JsonWrap j) &&;
+      SetPushRuleEnabledJob withData(JsonWrap j) const &;
+      };
+      using SetPushRuleEnabledResponse = SetPushRuleEnabledJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -383,6 +449,23 @@ class GetPushRuleActionsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The action(s) to perform for this rule.
+immer::array<Variant> actions() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -409,23 +492,17 @@ public:
         std::string scope , std::string kind , std::string ruleId );
 
 
-    // Result properties
-        
-        
-
-    
-/// The action(s) to perform for this rule.
-static immer::array<Variant> actions(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
 
-        static bool success(Response r);
         
-      };
 
+      GetPushRuleActionsJob withData(JsonWrap j) &&;
+      GetPushRuleActionsJob withData(JsonWrap j) const &;
+      };
+      using GetPushRuleActionsResponse = GetPushRuleActionsJob::JobResponse;
       } 
       namespace nlohmann
       {
@@ -445,6 +522,15 @@ class SetPushRuleActionsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -478,10 +564,12 @@ public:
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions);
 
-        static bool success(Response r);
         
-      };
 
+      SetPushRuleActionsJob withData(JsonWrap j) &&;
+      SetPushRuleActionsJob withData(JsonWrap j) const &;
+      };
+      using SetPushRuleActionsResponse = SetPushRuleActionsJob::JobResponse;
       } 
       namespace nlohmann
       {

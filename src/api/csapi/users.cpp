@@ -45,6 +45,7 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user_directory/search",
           POST,
+          std::string("SearchUserDirectory"),
           _accessToken,
           ReturnType::Json,
             buildBody(searchTerm, limit)
@@ -53,35 +54,52 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
         {
         }
 
-          bool SearchUserDirectoryJob::success(Response r)
+        SearchUserDirectoryJob SearchUserDirectoryJob::withData(JsonWrap j) &&
+        {
+          auto ret = SearchUserDirectoryJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SearchUserDirectoryJob SearchUserDirectoryJob::withData(JsonWrap j) const &
+        {
+          auto ret = SearchUserDirectoryJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SearchUserDirectoryJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SearchUserDirectoryResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("results"s)
-            && jsonBody(r).get().contains("limited"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("results"s)
+            && jsonBody().get().contains("limited"s)
           ;
           }
 
 
     
-    immer::array<SearchUserDirectoryJob::User> SearchUserDirectoryJob::results(Response r)
+    immer::array<SearchUserDirectoryJob::User> SearchUserDirectoryResponse::results() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("results"s)) {
     return
-    jsonBody(r).get()["results"s]
+    jsonBody().get()["results"s]
     /*.get<immer::array<User>>()*/;}
     else { return immer::array<User>(  );}
     }
 
     
-    bool SearchUserDirectoryJob::limited(Response r)
+    bool SearchUserDirectoryResponse::limited() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("limited"s)) {
     return
-    jsonBody(r).get()["limited"s]
+    jsonBody().get()["limited"s]
     /*.get<bool>()*/;}
     else { return bool(  );}
     }

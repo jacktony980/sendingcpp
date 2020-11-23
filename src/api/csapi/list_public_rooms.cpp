@@ -38,6 +38,7 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
           GET,
+          std::string("GetRoomVisibilityOnDirectory"),
            {} ,
           ReturnType::Json,
             buildBody(roomId)
@@ -46,22 +47,39 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
         {
         }
 
-          bool GetRoomVisibilityOnDirectoryJob::success(Response r)
+        GetRoomVisibilityOnDirectoryJob GetRoomVisibilityOnDirectoryJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetRoomVisibilityOnDirectoryJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomVisibilityOnDirectoryJob GetRoomVisibilityOnDirectoryJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetRoomVisibilityOnDirectoryJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetRoomVisibilityOnDirectoryJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetRoomVisibilityOnDirectoryResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    std::string GetRoomVisibilityOnDirectoryJob::visibility(Response r)
+    std::string GetRoomVisibilityOnDirectoryResponse::visibility() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("visibility"s)) {
     return
-    jsonBody(r).get()["visibility"s]
+    jsonBody().get()["visibility"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -101,6 +119,7 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
           PUT,
+          std::string("SetRoomVisibilityOnDirectory"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, visibility)
@@ -109,11 +128,28 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
         {
         }
 
-          bool SetRoomVisibilityOnDirectoryJob::success(Response r)
+        SetRoomVisibilityOnDirectoryJob SetRoomVisibilityOnDirectoryJob::withData(JsonWrap j) &&
+        {
+          auto ret = SetRoomVisibilityOnDirectoryJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomVisibilityOnDirectoryJob SetRoomVisibilityOnDirectoryJob::withData(JsonWrap j) const &
+        {
+          auto ret = SetRoomVisibilityOnDirectoryJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        SetRoomVisibilityOnDirectoryJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool SetRoomVisibilityOnDirectoryResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -153,6 +189,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           GET,
+          std::string("GetPublicRooms"),
            {} ,
           ReturnType::Json,
             buildBody(limit, since, server)
@@ -161,56 +198,73 @@ GetPublicRoomsJob::GetPublicRoomsJob(
         {
         }
 
-          bool GetPublicRoomsJob::success(Response r)
+        GetPublicRoomsJob GetPublicRoomsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetPublicRoomsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPublicRoomsJob GetPublicRoomsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetPublicRoomsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetPublicRoomsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetPublicRoomsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("chunk"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("chunk"s)
           ;
           }
 
 
     
-    immer::array<PublicRoomsChunk> GetPublicRoomsJob::chunk(Response r)
+    immer::array<PublicRoomsChunk> GetPublicRoomsResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<immer::array<PublicRoomsChunk>>()*/;}
     else { return immer::array<PublicRoomsChunk>(  );}
     }
 
     
-    std::string GetPublicRoomsJob::nextBatch(Response r)
+    std::string GetPublicRoomsResponse::nextBatch() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("next_batch"s)) {
     return
-    jsonBody(r).get()["next_batch"s]
+    jsonBody().get()["next_batch"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string GetPublicRoomsJob::prevBatch(Response r)
+    std::string GetPublicRoomsResponse::prevBatch() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("prev_batch"s)) {
     return
-    jsonBody(r).get()["prev_batch"s]
+    jsonBody().get()["prev_batch"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<int> GetPublicRoomsJob::totalRoomCountEstimate(Response r)
+    std::optional<int> GetPublicRoomsResponse::totalRoomCountEstimate() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("total_room_count_estimate"s)) {
     return
-    jsonBody(r).get()["total_room_count_estimate"s]
+    jsonBody().get()["total_room_count_estimate"s]
     /*.get<int>()*/;}
     else { return std::optional<int>(  );}
     }
@@ -259,6 +313,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           POST,
+          std::string("QueryPublicRooms"),
           _accessToken,
           ReturnType::Json,
             buildBody(server, limit, since, filter, includeAllNetworks, thirdPartyInstanceId)
@@ -267,56 +322,73 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
         {
         }
 
-          bool QueryPublicRoomsJob::success(Response r)
+        QueryPublicRoomsJob QueryPublicRoomsJob::withData(JsonWrap j) &&
+        {
+          auto ret = QueryPublicRoomsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryPublicRoomsJob QueryPublicRoomsJob::withData(JsonWrap j) const &
+        {
+          auto ret = QueryPublicRoomsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        QueryPublicRoomsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool QueryPublicRoomsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("chunk"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("chunk"s)
           ;
           }
 
 
     
-    immer::array<PublicRoomsChunk> QueryPublicRoomsJob::chunk(Response r)
+    immer::array<PublicRoomsChunk> QueryPublicRoomsResponse::chunk() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("chunk"s)) {
     return
-    jsonBody(r).get()["chunk"s]
+    jsonBody().get()["chunk"s]
     /*.get<immer::array<PublicRoomsChunk>>()*/;}
     else { return immer::array<PublicRoomsChunk>(  );}
     }
 
     
-    std::string QueryPublicRoomsJob::nextBatch(Response r)
+    std::string QueryPublicRoomsResponse::nextBatch() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("next_batch"s)) {
     return
-    jsonBody(r).get()["next_batch"s]
+    jsonBody().get()["next_batch"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::string QueryPublicRoomsJob::prevBatch(Response r)
+    std::string QueryPublicRoomsResponse::prevBatch() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("prev_batch"s)) {
     return
-    jsonBody(r).get()["prev_batch"s]
+    jsonBody().get()["prev_batch"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
 
     
-    std::optional<int> QueryPublicRoomsJob::totalRoomCountEstimate(Response r)
+    std::optional<int> QueryPublicRoomsResponse::totalRoomCountEstimate() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("total_room_count_estimate"s)) {
     return
-    jsonBody(r).get()["total_room_count_estimate"s]
+    jsonBody().get()["total_room_count_estimate"s]
     /*.get<int>()*/;}
     else { return std::optional<int>(  );}
     }

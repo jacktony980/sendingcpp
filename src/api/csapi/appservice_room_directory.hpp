@@ -25,6 +25,15 @@ class UpdateAppserviceRoomDirectoryVsibilityJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -58,10 +67,12 @@ public:
 
       static BaseJob::Body buildBody(std::string networkId, std::string roomId, std::string visibility);
 
-        static bool success(Response r);
         
-      };
 
+      UpdateAppserviceRoomDirectoryVsibilityJob withData(JsonWrap j) &&;
+      UpdateAppserviceRoomDirectoryVsibilityJob withData(JsonWrap j) const &;
+      };
+      using UpdateAppserviceRoomDirectoryVsibilityResponse = UpdateAppserviceRoomDirectoryVsibilityJob::JobResponse;
       } 
       namespace nlohmann
       {

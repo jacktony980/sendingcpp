@@ -20,6 +20,7 @@
 
 #include <cpr/cpr.h>
 #include "cprjobhandler.hpp"
+#include "debug.hpp"
 
 namespace Kazv
 {
@@ -62,7 +63,7 @@ namespace Kazv
             });
     }
 
-    void CprJobHandler::fetch(const BaseJob &job, std::function<void(Response)> userCallback)
+    void CprJobHandler::submit(BaseJob job, std::function<void(Response)> userCallback)
     {
         cpr::Url url{job.url()};
         cpr::Body body(job.requestBody());
@@ -83,21 +84,26 @@ namespace Kazv
             }
         }
 
-        auto callback = [returnType](cpr::Response r) -> BaseJob::Response {
-                            BaseJob::Body body = r.text;
+        auto callback = [returnType](cpr::Response r) -> Response {
+                            Body body = r.text;
 
                             if (returnType == BaseJob::ReturnType::Json) {
                                 try {
                                     body = BaseJob::JsonBody(std::move(json::parse(r.text)));
-                                } catch (const json::exception &) {
+                                } catch (const json::exception &e) {
                                     // the response is not valid json
+                                    dbgJob << "body is not correct json: " << e.what() << std::endl;
                                 }
                             }
 
-                            return { r.status_code, body, BaseJob::Header(r.header.begin(), r.header.end()) };
+                            return { r.status_code,
+                                     body,
+                                     BaseJob::Header(r.header.begin(), r.header.end()),
+                                     {} // extraData, will be added in genResponse
+                            };
                         };
 
-        std::shared_future<BaseJob::Response> res = std::visit(lager::visitor{
+        std::shared_future<Response> res = std::visit(lager::visitor{
                 [=](BaseJob::Get) {
                     return cpr::GetCallback(callback, url, header, body, params);
                 },
@@ -113,7 +119,7 @@ namespace Kazv
             }, method).share();
 
         async([=]() {
-                  userCallback(res.get());
+                  userCallback(job.genResponse(res.get()));
               });
     }
 }

@@ -19,14 +19,38 @@
 
 #pragma once
 
-#include <csapi/login.hpp>
-
 #include "client-model.hpp"
 
 namespace Kazv
 {
-    ClientResult updateClient(ClientModel m, LoginAction a);
-    ClientResult updateClient(ClientModel m, TokenLoginAction a);
-    ClientResult processResponse(ClientModel m, LoginResponse r);
-    ClientResult updateClient(ClientModel m, LogoutAction a);
+    struct SdkModel;
+
+    using SdkAction = std::variant<
+        ClientAction
+        >;
+
+    using SdkEffect = lager::effect<SdkAction, lager::deps<JobInterface &, EventInterface &>>;
+
+    using SdkResult = std::pair<SdkModel, SdkEffect>;
+
+    struct SdkModel
+    {
+        ClientModel client;
+
+        inline operator ClientModel() const { return client; }
+
+        using Action = SdkAction;
+        using Effect = SdkEffect;
+        using Result = SdkResult;
+
+        static SdkResult update(SdkModel s, SdkAction a);
+    };
+
+    template<class Archive>
+    void serialize(Archive &ar, SdkModel &s, std::uint32_t const /*version*/)
+    {
+        ar(s.client);
+    }
 }
+
+CEREAL_CLASS_VERSION(Kazv::SdkModel, 0);

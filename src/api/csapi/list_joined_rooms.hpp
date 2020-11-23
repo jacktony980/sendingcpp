@@ -17,6 +17,23 @@ class GetJoinedRoomsJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The ID of each room in which the user has ``joined`` membership.
+immer::array<std::string> joinedRooms() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -32,23 +49,17 @@ public:
         );
 
 
-    // Result properties
-        
-        
-
-    
-/// The ID of each room in which the user has ``joined`` membership.
-static immer::array<std::string> joinedRooms(Response r);
-
     static BaseJob::Query buildQuery(
     );
 
       static BaseJob::Body buildBody();
 
-        static bool success(Response r);
         
-      };
 
+      GetJoinedRoomsJob withData(JsonWrap j) &&;
+      GetJoinedRoomsJob withData(JsonWrap j) const &;
+      };
+      using GetJoinedRoomsResponse = GetJoinedRoomsJob::JobResponse;
       } 
       namespace nlohmann
       {

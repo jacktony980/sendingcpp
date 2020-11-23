@@ -41,6 +41,29 @@ public:
         };
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+    // Result properties
+        
+        
+
+    
+/// The token to supply in the ``from`` param of the next
+/// ``/notifications`` request in order to request more
+/// events. If this is absent, there are no more results.
+std::string nextToken() const;
+
+    
+/// The list of events that triggered notifications.
+immer::array<Notification> notifications() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -68,29 +91,17 @@ public:
         std::string from  = {}, std::optional<int> limit  = std::nullopt, std::string only  = {});
 
 
-    // Result properties
-        
-        
-
-    
-/// The token to supply in the ``from`` param of the next
-/// ``/notifications`` request in order to request more
-/// events. If this is absent, there are no more results.
-static std::string nextToken(Response r);
-
-    
-/// The list of events that triggered notifications.
-static immer::array<Notification> notifications(Response r);
-
     static BaseJob::Query buildQuery(
     std::string from, std::optional<int> limit, std::string only);
 
       static BaseJob::Body buildBody(std::string from, std::optional<int> limit, std::string only);
 
-        static bool success(Response r);
         
-      };
 
+      GetNotificationsJob withData(JsonWrap j) &&;
+      GetNotificationsJob withData(JsonWrap j) const &;
+      };
+      using GetNotificationsResponse = GetNotificationsJob::JobResponse;
       } 
       namespace nlohmann
       {

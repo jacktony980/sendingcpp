@@ -38,6 +38,7 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid",
           GET,
+          std::string("GetAccount3PIDs"),
           _accessToken,
           ReturnType::Json,
             buildBody()
@@ -46,22 +47,39 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
         {
         }
 
-          bool GetAccount3PIDsJob::success(Response r)
+        GetAccount3PIDsJob GetAccount3PIDsJob::withData(JsonWrap j) &&
+        {
+          auto ret = GetAccount3PIDsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccount3PIDsJob GetAccount3PIDsJob::withData(JsonWrap j) const &
+        {
+          auto ret = GetAccount3PIDsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        GetAccount3PIDsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool GetAccount3PIDsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
 
     
-    immer::array<GetAccount3PIDsJob::ThirdPartyIdentifier> GetAccount3PIDsJob::threepids(Response r)
+    immer::array<GetAccount3PIDsJob::ThirdPartyIdentifier> GetAccount3PIDsResponse::threepids() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("threepids"s)) {
     return
-    jsonBody(r).get()["threepids"s]
+    jsonBody().get()["threepids"s]
     /*.get<immer::array<ThirdPartyIdentifier>>()*/;}
     else { return immer::array<ThirdPartyIdentifier>(  );}
     }
@@ -101,6 +119,7 @@ Post3PIDsJob::Post3PIDsJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid",
           POST,
+          std::string("Post3PIDs"),
           _accessToken,
           ReturnType::Json,
             buildBody(threePidCreds)
@@ -109,11 +128,28 @@ Post3PIDsJob::Post3PIDsJob(
         {
         }
 
-          bool Post3PIDsJob::success(Response r)
+        Post3PIDsJob Post3PIDsJob::withData(JsonWrap j) &&
+        {
+          auto ret = Post3PIDsJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        Post3PIDsJob Post3PIDsJob::withData(JsonWrap j) const &
+        {
+          auto ret = Post3PIDsJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        Post3PIDsJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool Post3PIDsResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -157,6 +193,7 @@ Add3PIDJob::Add3PIDJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/add",
           POST,
+          std::string("Add3PID"),
           _accessToken,
           ReturnType::Json,
             buildBody(clientSecret, sid, auth)
@@ -165,11 +202,28 @@ Add3PIDJob::Add3PIDJob(
         {
         }
 
-          bool Add3PIDJob::success(Response r)
+        Add3PIDJob Add3PIDJob::withData(JsonWrap j) &&
+        {
+          auto ret = Add3PIDJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        Add3PIDJob Add3PIDJob::withData(JsonWrap j) const &
+        {
+          auto ret = Add3PIDJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        Add3PIDJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool Add3PIDResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -215,6 +269,7 @@ Bind3PIDJob::Bind3PIDJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/bind",
           POST,
+          std::string("Bind3PID"),
           _accessToken,
           ReturnType::Json,
             buildBody(clientSecret, idServer, idAccessToken, sid)
@@ -223,11 +278,28 @@ Bind3PIDJob::Bind3PIDJob(
         {
         }
 
-          bool Bind3PIDJob::success(Response r)
+        Bind3PIDJob Bind3PIDJob::withData(JsonWrap j) &&
+        {
+          auto ret = Bind3PIDJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        Bind3PIDJob Bind3PIDJob::withData(JsonWrap j) const &
+        {
+          auto ret = Bind3PIDJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        Bind3PIDJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool Bind3PIDResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -271,6 +343,7 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/delete",
           POST,
+          std::string("Delete3pidFromAccount"),
           _accessToken,
           ReturnType::Json,
             buildBody(medium, address, idServer)
@@ -279,23 +352,40 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
         {
         }
 
-          bool Delete3pidFromAccountJob::success(Response r)
+        Delete3pidFromAccountJob Delete3pidFromAccountJob::withData(JsonWrap j) &&
+        {
+          auto ret = Delete3pidFromAccountJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        Delete3pidFromAccountJob Delete3pidFromAccountJob::withData(JsonWrap j) const &
+        {
+          auto ret = Delete3pidFromAccountJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        Delete3pidFromAccountJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool Delete3pidFromAccountResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("id_server_unbind_result"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("id_server_unbind_result"s)
           ;
           }
 
 
     
-    std::string Delete3pidFromAccountJob::idServerUnbindResult(Response r)
+    std::string Delete3pidFromAccountResponse::idServerUnbindResult() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("id_server_unbind_result"s)) {
     return
-    jsonBody(r).get()["id_server_unbind_result"s]
+    jsonBody().get()["id_server_unbind_result"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -339,6 +429,7 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/unbind",
           POST,
+          std::string("Unbind3pidFromAccount"),
           _accessToken,
           ReturnType::Json,
             buildBody(medium, address, idServer)
@@ -347,23 +438,40 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
         {
         }
 
-          bool Unbind3pidFromAccountJob::success(Response r)
+        Unbind3pidFromAccountJob Unbind3pidFromAccountJob::withData(JsonWrap j) &&
+        {
+          auto ret = Unbind3pidFromAccountJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        Unbind3pidFromAccountJob Unbind3pidFromAccountJob::withData(JsonWrap j) const &
+        {
+          auto ret = Unbind3pidFromAccountJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        Unbind3pidFromAccountJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool Unbind3pidFromAccountResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("id_server_unbind_result"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("id_server_unbind_result"s)
           ;
           }
 
 
     
-    std::string Unbind3pidFromAccountJob::idServerUnbindResult(Response r)
+    std::string Unbind3pidFromAccountResponse::idServerUnbindResult() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("id_server_unbind_result"s)) {
     return
-    jsonBody(r).get()["id_server_unbind_result"s]
+    jsonBody().get()["id_server_unbind_result"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }
@@ -399,6 +507,7 @@ RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/email/requestToken",
           POST,
+          std::string("RequestTokenTo3PIDEmail"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -407,11 +516,28 @@ RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
         {
         }
 
-          bool RequestTokenTo3PIDEmailJob::success(Response r)
+        RequestTokenTo3PIDEmailJob RequestTokenTo3PIDEmailJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenTo3PIDEmailJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenTo3PIDEmailJob RequestTokenTo3PIDEmailJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenTo3PIDEmailJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenTo3PIDEmailJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenTo3PIDEmailResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 
@@ -447,6 +573,7 @@ RequestTokenTo3PIDMSISDNJob::RequestTokenTo3PIDMSISDNJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/msisdn/requestToken",
           POST,
+          std::string("RequestTokenTo3PIDMSISDN"),
            {} ,
           ReturnType::Json,
             buildBody(body)
@@ -455,11 +582,28 @@ RequestTokenTo3PIDMSISDNJob::RequestTokenTo3PIDMSISDNJob(
         {
         }
 
-          bool RequestTokenTo3PIDMSISDNJob::success(Response r)
+        RequestTokenTo3PIDMSISDNJob RequestTokenTo3PIDMSISDNJob::withData(JsonWrap j) &&
+        {
+          auto ret = RequestTokenTo3PIDMSISDNJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenTo3PIDMSISDNJob RequestTokenTo3PIDMSISDNJob::withData(JsonWrap j) const &
+        {
+          auto ret = RequestTokenTo3PIDMSISDNJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        RequestTokenTo3PIDMSISDNJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool RequestTokenTo3PIDMSISDNResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -43,6 +43,7 @@ UpgradeRoomJob::UpgradeRoomJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/upgrade",
           POST,
+          std::string("UpgradeRoom"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, newVersion)
@@ -51,23 +52,40 @@ UpgradeRoomJob::UpgradeRoomJob(
         {
         }
 
-          bool UpgradeRoomJob::success(Response r)
+        UpgradeRoomJob UpgradeRoomJob::withData(JsonWrap j) &&
+        {
+          auto ret = UpgradeRoomJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpgradeRoomJob UpgradeRoomJob::withData(JsonWrap j) const &
+        {
+          auto ret = UpgradeRoomJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        UpgradeRoomJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool UpgradeRoomResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
-            && jsonBody(r).get().contains("replacement_room"s)
+              && isBodyJson(body)
+            && jsonBody().get().contains("replacement_room"s)
           ;
           }
 
 
     
-    std::string UpgradeRoomJob::replacementRoom(Response r)
+    std::string UpgradeRoomResponse::replacementRoom() const
     {
-    if (jsonBody(r).get()
+    if (jsonBody().get()
     .contains("replacement_room"s)) {
     return
-    jsonBody(r).get()["replacement_room"s]
+    jsonBody().get()["replacement_room"s]
     /*.get<std::string>()*/;}
     else { return std::string(  );}
     }

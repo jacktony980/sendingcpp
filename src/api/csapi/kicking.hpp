@@ -23,6 +23,15 @@ class KickJob : public BaseJob {
 public:
 
 
+
+class JobResponse : public Response
+{
+
+public:
+  JobResponse(Response r);
+  bool success() const;
+
+};
           static constexpr auto needsAuth() {
           return true
             ;
@@ -54,10 +63,12 @@ public:
 
       static BaseJob::Body buildBody(std::string roomId, std::string userId, std::string reason);
 
-        static bool success(Response r);
         
-      };
 
+      KickJob withData(JsonWrap j) &&;
+      KickJob withData(JsonWrap j) const &;
+      };
+      using KickResponse = KickJob::JobResponse;
       } 
       namespace nlohmann
       {

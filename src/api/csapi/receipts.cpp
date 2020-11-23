@@ -39,6 +39,7 @@ PostReceiptJob::PostReceiptJob(
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/receipt/" + receiptType + "/" + eventId,
           POST,
+          std::string("PostReceipt"),
           _accessToken,
           ReturnType::Json,
             buildBody(roomId, receiptType, eventId, receipt)
@@ -47,11 +48,28 @@ PostReceiptJob::PostReceiptJob(
         {
         }
 
-          bool PostReceiptJob::success(Response r)
+        PostReceiptJob PostReceiptJob::withData(JsonWrap j) &&
+        {
+          auto ret = PostReceiptJob(std::move(*this));
+          ret.attachData(j);
+          return ret;
+        }
+
+        PostReceiptJob PostReceiptJob::withData(JsonWrap j) const &
+        {
+          auto ret = PostReceiptJob(*this);
+          ret.attachData(j);
+          return ret;
+        }
+
+        PostReceiptJob::JobResponse::JobResponse(Response r)
+        : Response(std::move(r)) {}
+
+          bool PostReceiptResponse::success() const
           {
-            return BaseJob::success(r)
+            return Response::success()
             
-              && isBodyJson(r.body)
+              && isBodyJson(body)
           ;
           }
 

@@ -77,8 +77,8 @@ namespace Kazv
 
         inline void tokenLogin(std::string homeserver, std::string username,
                                std::string token, std::string deviceId) const {
-            m_ctx.dispatch(LoadUserInfoAction{
-                    homeserver, username, token, deviceId, /* loggedIn = */ true});
+            m_ctx.dispatch(TokenLoginAction{
+                    homeserver, username, token, deviceId});
         }
 
         inline void createRoom(RoomVisibility v,
