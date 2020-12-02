@@ -91,6 +91,11 @@ namespace Kazv
         auto updateJoinedRoom =
             [=](auto id, auto room) {
                 updateSingleRoom(id, room, RoomMembership::Join);
+                if (room.ephemeral) {
+                    updateRoomImpl(id, AddEphemeralAction{room.ephemeral.value().events});
+                }
+                // TODO update other info such as
+                // notification and summary
             };
 
         auto updateInvitedRoom =
@@ -108,8 +113,6 @@ namespace Kazv
 
         for (auto &&[id, room]: rooms.join) {
             updateJoinedRoom(id, room);
-            // TODO update other info such as
-            // ephemeral, notification and summary
         }
 
         // TODO update info for invited rooms

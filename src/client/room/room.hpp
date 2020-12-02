@@ -185,6 +185,36 @@ namespace Kazv
             m_ctx.dispatch(InviteToRoomAction{+roomId(), userId});
         }
 
+        /* lager::reader<MapT<std::string, Event>> */
+        inline auto ephemeralEvents() const {
+            return m_room
+                [&RoomModel::ephemeral];
+        }
+
+        /* lager::reader<std::optional<Event>> */
+        inline auto ephemeralOpt(std::string type) const {
+            return m_room
+                [&RoomModel::ephemeral]
+                [type];
+        }
+
+        /* lager::reader<Event> */
+        inline auto ephemeral(std::string type) const {
+            return m_room
+                [&RoomModel::ephemeral]
+                [type]
+                [lager::lenses::or_default];
+        }
+
+        /* lager::reader<RangeT<std::string>> */
+        inline auto typingUsers() const {
+            using namespace lager::lenses;
+            return ephemeral("m.typing")
+                .xform(eventContent
+                       | jsonAtOr("user_ids",
+                                  immer::flex_vector<std::string>{}));
+        }
+
     private:
         lager::reader<RoomModel> m_room;
         lager::context<ClientAction> m_ctx;

@@ -63,6 +63,10 @@ namespace Kazv
             [&](ChangeInviteStateAction a) {
                 r.inviteState = merge(immer::map<KeyOfState, Event>{}, a.events, keyOfState);
                 return r;
+            },
+            [&](AddEphemeralAction a) {
+                r.ephemeral = merge(std::move(r.ephemeral), a.events, keyOfEphemeral);
+                return r;
             }
             );
     }

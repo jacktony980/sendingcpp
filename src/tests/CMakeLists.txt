@@ -6,6 +6,8 @@ add_executable(kazvtest
   testmain.cpp
   basejobtest.cpp
   cursorutiltest.cpp
+  client/client-test-util.cpp
+  client/sync-test.cpp
   )
 
 target_link_libraries(kazvtest

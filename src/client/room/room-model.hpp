@@ -68,7 +68,10 @@ namespace Kazv
         immer::flex_vector<Event> events;
     };
 
-
+    struct AddEphemeralAction
+    {
+        EventList events;
+    };
 
     struct RoomModel
     {
@@ -85,13 +88,16 @@ namespace Kazv
         /// whether this room has earlier events to be fetched
         bool canPaginateBack{true};
 
+        immer::map<std::string, Event> ephemeral;
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,
             PrependTimelineAction,
             AddAccountDataAction,
             ChangeMembershipAction,
-            ChangeInviteStateAction
+            ChangeInviteStateAction,
+            AddEphemeralAction
             >;
 
         static RoomModel update(RoomModel r, Action a);

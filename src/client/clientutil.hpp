@@ -53,6 +53,11 @@ namespace Kazv
         return e.id();
     }
 
+    inline std::string keyOfEphemeral(Event e) {
+        return e.type();
+    }
+
+
     struct KeyOfState {
         std::string type;
         std::string stateKey;

@@ -151,14 +151,14 @@ namespace Kazv
         return
             zug::map([key=std::forward<T>(key), def=std::forward<V>(defaultValue)](auto &&j) -> V {
                          using JsonT = decltype(j);
-                         if constexpr (isJsonWrap(j)) {
+                         if constexpr (detail::isJsonWrap(j)) {
                              return j.get().contains(key)
-                                 ? V(std::forward<JsonT>(j).get().at(std::forward<T>(key)))
-                                 : std::forward<V>(def);
+                                 ? V(std::forward<JsonT>(j).get().at(key))
+                                 : def;
                          } else {
                              return j.contains(key)
-                                 ? V(std::forward<JsonT>(j).at(std::forward<T>(key)))
-                                 : std::forward<V>(def);
+                                 ? V(std::forward<JsonT>(j).at(key))
+                                 : def;
                          }
                      });
     }
