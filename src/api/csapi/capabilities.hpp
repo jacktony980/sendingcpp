@@ -90,6 +90,8 @@ Capabilities capabilities() const;
 
         
 
+        
+
       GetCapabilitiesJob withData(JsonWrap j) &&;
       GetCapabilitiesJob withData(JsonWrap j) const &;
       };

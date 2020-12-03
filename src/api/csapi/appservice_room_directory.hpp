@@ -69,6 +69,8 @@ public:
 
         
 
+        
+
       UpdateAppserviceRoomDirectoryVsibilityJob withData(JsonWrap j) &&;
       UpdateAppserviceRoomDirectoryVsibilityJob withData(JsonWrap j) const &;
       };

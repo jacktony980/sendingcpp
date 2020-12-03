@@ -29,11 +29,11 @@ public:
     struct ConnectionInfo
         {
 /// Most recently seen IP address of the session.
-          std::string ip;
+          std::optional<std::string> ip;
 /// Unix timestamp that the session was last active.
           std::optional<std::int_fast64_t> lastSeen;
 /// User agent string last seen in the session.
-          std::string userAgent;
+          std::optional<std::string> userAgent;
         
         };
 
@@ -76,7 +76,7 @@ public:
 
     
 /// The Matrix user ID of the user.
-std::string userId() const;
+std::optional<std::string> userId() const;
 
     
 /// Each key is an identifier for one of the user's devices.
@@ -106,6 +106,8 @@ immer::map<std::string, DeviceInfo> devices() const;
     );
 
       static BaseJob::Body buildBody(std::string userId);
+
+        
 
         
 

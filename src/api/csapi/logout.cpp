@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query LogoutJob::buildQuery(
 )
 {
@@ -74,7 +74,7 @@ LogoutJob::LogoutJob(
 
 
 
-
+  
 BaseJob::Query LogoutAllJob::buildQuery(
 )
 {

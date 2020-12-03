@@ -28,7 +28,7 @@ public:
 /// The Event object for the event that triggered the notification.
           JsonWrap event;
 /// The profile tag of the rule that matched this event.
-          std::string profileTag;
+          std::optional<std::string> profileTag;
 /// Indicates whether the user has sent a read receipt indicating
 /// that they have read this message.
           bool read;
@@ -57,7 +57,7 @@ public:
 /// The token to supply in the ``from`` param of the next
 /// ``/notifications`` request in order to request more
 /// events. If this is absent, there are no more results.
-std::string nextToken() const;
+std::optional<std::string> nextToken() const;
 
     
 /// The list of events that triggered notifications.
@@ -88,13 +88,15 @@ immer::array<Notification> notifications() const;
     explicit GetNotificationsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string from  = {}, std::optional<int> limit  = std::nullopt, std::string only  = {});
+        std::optional<std::string> from  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> only  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string from, std::optional<int> limit, std::string only);
+    std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only);
 
-      static BaseJob::Body buildBody(std::string from, std::optional<int> limit, std::string only);
+      static BaseJob::Body buildBody(std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only);
+
+        
 
         
 

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetLoginFlowsJob::buildQuery(
 )
 {
@@ -85,7 +85,7 @@ GetLoginFlowsJob::GetLoginFlowsJob(
     }
 
 
-
+  
 BaseJob::Query LoginJob::buildQuery(
 )
 {
@@ -94,7 +94,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body LoginJob::buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName)
+    BaseJob::Body LoginJob::buildBody(std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName)
       {
       // ignore unused param
       (void)(type);(void)(identifier);(void)(password);(void)(token);(void)(deviceId);(void)(initialDeviceDisplayName);
@@ -125,7 +125,7 @@ LoginJob::LoginJob(
         std::string serverUrl
         
         ,
-        std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName)
+        std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login",
           POST,
@@ -165,47 +165,47 @@ LoginJob::LoginJob(
 
 
     
-    std::string LoginResponse::userId() const
+    std::optional<std::string> LoginResponse::userId() const
     {
     if (jsonBody().get()
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string LoginResponse::accessToken() const
+    std::optional<std::string> LoginResponse::accessToken() const
     {
     if (jsonBody().get()
     .contains("access_token"s)) {
     return
     jsonBody().get()["access_token"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string LoginResponse::homeServer() const
+    std::optional<std::string> LoginResponse::homeServer() const
     {
     if (jsonBody().get()
     .contains("home_server"s)) {
     return
     jsonBody().get()["home_server"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string LoginResponse::deviceId() const
+    std::optional<std::string> LoginResponse::deviceId() const
     {
     if (jsonBody().get()
     .contains("device_id"s)) {
     return
     jsonBody().get()["device_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

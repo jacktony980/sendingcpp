@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetEventsJob::buildQuery(
-std::string from, std::optional<int> timeout)
+std::optional<std::string> from, std::optional<int> timeout)
 {
 BaseJob::Query _q;
   
@@ -21,7 +21,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetEventsJob::buildBody(std::string from, std::optional<int> timeout)
+    BaseJob::Body GetEventsJob::buildBody(std::optional<std::string> from, std::optional<int> timeout)
       {
       // ignore unused param
       (void)(from);(void)(timeout);
@@ -37,7 +37,7 @@ GetEventsJob::GetEventsJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string from, std::optional<int> timeout)
+        std::optional<std::string> from, std::optional<int> timeout)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
@@ -77,25 +77,25 @@ GetEventsJob::GetEventsJob(
 
 
     
-    std::string GetEventsResponse::start() const
+    std::optional<std::string> GetEventsResponse::start() const
     {
     if (jsonBody().get()
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string GetEventsResponse::end() const
+    std::optional<std::string> GetEventsResponse::end() const
     {
     if (jsonBody().get()
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
@@ -110,7 +110,7 @@ GetEventsJob::GetEventsJob(
     }
 
 
-
+  
 BaseJob::Query InitialSyncJob::buildQuery(
 std::optional<int> limit, std::optional<bool> archived)
 {
@@ -225,7 +225,7 @@ InitialSyncJob::InitialSyncJob(
     }
 
 
-
+  
 BaseJob::Query GetOneEventJob::buildQuery(
 )
 {

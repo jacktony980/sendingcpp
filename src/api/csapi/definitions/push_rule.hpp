@@ -31,7 +31,7 @@ struct PushRule
 
 /// The glob-style pattern to match against.  Only applicable to ``content``
 /// rules.
-    std::string pattern;
+    std::optional<std::string> pattern;
 };
 
 }

@@ -74,6 +74,8 @@ std::string roomId() const;
 
         
 
+        
+
       JoinRoomByIdJob withData(JsonWrap j) &&;
       JoinRoomByIdJob withData(JsonWrap j) const &;
       };
@@ -153,6 +155,8 @@ std::string roomId() const;
     immer::array<std::string> serverName);
 
       static BaseJob::Body buildBody(std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned);
+
+        
 
         
 

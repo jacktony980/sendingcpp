@@ -23,19 +23,19 @@ struct PushCondition
 /// the power level event the user needs a minimum power level for. Fields
 /// must be specified under the ``notifications`` property in the power level
 /// event's ``content``.
-    std::string key;
+    std::optional<std::string> key;
 
 /// Required for ``event_match`` conditions. The glob-style pattern to
 /// match against. Patterns with no special glob characters should be
 /// treated as having asterisks prepended and appended when testing the
 /// condition.
-    std::string pattern;
+    std::optional<std::string> pattern;
 
 /// Required for ``room_member_count`` conditions. A decimal integer
 /// optionally prefixed by one of, ==, <, >, >= or <=. A prefix of < matches
 /// rooms where the member count is strictly less than the given number and
 /// so forth. If no prefix is present, this parameter defaults to ==.
-    std::string is;
+    std::optional<std::string> is;
 };
 
 }

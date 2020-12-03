@@ -99,7 +99,7 @@ struct Filter
     immer::array<std::string> eventFields;
 
 /// The format to use for events. 'client' will return the events in a format suitable for clients. 'federation' will return the raw event as received over federation. The default is 'client'.
-    std::string eventFormat;
+    std::optional<std::string> eventFormat;
 
 /// The presence updates to include.
     EventFilter presence;

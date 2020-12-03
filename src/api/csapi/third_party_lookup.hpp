@@ -65,6 +65,8 @@ public:
 
         
 
+        
+
       GetProtocolsJob withData(JsonWrap j) &&;
       GetProtocolsJob withData(JsonWrap j) const &;
       };
@@ -132,6 +134,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string protocol);
+
+        
 
         
 
@@ -206,13 +210,15 @@ public:
     explicit QueryLocationByProtocolJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string protocol , std::string searchFields  = {});
+        std::string protocol , std::optional<std::string> searchFields  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string searchFields);
+    std::optional<std::string> searchFields);
 
-      static BaseJob::Body buildBody(std::string protocol, std::string searchFields);
+      static BaseJob::Body buildBody(std::string protocol, std::optional<std::string> searchFields);
+
+        
 
         
 
@@ -280,13 +286,15 @@ public:
     explicit QueryUserByProtocolJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string protocol , std::string fields  = {});
+        std::string protocol , std::optional<std::string> fields  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string fields);
+    std::optional<std::string> fields);
 
-      static BaseJob::Body buildBody(std::string protocol, std::string fields);
+      static BaseJob::Body buildBody(std::string protocol, std::optional<std::string> fields);
+
+        
 
         
 
@@ -361,6 +369,8 @@ public:
 
         
 
+        
+
       QueryLocationByAliasJob withData(JsonWrap j) &&;
       QueryLocationByAliasJob withData(JsonWrap j) const &;
       };
@@ -428,6 +438,8 @@ public:
     std::string userid);
 
       static BaseJob::Body buildBody(std::string userid);
+
+        
 
         
 

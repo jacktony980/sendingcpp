@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SearchJob::buildQuery(
-std::string nextBatch)
+std::optional<std::string> nextBatch)
 {
 BaseJob::Query _q;
   
@@ -19,7 +19,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SearchJob::buildBody(Categories searchCategories, std::string nextBatch)
+    BaseJob::Body SearchJob::buildBody(Categories searchCategories, std::optional<std::string> nextBatch)
       {
       // ignore unused param
       (void)(searchCategories);(void)(nextBatch);
@@ -40,7 +40,7 @@ SearchJob::SearchJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        Categories searchCategories, std::string nextBatch)
+        Categories searchCategories, std::optional<std::string> nextBatch)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/search",
           POST,

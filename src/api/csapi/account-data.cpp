@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SetAccountDataJob::buildQuery(
 )
 {
@@ -75,7 +75,7 @@ SetAccountDataJob::SetAccountDataJob(
 
 
 
-
+  
 BaseJob::Query GetAccountDataJob::buildQuery(
 )
 {
@@ -140,7 +140,7 @@ GetAccountDataJob::GetAccountDataJob(
 
 
 
-
+  
 BaseJob::Query SetAccountDataPerRoomJob::buildQuery(
 )
 {
@@ -206,7 +206,7 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
 
 
 
-
+  
 BaseJob::Query GetAccountDataPerRoomJob::buildQuery(
 )
 {

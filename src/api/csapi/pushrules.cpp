@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetPushRulesJob::buildQuery(
 )
 {
@@ -86,7 +86,7 @@ GetPushRulesJob::GetPushRulesJob(
     }
 
 
-
+  
 BaseJob::Query GetPushRuleJob::buildQuery(
 )
 {
@@ -151,7 +151,7 @@ GetPushRuleJob::GetPushRuleJob(
 
 
 
-
+  
 BaseJob::Query DeletePushRuleJob::buildQuery(
 )
 {
@@ -216,9 +216,9 @@ DeletePushRuleJob::DeletePushRuleJob(
 
 
 
-
+  
 BaseJob::Query SetPushRuleJob::buildQuery(
-std::string before, std::string after)
+std::optional<std::string> before, std::optional<std::string> after)
 {
 BaseJob::Query _q;
   
@@ -228,7 +228,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SetPushRuleJob::buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern)
+    BaseJob::Body SetPushRuleJob::buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern)
       {
       // ignore unused param
       (void)(scope);(void)(kind);(void)(ruleId);(void)(actions);(void)(before);(void)(after);(void)(conditions);(void)(pattern);
@@ -253,7 +253,7 @@ SetPushRuleJob::SetPushRuleJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern)
+        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           PUT,
@@ -293,7 +293,7 @@ SetPushRuleJob::SetPushRuleJob(
 
 
 
-
+  
 BaseJob::Query IsPushRuleEnabledJob::buildQuery(
 )
 {
@@ -370,7 +370,7 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
     }
 
 
-
+  
 BaseJob::Query SetPushRuleEnabledJob::buildQuery(
 )
 {
@@ -440,7 +440,7 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
 
 
 
-
+  
 BaseJob::Query GetPushRuleActionsJob::buildQuery(
 )
 {
@@ -517,7 +517,7 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
     }
 
 
-
+  
 BaseJob::Query SetPushRuleActionsJob::buildQuery(
 )
 {

@@ -44,7 +44,7 @@ namespace Kazv
             roomId,
             paginateBackToken, // from
             "b"s, // dir
-            DEFVAL, // to
+            std::nullopt, // to
             a.limit).withData(json{{"roomId", roomId}});
 
         m.addJob(std::move(job));
@@ -62,7 +62,7 @@ namespace Kazv
             return { m, lager::noop };
         }
 
-        auto paginateBackToken = r.end();
+        auto paginateBackToken = r.end().value_or(DEFVAL);
         auto chunk = r.chunk();
 
         try {

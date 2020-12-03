@@ -39,7 +39,7 @@ public:
     struct Group
         {
 /// Key that defines the group.
-          std::string key;
+          std::optional<std::string> key;
         
         };
 
@@ -63,7 +63,7 @@ public:
           RoomEventFilter filter;
 /// The order in which to search for results.
 /// By default, this is ``"rank"``.
-          std::string orderBy;
+          std::optional<std::string> orderBy;
 /// Configures whether any context for the events
 /// returned are included in the response.
           std::optional<IncludeEventContext> eventContext;
@@ -88,9 +88,9 @@ public:
     struct UserProfile
         {
 /// Performs a full text search across different categories.
-          std::string displayname;
+          std::optional<std::string> displayname;
 /// Performs a full text search across different categories.
-          std::string avatarUrl;
+          std::optional<std::string> avatarUrl;
         
         };
 
@@ -98,9 +98,9 @@ public:
     struct EventContext
         {
 /// Pagination token for the start of the chunk
-          std::string start;
+          std::optional<std::string> start;
 /// Pagination token for the end of the chunk
-          std::string end;
+          std::optional<std::string> end;
 /// The historic profile information of the
 /// users that sent the events returned.
 /// 
@@ -134,7 +134,7 @@ public:
 /// `next_batch` parameter to the next call. If
 /// this field is absent, there are no more
 /// results in this group.
-          std::string nextBatch;
+          std::optional<std::string> nextBatch;
 /// Key that can be used to order different
 /// groups.
           std::optional<int> order;
@@ -169,7 +169,7 @@ public:
 /// results, by passing as the `next_batch` parameter to
 /// the next call. If this field is absent, there are no
 /// more results.
-          std::string nextBatch;
+          std::optional<std::string> nextBatch;
         
         };
 
@@ -219,13 +219,15 @@ ResultCategories searchCategories() const;
     explicit SearchJob(std::string serverUrl
     , std::string _accessToken
       ,
-        Categories searchCategories , std::string nextBatch  = {});
+        Categories searchCategories , std::optional<std::string> nextBatch  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
-    std::string nextBatch);
+    std::optional<std::string> nextBatch);
 
-      static BaseJob::Body buildBody(Categories searchCategories, std::string nextBatch);
+      static BaseJob::Body buildBody(Categories searchCategories, std::optional<std::string> nextBatch);
+
+        
 
         
 

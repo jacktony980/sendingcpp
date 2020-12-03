@@ -110,6 +110,10 @@ public:
 
       static BaseJob::Body buildBody({{#allParams}}{{>joinedParamDef}}{{/allParams}});
 
+        {{#headerParams?}}
+          static std::map<std::string, std::string> buildHeader({{#headerParams}}{{>joinedParamDef}}{{/headerParams}});
+        {{/headerParams?}}
+
         {{#producesNonJson?}}
           static const immer::array<std::string> expectedContentTypes;
         {{/producesNonJson?}}

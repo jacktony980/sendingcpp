@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query DefineFilterJob::buildQuery(
 )
 {
@@ -87,7 +87,7 @@ DefineFilterJob::DefineFilterJob(
     }
 
 
-
+  
 BaseJob::Query GetFilterJob::buildQuery(
 )
 {

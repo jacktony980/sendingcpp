@@ -65,6 +65,8 @@ public:
 
         
 
+        
+
       SetTypingJob withData(JsonWrap j) &&;
       SetTypingJob withData(JsonWrap j) const &;
       };

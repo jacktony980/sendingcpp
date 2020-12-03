@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetRoomVisibilityOnDirectoryJob::buildQuery(
 )
 {
@@ -74,18 +74,18 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
 
 
     
-    std::string GetRoomVisibilityOnDirectoryResponse::visibility() const
+    std::optional<std::string> GetRoomVisibilityOnDirectoryResponse::visibility() const
     {
     if (jsonBody().get()
     .contains("visibility"s)) {
     return
     jsonBody().get()["visibility"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 
-
+  
 BaseJob::Query SetRoomVisibilityOnDirectoryJob::buildQuery(
 )
 {
@@ -94,7 +94,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SetRoomVisibilityOnDirectoryJob::buildBody(std::string roomId, std::string visibility)
+    BaseJob::Body SetRoomVisibilityOnDirectoryJob::buildBody(std::string roomId, std::optional<std::string> visibility)
       {
       // ignore unused param
       (void)(roomId);(void)(visibility);
@@ -115,7 +115,7 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string visibility)
+        std::string roomId, std::optional<std::string> visibility)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
           PUT,
@@ -155,9 +155,9 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
 
 
 
-
+  
 BaseJob::Query GetPublicRoomsJob::buildQuery(
-std::optional<int> limit, std::string since, std::string server)
+std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server)
 {
 BaseJob::Query _q;
   
@@ -169,7 +169,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetPublicRoomsJob::buildBody(std::optional<int> limit, std::string since, std::string server)
+    BaseJob::Body GetPublicRoomsJob::buildBody(std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server)
       {
       // ignore unused param
       (void)(limit);(void)(since);(void)(server);
@@ -185,7 +185,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
         std::string serverUrl
         
         ,
-        std::optional<int> limit, std::string since, std::string server)
+        std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           GET,
@@ -237,25 +237,25 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     }
 
     
-    std::string GetPublicRoomsResponse::nextBatch() const
+    std::optional<std::string> GetPublicRoomsResponse::nextBatch() const
     {
     if (jsonBody().get()
     .contains("next_batch"s)) {
     return
     jsonBody().get()["next_batch"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string GetPublicRoomsResponse::prevBatch() const
+    std::optional<std::string> GetPublicRoomsResponse::prevBatch() const
     {
     if (jsonBody().get()
     .contains("prev_batch"s)) {
     return
     jsonBody().get()["prev_batch"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
@@ -270,9 +270,9 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     }
 
 
-
+  
 BaseJob::Query QueryPublicRoomsJob::buildQuery(
-std::string server)
+std::optional<std::string> server)
 {
 BaseJob::Query _q;
   
@@ -280,7 +280,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body QueryPublicRoomsJob::buildBody(std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId)
+    BaseJob::Body QueryPublicRoomsJob::buildBody(std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId)
       {
       // ignore unused param
       (void)(server);(void)(limit);(void)(since);(void)(filter);(void)(includeAllNetworks);(void)(thirdPartyInstanceId);
@@ -309,7 +309,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId)
+        std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           POST,
@@ -361,25 +361,25 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
     }
 
     
-    std::string QueryPublicRoomsResponse::nextBatch() const
+    std::optional<std::string> QueryPublicRoomsResponse::nextBatch() const
     {
     if (jsonBody().get()
     .contains("next_batch"s)) {
     return
     jsonBody().get()["next_batch"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string QueryPublicRoomsResponse::prevBatch() const
+    std::optional<std::string> QueryPublicRoomsResponse::prevBatch() const
     {
     if (jsonBody().get()
     .contains("prev_batch"s)) {
     return
     jsonBody().get()["prev_batch"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetOneRoomEventJob::buildQuery(
 )
 {
@@ -74,7 +74,7 @@ GetOneRoomEventJob::GetOneRoomEventJob(
 
 
 
-
+  
 BaseJob::Query GetRoomStateWithKeyJob::buildQuery(
 )
 {
@@ -139,7 +139,7 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
 
 
 
-
+  
 BaseJob::Query GetRoomStateJob::buildQuery(
 )
 {
@@ -204,9 +204,9 @@ GetRoomStateJob::GetRoomStateJob(
 
 
 
-
+  
 BaseJob::Query GetMembersByRoomJob::buildQuery(
-std::string at, std::string membership, std::string notMembership)
+std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership)
 {
 BaseJob::Query _q;
   
@@ -218,7 +218,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetMembersByRoomJob::buildBody(std::string roomId, std::string at, std::string membership, std::string notMembership)
+    BaseJob::Body GetMembersByRoomJob::buildBody(std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership)
       {
       // ignore unused param
       (void)(roomId);(void)(at);(void)(membership);(void)(notMembership);
@@ -234,7 +234,7 @@ GetMembersByRoomJob::GetMembersByRoomJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string at, std::string membership, std::string notMembership)
+        std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/members",
           GET,
@@ -285,7 +285,7 @@ GetMembersByRoomJob::GetMembersByRoomJob(
     }
 
 
-
+  
 BaseJob::Query GetJoinedMembersByRoomJob::buildQuery(
 )
 {

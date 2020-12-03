@@ -41,12 +41,12 @@ public:
     
 /// A token which correlates to the first value in ``chunk``. This
 /// is usually the same token supplied to ``from=``.
-std::string start() const;
+std::optional<std::string> start() const;
 
     
 /// A token which correlates to the last value in ``chunk``. This
 /// token should be used in the next request to ``/events``.
-std::string end() const;
+std::optional<std::string> end() const;
 
     
 /// An array of events.
@@ -76,13 +76,15 @@ EventList chunk() const;
     explicit PeekEventsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string from  = {}, std::optional<int> timeout  = std::nullopt, std::string roomId  = {});
+        std::optional<std::string> from  = std::nullopt, std::optional<int> timeout  = std::nullopt, std::optional<std::string> roomId  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string from, std::optional<int> timeout, std::string roomId);
+    std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId);
 
-      static BaseJob::Body buildBody(std::string from, std::optional<int> timeout, std::string roomId);
+      static BaseJob::Body buildBody(std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId);
+
+        
 
         
 

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query RedactEventJob::buildQuery(
 )
 {
@@ -18,7 +18,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body RedactEventJob::buildBody(std::string roomId, std::string eventId, std::string txnId, std::string reason)
+    BaseJob::Body RedactEventJob::buildBody(std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason)
       {
       // ignore unused param
       (void)(roomId);(void)(eventId);(void)(txnId);(void)(reason);
@@ -39,7 +39,7 @@ RedactEventJob::RedactEventJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string eventId, std::string txnId, std::string reason)
+        std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/redact/" + eventId + "/" + txnId,
           PUT,
@@ -79,14 +79,14 @@ RedactEventJob::RedactEventJob(
 
 
     
-    std::string RedactEventResponse::eventId() const
+    std::optional<std::string> RedactEventResponse::eventId() const
     {
     if (jsonBody().get()
     .contains("event_id"s)) {
     return
     jsonBody().get()["event_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 }

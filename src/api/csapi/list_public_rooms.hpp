@@ -31,7 +31,7 @@ public:
 
     
 /// The visibility of the room in the directory.
-std::string visibility() const;
+std::optional<std::string> visibility() const;
 
 };
           static constexpr auto needsAuth() {
@@ -57,6 +57,8 @@ std::string visibility() const;
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 
@@ -116,13 +118,15 @@ public:
     explicit SetRoomVisibilityOnDirectoryJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string visibility  = {});
+        std::string roomId , std::optional<std::string> visibility  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string roomId, std::string visibility);
+      static BaseJob::Body buildBody(std::string roomId, std::optional<std::string> visibility);
+
+        
 
         
 
@@ -171,13 +175,13 @@ immer::array<PublicRoomsChunk> chunk() const;
 /// A pagination token for the response. The absence of this token
 /// means there are no more results to fetch and the client should
 /// stop paginating.
-std::string nextBatch() const;
+std::optional<std::string> nextBatch() const;
 
     
 /// A pagination token that allows fetching previous results. The
 /// absence of this token means there are no results before this
 /// batch, i.e. this is the first batch.
-std::string prevBatch() const;
+std::optional<std::string> prevBatch() const;
 
     
 /// An estimate on the total number of public rooms, if the
@@ -211,13 +215,15 @@ std::optional<int> totalRoomCountEstimate() const;
     explicit GetPublicRoomsJob(std::string serverUrl
     
       ,
-        std::optional<int> limit  = std::nullopt, std::string since  = {}, std::string server  = {});
+        std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<std::string> server  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::optional<int> limit, std::string since, std::string server);
+    std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server);
 
-      static BaseJob::Body buildBody(std::optional<int> limit, std::string since, std::string server);
+      static BaseJob::Body buildBody(std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server);
+
+        
 
         
 
@@ -251,7 +257,7 @@ public:
         {
 /// A string to search for in the room metadata, e.g. name,
 /// topic, canonical alias etc. (Optional).
-          std::string genericSearchTerm;
+          std::optional<std::string> genericSearchTerm;
         
         };
 
@@ -276,13 +282,13 @@ immer::array<PublicRoomsChunk> chunk() const;
 /// A pagination token for the response. The absence of this token
 /// means there are no more results to fetch and the client should
 /// stop paginating.
-std::string nextBatch() const;
+std::optional<std::string> nextBatch() const;
 
     
 /// A pagination token that allows fetching previous results. The
 /// absence of this token means there are no results before this
 /// batch, i.e. this is the first batch.
-std::string prevBatch() const;
+std::optional<std::string> prevBatch() const;
 
     
 /// An estimate on the total number of public rooms, if the
@@ -327,13 +333,15 @@ std::optional<int> totalRoomCountEstimate() const;
     explicit QueryPublicRoomsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string server  = {}, std::optional<int> limit  = std::nullopt, std::string since  = {}, std::optional<Filter> filter  = std::nullopt, std::optional<bool> includeAllNetworks  = std::nullopt, std::string thirdPartyInstanceId  = {});
+        std::optional<std::string> server  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<Filter> filter  = std::nullopt, std::optional<bool> includeAllNetworks  = std::nullopt, std::optional<std::string> thirdPartyInstanceId  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
-    std::string server);
+    std::optional<std::string> server);
 
-      static BaseJob::Body buildBody(std::string server, std::optional<int> limit, std::string since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::string thirdPartyInstanceId);
+      static BaseJob::Body buildBody(std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId);
+
+        
 
         
 

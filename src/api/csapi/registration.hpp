@@ -81,7 +81,7 @@ std::string userId() const;
 /// An access token for the account.
 /// This access token can then be used to authorize other requests.
 /// Required if the ``inhibit_login`` option is false.
-std::string accessToken() const;
+std::optional<std::string> accessToken() const;
 
     
 /// The server_name of the homeserver on which the account has
@@ -90,13 +90,13 @@ std::string accessToken() const;
 /// **Deprecated**. Clients should extract the server_name from
 /// ``user_id`` (by splitting at the first colon) if they require
 /// it. Note also that ``homeserver`` is not spelt this way.
-std::string homeServer() const;
+std::optional<std::string> homeServer() const;
 
     
 /// ID of the registered device. Will be the same as the
 /// corresponding parameter in the request, if one was specified.
 /// Required if the ``inhibit_login`` option is false.
-std::string deviceId() const;
+std::optional<std::string> deviceId() const;
 
 };
           static constexpr auto needsAuth() {
@@ -143,13 +143,15 @@ std::string deviceId() const;
     explicit RegisterJob(std::string serverUrl
     
       ,
-        std::string kind  = std::string("user"), std::optional<AuthenticationData> auth  = std::nullopt, std::string username  = {}, std::string password  = {}, std::string deviceId  = {}, std::string initialDeviceDisplayName  = {}, std::optional<bool> inhibitLogin  = std::nullopt);
+        std::string kind  = std::string("user"), std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> username  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt, std::optional<bool> inhibitLogin  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     std::string kind);
 
-      static BaseJob::Body buildBody(std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin);
+      static BaseJob::Body buildBody(std::string kind, std::optional<AuthenticationData> auth, std::optional<std::string> username, std::optional<std::string> password, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName, std::optional<bool> inhibitLogin);
+
+        
 
         
 
@@ -231,6 +233,8 @@ public:
 
         
 
+        
+
       RequestTokenToRegisterEmailJob withData(JsonWrap j) &&;
       RequestTokenToRegisterEmailJob withData(JsonWrap j) const &;
       };
@@ -306,6 +310,8 @@ public:
     );
 
       static BaseJob::Body buildBody(MsisdnValidationData body);
+
+        
 
         
 
@@ -385,6 +391,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth);
+
+        
 
         
 
@@ -494,6 +502,8 @@ public:
 
         
 
+        
+
       RequestTokenToResetPasswordEmailJob withData(JsonWrap j) &&;
       RequestTokenToResetPasswordEmailJob withData(JsonWrap j) const &;
       };
@@ -598,6 +608,8 @@ public:
 
         
 
+        
+
       RequestTokenToResetPasswordMSISDNJob withData(JsonWrap j) &&;
       RequestTokenToResetPasswordMSISDNJob withData(JsonWrap j) const &;
       };
@@ -681,13 +693,15 @@ std::string idServerUnbindResult() const;
     explicit DeactivateAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<AuthenticationData> auth  = std::nullopt, std::string idServer  = {});
+        std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> idServer  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::optional<AuthenticationData> auth, std::string idServer);
+      static BaseJob::Body buildBody(std::optional<AuthenticationData> auth, std::optional<std::string> idServer);
+
+        
 
         
 
@@ -765,6 +779,8 @@ std::optional<bool> available() const;
     std::string username);
 
       static BaseJob::Body buildBody(std::string username);
+
+        
 
         
 

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query UploadKeysJob::buildQuery(
 )
 {
@@ -93,7 +93,7 @@ UploadKeysJob::UploadKeysJob(
     }
 
 
-
+  
 BaseJob::Query QueryKeysJob::buildQuery(
 )
 {
@@ -102,7 +102,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body QueryKeysJob::buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token)
+    BaseJob::Body QueryKeysJob::buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token)
       {
       // ignore unused param
       (void)(deviceKeys);(void)(timeout);(void)(token);
@@ -127,7 +127,7 @@ QueryKeysJob::QueryKeysJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token)
+        immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/query",
           POST,
@@ -189,7 +189,7 @@ QueryKeysJob::QueryKeysJob(
     }
 
 
-
+  
 BaseJob::Query ClaimKeysJob::buildQuery(
 )
 {
@@ -284,7 +284,7 @@ ClaimKeysJob::ClaimKeysJob(
     }
 
 
-
+  
 BaseJob::Query GetKeysChangesJob::buildQuery(
 std::string from, std::string to)
 {

@@ -159,7 +159,7 @@ public:
 /// The type of event to send.
           std::string type;
 /// The state_key of the state event. Defaults to an empty string.
-          std::string stateKey;
+          std::optional<std::string> stateKey;
 /// The content of the event.
           JsonWrap content;
         
@@ -274,13 +274,15 @@ std::string roomId() const;
     explicit CreateRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string visibility  = {}, std::string roomAliasName  = {}, std::string name  = {}, std::string topic  = {}, immer::array<std::string> invite  = {}, immer::array<Invite3pid> invite3pid  = {}, std::string roomVersion  = {}, JsonWrap creationContent  = {}, immer::array<StateEvent> initialState  = {}, std::string preset  = {}, std::optional<bool> isDirect  = std::nullopt, JsonWrap powerLevelContentOverride  = {});
+        std::optional<std::string> visibility  = std::nullopt, std::optional<std::string> roomAliasName  = std::nullopt, std::optional<std::string> name  = std::nullopt, std::optional<std::string> topic  = std::nullopt, immer::array<std::string> invite  = {}, immer::array<Invite3pid> invite3pid  = {}, std::optional<std::string> roomVersion  = std::nullopt, JsonWrap creationContent  = {}, immer::array<StateEvent> initialState  = {}, std::optional<std::string> preset  = std::nullopt, std::optional<bool> isDirect  = std::nullopt, JsonWrap powerLevelContentOverride  = {});
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride);
+      static BaseJob::Body buildBody(std::optional<std::string> visibility, std::optional<std::string> roomAliasName, std::optional<std::string> name, std::optional<std::string> topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::optional<std::string> roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::optional<std::string> preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride);
+
+        
 
         
 

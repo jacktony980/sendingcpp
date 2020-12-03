@@ -63,6 +63,8 @@ public:
 
         
 
+        
+
       PostReceiptJob withData(JsonWrap j) &&;
       PostReceiptJob withData(JsonWrap j) const &;
       };

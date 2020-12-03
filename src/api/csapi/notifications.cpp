@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetNotificationsJob::buildQuery(
-std::string from, std::optional<int> limit, std::string only)
+std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only)
 {
 BaseJob::Query _q;
   
@@ -23,7 +23,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetNotificationsJob::buildBody(std::string from, std::optional<int> limit, std::string only)
+    BaseJob::Body GetNotificationsJob::buildBody(std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only)
       {
       // ignore unused param
       (void)(from);(void)(limit);(void)(only);
@@ -39,7 +39,7 @@ GetNotificationsJob::GetNotificationsJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string from, std::optional<int> limit, std::string only)
+        std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/notifications",
           GET,
@@ -80,14 +80,14 @@ GetNotificationsJob::GetNotificationsJob(
 
 
     
-    std::string GetNotificationsResponse::nextToken() const
+    std::optional<std::string> GetNotificationsResponse::nextToken() const
     {
     if (jsonBody().get()
     .contains("next_token"s)) {
     return
     jsonBody().get()["next_token"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

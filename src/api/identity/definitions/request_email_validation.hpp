@@ -34,7 +34,7 @@ struct RequestEmailValidation
 /// Optional. When the validation is completed, the identity server will
 /// redirect the user to this URL. This option is ignored when submitting
 /// 3PID validation information through a POST request.
-    std::string nextLink;
+    std::optional<std::string> nextLink;
 };
 
 }

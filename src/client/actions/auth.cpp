@@ -56,9 +56,9 @@ namespace Kazv
             : r.dataStr("serverUrl");
 
         m.serverUrl = serverUrl;
-        m.userId = r.userId();
-        m.token = r.accessToken();
-        m.deviceId = r.deviceId();
+        m.userId = r.userId().value_or(DEFVAL);
+        m.token = r.accessToken().value_or(DEFVAL);
+        m.deviceId = r.deviceId().value_or(DEFVAL);
         m.loggedIn = true;
 
         m.addTrigger(LoginSuccessful{});

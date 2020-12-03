@@ -23,10 +23,10 @@ public:
         {
 /// Required if ``kind`` is ``http``. The URL to use to send
 /// notifications to.
-          std::string url;
+          std::optional<std::string> url;
 /// The format to use when sending notifications to the Push
 /// Gateway.
-          std::string format;
+          std::optional<std::string> format;
         
         };
 
@@ -51,7 +51,7 @@ public:
           std::string deviceDisplayName;
 /// This string determines which set of device specific rules this
 /// pusher executes.
-          std::string profileTag;
+          std::optional<std::string> profileTag;
 /// The preferred language for receiving notifications (e.g. 'en'
 /// or 'en-US')
           std::string lang;
@@ -98,6 +98,8 @@ immer::array<Pusher> pushers() const;
     );
 
       static BaseJob::Body buildBody();
+
+        
 
         
 
@@ -180,13 +182,13 @@ public:
 /// Required if ``kind`` is ``http``. The URL to use to send
 /// notifications to. MUST be an HTTPS URL with a path of 
 /// ``/_matrix/push/v1/notify``.
-          std::string url;
+          std::optional<std::string> url;
 /// The format to send notifications in to Push Gateways if the
 /// ``kind`` is ``http``. The details about what fields the
 /// homeserver should send to the push gateway are defined in the
 /// `Push Gateway Specification`_. Currently the only format
 /// available is 'event_id_only'.
-          std::string format;
+          std::optional<std::string> format;
         
         };
 
@@ -265,13 +267,15 @@ public:
     explicit PostPusherJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string pushkey , std::string kind , std::string appId , std::string appDisplayName , std::string deviceDisplayName , std::string lang , PusherData data , std::string profileTag  = {}, std::optional<bool> append  = std::nullopt);
+        std::string pushkey , std::string kind , std::string appId , std::string appDisplayName , std::string deviceDisplayName , std::string lang , PusherData data , std::optional<std::string> profileTag  = std::nullopt, std::optional<bool> append  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append);
+      static BaseJob::Body buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append);
+
+        
 
         
 

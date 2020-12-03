@@ -38,7 +38,7 @@ public:
 
     
 /// A unique identifier for the event.
-std::string eventId() const;
+std::optional<std::string> eventId() const;
 
 };
           static constexpr auto needsAuth() {
@@ -67,13 +67,15 @@ std::string eventId() const;
     explicit RedactEventJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId , std::string txnId , std::string reason  = {});
+        std::string roomId , std::string eventId , std::string txnId , std::optional<std::string> reason  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::string txnId, std::string reason);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason);
+
+        
 
         
 

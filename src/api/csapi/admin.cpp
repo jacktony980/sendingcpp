@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetWhoIsJob::buildQuery(
 )
 {
@@ -74,14 +74,14 @@ GetWhoIsJob::GetWhoIsJob(
 
 
     
-    std::string GetWhoIsResponse::userId() const
+    std::optional<std::string> GetWhoIsResponse::userId() const
     {
     if (jsonBody().get()
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

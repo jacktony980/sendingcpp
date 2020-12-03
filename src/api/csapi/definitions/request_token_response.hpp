@@ -27,7 +27,7 @@ struct RequestTokenResponse
 /// will happen without the client's involvement provided the homeserver
 /// advertises this specification version in the ``/versions`` response
 /// (ie: r0.5.0).
-    std::string submitUrl;
+    std::optional<std::string> submitUrl;
 };
 
 }

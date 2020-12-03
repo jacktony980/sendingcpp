@@ -41,9 +41,9 @@ public:
 /// The user's matrix user ID.
           std::string userId;
 /// The display name of the user, if one exists.
-          std::string displayName;
+          std::optional<std::string> displayName;
 /// The avatar url, as an MXC, if one exists.
-          std::string avatarUrl;
+          std::optional<std::string> avatarUrl;
         
         };
 
@@ -95,6 +95,8 @@ bool limited() const;
     );
 
       static BaseJob::Body buildBody(std::string searchTerm, std::optional<int> limit);
+
+        
 
         
 

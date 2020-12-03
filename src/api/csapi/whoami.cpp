@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetTokenOwnerJob::buildQuery(
 )
 {

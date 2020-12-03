@@ -59,7 +59,7 @@ std::string roomId() const;
 
     
 /// The user's membership state in this room.
-std::string membership() const;
+std::optional<std::string> membership() const;
 
     
 /// The pagination chunk for this room.
@@ -75,7 +75,7 @@ EventList state() const;
     
 /// Whether this room is visible to the ``/publicRooms`` API
 /// or not."
-std::string visibility() const;
+std::optional<std::string> visibility() const;
 
     
 /// The private data that this user has attached to this room.
@@ -105,6 +105,8 @@ EventList accountData() const;
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 

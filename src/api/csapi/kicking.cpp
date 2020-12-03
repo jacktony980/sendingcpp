@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query KickJob::buildQuery(
 )
 {
@@ -18,7 +18,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body KickJob::buildBody(std::string roomId, std::string userId, std::string reason)
+    BaseJob::Body KickJob::buildBody(std::string roomId, std::string userId, std::optional<std::string> reason)
       {
       // ignore unused param
       (void)(roomId);(void)(userId);(void)(reason);
@@ -41,7 +41,7 @@ KickJob::KickJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string userId, std::string reason)
+        std::string roomId, std::string userId, std::optional<std::string> reason)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/kick",
           POST,

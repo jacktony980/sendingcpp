@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query RoomInitialSyncJob::buildQuery(
 )
 {
@@ -86,14 +86,14 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     }
 
     
-    std::string RoomInitialSyncResponse::membership() const
+    std::optional<std::string> RoomInitialSyncResponse::membership() const
     {
     if (jsonBody().get()
     .contains("membership"s)) {
     return
     jsonBody().get()["membership"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
@@ -119,14 +119,14 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     }
 
     
-    std::string RoomInitialSyncResponse::visibility() const
+    std::optional<std::string> RoomInitialSyncResponse::visibility() const
     {
     if (jsonBody().get()
     .contains("visibility"s)) {
     return
     jsonBody().get()["visibility"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

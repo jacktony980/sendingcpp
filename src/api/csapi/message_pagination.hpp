@@ -36,12 +36,12 @@ public:
     
 /// The token the pagination starts from. If ``dir=b`` this will be
 /// the token supplied in ``from``.
-std::string start() const;
+std::optional<std::string> start() const;
 
     
 /// The token the pagination ends at. If ``dir=b`` this token should
 /// be used again to request even earlier events.
-std::string end() const;
+std::optional<std::string> end() const;
 
     
 /// A list of room events. The order depends on the ``dir`` parameter.
@@ -99,13 +99,15 @@ EventList state() const;
     explicit GetRoomEventsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string from , std::string dir , std::string to  = {}, std::optional<int> limit  = std::nullopt, std::string filter  = {});
+        std::string roomId , std::string from , std::string dir , std::optional<std::string> to  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string from, std::string to, std::string dir, std::optional<int> limit, std::string filter);
+    std::string from, std::optional<std::string> to, std::string dir, std::optional<int> limit, std::optional<std::string> filter);
 
-      static BaseJob::Body buildBody(std::string roomId, std::string from, std::string dir, std::string to, std::optional<int> limit, std::string filter);
+      static BaseJob::Body buildBody(std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter);
+
+        
 
         
 

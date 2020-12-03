@@ -16,7 +16,7 @@ struct AuthenticationData
     std::string type;
 
 /// The value of the session key given by the homeserver.
-    std::string session;
+    std::optional<std::string> session;
 
 /// Keys dependent on the login type
     immer::map<std::string, JsonWrap> authInfo;

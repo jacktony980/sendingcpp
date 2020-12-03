@@ -61,6 +61,8 @@ PushRuleset global() const;
 
         
 
+        
+
       GetPushRulesJob withData(JsonWrap j) &&;
       GetPushRulesJob withData(JsonWrap j) const &;
       };
@@ -138,6 +140,8 @@ public:
 
         
 
+        
+
       GetPushRuleJob withData(JsonWrap j) &&;
       GetPushRuleJob withData(JsonWrap j) const &;
       };
@@ -198,6 +202,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId);
+
+        
 
         
 
@@ -279,13 +285,15 @@ public:
     explicit SetPushRuleJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions , std::string before  = {}, std::string after  = {}, immer::array<PushCondition> conditions  = {}, std::string pattern  = {});
+        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions , std::optional<std::string> before  = std::nullopt, std::optional<std::string> after  = std::nullopt, immer::array<PushCondition> conditions  = {}, std::optional<std::string> pattern  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
-    std::string before, std::string after);
+    std::optional<std::string> before, std::optional<std::string> after);
 
-      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::string before, std::string after, immer::array<PushCondition> conditions, std::string pattern);
+      static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern);
+
+        
 
         
 
@@ -361,6 +369,8 @@ bool enabled() const;
 
         
 
+        
+
       IsPushRuleEnabledJob withData(JsonWrap j) &&;
       IsPushRuleEnabledJob withData(JsonWrap j) const &;
       };
@@ -424,6 +434,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, bool enabled);
+
+        
 
         
 
@@ -499,6 +511,8 @@ immer::array<Variant> actions() const;
 
         
 
+        
+
       GetPushRuleActionsJob withData(JsonWrap j) &&;
       GetPushRuleActionsJob withData(JsonWrap j) const &;
       };
@@ -563,6 +577,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions);
+
+        
 
         
 

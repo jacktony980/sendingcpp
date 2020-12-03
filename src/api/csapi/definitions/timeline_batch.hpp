@@ -16,7 +16,7 @@ struct Timeline : RoomEventBatch
     std::optional<bool> limited;
 
 /// A token that can be supplied to the ``from`` parameter of the rooms/{roomId}/messages endpoint.
-    std::string prevBatch;
+    std::optional<std::string> prevBatch;
 };
 
 }

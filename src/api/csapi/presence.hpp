@@ -51,13 +51,15 @@ public:
     explicit SetPresenceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string presence , std::string statusMsg  = {});
+        std::string userId , std::string presence , std::optional<std::string> statusMsg  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string userId, std::string presence, std::string statusMsg);
+      static BaseJob::Body buildBody(std::string userId, std::string presence, std::optional<std::string> statusMsg);
+
+        
 
         
 
@@ -136,6 +138,8 @@ std::optional<bool> currentlyActive() const;
     );
 
       static BaseJob::Body buildBody(std::string userId);
+
+        
 
         
 

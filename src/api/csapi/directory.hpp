@@ -54,6 +54,8 @@ public:
 
         
 
+        
+
       SetRoomAliasJob withData(JsonWrap j) &&;
       SetRoomAliasJob withData(JsonWrap j) const &;
       };
@@ -94,7 +96,7 @@ public:
 
     
 /// The room ID for this room alias.
-std::string roomId() const;
+std::optional<std::string> roomId() const;
 
     
 /// A list of servers that are aware of this room alias.
@@ -124,6 +126,8 @@ immer::array<std::string> servers() const;
     );
 
       static BaseJob::Body buildBody(std::string roomAlias);
+
+        
 
         
 
@@ -191,6 +195,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string roomAlias);
+
+        
 
         
 
@@ -271,6 +277,8 @@ immer::array<std::string> aliases() const;
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 

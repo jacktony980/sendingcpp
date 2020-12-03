@@ -25,7 +25,7 @@ public:
         {
 /// The login type. This is supplied as the ``type`` when
 /// logging in.
-          std::string type;
+          std::optional<std::string> type;
         
         };
 
@@ -66,6 +66,8 @@ immer::array<LoginFlow> flows() const;
     );
 
       static BaseJob::Body buildBody();
+
+        
 
         
 
@@ -125,12 +127,12 @@ public:
 
     
 /// The fully-qualified Matrix ID for the account.
-std::string userId() const;
+std::optional<std::string> userId() const;
 
     
 /// An access token for the account.
 /// This access token can then be used to authorize other requests.
-std::string accessToken() const;
+std::optional<std::string> accessToken() const;
 
     
 /// The server_name of the homeserver on which the account has
@@ -139,12 +141,12 @@ std::string accessToken() const;
 /// **Deprecated**. Clients should extract the server_name from
 /// ``user_id`` (by splitting at the first colon) if they require
 /// it. Note also that ``homeserver`` is not spelt this way.
-std::string homeServer() const;
+std::optional<std::string> homeServer() const;
 
     
 /// ID of the logged-in device. Will be the same as the
 /// corresponding parameter in the request, if one was specified.
-std::string deviceId() const;
+std::optional<std::string> deviceId() const;
 
     
 /// Optional client configuration provided by the server. If present,
@@ -198,13 +200,15 @@ std::optional<DiscoveryInformation> wellKnown() const;
     explicit LoginJob(std::string serverUrl
     
       ,
-        std::string type , std::optional<UserIdentifier> identifier  = std::nullopt, std::string password  = {}, std::string token  = {}, std::string deviceId  = {}, std::string initialDeviceDisplayName  = {});
+        std::string type , std::optional<UserIdentifier> identifier  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> token  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string type, std::optional<UserIdentifier> identifier, std::string password, std::string token, std::string deviceId, std::string initialDeviceDisplayName);
+      static BaseJob::Body buildBody(std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName);
+
+        
 
         
 

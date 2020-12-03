@@ -7,7 +7,24 @@ namespace Kazv
 {
 {{#operations}}{{#operation}}
 
+  {{#headerParams?}}
+  std::map<std::string, std::string> {{camelCaseOperationId}}Job::buildHeader({{#headerParams}}{{>joinedParamDef}}{{/headerParams}})
+    {
+    std::map<std::string, std::string> h{};
 
+    {{#headerParams}}
+      {{#useOmittable}}
+        if ({{paramName}}.has_value()) {
+          h.insert_or_assign( "{{baseName}}"s, {{paramName}}.value() );
+        }
+      {{/useOmittable}}
+      {{^useOmittable}}
+        h.insert_or_assign( "{{baseName}}"s, {{paramName}} );
+      {{/useOmittable}}
+    {{/headerParams}}
+    return h;
+    }
+    {{/headerParams?}}
 BaseJob::Query {{camelCaseOperationId}}Job::buildQuery(
 {{#queryParams}}{{>joinedParamDef}}{{/queryParams}})
 {
@@ -76,11 +93,10 @@ return _q;
           ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}Byte{{/producesNonJson?}},
             buildBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
               , buildQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}})
-                {{#headerParams?}}, std::map<std::string, std::string>{
-                  {{#headerParams}}
-                    { "{{baseName}}"s, {{paramName}} },
-                  {{/headerParams}}
-                  }{{/headerParams?}})
+                {{#headerParams?}}, buildHeader({{#headerParams}}
+                  {{paramName}}{{>cjoin}}
+                {{/headerParams}})
+{{/headerParams?}})
         {
         }
 

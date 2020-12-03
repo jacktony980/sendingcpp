@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SyncJob::buildQuery(
-std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout)
+std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout)
 {
 BaseJob::Query _q;
   
@@ -27,7 +27,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SyncJob::buildBody(std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout)
+    BaseJob::Body SyncJob::buildBody(std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout)
       {
       // ignore unused param
       (void)(filter);(void)(since);(void)(fullState);(void)(setPresence);(void)(timeout);
@@ -43,7 +43,7 @@ SyncJob::SyncJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout)
+        std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/sync",
           GET,

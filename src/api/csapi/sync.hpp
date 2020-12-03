@@ -354,13 +354,15 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     explicit SyncJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string filter  = {}, std::string since  = {}, std::optional<bool> fullState  = std::nullopt, std::string setPresence  = {}, std::optional<int> timeout  = std::nullopt);
+        std::optional<std::string> filter  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<bool> fullState  = std::nullopt, std::optional<std::string> setPresence  = std::nullopt, std::optional<int> timeout  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
+    std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout);
 
-      static BaseJob::Body buildBody(std::string filter, std::string since, std::optional<bool> fullState, std::string setPresence, std::optional<int> timeout);
+      static BaseJob::Body buildBody(std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout);
+
+        
 
         
 

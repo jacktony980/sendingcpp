@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SetDisplayNameJob::buildQuery(
 )
 {
@@ -18,7 +18,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SetDisplayNameJob::buildBody(std::string userId, std::string displayname)
+    BaseJob::Body SetDisplayNameJob::buildBody(std::string userId, std::optional<std::string> displayname)
       {
       // ignore unused param
       (void)(userId);(void)(displayname);
@@ -39,7 +39,7 @@ SetDisplayNameJob::SetDisplayNameJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string userId, std::string displayname)
+        std::string userId, std::optional<std::string> displayname)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
           PUT,
@@ -79,7 +79,7 @@ SetDisplayNameJob::SetDisplayNameJob(
 
 
 
-
+  
 BaseJob::Query GetDisplayNameJob::buildQuery(
 )
 {
@@ -144,18 +144,18 @@ GetDisplayNameJob::GetDisplayNameJob(
 
 
     
-    std::string GetDisplayNameResponse::displayname() const
+    std::optional<std::string> GetDisplayNameResponse::displayname() const
     {
     if (jsonBody().get()
     .contains("displayname"s)) {
     return
     jsonBody().get()["displayname"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 
-
+  
 BaseJob::Query SetAvatarUrlJob::buildQuery(
 )
 {
@@ -164,7 +164,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SetAvatarUrlJob::buildBody(std::string userId, std::string avatarUrl)
+    BaseJob::Body SetAvatarUrlJob::buildBody(std::string userId, std::optional<std::string> avatarUrl)
       {
       // ignore unused param
       (void)(userId);(void)(avatarUrl);
@@ -185,7 +185,7 @@ SetAvatarUrlJob::SetAvatarUrlJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string userId, std::string avatarUrl)
+        std::string userId, std::optional<std::string> avatarUrl)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
           PUT,
@@ -225,7 +225,7 @@ SetAvatarUrlJob::SetAvatarUrlJob(
 
 
 
-
+  
 BaseJob::Query GetAvatarUrlJob::buildQuery(
 )
 {
@@ -290,18 +290,18 @@ GetAvatarUrlJob::GetAvatarUrlJob(
 
 
     
-    std::string GetAvatarUrlResponse::avatarUrl() const
+    std::optional<std::string> GetAvatarUrlResponse::avatarUrl() const
     {
     if (jsonBody().get()
     .contains("avatar_url"s)) {
     return
     jsonBody().get()["avatar_url"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 
-
+  
 BaseJob::Query GetUserProfileJob::buildQuery(
 )
 {
@@ -366,25 +366,25 @@ GetUserProfileJob::GetUserProfileJob(
 
 
     
-    std::string GetUserProfileResponse::avatarUrl() const
+    std::optional<std::string> GetUserProfileResponse::avatarUrl() const
     {
     if (jsonBody().get()
     .contains("avatar_url"s)) {
     return
     jsonBody().get()["avatar_url"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string GetUserProfileResponse::displayname() const
+    std::optional<std::string> GetUserProfileResponse::displayname() const
     {
     if (jsonBody().get()
     .contains("displayname"s)) {
     return
     jsonBody().get()["displayname"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 }

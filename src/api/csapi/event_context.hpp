@@ -36,11 +36,11 @@ public:
 
     
 /// A token that can be used to paginate backwards with.
-std::string start() const;
+std::optional<std::string> start() const;
 
     
 /// A token that can be used to paginate forwards with.
-std::string end() const;
+std::optional<std::string> end() const;
 
     
 /// A list of room events that happened just before the
@@ -92,13 +92,15 @@ EventList state() const;
     explicit GetEventContextJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId , std::optional<int> limit  = std::nullopt, std::string filter  = {});
+        std::string roomId , std::string eventId , std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::optional<int> limit, std::string filter);
+    std::optional<int> limit, std::optional<std::string> filter);
 
-      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::string filter);
+      static BaseJob::Body buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter);
+
+        
 
         
 

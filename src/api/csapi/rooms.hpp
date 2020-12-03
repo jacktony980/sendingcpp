@@ -69,6 +69,8 @@ public:
 
         
 
+        
+
       GetOneRoomEventJob withData(JsonWrap j) &&;
       GetOneRoomEventJob withData(JsonWrap j) const &;
       };
@@ -139,6 +141,8 @@ public:
 
         
 
+        
+
       GetRoomStateWithKeyJob withData(JsonWrap j) &&;
       GetRoomStateWithKeyJob withData(JsonWrap j) const &;
       };
@@ -206,6 +210,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 
@@ -280,13 +286,15 @@ EventList chunk() const;
     explicit GetMembersByRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string at  = {}, std::string membership  = {}, std::string notMembership  = {});
+        std::string roomId , std::optional<std::string> at  = std::nullopt, std::optional<std::string> membership  = std::nullopt, std::optional<std::string> notMembership  = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
-    std::string at, std::string membership, std::string notMembership);
+    std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership);
 
-      static BaseJob::Body buildBody(std::string roomId, std::string at, std::string membership, std::string notMembership);
+      static BaseJob::Body buildBody(std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership);
+
+        
 
         
 
@@ -316,9 +324,9 @@ public:
     struct RoomMember
         {
 /// The display name of the user this object is representing.
-          std::string displayName;
+          std::optional<std::string> displayName;
 /// The mxc avatar url of the user this object is representing.
-          std::string avatarUrl;
+          std::optional<std::string> avatarUrl;
         
         };
 
@@ -363,6 +371,8 @@ immer::map<std::string, RoomMember> joined() const;
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 

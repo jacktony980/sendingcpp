@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query RedirectToSSOJob::buildQuery(
 std::string redirectUrl)
 {

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetAccount3PIDsJob::buildQuery(
 )
 {
@@ -85,7 +85,7 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
     }
 
 
-
+  
 BaseJob::Query Post3PIDsJob::buildQuery(
 )
 {
@@ -155,7 +155,7 @@ Post3PIDsJob::Post3PIDsJob(
 
 
 
-
+  
 BaseJob::Query Add3PIDJob::buildQuery(
 )
 {
@@ -229,7 +229,7 @@ Add3PIDJob::Add3PIDJob(
 
 
 
-
+  
 BaseJob::Query Bind3PIDJob::buildQuery(
 )
 {
@@ -305,7 +305,7 @@ Bind3PIDJob::Bind3PIDJob(
 
 
 
-
+  
 BaseJob::Query Delete3pidFromAccountJob::buildQuery(
 )
 {
@@ -314,7 +314,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body Delete3pidFromAccountJob::buildBody(std::string medium, std::string address, std::string idServer)
+    BaseJob::Body Delete3pidFromAccountJob::buildBody(std::string medium, std::string address, std::optional<std::string> idServer)
       {
       // ignore unused param
       (void)(medium);(void)(address);(void)(idServer);
@@ -339,7 +339,7 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string medium, std::string address, std::string idServer)
+        std::string medium, std::string address, std::optional<std::string> idServer)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/delete",
           POST,
@@ -391,7 +391,7 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
     }
 
 
-
+  
 BaseJob::Query Unbind3pidFromAccountJob::buildQuery(
 )
 {
@@ -400,7 +400,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body Unbind3pidFromAccountJob::buildBody(std::string medium, std::string address, std::string idServer)
+    BaseJob::Body Unbind3pidFromAccountJob::buildBody(std::string medium, std::string address, std::optional<std::string> idServer)
       {
       // ignore unused param
       (void)(medium);(void)(address);(void)(idServer);
@@ -425,7 +425,7 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string medium, std::string address, std::string idServer)
+        std::string medium, std::string address, std::optional<std::string> idServer)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/unbind",
           POST,
@@ -477,7 +477,7 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
     }
 
 
-
+  
 BaseJob::Query RequestTokenTo3PIDEmailJob::buildQuery(
 )
 {
@@ -543,7 +543,7 @@ RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
 
 
 
-
+  
 BaseJob::Query RequestTokenTo3PIDMSISDNJob::buildQuery(
 )
 {

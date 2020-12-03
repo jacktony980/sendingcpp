@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query LeaveRoomJob::buildQuery(
 )
 {
@@ -74,7 +74,7 @@ LeaveRoomJob::LeaveRoomJob(
 
 
 
-
+  
 BaseJob::Query ForgetRoomJob::buildQuery(
 )
 {

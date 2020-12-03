@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query InviteBy3PIDJob::buildQuery(
 )
 {

@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetRoomTagsJob::buildQuery(
 )
 {
@@ -85,7 +85,7 @@ GetRoomTagsJob::GetRoomTagsJob(
     }
 
 
-
+  
 BaseJob::Query SetRoomTagJob::buildQuery(
 )
 {
@@ -155,7 +155,7 @@ SetRoomTagJob::SetRoomTagJob(
 
 
 
-
+  
 BaseJob::Query DeleteRoomTagJob::buildQuery(
 )
 {

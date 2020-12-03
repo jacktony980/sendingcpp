@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetRoomEventsJob::buildQuery(
-std::string from, std::string to, std::string dir, std::optional<int> limit, std::string filter)
+std::string from, std::optional<std::string> to, std::string dir, std::optional<int> limit, std::optional<std::string> filter)
 {
 BaseJob::Query _q;
     addToQuery(_q, "from"s, from);
@@ -27,7 +27,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetRoomEventsJob::buildBody(std::string roomId, std::string from, std::string dir, std::string to, std::optional<int> limit, std::string filter)
+    BaseJob::Body GetRoomEventsJob::buildBody(std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter)
       {
       // ignore unused param
       (void)(roomId);(void)(from);(void)(dir);(void)(to);(void)(limit);(void)(filter);
@@ -43,7 +43,7 @@ GetRoomEventsJob::GetRoomEventsJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string from, std::string dir, std::string to, std::optional<int> limit, std::string filter)
+        std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/messages",
           GET,
@@ -83,25 +83,25 @@ GetRoomEventsJob::GetRoomEventsJob(
 
 
     
-    std::string GetRoomEventsResponse::start() const
+    std::optional<std::string> GetRoomEventsResponse::start() const
     {
     if (jsonBody().get()
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string GetRoomEventsResponse::end() const
+    std::optional<std::string> GetRoomEventsResponse::end() const
     {
     if (jsonBody().get()
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

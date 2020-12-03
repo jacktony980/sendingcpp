@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetDevicesJob::buildQuery(
 )
 {
@@ -85,7 +85,7 @@ GetDevicesJob::GetDevicesJob(
     }
 
 
-
+  
 BaseJob::Query GetDeviceJob::buildQuery(
 )
 {
@@ -150,7 +150,7 @@ GetDeviceJob::GetDeviceJob(
 
 
 
-
+  
 BaseJob::Query UpdateDeviceJob::buildQuery(
 )
 {
@@ -159,7 +159,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body UpdateDeviceJob::buildBody(std::string deviceId, std::string displayName)
+    BaseJob::Body UpdateDeviceJob::buildBody(std::string deviceId, std::optional<std::string> displayName)
       {
       // ignore unused param
       (void)(deviceId);(void)(displayName);
@@ -180,7 +180,7 @@ UpdateDeviceJob::UpdateDeviceJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string deviceId, std::string displayName)
+        std::string deviceId, std::optional<std::string> displayName)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           PUT,
@@ -220,7 +220,7 @@ UpdateDeviceJob::UpdateDeviceJob(
 
 
 
-
+  
 BaseJob::Query DeleteDeviceJob::buildQuery(
 )
 {
@@ -290,7 +290,7 @@ DeleteDeviceJob::DeleteDeviceJob(
 
 
 
-
+  
 BaseJob::Query DeleteDevicesJob::buildQuery(
 )
 {

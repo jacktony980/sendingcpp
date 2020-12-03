@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetPushersJob::buildQuery(
 )
 {
@@ -85,7 +85,7 @@ GetPushersJob::GetPushersJob(
     }
 
 
-
+  
 BaseJob::Query PostPusherJob::buildQuery(
 )
 {
@@ -94,7 +94,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body PostPusherJob::buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append)
+    BaseJob::Body PostPusherJob::buildBody(std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append)
       {
       // ignore unused param
       (void)(pushkey);(void)(kind);(void)(appId);(void)(appDisplayName);(void)(deviceDisplayName);(void)(lang);(void)(data);(void)(profileTag);(void)(append);
@@ -131,7 +131,7 @@ PostPusherJob::PostPusherJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::string profileTag, std::optional<bool> append)
+        std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushers/set",
           POST,

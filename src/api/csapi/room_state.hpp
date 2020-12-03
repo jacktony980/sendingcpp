@@ -108,6 +108,8 @@ std::string eventId() const;
 
         
 
+        
+
       SetRoomStateWithKeyJob withData(JsonWrap j) &&;
       SetRoomStateWithKeyJob withData(JsonWrap j) const &;
       };

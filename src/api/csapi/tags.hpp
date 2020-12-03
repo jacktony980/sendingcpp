@@ -75,6 +75,8 @@ immer::map<std::string, Tag> tags() const;
 
         
 
+        
+
       GetRoomTagsJob withData(JsonWrap j) &&;
       GetRoomTagsJob withData(JsonWrap j) const &;
       };
@@ -157,6 +159,8 @@ public:
 
         
 
+        
+
       SetRoomTagJob withData(JsonWrap j) &&;
       SetRoomTagJob withData(JsonWrap j) const &;
       };
@@ -218,6 +222,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string tag);
+
+        
 
         
 

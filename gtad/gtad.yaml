@@ -44,23 +44,23 @@ analyzer:
       - float: float
       - //: double
     - boolean: bool
-  - string:
-    - byte: &ByteStream
-        type: Bytes
-        imports: "types.hpp"
-    - binary: *ByteStream
-    - date:
-        type: boost::date
-        initializer: boost::from_string("{{defaultValue}}")
-        imports: "boost/date_time/gregorian/gregorian_types.hpp"
-    - dateTime:
-        type: boost::ptime
-        initializer: boost::time_from_string("{{defaultValue}}")
-        imports: "boost/date_time/posix_time/posix_time_types.hpp"
-    - //: &String
-        type: std::string
-        initializer: std::string("{{defaultValue}}")
-        isString:
+    - string:
+      - byte: &ByteStream
+          type: Bytes
+          imports: "types.hpp"
+      - binary: *ByteStream
+      - date:
+          type: boost::date
+          initializer: boost::from_string("{{defaultValue}}")
+          imports: "boost/date_time/gregorian/gregorian_types.hpp"
+      - dateTime:
+          type: boost::ptime
+          initializer: boost::time_from_string("{{defaultValue}}")
+          imports: "boost/date_time/posix_time/posix_time_types.hpp"
+      - //: &String
+          type: std::string
+          initializer: std::string("{{defaultValue}}")
+          isString:
   - file: *ByteStream
   - object: &Json { type: JsonWrap, initializer: json::object() }
   - $ref:

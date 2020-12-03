@@ -63,6 +63,8 @@ std::string replacementRoom() const;
 
         
 
+        
+
       UpgradeRoomJob withData(JsonWrap j) &&;
       UpgradeRoomJob withData(JsonWrap j) const &;
       };

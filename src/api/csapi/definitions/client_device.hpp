@@ -17,11 +17,11 @@ struct Device
 
 /// Display name set by the user for this device. Absent if no name has been
 /// set.
-    std::string displayName;
+    std::optional<std::string> displayName;
 
 /// The IP address where this device was last seen. (May be a few minutes out
 /// of date, for efficiency reasons).
-    std::string lastSeenIp;
+    std::optional<std::string> lastSeenIp;
 
 /// The timestamp (in milliseconds since the unix epoch) when this devices
 /// was last seen. (May be a few minutes out of date, for efficiency

@@ -56,6 +56,8 @@ immer::array<std::string> joinedRooms() const;
 
         
 
+        
+
       GetJoinedRoomsJob withData(JsonWrap j) &&;
       GetJoinedRoomsJob withData(JsonWrap j) const &;
       };

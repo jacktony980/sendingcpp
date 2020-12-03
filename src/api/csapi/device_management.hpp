@@ -57,6 +57,8 @@ immer::array<Device> devices() const;
 
         
 
+        
+
       GetDevicesJob withData(JsonWrap j) &&;
       GetDevicesJob withData(JsonWrap j) const &;
       };
@@ -127,6 +129,8 @@ public:
 
         
 
+        
+
       GetDeviceJob withData(JsonWrap j) &&;
       GetDeviceJob withData(JsonWrap j) const &;
       };
@@ -178,13 +182,15 @@ public:
     explicit UpdateDeviceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string deviceId , std::string displayName  = {});
+        std::string deviceId , std::optional<std::string> displayName  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string deviceId, std::string displayName);
+      static BaseJob::Body buildBody(std::string deviceId, std::optional<std::string> displayName);
+
+        
 
         
 
@@ -251,6 +257,8 @@ public:
 
         
 
+        
+
       DeleteDeviceJob withData(JsonWrap j) &&;
       DeleteDeviceJob withData(JsonWrap j) const &;
       };
@@ -311,6 +319,8 @@ public:
     );
 
       static BaseJob::Body buildBody(immer::array<std::string> devices, std::optional<AuthenticationData> auth);
+
+        
 
         
 

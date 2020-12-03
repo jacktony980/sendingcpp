@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SetRoomAliasJob::buildQuery(
 )
 {
@@ -79,7 +79,7 @@ SetRoomAliasJob::SetRoomAliasJob(
 
 
 
-
+  
 BaseJob::Query GetRoomIdByAliasJob::buildQuery(
 )
 {
@@ -144,14 +144,14 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
 
 
     
-    std::string GetRoomIdByAliasResponse::roomId() const
+    std::optional<std::string> GetRoomIdByAliasResponse::roomId() const
     {
     if (jsonBody().get()
     .contains("room_id"s)) {
     return
     jsonBody().get()["room_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
@@ -166,7 +166,7 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
     }
 
 
-
+  
 BaseJob::Query DeleteRoomAliasJob::buildQuery(
 )
 {
@@ -231,7 +231,7 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
 
 
 
-
+  
 BaseJob::Query GetLocalAliasesJob::buildQuery(
 )
 {

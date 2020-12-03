@@ -61,7 +61,7 @@ struct ProtocolInstance
 
 /// An optional content URI representing the protocol. Overrides the one provided
 /// at the higher level Protocol object.
-    std::string icon;
+    std::optional<std::string> icon;
 
 /// Preset values for ``fields`` the client may use to search by.
     JsonWrap fields;

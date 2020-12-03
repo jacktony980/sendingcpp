@@ -46,13 +46,15 @@ public:
     explicit SetDisplayNameJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string displayname  = {});
+        std::string userId , std::optional<std::string> displayname  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string userId, std::string displayname);
+      static BaseJob::Body buildBody(std::string userId, std::optional<std::string> displayname);
+
+        
 
         
 
@@ -94,7 +96,7 @@ public:
 
     
 /// The user's display name if they have set one, otherwise not present.
-std::string displayname() const;
+std::optional<std::string> displayname() const;
 
 };
           static constexpr auto needsAuth() {
@@ -120,6 +122,8 @@ std::string displayname() const;
     );
 
       static BaseJob::Body buildBody(std::string userId);
+
+        
 
         
 
@@ -174,13 +178,15 @@ public:
     explicit SetAvatarUrlJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string avatarUrl  = {});
+        std::string userId , std::optional<std::string> avatarUrl  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string userId, std::string avatarUrl);
+      static BaseJob::Body buildBody(std::string userId, std::optional<std::string> avatarUrl);
+
+        
 
         
 
@@ -222,7 +228,7 @@ public:
 
     
 /// The user's avatar URL if they have set one, otherwise not present.
-std::string avatarUrl() const;
+std::optional<std::string> avatarUrl() const;
 
 };
           static constexpr auto needsAuth() {
@@ -248,6 +254,8 @@ std::string avatarUrl() const;
     );
 
       static BaseJob::Body buildBody(std::string userId);
+
+        
 
         
 
@@ -290,11 +298,11 @@ public:
 
     
 /// The user's avatar URL if they have set one, otherwise not present.
-std::string avatarUrl() const;
+std::optional<std::string> avatarUrl() const;
 
     
 /// The user's display name if they have set one, otherwise not present.
-std::string displayname() const;
+std::optional<std::string> displayname() const;
 
 };
           static constexpr auto needsAuth() {
@@ -320,6 +328,8 @@ std::string displayname() const;
     );
 
       static BaseJob::Body buildBody(std::string userId);
+
+        
 
         
 

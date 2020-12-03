@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetEventContextJob::buildQuery(
-std::optional<int> limit, std::string filter)
+std::optional<int> limit, std::optional<std::string> filter)
 {
 BaseJob::Query _q;
   
@@ -21,7 +21,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetEventContextJob::buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::string filter)
+    BaseJob::Body GetEventContextJob::buildBody(std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter)
       {
       // ignore unused param
       (void)(roomId);(void)(eventId);(void)(limit);(void)(filter);
@@ -37,7 +37,7 @@ GetEventContextJob::GetEventContextJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string roomId, std::string eventId, std::optional<int> limit, std::string filter)
+        std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/context/" + eventId,
           GET,
@@ -77,25 +77,25 @@ GetEventContextJob::GetEventContextJob(
 
 
     
-    std::string GetEventContextResponse::start() const
+    std::optional<std::string> GetEventContextResponse::start() const
     {
     if (jsonBody().get()
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string GetEventContextResponse::end() const
+    std::optional<std::string> GetEventContextResponse::end() const
     {
     if (jsonBody().get()
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

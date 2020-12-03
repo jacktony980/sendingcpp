@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query JoinRoomByIdJob::buildQuery(
 )
 {
@@ -91,7 +91,7 @@ JoinRoomByIdJob::JoinRoomByIdJob(
     }
 
 
-
+  
 BaseJob::Query JoinRoomJob::buildQuery(
 immer::array<std::string> serverName)
 {

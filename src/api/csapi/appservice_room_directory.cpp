@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query UpdateAppserviceRoomDirectoryVsibilityJob::buildQuery(
 )
 {

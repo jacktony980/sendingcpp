@@ -50,6 +50,8 @@ public:
 
         
 
+        
+
       LogoutJob withData(JsonWrap j) &&;
       LogoutJob withData(JsonWrap j) const &;
       };
@@ -110,6 +112,8 @@ public:
     );
 
       static BaseJob::Body buildBody();
+
+        
 
         
 

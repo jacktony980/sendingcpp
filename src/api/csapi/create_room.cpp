@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query CreateRoomJob::buildQuery(
 )
 {
@@ -18,7 +18,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body CreateRoomJob::buildBody(std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride)
+    BaseJob::Body CreateRoomJob::buildBody(std::optional<std::string> visibility, std::optional<std::string> roomAliasName, std::optional<std::string> name, std::optional<std::string> topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::optional<std::string> roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::optional<std::string> preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride)
       {
       // ignore unused param
       (void)(visibility);(void)(roomAliasName);(void)(name);(void)(topic);(void)(invite);(void)(invite3pid);(void)(roomVersion);(void)(creationContent);(void)(initialState);(void)(preset);(void)(isDirect);(void)(powerLevelContentOverride);
@@ -61,7 +61,7 @@ CreateRoomJob::CreateRoomJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string visibility, std::string roomAliasName, std::string name, std::string topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::string roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::string preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride)
+        std::optional<std::string> visibility, std::optional<std::string> roomAliasName, std::optional<std::string> name, std::optional<std::string> topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::optional<std::string> roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::optional<std::string> preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/createRoom",
           POST,

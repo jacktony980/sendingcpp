@@ -9,9 +9,18 @@
 namespace Kazv
 {
 
+  std::map<std::string, std::string> UploadContentJob::buildHeader(std::optional<std::string> contentType)
+    {
+    std::map<std::string, std::string> h{};
 
+        if (contentType.has_value()) {
+          h.insert_or_assign( "Content-Type"s, contentType.value() );
+        }
+      
+    return h;
+    }
 BaseJob::Query UploadContentJob::buildQuery(
-std::string filename)
+std::optional<std::string> filename)
 {
 BaseJob::Query _q;
   
@@ -19,7 +28,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body UploadContentJob::buildBody(Bytes content, std::string filename, std::string contentType)
+    BaseJob::Body UploadContentJob::buildBody(Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType)
       {
       // ignore unused param
       (void)(content);(void)(filename);(void)(contentType);
@@ -36,7 +45,7 @@ UploadContentJob::UploadContentJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        Bytes content, std::string filename, std::string contentType)
+        Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/upload",
           POST,
@@ -45,9 +54,10 @@ UploadContentJob::UploadContentJob(
           ReturnType::Json,
             buildBody(content, filename, contentType)
               , buildQuery(filename)
-                , std::map<std::string, std::string>{
-                    { "Content-Type"s, contentType },
-                  })
+                , buildHeader(
+                  contentType
+                )
+)
         {
         }
 
@@ -90,7 +100,7 @@ UploadContentJob::UploadContentJob(
     }
 
 
-
+  
 BaseJob::Query GetContentJob::buildQuery(
 bool allowRemote)
 {
@@ -156,7 +166,7 @@ GetContentJob::GetContentJob(
 
 
 
-
+  
 BaseJob::Query GetContentOverrideNameJob::buildQuery(
 bool allowRemote)
 {
@@ -222,9 +232,9 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
 
 
 
-
+  
 BaseJob::Query GetContentThumbnailJob::buildQuery(
-int width, int height, std::string method, bool allowRemote)
+int width, int height, std::optional<std::string> method, bool allowRemote)
 {
 BaseJob::Query _q;
     addToQuery(_q, "width"s, width);
@@ -238,7 +248,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body GetContentThumbnailJob::buildBody(std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote)
+    BaseJob::Body GetContentThumbnailJob::buildBody(std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote)
       {
       // ignore unused param
       (void)(serverName);(void)(mediaId);(void)(width);(void)(height);(void)(method);(void)(allowRemote);
@@ -254,7 +264,7 @@ GetContentThumbnailJob::GetContentThumbnailJob(
         std::string serverUrl
         
         ,
-        std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote)
+        std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/thumbnail/" + serverName + "/" + mediaId,
           GET,
@@ -294,7 +304,7 @@ GetContentThumbnailJob::GetContentThumbnailJob(
 
 
 
-
+  
 BaseJob::Query GetUrlPreviewJob::buildQuery(
 std::string url, std::optional<std::int_fast64_t> ts)
 {
@@ -373,18 +383,18 @@ GetUrlPreviewJob::GetUrlPreviewJob(
     }
 
     
-    std::string GetUrlPreviewResponse::ogImage() const
+    std::optional<std::string> GetUrlPreviewResponse::ogImage() const
     {
     if (jsonBody().get()
     .contains("og:image"s)) {
     return
     jsonBody().get()["og:image"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 
-
+  
 BaseJob::Query GetConfigJob::buildQuery(
 )
 {

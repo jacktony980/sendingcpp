@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query GetProtocolsJob::buildQuery(
 )
 {
@@ -74,7 +74,7 @@ GetProtocolsJob::GetProtocolsJob(
 
 
 
-
+  
 BaseJob::Query GetProtocolMetadataJob::buildQuery(
 )
 {
@@ -139,9 +139,9 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
 
 
 
-
+  
 BaseJob::Query QueryLocationByProtocolJob::buildQuery(
-std::string searchFields)
+std::optional<std::string> searchFields)
 {
 BaseJob::Query _q;
   
@@ -149,7 +149,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body QueryLocationByProtocolJob::buildBody(std::string protocol, std::string searchFields)
+    BaseJob::Body QueryLocationByProtocolJob::buildBody(std::string protocol, std::optional<std::string> searchFields)
       {
       // ignore unused param
       (void)(protocol);(void)(searchFields);
@@ -165,7 +165,7 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string protocol, std::string searchFields)
+        std::string protocol, std::optional<std::string> searchFields)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/location/" + protocol,
           GET,
@@ -205,9 +205,9 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
 
 
 
-
+  
 BaseJob::Query QueryUserByProtocolJob::buildQuery(
-std::string fields)
+std::optional<std::string> fields)
 {
 BaseJob::Query _q;
   
@@ -215,7 +215,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body QueryUserByProtocolJob::buildBody(std::string protocol, std::string fields)
+    BaseJob::Body QueryUserByProtocolJob::buildBody(std::string protocol, std::optional<std::string> fields)
       {
       // ignore unused param
       (void)(protocol);(void)(fields);
@@ -231,7 +231,7 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string protocol, std::string fields)
+        std::string protocol, std::optional<std::string> fields)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/user/" + protocol,
           GET,
@@ -271,7 +271,7 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
 
 
 
-
+  
 BaseJob::Query QueryLocationByAliasJob::buildQuery(
 std::string alias)
 {
@@ -337,7 +337,7 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
 
 
 
-
+  
 BaseJob::Query QueryUserByIDJob::buildQuery(
 std::string userid)
 {

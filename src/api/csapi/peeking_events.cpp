@@ -9,9 +9,9 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query PeekEventsJob::buildQuery(
-std::string from, std::optional<int> timeout, std::string roomId)
+std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId)
 {
 BaseJob::Query _q;
   
@@ -23,7 +23,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body PeekEventsJob::buildBody(std::string from, std::optional<int> timeout, std::string roomId)
+    BaseJob::Body PeekEventsJob::buildBody(std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId)
       {
       // ignore unused param
       (void)(from);(void)(timeout);(void)(roomId);
@@ -39,7 +39,7 @@ PeekEventsJob::PeekEventsJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string from, std::optional<int> timeout, std::string roomId)
+        std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
@@ -79,25 +79,25 @@ PeekEventsJob::PeekEventsJob(
 
 
     
-    std::string PeekEventsResponse::start() const
+    std::optional<std::string> PeekEventsResponse::start() const
     {
     if (jsonBody().get()
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string PeekEventsResponse::end() const
+    std::optional<std::string> PeekEventsResponse::end() const
     {
     if (jsonBody().get()
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     

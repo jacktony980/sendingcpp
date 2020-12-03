@@ -18,14 +18,14 @@ struct EmailValidationData : RequestEmailValidation
 /// 
 /// This parameter is deprecated with a plan to be removed in a future specification
 /// version for ``/account/password`` and ``/register`` requests.
-    std::string idServer;
+    std::optional<std::string> idServer;
 
 /// An access token previously registered with the identity server. Servers
 /// can treat this as optional to distinguish between r0.5-compatible clients
 /// and this specification version.
 /// 
 /// Required if an ``id_server`` is supplied.
-    std::string idAccessToken;
+    std::optional<std::string> idAccessToken;
 };
 
 }

@@ -16,10 +16,10 @@ struct PublicRoomsChunk
     immer::array<std::string> aliases;
 
 /// The canonical alias of the room, if any.
-    std::string canonicalAlias;
+    std::optional<std::string> canonicalAlias;
 
 /// The name of the room, if any.
-    std::string name;
+    std::optional<std::string> name;
 
 /// The number of members joined to the room.
     int numJoinedMembers;
@@ -28,7 +28,7 @@ struct PublicRoomsChunk
     std::string roomId;
 
 /// The topic of the room, if any.
-    std::string topic;
+    std::optional<std::string> topic;
 
 /// Whether the room may be viewed by guest users without joining.
     bool worldReadable;
@@ -39,7 +39,7 @@ struct PublicRoomsChunk
     bool guestCanJoin;
 
 /// The URL for the room's avatar, if one is set.
-    std::string avatarUrl;
+    std::optional<std::string> avatarUrl;
 };
 
 }
@@ -118,12 +118,12 @@ struct PublicRoomsResponse
 /// A pagination token for the response. The absence of this token
 /// means there are no more results to fetch and the client should
 /// stop paginating.
-    std::string nextBatch;
+    std::optional<std::string> nextBatch;
 
 /// A pagination token that allows fetching previous results. The
 /// absence of this token means there are no results before this
 /// batch, i.e. this is the first batch.
-    std::string prevBatch;
+    std::optional<std::string> prevBatch;
 
 /// An estimate on the total number of public rooms, if the
 /// server has an estimate.

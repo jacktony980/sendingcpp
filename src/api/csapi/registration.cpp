@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query RegisterJob::buildQuery(
 std::string kind)
 {
@@ -19,7 +19,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body RegisterJob::buildBody(std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin)
+    BaseJob::Body RegisterJob::buildBody(std::string kind, std::optional<AuthenticationData> auth, std::optional<std::string> username, std::optional<std::string> password, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName, std::optional<bool> inhibitLogin)
       {
       // ignore unused param
       (void)(kind);(void)(auth);(void)(username);(void)(password);(void)(deviceId);(void)(initialDeviceDisplayName);(void)(inhibitLogin);
@@ -50,7 +50,7 @@ RegisterJob::RegisterJob(
         std::string serverUrl
         
         ,
-        std::string kind, std::optional<AuthenticationData> auth, std::string username, std::string password, std::string deviceId, std::string initialDeviceDisplayName, std::optional<bool> inhibitLogin)
+        std::string kind, std::optional<AuthenticationData> auth, std::optional<std::string> username, std::optional<std::string> password, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName, std::optional<bool> inhibitLogin)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register",
           POST,
@@ -102,40 +102,40 @@ RegisterJob::RegisterJob(
     }
 
     
-    std::string RegisterResponse::accessToken() const
+    std::optional<std::string> RegisterResponse::accessToken() const
     {
     if (jsonBody().get()
     .contains("access_token"s)) {
     return
     jsonBody().get()["access_token"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string RegisterResponse::homeServer() const
+    std::optional<std::string> RegisterResponse::homeServer() const
     {
     if (jsonBody().get()
     .contains("home_server"s)) {
     return
     jsonBody().get()["home_server"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
     
-    std::string RegisterResponse::deviceId() const
+    std::optional<std::string> RegisterResponse::deviceId() const
     {
     if (jsonBody().get()
     .contains("device_id"s)) {
     return
     jsonBody().get()["device_id"s]
     /*.get<std::string>()*/;}
-    else { return std::string(  );}
+    else { return std::optional<std::string>(  );}
     }
 
 
-
+  
 BaseJob::Query RequestTokenToRegisterEmailJob::buildQuery(
 )
 {
@@ -201,7 +201,7 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
 
 
 
-
+  
 BaseJob::Query RequestTokenToRegisterMSISDNJob::buildQuery(
 )
 {
@@ -267,7 +267,7 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
 
 
 
-
+  
 BaseJob::Query ChangePasswordJob::buildQuery(
 )
 {
@@ -341,7 +341,7 @@ ChangePasswordJob::ChangePasswordJob(
 
 
 
-
+  
 BaseJob::Query RequestTokenToResetPasswordEmailJob::buildQuery(
 )
 {
@@ -407,7 +407,7 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
 
 
 
-
+  
 BaseJob::Query RequestTokenToResetPasswordMSISDNJob::buildQuery(
 )
 {
@@ -473,7 +473,7 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
 
 
 
-
+  
 BaseJob::Query DeactivateAccountJob::buildQuery(
 )
 {
@@ -482,7 +482,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body DeactivateAccountJob::buildBody(std::optional<AuthenticationData> auth, std::string idServer)
+    BaseJob::Body DeactivateAccountJob::buildBody(std::optional<AuthenticationData> auth, std::optional<std::string> idServer)
       {
       // ignore unused param
       (void)(auth);(void)(idServer);
@@ -505,7 +505,7 @@ DeactivateAccountJob::DeactivateAccountJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::optional<AuthenticationData> auth, std::string idServer)
+        std::optional<AuthenticationData> auth, std::optional<std::string> idServer)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/deactivate",
           POST,
@@ -557,7 +557,7 @@ DeactivateAccountJob::DeactivateAccountJob(
     }
 
 
-
+  
 BaseJob::Query CheckUsernameAvailabilityJob::buildQuery(
 std::string username)
 {

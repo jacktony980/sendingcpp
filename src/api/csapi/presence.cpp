@@ -9,7 +9,7 @@
 namespace Kazv
 {
 
-
+  
 BaseJob::Query SetPresenceJob::buildQuery(
 )
 {
@@ -18,7 +18,7 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body SetPresenceJob::buildBody(std::string userId, std::string presence, std::string statusMsg)
+    BaseJob::Body SetPresenceJob::buildBody(std::string userId, std::string presence, std::optional<std::string> statusMsg)
       {
       // ignore unused param
       (void)(userId);(void)(presence);(void)(statusMsg);
@@ -41,7 +41,7 @@ SetPresenceJob::SetPresenceJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        std::string userId, std::string presence, std::string statusMsg)
+        std::string userId, std::string presence, std::optional<std::string> statusMsg)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
           PUT,
@@ -81,7 +81,7 @@ SetPresenceJob::SetPresenceJob(
 
 
 
-
+  
 BaseJob::Query GetPresenceJob::buildQuery(
 )
 {

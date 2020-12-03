@@ -62,6 +62,8 @@ public:
 
         
 
+        
+
       LeaveRoomJob withData(JsonWrap j) &&;
       LeaveRoomJob withData(JsonWrap j) const &;
       };
@@ -124,6 +126,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string roomId);
+
+        
 
         
 

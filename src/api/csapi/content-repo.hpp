@@ -55,13 +55,15 @@ std::string contentUri() const;
     explicit UploadContentJob(std::string serverUrl
     , std::string _accessToken
       ,
-        Bytes content , std::string filename  = {}, std::string contentType  = {});
+        Bytes content , std::optional<std::string> filename  = std::nullopt, std::optional<std::string> contentType  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
-    std::string filename);
+    std::optional<std::string> filename);
 
-      static BaseJob::Body buildBody(Bytes content, std::string filename, std::string contentType);
+      static BaseJob::Body buildBody(Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType);
+
+          static std::map<std::string, std::string> buildHeader(std::optional<std::string> contentType);
 
         
 
@@ -97,14 +99,14 @@ public:
     // Result properties
 /*
 /// The content type of the file that was previously uploaded.
-std::string contentType() const
+std::optional<std::string> contentType() const
     {
         return reply()->rawHeader("Content-Type");
     }
 */        
 /*
 /// The name of the file that was previously uploaded, if set.
-std::string contentDisposition() const
+std::optional<std::string> contentDisposition() const
     {
         return reply()->rawHeader("Content-Disposition");
     }
@@ -153,6 +155,8 @@ std::string contentDisposition() const
 
       static BaseJob::Body buildBody(std::string serverName, std::string mediaId, bool allowRemote);
 
+        
+
           static const immer::array<std::string> expectedContentTypes;
 
       GetContentJob withData(JsonWrap j) &&;
@@ -190,7 +194,7 @@ public:
     // Result properties
 /*
 /// The content type of the file that was previously uploaded.
-std::string contentType() const
+std::optional<std::string> contentType() const
     {
         return reply()->rawHeader("Content-Type");
     }
@@ -198,7 +202,7 @@ std::string contentType() const
 /*
 /// The ``fileName`` requested or the name of the file that was previously
 /// uploaded, if set.
-std::string contentDisposition() const
+std::optional<std::string> contentDisposition() const
     {
         return reply()->rawHeader("Content-Disposition");
     }
@@ -250,6 +254,8 @@ std::string contentDisposition() const
 
       static BaseJob::Body buildBody(std::string serverName, std::string mediaId, std::string fileName, bool allowRemote);
 
+        
+
           static const immer::array<std::string> expectedContentTypes;
 
       GetContentOverrideNameJob withData(JsonWrap j) &&;
@@ -286,7 +292,7 @@ public:
     // Result properties
 /*
 /// The content type of the thumbnail.
-std::string contentType() const
+std::optional<std::string> contentType() const
     {
         return reply()->rawHeader("Content-Type");
     }
@@ -339,13 +345,15 @@ std::string contentType() const
     explicit GetContentThumbnailJob(std::string serverUrl
     
       ,
-        std::string serverName , std::string mediaId , int width , int height , std::string method  = {}, bool allowRemote  = true);
+        std::string serverName , std::string mediaId , int width , int height , std::optional<std::string> method  = std::nullopt, bool allowRemote  = true);
 
 
     static BaseJob::Query buildQuery(
-    int width, int height, std::string method, bool allowRemote);
+    int width, int height, std::optional<std::string> method, bool allowRemote);
 
-      static BaseJob::Body buildBody(std::string serverName, std::string mediaId, int width, int height, std::string method, bool allowRemote);
+      static BaseJob::Body buildBody(std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote);
+
+        
 
           static const immer::array<std::string> expectedContentTypes;
 
@@ -396,7 +404,7 @@ std::optional<std::int_fast64_t> matrixImageSize() const;
 
     
 /// An `MXC URI`_ to the image. Omitted if there is no image.
-std::string ogImage() const;
+std::optional<std::string> ogImage() const;
 
 };
           static constexpr auto needsAuth() {
@@ -427,6 +435,8 @@ std::string ogImage() const;
     std::string url, std::optional<std::int_fast64_t> ts);
 
       static BaseJob::Body buildBody(std::string url, std::optional<std::int_fast64_t> ts);
+
+        
 
         
 
@@ -499,6 +509,8 @@ std::optional<std::int_fast64_t> uploadSize() const;
     );
 
       static BaseJob::Body buildBody();
+
+        
 
         
 

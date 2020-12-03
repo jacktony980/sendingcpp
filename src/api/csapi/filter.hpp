@@ -68,6 +68,8 @@ std::string filterId() const;
 
         
 
+        
+
       DefineFilterJob withData(JsonWrap j) &&;
       DefineFilterJob withData(JsonWrap j) const &;
       };
@@ -137,6 +139,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string userId, std::string filterId);
+
+        
 
         
 

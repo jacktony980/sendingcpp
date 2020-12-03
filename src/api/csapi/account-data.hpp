@@ -62,6 +62,8 @@ public:
 
         
 
+        
+
       SetAccountDataJob withData(JsonWrap j) &&;
       SetAccountDataJob withData(JsonWrap j) const &;
       };
@@ -122,6 +124,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string userId, std::string type);
+
+        
 
         
 
@@ -195,6 +199,8 @@ public:
 
         
 
+        
+
       SetAccountDataPerRoomJob withData(JsonWrap j) &&;
       SetAccountDataPerRoomJob withData(JsonWrap j) const &;
       };
@@ -258,6 +264,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string userId, std::string roomId, std::string type);
+
+        
 
         
 

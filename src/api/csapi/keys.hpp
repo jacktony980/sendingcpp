@@ -70,6 +70,8 @@ immer::map<std::string, int> oneTimeKeyCounts() const;
 
         
 
+        
+
       UploadKeysJob withData(JsonWrap j) &&;
       UploadKeysJob withData(JsonWrap j) const &;
       };
@@ -98,7 +100,7 @@ public:
     struct UnsignedDeviceInfo
         {
 /// The display name which the user set on the device.
-          std::string deviceDisplayName;
+          std::optional<std::string> deviceDisplayName;
         
         };
 
@@ -173,13 +175,15 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
     explicit QueryKeysJob(std::string serverUrl
     , std::string _accessToken
       ,
-        immer::map<std::string, immer::array<std::string>> deviceKeys , std::optional<int> timeout  = std::nullopt, std::string token  = {});
+        immer::map<std::string, immer::array<std::string>> deviceKeys , std::optional<int> timeout  = std::nullopt, std::optional<std::string> token  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::string token);
+      static BaseJob::Body buildBody(immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token);
+
+        
 
         
 
@@ -291,6 +295,8 @@ immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys() const;
 
         
 
+        
+
       ClaimKeysJob withData(JsonWrap j) &&;
       ClaimKeysJob withData(JsonWrap j) const &;
       };
@@ -378,6 +384,8 @@ immer::array<std::string> left() const;
     std::string from, std::string to);
 
       static BaseJob::Body buildBody(std::string from, std::string to);
+
+        
 
         
 

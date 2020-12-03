@@ -96,6 +96,8 @@ immer::array<ThirdPartyIdentifier> threepids() const;
 
         
 
+        
+
       GetAccount3PIDsJob withData(JsonWrap j) &&;
       GetAccount3PIDsJob withData(JsonWrap j) const &;
       };
@@ -199,6 +201,8 @@ public:
 
         
 
+        
+
       Post3PIDsJob withData(JsonWrap j) &&;
       Post3PIDsJob withData(JsonWrap j) const &;
       };
@@ -285,6 +289,8 @@ public:
 
         
 
+        
+
       Add3PIDJob withData(JsonWrap j) &&;
       Add3PIDJob withData(JsonWrap j) const &;
       };
@@ -354,6 +360,8 @@ public:
     );
 
       static BaseJob::Body buildBody(std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid);
+
+        
 
         
 
@@ -431,13 +439,15 @@ std::string idServerUnbindResult() const;
     explicit Delete3pidFromAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string medium , std::string address , std::string idServer  = {});
+        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+      static BaseJob::Body buildBody(std::string medium, std::string address, std::optional<std::string> idServer);
+
+        
 
         
 
@@ -514,13 +524,15 @@ std::string idServerUnbindResult() const;
     explicit Unbind3pidFromAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string medium , std::string address , std::string idServer  = {});
+        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     );
 
-      static BaseJob::Body buildBody(std::string medium, std::string address, std::string idServer);
+      static BaseJob::Body buildBody(std::string medium, std::string address, std::optional<std::string> idServer);
+
+        
 
         
 
@@ -608,6 +620,8 @@ public:
 
         
 
+        
+
       RequestTokenTo3PIDEmailJob withData(JsonWrap j) &&;
       RequestTokenTo3PIDEmailJob withData(JsonWrap j) const &;
       };
@@ -687,6 +701,8 @@ public:
     );
 
       static BaseJob::Body buildBody(MsisdnValidationData body);
+
+        
 
         
 
