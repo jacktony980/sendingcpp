@@ -215,6 +215,11 @@ namespace Kazv
                                   immer::flex_vector<std::string>{}));
         }
 
+        inline void setTyping(bool typing, std::optional<int> timeoutMs) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(SetTypingAction{+roomId(), typing, timeoutMs});
+        }
+
     private:
         lager::reader<RoomModel> m_room;
         lager::context<ClientAction> m_ctx;
