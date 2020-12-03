@@ -7,7 +7,7 @@ set(kazvclient_SRCS
   actions/membership.cpp
   actions/states.cpp
   actions/send.cpp
-  actions/sync.cpp
+  actions/ephemeral.cpp
   room/room-model.cpp
   )
 

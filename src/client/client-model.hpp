@@ -212,6 +212,13 @@ namespace Kazv
         immer::array<std::string> serverName;
     };
 
+    struct SetTypingAction
+    {
+        std::string roomId;
+        bool typing;
+        std::optional<int> timeoutMs;
+    };
+
     struct ProcessResponseAction
     {
         Response response;
@@ -247,6 +254,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(InviteToRoomAction);
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
     LAGER_CEREAL_STRUCT(JoinRoomAction);
+    LAGER_CEREAL_STRUCT(SetTypingAction);
     LAGER_CEREAL_STRUCT(ProcessResponseAction);
 #endif
 

@@ -273,6 +273,31 @@ namespace Kazv
             && a.stateKey == b.stateKey;
     }
 
+    struct SetTypingSuccessful
+    {
+        std::string roomId;
+    };
+
+    inline bool operator==(SetTypingSuccessful a, SetTypingSuccessful b)
+    {
+        return a.roomId == b.roomId;
+    }
+
+
+    struct SetTypingFailed
+    {
+        std::string roomId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(SetTypingFailed a, SetTypingFailed b)
+    {
+        return a.roomId == b.roomId
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
     struct SendStateEventFailed
     {
         std::string roomId;
@@ -330,6 +355,8 @@ namespace Kazv
         // states
         GetRoomStatesSuccessful, GetRoomStatesFailed,
         SendStateEventSuccessful, SendStateEventFailed,
+        // ephemeral
+        SetTypingSuccessful, SetTypingFailed,
 
         // general
         UnrecognizedResponse

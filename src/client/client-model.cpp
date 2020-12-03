@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
  *
  * This file is part of libkazv.
  *
@@ -33,6 +33,7 @@
 #include "actions/send.hpp"
 #include "actions/states.hpp"
 #include "actions/sync.hpp"
+#include "actions/ephemeral.hpp"
 
 namespace Kazv
 {
@@ -59,17 +60,24 @@ namespace Kazv
             [&](ProcessResponseAction a) -> Result {
                 auto r = std::move(a.response);
 
+                // auth
                 RESPONSE_FOR(Login);
+                // paginate
                 RESPONSE_FOR(GetRoomEvents);
+                // sync
                 RESPONSE_FOR(Sync);
+                // membership
                 RESPONSE_FOR(CreateRoom);
                 RESPONSE_FOR(InviteUser);
                 RESPONSE_FOR(JoinRoomById);
                 RESPONSE_FOR(JoinRoom);
+                // send
                 RESPONSE_FOR(SendMessage);
-                //RESPONSE_FOR();
-                //RESPONSE_FOR();
-
+                // states
+                RESPONSE_FOR(GetRoomState);
+                RESPONSE_FOR(SetRoomStateWithKey);
+                // ephemeral
+                RESPONSE_FOR(SetTyping);
 
                 m.addTrigger(UnrecognizedResponse{r});
                 return { m, lager::noop };

@@ -18,10 +18,10 @@ libkazv support the following functionalities:
 - Create rooms
 - Room invites
 - Join rooms
+- Typing notifications
 
 These functionalities are currently not supported:
 
-- Typing notifications
 - Receipts and fully-read markers
 - Setting presence
 - Content repository

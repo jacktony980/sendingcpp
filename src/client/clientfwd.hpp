@@ -46,6 +46,7 @@ namespace Kazv
     struct EmitKazvEventsAction;
     struct JoinRoomAction;
     struct ProcessResponseAction;
+    struct SetTypingAction;
 
     struct ClientModel;
 
@@ -64,7 +65,8 @@ namespace Kazv
         JoinRoomByIdAction,
         RoomListAction,
         JoinRoomAction,
-        ProcessResponseAction
+        ProcessResponseAction,
+        SetTypingAction
         >;
 
     using ClientEffect = lager::effect<ClientAction, lager::deps<>>;
