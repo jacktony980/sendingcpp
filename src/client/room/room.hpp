@@ -249,6 +249,16 @@ namespace Kazv
                        | jsonAtOr("event_id", std::string{}));
         }
 
+        inline void leave() const {
+            using namespace CursorOp;
+            m_ctx.dispatch(LeaveRoomAction{+roomId()});
+        }
+
+        inline void forget() const {
+            using namespace CursorOp;
+            m_ctx.dispatch(ForgetRoomAction{+roomId()});
+        }
+
     private:
         lager::reader<RoomModel> m_room;
         lager::context<ClientAction> m_ctx;

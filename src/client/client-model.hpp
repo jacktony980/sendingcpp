@@ -212,6 +212,17 @@ namespace Kazv
         immer::array<std::string> serverName;
     };
 
+    struct LeaveRoomAction
+    {
+        std::string roomId;
+    };
+
+    struct ForgetRoomAction
+    {
+        std::string roomId;
+    };
+
+
     struct SetTypingAction
     {
         std::string roomId;
@@ -266,6 +277,8 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(InviteToRoomAction);
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
     LAGER_CEREAL_STRUCT(JoinRoomAction);
+    LAGER_CEREAL_STRUCT(LeaveRoomAction);
+    LAGER_CEREAL_STRUCT(ForgetRoomAction);
     LAGER_CEREAL_STRUCT(SetTypingAction);
     LAGER_CEREAL_STRUCT(PostReceiptAction);
     LAGER_CEREAL_STRUCT(ProcessResponseAction);

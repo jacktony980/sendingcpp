@@ -71,6 +71,8 @@ namespace Kazv
                 RESPONSE_FOR(InviteUser);
                 RESPONSE_FOR(JoinRoomById);
                 RESPONSE_FOR(JoinRoom);
+                RESPONSE_FOR(LeaveRoom);
+                RESPONSE_FOR(ForgetRoom);
                 // send
                 RESPONSE_FOR(SendMessage);
                 // states

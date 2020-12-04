@@ -20,9 +20,11 @@ libkazv support the following functionalities:
 - Join rooms
 - Typing notifications
 - Receipts and fully-read markers
+- Leaving and forgetting rooms
 
 These functionalities are currently not supported:
 
+- Banning and kicking
 - Setting presence
 - Content repository
 - Send-to-device messages

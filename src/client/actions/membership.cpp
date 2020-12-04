@@ -194,4 +194,59 @@ namespace Kazv
         return { std::move(m), lager::noop};
     }
 
+    ClientResult updateClient(ClientModel m, LeaveRoomAction a)
+    {
+        auto job = m.job<LeaveRoomJob>()
+            .make(a.roomId)
+            .withData(json{{"roomId", a.roomId}});
+
+        m.addJob(std::move(job));
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, LeaveRoomResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        if (! r.success()) {
+            m.addTrigger(LeaveRoomFailed{
+                    roomId,
+                    r.errorCode(),
+                    r.errorMessage()
+                });
+            dbgClient << "Error leaving room" << std::endl;
+            return { std::move(m), lager::noop};
+        }
+
+        dbgClient << "Successfully left room" << std::endl;
+        m.addTrigger(LeaveRoomSuccessful{roomId});
+        return { std::move(m), lager::noop};
+    }
+
+    ClientResult updateClient(ClientModel m, ForgetRoomAction a)
+    {
+        auto job = m.job<ForgetRoomJob>()
+            .make(a.roomId)
+            .withData(json{{"roomId", a.roomId}});
+
+        m.addJob(std::move(job));
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, ForgetRoomResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        if (! r.success()) {
+            m.addTrigger(ForgetRoomFailed{
+                    roomId,
+                    r.errorCode(),
+                    r.errorMessage()
+                });
+            dbgClient << "Error forgetting room" << std::endl;
+            return { std::move(m), lager::noop};
+        }
+
+        dbgClient << "Successfully forgot room" << std::endl;
+        m.addTrigger(ForgetRoomSuccessful{roomId});
+        return { std::move(m), lager::noop};
+    }
 };

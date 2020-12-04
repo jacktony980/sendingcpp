@@ -45,6 +45,9 @@ namespace Kazv
     struct JoinRoomByIdAction;
     struct EmitKazvEventsAction;
     struct JoinRoomAction;
+    struct LeaveRoomAction;
+    struct ForgetRoomAction;
+
     struct ProcessResponseAction;
     struct SetTypingAction;
     struct PostReceiptAction;
@@ -53,11 +56,15 @@ namespace Kazv
     struct ClientModel;
 
     using ClientAction = std::variant<
+        RoomListAction,
+        Error::Action,
+
         LoginAction,
         TokenLoginAction,
         LogoutAction,
+
         SyncAction,
-        Error::Action,
+
         PaginateTimelineAction,
         SendMessageAction,
         SendStateEventAction,
@@ -65,9 +72,13 @@ namespace Kazv
         GetRoomStatesAction,
         InviteToRoomAction,
         JoinRoomByIdAction,
-        RoomListAction,
+
         JoinRoomAction,
+        LeaveRoomAction,
+        ForgetRoomAction,
+
         ProcessResponseAction,
+
         SetTypingAction,
         PostReceiptAction,
         SetReadMarkerAction

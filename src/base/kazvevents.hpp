@@ -207,6 +207,54 @@ namespace Kazv
         return a.roomIdOrAlias == b.roomIdOrAlias
             && a.errorCode == b.errorCode
             && a.error == b.error;
+    };
+
+    struct LeaveRoomSuccessful
+    {
+        std::string roomId;
+    };
+
+    inline bool operator==(LeaveRoomSuccessful a, LeaveRoomSuccessful b)
+    {
+        return a.roomId == b.roomId;
+    };
+
+    struct LeaveRoomFailed
+    {
+        std::string roomId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(LeaveRoomFailed a, LeaveRoomFailed b)
+    {
+        return a.roomId == b.roomId
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
+    struct ForgetRoomSuccessful
+    {
+        std::string roomId;
+    };
+
+    inline bool operator==(ForgetRoomSuccessful a, ForgetRoomSuccessful b)
+    {
+        return a.roomId == b.roomId;
+    };
+
+    struct ForgetRoomFailed
+    {
+        std::string roomId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(ForgetRoomFailed a, ForgetRoomFailed b)
+    {
+        return a.roomId == b.roomId
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
     }
 
     struct SendMessageSuccessful
@@ -408,6 +456,8 @@ namespace Kazv
         CreateRoomSuccessful, CreateRoomFailed,
         InviteUserSuccessful, InviteUserFailed,
         JoinRoomSuccessful, JoinRoomFailed,
+        LeaveRoomSuccessful, LeaveRoomFailed,
+        ForgetRoomSuccessful, ForgetRoomFailed,
         // send
         SendMessageSuccessful, SendMessageFailed,
         InvalidMessageFormat,
