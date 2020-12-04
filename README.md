@@ -19,10 +19,10 @@ libkazv support the following functionalities:
 - Room invites
 - Join rooms
 - Typing notifications
+- Receipts and fully-read markers
 
 These functionalities are currently not supported:
 
-- Receipts and fully-read markers
 - Setting presence
 - Content repository
 - Send-to-device messages

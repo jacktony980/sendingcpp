@@ -78,6 +78,8 @@ namespace Kazv
                 RESPONSE_FOR(SetRoomStateWithKey);
                 // ephemeral
                 RESPONSE_FOR(SetTyping);
+                RESPONSE_FOR(PostReceipt);
+                RESPONSE_FOR(SetReadMarker);
 
                 m.addTrigger(UnrecognizedResponse{r});
                 return { m, lager::noop };

@@ -27,7 +27,7 @@
 
 #include "client-test-util.hpp"
 
-// The example response from https://matrix.org/docs/spec/client_server/latest
+// The example response is adapted from https://matrix.org/docs/spec/client_server/latest
 static json syncResponseJson = R"({
   "next_batch": "s72595_4483_1934",
   "presence": {
@@ -155,6 +155,12 @@ static json syncResponseJson = R"({
               "content": {
                 "custom_config_key": "custom_config_value"
               }
+            },
+            {
+              "type": "m.fully_read",
+              "content": {
+                "event_id": "$anothermessageevent:example.org"
+              }
             }
           ]
         }
@@ -230,10 +236,10 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
                 }));
     }
 
+    auto eventId = "$anothermessageevent:example.org"s;
+
     SECTION("timeline should be updated") {
         auto timeline = +r.timelineEvents();
-
-        auto eventId = "$anothermessageevent:example.org"s;
 
         auto filtered = zug::into_vector(
             zug::filter([=](auto event) { return event.id() == eventId; }),
@@ -249,5 +255,11 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 
         auto eventHasRoomId = ev.originalJson().get().contains("room_id"s);
         REQUIRE(eventHasRoomId);
+    }
+
+    SECTION("fully read marker should be updated") {
+        auto readMarker = +r.readMarker();
+
+        REQUIRE(readMarker == eventId);
     }
 }

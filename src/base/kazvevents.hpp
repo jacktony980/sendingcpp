@@ -284,6 +284,24 @@ namespace Kazv
             && a.stateKey == b.stateKey;
     }
 
+    struct SendStateEventFailed
+    {
+        std::string roomId;
+        std::string eventType;
+        std::string stateKey;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(SendStateEventFailed a, SendStateEventFailed b)
+    {
+        return a.roomId == b.roomId
+            && a.eventType == b.eventType
+            && a.stateKey == b.stateKey
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
     struct SetTypingSuccessful
     {
         std::string roomId;
@@ -309,20 +327,50 @@ namespace Kazv
             && a.error == b.error;
     }
 
-    struct SendStateEventFailed
+    struct PostReceiptSuccessful
     {
         std::string roomId;
-        std::string eventType;
-        std::string stateKey;
+    };
+
+    inline bool operator==(PostReceiptSuccessful a, PostReceiptSuccessful b)
+    {
+        return a.roomId == b.roomId;
+    }
+
+    struct PostReceiptFailed
+    {
+        std::string roomId;
         std::string errorCode;
         std::string error;
     };
 
-    inline bool operator==(SendStateEventFailed a, SendStateEventFailed b)
+    inline bool operator==(PostReceiptFailed a, PostReceiptFailed b)
     {
         return a.roomId == b.roomId
-            && a.eventType == b.eventType
-            && a.stateKey == b.stateKey
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
+    struct SetReadMarkerSuccessful
+    {
+        std::string roomId;
+    };
+
+    inline bool operator==(SetReadMarkerSuccessful a, SetReadMarkerSuccessful b)
+    {
+        return a.roomId == b.roomId;
+    }
+
+    struct SetReadMarkerFailed
+    {
+        std::string roomId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(SetReadMarkerFailed a, SetReadMarkerFailed b)
+    {
+        return a.roomId == b.roomId
             && a.errorCode == b.errorCode
             && a.error == b.error;
     }
@@ -368,6 +416,8 @@ namespace Kazv
         SendStateEventSuccessful, SendStateEventFailed,
         // ephemeral
         SetTypingSuccessful, SetTypingFailed,
+        PostReceiptSuccessful, PostReceiptFailed,
+        SetReadMarkerSuccessful, SetReadMarkerFailed,
 
         // general
         UnrecognizedResponse

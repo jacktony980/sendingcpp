@@ -220,6 +220,35 @@ namespace Kazv
             m_ctx.dispatch(SetTypingAction{+roomId(), typing, timeoutMs});
         }
 
+        /* lager::reader<MapT<std::string, Event>> */
+        inline auto accountDataEvents() const {
+            return m_room
+                [&RoomModel::accountData];
+        }
+
+        /* lager::reader<std::optional<Event>> */
+        inline auto accountDataOpt(std::string type) const {
+            return m_room
+                [&RoomModel::accountData]
+                [type];
+        }
+
+        /* lager::reader<Event> */
+        inline auto accountData(std::string type) const {
+            return m_room
+                [&RoomModel::accountData]
+                [type]
+                [lager::lenses::or_default];
+        }
+
+        /* lager::reader<std::string> */
+        inline auto readMarker() const {
+            using namespace lager::lenses;
+            return accountData("m.fully_read")
+                .xform(eventContent
+                       | jsonAtOr("event_id", std::string{}));
+        }
+
     private:
         lager::reader<RoomModel> m_room;
         lager::context<ClientAction> m_ctx;

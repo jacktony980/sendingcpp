@@ -48,4 +48,57 @@ namespace Kazv
 
         return { std::move(m), lager::noop };
     }
+
+    ClientResult updateClient(ClientModel m, PostReceiptAction a)
+    {
+        auto job = m.job<PostReceiptJob>().make(
+            a.roomId,
+            /* receiptType = */ "m.read"s,
+            a.eventId)
+            .withData(json{{"roomId", a.roomId}});
+
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, PostReceiptResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        if (! r.success()) {
+            m.addTrigger(PostReceiptFailed{roomId, r.errorCode(), r.errorMessage()});
+
+            return { std::move(m), lager::noop };
+        }
+
+        m.addTrigger(PostReceiptSuccessful{roomId});
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, SetReadMarkerAction a)
+    {
+        auto job = m.job<SetReadMarkerJob>().make(
+            a.roomId,
+            /* mFullyRead = */ a.eventId)
+            .withData(json{{"roomId", a.roomId}});
+
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, SetReadMarkerResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        if (! r.success()) {
+            m.addTrigger(SetReadMarkerFailed{roomId, r.errorCode(), r.errorMessage()});
+
+            return { std::move(m), lager::noop };
+        }
+
+        m.addTrigger(SetReadMarkerSuccessful{roomId});
+
+        return { std::move(m), lager::noop };
+    }
 }

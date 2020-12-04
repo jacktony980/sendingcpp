@@ -219,6 +219,18 @@ namespace Kazv
         std::optional<int> timeoutMs;
     };
 
+    struct PostReceiptAction
+    {
+        std::string roomId;
+        std::string eventId;
+    };
+
+    struct SetReadMarkerAction
+    {
+        std::string roomId;
+        std::string eventId;
+    };
+
     struct ProcessResponseAction
     {
         Response response;
@@ -255,7 +267,9 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
     LAGER_CEREAL_STRUCT(JoinRoomAction);
     LAGER_CEREAL_STRUCT(SetTypingAction);
+    LAGER_CEREAL_STRUCT(PostReceiptAction);
     LAGER_CEREAL_STRUCT(ProcessResponseAction);
+    LAGER_CEREAL_STRUCT(SetReadMarkerAction);
 #endif
 
     template<class Archive>
