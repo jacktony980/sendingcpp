@@ -32,6 +32,17 @@ namespace Kazv
         return true;
     }
 
+    struct LoginFailed
+    {
+        std::string errorCode;
+        std::string error;
+    };
+    inline bool operator==(LoginFailed a, LoginFailed b)
+    {
+        return a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
     struct SyncSuccessful
     {
         std::string nextToken;
@@ -340,7 +351,7 @@ namespace Kazv
         ReceivingRoomAccountDataEvent,
 
         // auth
-        LoginSuccessful,
+        LoginSuccessful, LoginFailed,
         // sync
         SyncSuccessful, SyncFailed,
         // paginate

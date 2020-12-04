@@ -44,7 +44,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, LoginResponse r)
     {
         if (! r.success()) {
-            // TODO: add LoginFailed trigger
+            m.addTrigger(LoginFailed{r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }
 
