@@ -45,6 +45,18 @@ namespace Kazv
                 [&RoomModel::stateEvents];
         }
 
+        /* lager::reader<std::optional<Event>> */
+        inline auto stateOpt(KeyOfState k) const {
+            return stateEvents()
+                [std::move(k)];
+        }
+
+        /* lager::reader<Event> */
+        inline auto state(KeyOfState k) const {
+            return stateOpt(k)
+                [lager::lenses::or_default];
+        }
+
         /* lager::reader<RangeT<Event>> */
         inline auto timelineEvents() const {
             return m_room
@@ -257,6 +269,31 @@ namespace Kazv
         inline void forget() const {
             using namespace CursorOp;
             m_ctx.dispatch(ForgetRoomAction{+roomId()});
+        }
+
+        /* lager::reader<JsonWrap> */
+        inline auto avatar() const {
+            return state(KeyOfState{"m.room.avatar", ""})
+                .xform(eventContent);
+        }
+
+        /* lager::reader<RangeT<std::string>> */
+        inline auto pinnedEvents() const {
+            return state(KeyOfState{"m.room.pinned_events", ""})
+                .xform(eventContent
+                       | jsonAtOr("pinned", immer::flex_vector<std::string>{}));
+        }
+
+        inline void setPinnedEvents(immer::flex_vector<std::string> eventIds) const {
+            json j{
+                {"type", "m.room.pinned_events"},
+                {"content", {
+                        {"pinned", eventIds}
+                    }
+                }
+            };
+            Event e{j};
+            sendStateEvent(e);
         }
 
     private:
