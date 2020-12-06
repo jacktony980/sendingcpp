@@ -60,20 +60,23 @@ set(immer_BUILD_TESTS OFF)
 set(immer_BUILD_EXAMPLES OFF)
 set(immer_BUILD_DOCS OFF)
 set(immer_BUILD_EXTRAS OFF)
-FetchContent_Declare(immer GIT_REPOSITORY https://github.com/arximboldi/immer GIT_TAG 2076affd9d814afc019ba8cd8c2b18a6c79c9589)
+FetchContent_Declare(immer GIT_REPOSITORY https://github.com/arximboldi/immer GIT_TAG
+  800ddb04e528a3e83e69e8021d7e872e7c34cbcd)
 FetchContent_MakeAvailable(immer)
 
 set(zug_BUILD_TESTS OFF)
 set(zug_BUILD_EXAMPLES OFF)
 set(zug_BUILD_DOCS OFF)
-FetchContent_Declare(zug GIT_REPOSITORY https://github.com/arximboldi/zug GIT_TAG 0bf540906165143eb8b195284c588be29438a16b)
+FetchContent_Declare(zug GIT_REPOSITORY https://github.com/arximboldi/zug GIT_TAG
+  266cc7fcc01f546c4fd0dabf3a26c71ddc7f3e7d)
 FetchContent_MakeAvailable(zug)
 
 set(lager_BUILD_TESTS OFF)
 set(lager_BUILD_EXAMPLES OFF)
 set(lager_BUILD_DOCS OFF)
 set(lager_EMBED_RESOURCES_PATH OFF)
-FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG 5beaaa757ad43313b9358c9e73e072cfc690653c)
+FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG
+  ed56efe616f4577ce3f5748c092706d558543308)
 FetchContent_MakeAvailable(lager)
 
 set(JUST_INSTALL_CEREAL ON)
