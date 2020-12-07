@@ -21,15 +21,17 @@ target_link_libraries(kazvall INTERFACE kazvbase kazvapi kazvclient kazveventemi
 target_include_directories(kazvall
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/kazv>
+  $<INSTALL_INTERFACE:include/kazv>
   )
+
+install(TARGETS kazvall EXPORT libkazvConfig)
 
 if(libkazv_INSTALL_HEADERS)
   install(
     DIRECTORY
     ${CMAKE_CURRENT_SOURCE_DIR}/
 
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/kazv"
+    DESTINATION include/kazv
 
     FILES_MATCHING PATTERN "*.hpp"
 

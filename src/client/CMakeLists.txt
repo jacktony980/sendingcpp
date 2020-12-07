@@ -22,7 +22,7 @@ target_include_directories(kazvclient PRIVATE .)
 target_include_directories(kazvclient
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/kazv/client>
+  $<INSTALL_INTERFACE:include/kazv/client>
   )
 
-install(TARGETS kazvclient LIBRARY)
+install(TARGETS kazvclient EXPORT libkazvConfig LIBRARY)

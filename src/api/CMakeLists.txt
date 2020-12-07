@@ -15,7 +15,7 @@ target_include_directories(kazvapi PRIVATE .)
 target_include_directories(kazvapi
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/kazv/api>
+  $<INSTALL_INTERFACE:kazv/api>
   )
 
-install(TARGETS kazvapi LIBRARY)
+install(TARGETS kazvapi EXPORT libkazvConfig LIBRARY)

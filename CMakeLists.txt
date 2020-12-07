@@ -103,9 +103,12 @@ if(NOT Lager_FOUND)
   FetchContent_MakeAvailable(lager)
 endif()
 
-set(JUST_INSTALL_CEREAL ON)
-FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
-FetchContent_MakeAvailable(cereal)
+find_package(cereal)
+if(NOT cereal_FOUND)
+  set(JUST_INSTALL_CEREAL ON)
+  FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
+  FetchContent_MakeAvailable(cereal)
+endif()
 
 if(libkazv_BUILD_EXAMPLES)
   find_package(PkgConfig REQUIRED)
@@ -117,3 +120,12 @@ if(libkazv_OUTPUT_LEVEL)
 endif()
 
 add_subdirectory(src)
+
+
+set(ConfigPackageLocation lib/cmake/libkazv)
+install(EXPORT libkazvConfig
+  NAMESPACE
+    libkazv::
+  DESTINATION
+    ${ConfigPackageLocation}
+)

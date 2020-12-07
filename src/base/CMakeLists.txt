@@ -20,7 +20,7 @@ target_link_libraries_system(kazvbase
 target_include_directories(kazvbase
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/kazv/base>
+  $<INSTALL_INTERFACE:include/kazv/base>
   )
 
-install(TARGETS kazvbase LIBRARY)
+install(TARGETS kazvbase EXPORT libkazvConfig LIBRARY)
