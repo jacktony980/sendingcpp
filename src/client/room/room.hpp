@@ -128,6 +128,23 @@ namespace Kazv
 
         }
 
+        /* lager::reader<std::optional<Event>> */
+        inline auto memberEventFor(std::string userId) const {
+            return m_room
+                [&RoomModel::stateEvents]
+                .xform(containerMap(immer::flex_vector<Event>{},
+                                    zug::filter([=](auto val) {
+                                                    auto [k, v] = val;
+                                                    auto [type, stateKey] = k;
+                                                    return type == "m.room.member"s && stateKey == userId;
+                                                }) // -> RangeT<pair<KeyofState{...}, Event>>
+                                    | zug::map([](auto val) {
+                                                   auto [k, event] = val;
+                                                   return event;
+                                               })))
+                [0];
+        }
+
         lager::reader<bool> encrypted() const;
 
         /*lager::reader<std::string>*/

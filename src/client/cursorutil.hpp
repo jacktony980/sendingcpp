@@ -107,7 +107,7 @@ namespace Kazv
             auto operator()(ResultContainer c, Func transducer) {
                 return zug::map(
                     [=](auto m) {
-                        if constexpr (looksLikeImmer(m)) {
+                        if constexpr (looksLikeImmer(c)) {
                             return intoImmer(c, transducer, m);
                         } else {
                             return zug::into(c, transducer, m);
