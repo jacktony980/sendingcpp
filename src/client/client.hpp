@@ -82,12 +82,12 @@ namespace Kazv
         }
 
         inline void createRoom(RoomVisibility v,
-                               std::string name,
-                               std::string alias = {},
+                               std::optional<std::string> name = {},
+                               std::optional<std::string> alias = {},
                                immer::array<std::string> invite = {},
                                std::optional<bool> isDirect = {},
                                bool allowFederate = true,
-                               std::string topic = {}) const {
+                               std::optional<std::string> topic = {}) const {
             CreateRoomAction a;
             a.visibility = v;
             a.name = name;

@@ -59,6 +59,14 @@ namespace Kazv
                     });
             }
 
+            template<class Func>
+            void afterAll(Func &&func) {
+                reader.watch(
+                    [f=std::forward<Func>(func)](KazvEvent e) {
+                        f(e);
+                    });
+            }
+
         private:
             lager::reader<KazvEvent> reader;
         };

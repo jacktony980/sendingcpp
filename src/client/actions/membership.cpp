@@ -63,9 +63,9 @@ namespace Kazv
     ClientResult updateClient(ClientModel m, CreateRoomAction a)
     {
         auto visibility = visibilityToStr(a.visibility);
-        auto preset = a.preset
-            ? presetToStr(a.preset.value())
-            : ""s;
+        std::optional<std::string> preset = a.preset
+            ? std::optional<std::string>(presetToStr(a.preset.value()))
+            : std::nullopt;
 
         using StateEvT = Kazv::CreateRoomJob::StateEvent;
         auto initialState = intoImmer(

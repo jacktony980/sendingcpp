@@ -177,12 +177,12 @@ namespace Kazv
         using Visibility = RoomVisibility;
         using Preset = CreateRoomPreset;
         Visibility visibility;
-        std::string roomAliasName;
-        std::string name;
-        std::string topic;
+        std::optional<std::string> roomAliasName;
+        std::optional<std::string> name;
+        std::optional<std::string> topic;
         immer::array<std::string> invite;
         //immer::array<Invite3pid> invite3pid;
-        std::string roomVersion;
+        std::optional<std::string> roomVersion;
         JsonWrap creationContent;
         immer::array<Event> initialState;
         std::optional<Preset> preset;

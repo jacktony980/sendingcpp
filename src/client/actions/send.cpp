@@ -58,6 +58,12 @@ namespace Kazv
 
         m.nextTxnId = increaseTxnId(m.nextTxnId);
 
+        auto job = m.job<SendMessageJob>()
+            .make(a.roomId, type, txnId, content)
+            .withData(json{{"roomId", a.roomId}});
+
+        m.addJob(std::move(job));
+
         return { std::move(m), lager::noop };
     }
 
