@@ -50,6 +50,8 @@ namespace Kazv
         Header header;
         JsonWrap data;
         std::string jobId;
+        std::optional<std::string> queueId;
+        JobQueuePolicy queuePolicy;
     };
 
     BaseJob::Private::Private(std::string serverUrl,
@@ -139,6 +141,22 @@ namespace Kazv
         return std::get<JsonWrap>(body);
     }
 
+    json Response::dataJson(const std::string &key) const
+    {
+        return extraData.get()[key];
+    }
+
+    std::string Response::dataStr(const std::string &key) const
+    {
+        return dataJson(key);
+    }
+
+    std::string Response::jobId() const
+    {
+        return dataStr("-job-id");
+    }
+
+
     bool BaseJob::contentTypeMatches(immer::array<std::string> expected, std::string actual)
     {
         for (const auto &i : expected) {
@@ -186,6 +204,46 @@ namespace Kazv
         return ret;
     }
 
+    BaseJob BaseJob::withQueue(std::string id, JobQueuePolicy policy) &&
+    {
+        auto ret = BaseJob(std::move(*this));
+        ret.m_d->queueId = id;
+        ret.m_d->queuePolicy = policy;
+        return ret;
+    }
+
+    BaseJob BaseJob::withQueue(std::string id, JobQueuePolicy policy) const &
+    {
+        auto ret = BaseJob(*this);
+        ret.m_d->queueId = id;
+        ret.m_d->queuePolicy = policy;
+        return ret;
+    }
+
+    json BaseJob::dataJson(const std::string &key) const
+    {
+        return m_d->data.get()[key];
+    }
+
+    std::string BaseJob::dataStr(const std::string &key) const
+    {
+        return dataJson(key);
+    }
+
+    std::string BaseJob::jobId() const
+    {
+        return m_d->jobId;
+    }
+
+    std::optional<std::string> BaseJob::queueId() const
+    {
+        return m_d->queueId;
+    }
+
+    JobQueuePolicy BaseJob::queuePolicy() const
+    {
+        return m_d->queuePolicy;
+    }
 
     std::string Response::errorCode() const
     {

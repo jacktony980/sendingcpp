@@ -22,6 +22,7 @@
 
 #include <boost/asio.hpp>
 #include "jobinterface.hpp"
+#include "descendent.hpp"
 
 namespace Kazv
 {
@@ -30,11 +31,18 @@ namespace Kazv
         CprJobHandler(boost::asio::io_context::executor_type executor);
         ~CprJobHandler() override;
         void async(std::function<void()> func) override;
-        void setTimeout(std::function<void()> func, int ms) override;
-        void setInterval(std::function<void()> func, int ms) override;
+        void setTimeout(std::function<void()> func, int ms,
+                        std::optional<std::string> timerId = std::nullopt) override;
+        void setInterval(std::function<void()> func, int ms,
+                         std::optional<std::string> timerId = std::nullopt) override;
+        void cancel(std::string timerId) override;
+
         void submit(BaseJob job,
                     std::function<void(Response)> callback) override;
+
+        void stop();
     private:
-        boost::asio::io_context::executor_type executor;
+        struct Private;
+        Descendent<Private> m_d;
     };
 }

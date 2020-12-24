@@ -37,7 +37,7 @@ TEST_CASE("Base job should fetch correctly", "[basejob]")
     CprJobHandler h(ioContext.get_executor());
     h.submit(
         job.withData(json{{"test", "bar"}}),
-        [](auto r) {
+        [&h](auto r) {
             if (r.statusCode == 200) {
                 REQUIRE( isBodyJson(r.body) );
 
@@ -48,6 +48,7 @@ TEST_CASE("Base job should fetch correctly", "[basejob]")
 
                 REQUIRE( r.dataStr("test") == "bar" );
             }
+            h.stop();
         });
     ioContext.run();
 }

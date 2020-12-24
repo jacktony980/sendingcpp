@@ -50,6 +50,12 @@ namespace Kazv
         return std::holds_alternative<JsonBody>(body);
     };
 
+    enum JobQueuePolicy
+    {
+        AlwaysContinue,
+        CancelFutureIfFailed
+    };
+
     struct Response {
         using StatusCode = int;
         StatusCode statusCode;
@@ -62,15 +68,9 @@ namespace Kazv
         constexpr bool success() const {
             return statusCode < 400;
         }
-        inline json dataJson(const std::string &key) const {
-            return extraData.get()[key];
-        }
-        inline std::string dataStr(const std::string &key) const {
-            return dataJson(key);
-        }
-        inline std::string jobId() const {
-            return dataStr("-job-id");
-        }
+        json dataJson(const std::string &key) const;
+        std::string dataStr(const std::string &key) const;
+        std::string jobId() const;
     };
 
     inline bool operator==(Response a, Response b)
@@ -149,6 +149,15 @@ namespace Kazv
 
         BaseJob withData(JsonWrap j) &&;
         BaseJob withData(JsonWrap j) const &;
+
+        BaseJob withQueue(std::string id, JobQueuePolicy policy = AlwaysContinue) &&;
+        BaseJob withQueue(std::string id, JobQueuePolicy policy = AlwaysContinue) const &;
+
+        json dataJson(const std::string &key) const;
+        std::string dataStr(const std::string &key) const;
+        std::string jobId() const;
+        std::optional<std::string> queueId() const;
+        JobQueuePolicy queuePolicy() const;
 
     protected:
         void attachData(JsonWrap data);

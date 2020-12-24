@@ -242,6 +242,14 @@ namespace Kazv
         std::string eventId;
     };
 
+    struct UploadContentAction
+    {
+        Bytes content;
+        std::optional<std::string> filename;
+        std::optional<std::string> contentType;
+        std::string uploadId; // to be used by library users
+    };
+
     struct ProcessResponseAction
     {
         Response response;
