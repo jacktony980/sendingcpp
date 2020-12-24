@@ -17,6 +17,7 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <vector>
 
 #include "debug.hpp"
 
@@ -25,5 +26,23 @@ namespace Kazv
     namespace detail
     {
         boost::iostreams::stream<boost::iostreams::null_sink> voidOutputHelper{boost::iostreams::null_sink()};
+
+        std::ostream &OutputHelper::basicFormat() const
+        {
+            auto now = std::chrono::system_clock::now();
+            std::time_t nowTimeT = std::chrono::system_clock::to_time_t(now);
+
+            std::vector<char> timeStr(40, '0');
+            std::strftime(timeStr.data(), 40, "%Y,%-m,%-d (%u) %H,%M,%S", std::localtime(&nowTimeT));
+            return std::cerr << "[" << timeStr.data() << "]["
+                             << category << "]["
+                             << severity << "] ";
+        }
     }
 }
+
+#if LIBKAZV_OUTPUT_LEVEL >= LIBKAZV_OUTPUT_LEVEL_DEBUG
+const ::Kazv::detail::OutputHelper dbgApi{"api", "debug"};
+const ::Kazv::detail::OutputHelper dbgClient{"client", "debug"};
+const ::Kazv::detail::OutputHelper dbgJob{"job", "debug"};
+#endif

@@ -20,6 +20,9 @@
 
 #pragma once
 #include <iostream>
+#include <chrono>
+#include <ctime>
+
 #include <boost/iostreams/stream.hpp>
 
 #ifndef LIBKAZV_OUTPUT_LEVEL
@@ -39,14 +42,27 @@ namespace Kazv
     namespace detail
     {
         extern boost::iostreams::stream<boost::iostreams::null_sink> voidOutputHelper;
+
+        struct OutputHelper
+        {
+            std::string category;
+            std::string severity;
+
+            std::ostream &basicFormat() const;
+
+            template<class T>
+            std::ostream &operator<<(T &&arg) const {
+                return basicFormat() << std::forward<T>(arg);
+            }
+        };
     }
 }
 
 
 #if LIBKAZV_OUTPUT_LEVEL >= LIBKAZV_OUTPUT_LEVEL_DEBUG
-#define dbgApi std::cerr
-#define dbgClient std::cerr
-#define dbgJob std::cerr
+extern const ::Kazv::detail::OutputHelper dbgApi;
+extern const ::Kazv::detail::OutputHelper dbgClient;
+extern const ::Kazv::detail::OutputHelper dbgJob;
 #else
 #define dbgApi ::Kazv::detail::voidOutputHelper
 #define dbgClient ::Kazv::detail::voidOutputHelper
