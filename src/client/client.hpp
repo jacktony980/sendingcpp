@@ -111,6 +111,24 @@ namespace Kazv
             m_ctx.dispatch(JoinRoomAction{roomId, serverName});
         }
 
+        inline void uploadContent(immer::box<Bytes> content,
+                                  std::string uploadId,
+                                  std::optional<std::string> filename = std::nullopt,
+                                  std::optional<std::string> contentType = std::nullopt) const {
+            m_ctx.dispatch(UploadContentAction{content, filename, contentType, uploadId});
+        }
+
+        inline void downloadContent(std::string mxcUri) const {
+            m_ctx.dispatch(DownloadContentAction{mxcUri});
+        }
+
+        inline void downloadThumbnail(std::string mxcUri,
+                                      int width,
+                                      int height,
+                                      std::optional<ThumbnailResizingMethod> method = std::nullopt) const {
+            m_ctx.dispatch(DownloadThumbnailAction{mxcUri, width, height, method, std::nullopt});
+        }
+
     private:
         lager::reader<ClientModel> m_client;
         lager::context<ClientAction> m_ctx;
