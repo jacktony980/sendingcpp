@@ -97,20 +97,28 @@ public:
   bool success() const;
 
     // Result properties
-/*
+
 /// The content type of the file that was previously uploaded.
 std::optional<std::string> contentType() const
     {
-        return reply()->rawHeader("Content-Type");
+        auto it = header->find("Content-Type");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        
-/*
+
 /// The name of the file that was previously uploaded, if set.
 std::optional<std::string> contentDisposition() const
     {
-        return reply()->rawHeader("Content-Disposition");
+        auto it = header->find("Content-Disposition");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        
 
 /// The content that was previously uploaded.
     Bytes data() const
@@ -192,21 +200,29 @@ public:
   bool success() const;
 
     // Result properties
-/*
+
 /// The content type of the file that was previously uploaded.
 std::optional<std::string> contentType() const
     {
-        return reply()->rawHeader("Content-Type");
+        auto it = header->find("Content-Type");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        
-/*
+
 /// The ``fileName`` requested or the name of the file that was previously
 /// uploaded, if set.
 std::optional<std::string> contentDisposition() const
     {
-        return reply()->rawHeader("Content-Disposition");
+        auto it = header->find("Content-Disposition");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        
 
 /// The content that was previously uploaded.
     Bytes data() const
@@ -290,13 +306,17 @@ public:
   bool success() const;
 
     // Result properties
-/*
+
 /// The content type of the thumbnail.
 std::optional<std::string> contentType() const
     {
-        return reply()->rawHeader("Content-Type");
+        auto it = header->find("Content-Type");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        
 
 /// A thumbnail of the requested content.
     Bytes data() const

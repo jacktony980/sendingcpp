@@ -46,12 +46,17 @@ public:
 
     // Result properties
         {{#headers}}
-/*
+
     {{>nonInlineResponseSignature}}
     {
-        return reply()->rawHeader("{{baseName}}");
+        auto it = header->find("{{baseName}}");
+        if (it != header->end()) {
+            return it->second;
+        } else {
+            return std::nullopt;
+        }
     }
-*/        {{/headers}}
+        {{/headers}}
         {{#inlineResponse}}
 
     {{>docCommentShort}}

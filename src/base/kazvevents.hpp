@@ -423,6 +423,90 @@ namespace Kazv
             && a.error == b.error;
     }
 
+    struct UploadContentSuccessful
+    {
+        std::string mxcUri;
+        std::string uploadId;
+    };
+
+    inline bool operator==(UploadContentSuccessful a, UploadContentSuccessful b)
+    {
+        return a.mxcUri == b.mxcUri
+            && a.uploadId == b.uploadId;
+    };
+
+    struct UploadContentFailed
+    {
+        std::string uploadId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(UploadContentFailed a, UploadContentFailed b)
+    {
+        return a.uploadId == b.uploadId
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
+    struct DownloadContentSuccessful
+    {
+        std::string mxcUri;
+        immer::box<Bytes> content;
+        std::optional<std::string> filename;
+        std::optional<std::string> contentType;
+    };
+
+    inline bool operator==(DownloadContentSuccessful a, DownloadContentSuccessful b)
+    {
+        return a.mxcUri == b.mxcUri
+            && a.content == b.content
+            && a.filename == b.filename
+            && a.contentType == b.contentType;
+    };
+
+    struct DownloadContentFailed
+    {
+        std::string mxcUri;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(DownloadContentFailed a, DownloadContentFailed b)
+    {
+        return a.mxcUri == b.mxcUri
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
+    struct DownloadThumbnailSuccessful
+    {
+        std::string mxcUri;
+        immer::box<Bytes> content;
+        std::optional<std::string> contentType;
+    };
+
+    inline bool operator==(DownloadThumbnailSuccessful a, DownloadThumbnailSuccessful b)
+    {
+        return a.mxcUri == b.mxcUri
+            && a.content == b.content
+            && a.contentType == b.contentType;
+    };
+
+    struct DownloadThumbnailFailed
+    {
+        std::string mxcUri;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(DownloadThumbnailFailed a, DownloadThumbnailFailed b)
+    {
+        return a.mxcUri == b.mxcUri
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
     struct UnrecognizedResponse
     {
         Response response;
@@ -468,6 +552,10 @@ namespace Kazv
         SetTypingSuccessful, SetTypingFailed,
         PostReceiptSuccessful, PostReceiptFailed,
         SetReadMarkerSuccessful, SetReadMarkerFailed,
+        // content
+        UploadContentSuccessful, UploadContentFailed,
+        DownloadContentSuccessful, DownloadContentFailed,
+        DownloadThumbnailSuccessful, DownloadThumbnailFailed,
 
         // general
         UnrecognizedResponse

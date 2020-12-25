@@ -34,6 +34,7 @@
 #include "actions/states.hpp"
 #include "actions/sync.hpp"
 #include "actions/ephemeral.hpp"
+#include "actions/content.hpp"
 
 namespace Kazv
 {
@@ -48,6 +49,10 @@ namespace Kazv
             [&](RoomListAction a) -> Result {
                 m.roomList = RoomListModel::update(std::move(m.roomList), a);
                 return {std::move(m), lager::noop};
+            },
+            [&](ResubmitJobAction a) -> Result {
+                m.addJob(std::move(a.job));
+                return { std::move(m), lager::noop };
             },
             [&](auto a) -> decltype(updateClient(m, a)) {
                 return updateClient(m, a);
@@ -82,6 +87,10 @@ namespace Kazv
                 RESPONSE_FOR(SetTyping);
                 RESPONSE_FOR(PostReceipt);
                 RESPONSE_FOR(SetReadMarker);
+                // content
+                RESPONSE_FOR(UploadContent);
+                RESPONSE_FOR(GetContent);
+                RESPONSE_FOR(GetContentThumbnail);
 
                 m.addTrigger(UnrecognizedResponse{r});
                 return { m, lager::noop };

@@ -53,6 +53,12 @@ namespace Kazv
     struct PostReceiptAction;
     struct SetReadMarkerAction;
 
+    struct UploadContentAction;
+    struct DownloadContentAction;
+    struct DownloadThumbnailAction;
+
+    struct ResubmitJobAction;
+
     struct ClientModel;
 
     using ClientAction = std::variant<
@@ -81,7 +87,13 @@ namespace Kazv
 
         SetTypingAction,
         PostReceiptAction,
-        SetReadMarkerAction
+        SetReadMarkerAction,
+
+        UploadContentAction,
+        DownloadContentAction,
+        DownloadThumbnailAction,
+
+        ResubmitJobAction
         >;
 
     using ClientEffect = lager::effect<ClientAction, lager::deps<>>;

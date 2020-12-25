@@ -21,12 +21,12 @@ libkazv support the following functionalities:
 - Typing notifications
 - Receipts and fully-read markers
 - Leaving and forgetting rooms
+- Content repository
 
 These functionalities are currently not supported:
 
 - Banning and kicking
 - Setting presence
-- Content repository
 - Send-to-device messages
 - Device management
 - Direct messages

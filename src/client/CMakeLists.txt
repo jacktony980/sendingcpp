@@ -8,6 +8,8 @@ set(kazvclient_SRCS
   actions/states.cpp
   actions/send.cpp
   actions/ephemeral.cpp
+  actions/content.cpp
+
   room/room-model.cpp
   )
 

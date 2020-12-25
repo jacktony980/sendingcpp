@@ -57,6 +57,12 @@ namespace Kazv
         TrustedPrivateChat,
     };
 
+    enum ThumbnailResizingMethod
+    {
+        Crop,
+        Scale,
+    };
+
     struct ClientModel
     {
         std::string serverUrl;
@@ -244,10 +250,29 @@ namespace Kazv
 
     struct UploadContentAction
     {
-        Bytes content;
+        immer::box<Bytes> content;
         std::optional<std::string> filename;
         std::optional<std::string> contentType;
         std::string uploadId; // to be used by library users
+    };
+
+    struct DownloadContentAction
+    {
+        std::string mxcUri;
+    };
+
+    struct DownloadThumbnailAction
+    {
+        std::string mxcUri;
+        int width;
+        int height;
+        std::optional<ThumbnailResizingMethod> method;
+        std::optional<bool> allowRemote;
+    };
+
+    struct ResubmitJobAction
+    {
+        BaseJob job;
     };
 
     struct ProcessResponseAction
@@ -291,6 +316,12 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(PostReceiptAction);
     LAGER_CEREAL_STRUCT(ProcessResponseAction);
     LAGER_CEREAL_STRUCT(SetReadMarkerAction);
+
+    LAGER_CEREAL_STRUCT(UploadContentAction);
+    LAGER_CEREAL_STRUCT(DownloadContentAction);
+    LAGER_CEREAL_STRUCT(DownloadThumbnailAction);
+
+    LAGER_CEREAL_STRUCT(ResubmitJobAction);
 #endif
 
     template<class Archive>
