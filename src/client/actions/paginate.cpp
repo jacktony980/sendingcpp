@@ -57,7 +57,7 @@ namespace Kazv
         auto roomId = r.dataStr("roomId");
 
         if (! r.success()) {
-            dbgClient << "Get room events failed" << std::endl;
+            kzo.client.dbg() << "Get room events failed" << std::endl;
             m.addTrigger(PaginateFailed{roomId});
             return { m, lager::noop };
         }

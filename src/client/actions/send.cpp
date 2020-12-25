@@ -44,7 +44,7 @@ namespace Kazv
         auto type = origJson["type"];
         auto content = origJson["content"];
 
-        dbgClient << "Sending message of type " << type
+        kzo.client.dbg() << "Sending message of type " << type
                   << " with content " << content.dump()
                   << " to " << a.roomId
                   << " as #" << m.nextTxnId << std::endl;
@@ -71,7 +71,7 @@ namespace Kazv
     {
         auto roomId = r.dataStr("roomId");
         if (! r.success()) {
-            dbgClient << "Send message failed" << std::endl;
+            kzo.client.dbg() << "Send message failed" << std::endl;
             m.addTrigger(SendMessageFailed{roomId, r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }

@@ -25,46 +25,60 @@
 
 #include <boost/iostreams/stream.hpp>
 
-#ifndef LIBKAZV_OUTPUT_LEVEL
-#ifndef NDEBUG
-#define LIBKAZV_OUTPUT_LEVEL 100
-#else
-#define LIBKAZV_OUTPUT_LEVEL 0
-#endif // NDEBUG
-#endif // LIBKAZV_OUTPUT_LEVEL
-
-#define LIBKAZV_OUTPUT_LEVEL_DEBUG 90
-#define LIBKAZV_OUTPUT_LEVEL_INFO 70
-#define LIBKAZV_OUTPUT_LEVEL_QUIET 20
-
 namespace Kazv
 {
     namespace detail
     {
         extern boost::iostreams::stream<boost::iostreams::null_sink> voidOutputHelper;
 
+        enum OutputLevel
+        {
+            NONE,
+            ERROR,
+            WARNING,
+            INFO,
+            DEBUG,
+        };
+
         struct OutputHelper
         {
             std::string category;
-            std::string severity;
+            OutputLevel severity;
+            OutputLevel level;
 
             std::ostream &basicFormat() const;
 
             template<class T>
             std::ostream &operator<<(T &&arg) const {
-                return basicFormat() << std::forward<T>(arg);
+                if (severity <= level) {
+                    return basicFormat() << std::forward<T>(arg);
+                } else {
+                    return voidOutputHelper;
+                }
             }
         };
+
+        struct OutputGroup
+        {
+            std::string name;
+            OutputLevel level;
+
+            OutputHelper dbg() const;
+            OutputHelper info() const;
+            OutputHelper warn() const;
+            OutputHelper err() const;
+        };
+
+        struct OutputConfig
+        {
+            OutputConfig();
+            OutputGroup api;
+            OutputGroup base;
+            OutputGroup client;
+            OutputGroup ee;
+            OutputGroup job;
+        };
     }
+
+    extern const detail::OutputConfig kzo;
 }
-
-
-#if LIBKAZV_OUTPUT_LEVEL >= LIBKAZV_OUTPUT_LEVEL_DEBUG
-extern const ::Kazv::detail::OutputHelper dbgApi;
-extern const ::Kazv::detail::OutputHelper dbgClient;
-extern const ::Kazv::detail::OutputHelper dbgJob;
-#else
-#define dbgApi ::Kazv::detail::voidOutputHelper
-#define dbgClient ::Kazv::detail::voidOutputHelper
-#define dbgJob ::Kazv::detail::voidOutputHelper
-#endif

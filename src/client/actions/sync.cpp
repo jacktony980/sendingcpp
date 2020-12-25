@@ -41,7 +41,7 @@ namespace Kazv
     // from the ClientModel model it is passed.
     ClientResult updateClient(ClientModel m, SyncAction)
     {
-        dbgClient << "Start syncing with token " << m.syncToken << std::endl;
+        kzo.client.dbg() << "Start syncing with token " << m.syncToken << std::endl;
         m.addJob(SyncJob(m.serverUrl,
                          m.token,
                          {}, // filter
@@ -152,19 +152,19 @@ namespace Kazv
     {
         if (! r.success()) {
             m.addTrigger(SyncFailed{});
-            dbgClient << "Sync failed" << std::endl;
-            dbgClient << r.statusCode << std::endl;
+            kzo.client.dbg() << "Sync failed" << std::endl;
+            kzo.client.dbg() << r.statusCode << std::endl;
             if (isBodyJson(r.body)) {
                 auto j = r.jsonBody();
-                dbgClient << "Json says: " << j.get().dump() << std::endl;
+                kzo.client.dbg() << "Json says: " << j.get().dump() << std::endl;
             } else {
-                dbgClient << "Response body: "
+                kzo.client.dbg() << "Response body: "
                           << std::get<BaseJob::BytesBody>(r.body) << std::endl;
             }
             return { m, lager::noop };
         }
 
-        dbgClient << "Sync successful" << std::endl;
+        kzo.client.dbg() << "Sync successful" << std::endl;
 
         auto rooms = r.rooms();
         auto accountData = r.accountData();

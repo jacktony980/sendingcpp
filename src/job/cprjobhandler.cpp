@@ -80,10 +80,10 @@ namespace Kazv
                 json{ {"errcode", headFailureCancelledErrorCode},
                       {"error", headFailureCancelledErrorMsg} }
                 );
-            dbgJob << "clearQueueImpl called with " << queueId << std::endl;
+            kzo.job.dbg() << "clearQueueImpl called with " << queueId << std::endl;
 
             for (auto [job, callback, status] : jobQueues[queueId]) {
-                dbgJob << "this job is " << (status == Waiting ? "Waiting" : "Running") << std::endl;
+                kzo.job.dbg() << "this job is " << (status == Waiting ? "Waiting" : "Running") << std::endl;
                 if (status == Waiting) {
                     // Run callback in a different thread, just as in submitImpl().
                     q->async([=] { callback(job.genResponse(fakeResponse)); } );
@@ -100,9 +100,9 @@ namespace Kazv
         }
 
         void popJobImpl(std::string queueId) {
-            dbgJob << "popJobImpl called with " << queueId << std::endl;
+            kzo.job.dbg() << "popJobImpl called with " << queueId << std::endl;
             if (! jobQueues[queueId].empty()) {
-                dbgJob << "the first job is "
+                kzo.job.dbg() << "the first job is "
                        << (jobQueues[queueId].front().status == Waiting ? "Waiting" : "Running") << std::endl;
                 jobQueues[queueId].pop_front();
             }
@@ -114,10 +114,10 @@ namespace Kazv
                 [=] {
                     // precondition: job has a queueId
                     for (auto &[queueId, queue] : jobQueues) { // need to change queue
-                        dbgJob << "monitoring queue " << queueId << std::endl;
+                        kzo.job.dbg() << "monitoring queue " << queueId << std::endl;
                         if (! queue.empty()) {
                             auto [job, callback, status] = queue.front();
-                            dbgJob << "the first job is "
+                            kzo.job.dbg() << "the first job is "
                                    << (status == Waiting ? "Waiting" : "Running") << std::endl;
                             if (status == Waiting) {
                                 queue.front().status = Running;
@@ -279,7 +279,7 @@ namespace Kazv
                                     body = BaseJob::JsonBody(std::move(json::parse(r.text)));
                                 } catch (const json::exception &e) {
                                     // the response is not valid json
-                                    dbgJob << "body is not correct json: " << e.what() << std::endl;
+                                    kzo.job.dbg() << "body is not correct json: " << e.what() << std::endl;
                                 }
                             }
 

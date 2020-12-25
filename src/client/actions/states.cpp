@@ -73,7 +73,7 @@ namespace Kazv
         auto content = event.content();
         auto stateKey = event.stateKey();
 
-        dbgClient << "Sending state event of type " << type
+        kzo.client.dbg() << "Sending state event of type " << type
                   << " with content " << content.get().dump()
                   << " to " << a.roomId
                   << " with state key #" << stateKey << std::endl;
@@ -101,7 +101,7 @@ namespace Kazv
         auto stateKey = r.dataStr("stateKey");
 
         if (! r.success()) {
-            dbgClient << "Send state event failed" << std::endl;
+            kzo.client.dbg() << "Send state event failed" << std::endl;
             m.addTrigger(SendStateEventFailed{roomId, eventType, stateKey, r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }

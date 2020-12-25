@@ -98,7 +98,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, CreateRoomResponse r)
     {
         if (! r.success()) {
-            dbgClient << "Create room failed" << std::endl;
+            kzo.client.dbg() << "Create room failed" << std::endl;
             m.addTrigger(CreateRoomFailed{r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }
@@ -127,13 +127,13 @@ namespace Kazv
 
         if (! r.success()) {
             // Error
-            dbgClient << "Error inviting user" << std::endl;
+            kzo.client.dbg() << "Error inviting user" << std::endl;
 
             m.addTrigger(InviteUserFailed{roomId, userId, r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }
 
-        dbgClient << "Inviting user successful" << std::endl;
+        kzo.client.dbg() << "Inviting user successful" << std::endl;
         m.addTrigger(InviteUserSuccessful{roomId, userId});
         return { std::move(m), lager::noop };
     }
@@ -157,11 +157,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            dbgClient << "Error joining room" << std::endl;
+            kzo.client.dbg() << "Error joining room" << std::endl;
             return { std::move(m), lager::noop};
         }
 
-        dbgClient << "Successfully joined room" << std::endl;
+        kzo.client.dbg() << "Successfully joined room" << std::endl;
         m.addTrigger(JoinRoomSuccessful{roomIdOrAlias});
         return { std::move(m), lager::noop};
     }
@@ -185,11 +185,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            dbgClient << "Error joining room" << std::endl;
+            kzo.client.dbg() << "Error joining room" << std::endl;
             return { std::move(m), lager::noop};
         }
 
-        dbgClient << "Successfully joined room" << std::endl;
+        kzo.client.dbg() << "Successfully joined room" << std::endl;
         m.addTrigger(JoinRoomSuccessful{roomIdOrAlias});
         return { std::move(m), lager::noop};
     }
@@ -213,11 +213,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            dbgClient << "Error leaving room" << std::endl;
+            kzo.client.dbg() << "Error leaving room" << std::endl;
             return { std::move(m), lager::noop};
         }
 
-        dbgClient << "Successfully left room" << std::endl;
+        kzo.client.dbg() << "Successfully left room" << std::endl;
         m.addTrigger(LeaveRoomSuccessful{roomId});
         return { std::move(m), lager::noop};
     }
@@ -241,11 +241,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            dbgClient << "Error forgetting room" << std::endl;
+            kzo.client.dbg() << "Error forgetting room" << std::endl;
             return { std::move(m), lager::noop};
         }
 
-        dbgClient << "Successfully forgot room" << std::endl;
+        kzo.client.dbg() << "Successfully forgot room" << std::endl;
         m.addTrigger(ForgetRoomSuccessful{roomId});
         return { std::move(m), lager::noop};
     }

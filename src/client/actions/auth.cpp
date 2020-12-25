@@ -48,7 +48,7 @@ namespace Kazv
             return { std::move(m), lager::noop };
         }
 
-        dbgClient << "Job success" << std::endl;
+        kzo.client.dbg() << "Job success" << std::endl;
         const json &j = r.jsonBody().get();
         // TODO: replace this with r.wellKnown()
         std::string serverUrl = j.contains("well_known")
