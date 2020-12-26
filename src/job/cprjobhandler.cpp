@@ -188,7 +188,7 @@ namespace Kazv
     };
 
     CprJobHandler::CprJobHandler(boost::asio::io_context::executor_type executor)
-        : m_d(Private{this, std::move(executor), Private::TimerMap{}, Private::JobMap{}})
+        : m_d(new Private{this, std::move(executor), Private::TimerMap{}, Private::JobMap{}})
     {
         setInterval(
             [=] {

@@ -23,7 +23,7 @@
 #include <lager/debug/cereal/struct.hpp>
 
 #include <nlohmann/json.hpp>
-#include <immer/array.hpp>
+#include <immer/box.hpp>
 
 namespace Kazv
 {
@@ -31,17 +31,22 @@ namespace Kazv
 
     class JsonWrap
     {
-        // Cannot use box here, because it causes the resulting json
+        // Cannot directly use box here, because it causes the resulting json
         // to be wrapped into an array.
         // https://github.com/arximboldi/immer/issues/155
-        immer::array<json> m_d;
-    public:
-        JsonWrap() : m_d(1, json()) {}
-        JsonWrap(json&& j) : m_d(1, std::move(j)) {}
-        JsonWrap(const json& j) : m_d(1, j) {}
+        struct Private
+        {
+            json j;
+        };
 
-        const json &get() const { return m_d.at(0); }
-        operator json() const { return m_d.at(0); }
+        immer::box<Private> m_d;
+    public:
+        JsonWrap() : m_d(Private{json()}) {}
+        JsonWrap(json&& j) : m_d(Private{std::move(j)}) {}
+        JsonWrap(const json& j) : m_d(Private{j}) {}
+
+        const json &get() const { return m_d.get().j; }
+        operator json() const { return m_d.get().j; }
 
         template <class Archive>
         void save(Archive & ar, std::uint32_t const /*version*/) const {
@@ -52,7 +57,7 @@ namespace Kazv
         void load(Archive & ar, std::uint32_t const /*version*/) {
             std::string j;
             ar( j );
-            m_d = immer::array<json>(1, json::parse(std::move(j)));
+            m_d = immer::box<Private>(Private{json::parse(std::move(j))});
         }
 
     };

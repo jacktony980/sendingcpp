@@ -215,6 +215,7 @@ public:
       struct adl_serializer<Post3PIDsJob::ThreePidCredentials> {
   static void to_json(json& jo, const Post3PIDsJob::ThreePidCredentials &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["client_secret"s] = pod.clientSecret;

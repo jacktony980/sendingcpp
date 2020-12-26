@@ -24,6 +24,7 @@ template<>
 struct adl_serializer<HomeserverInformation> {
   static void to_json(json& jo, const HomeserverInformation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["base_url"s] = pod.baseUrl;

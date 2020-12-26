@@ -37,6 +37,7 @@ template<>
 struct adl_serializer<OpenidToken> {
   static void to_json(json& jo, const OpenidToken &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["access_token"s] = pod.accessToken;

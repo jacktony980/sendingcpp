@@ -36,6 +36,7 @@ template<>
 struct adl_serializer<PushRuleset> {
   static void to_json(json& jo, const PushRuleset &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

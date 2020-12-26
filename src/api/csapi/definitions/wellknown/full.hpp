@@ -34,6 +34,7 @@ template<>
 struct adl_serializer<DiscoveryInformation> {
   static void to_json(json& jo, const DiscoveryInformation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
     addPropertyMapToJson(jo, pod.additionalProperties);
     jo["m.homeserver"s] = pod.homeserver;

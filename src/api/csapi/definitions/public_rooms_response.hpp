@@ -50,6 +50,7 @@ template<>
 struct adl_serializer<PublicRoomsChunk> {
   static void to_json(json& jo, const PublicRoomsChunk &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     
@@ -138,6 +139,7 @@ template<>
 struct adl_serializer<PublicRoomsResponse> {
   static void to_json(json& jo, const PublicRoomsResponse &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["chunk"s] = pod.chunk;

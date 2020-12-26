@@ -20,6 +20,7 @@
 #pragma once
 
 #include <lager/reader.hpp>
+#include <lager/context.hpp>
 #include <lager/with.hpp>
 #include <lager/lenses/optional.hpp>
 #include <zug/transducer/map.hpp>
@@ -27,6 +28,7 @@
 #include <zug/sequence.hpp>
 #include <immer/flex_vector_transient.hpp>
 
+#include "client-model.hpp"
 #include "room-model.hpp"
 #include "client/cursorutil.hpp"
 

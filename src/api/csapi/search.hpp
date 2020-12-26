@@ -243,6 +243,7 @@ ResultCategories searchCategories() const;
       struct adl_serializer<SearchJob::IncludeEventContext> {
   static void to_json(json& jo, const SearchJob::IncludeEventContext &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     
@@ -258,6 +259,7 @@ ResultCategories searchCategories() const;
       struct adl_serializer<SearchJob::Group> {
   static void to_json(json& jo, const SearchJob::Group &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     
@@ -269,6 +271,7 @@ ResultCategories searchCategories() const;
       struct adl_serializer<SearchJob::Groupings> {
   static void to_json(json& jo, const SearchJob::Groupings &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     
@@ -280,6 +283,7 @@ ResultCategories searchCategories() const;
       struct adl_serializer<SearchJob::RoomEventsCriteria> {
   static void to_json(json& jo, const SearchJob::RoomEventsCriteria &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["search_term"s] = pod.searchTerm;
@@ -303,6 +307,7 @@ ResultCategories searchCategories() const;
       struct adl_serializer<SearchJob::Categories> {
   static void to_json(json& jo, const SearchJob::Categories &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

@@ -71,6 +71,7 @@ namespace Kazv
                 RESPONSE_FOR(GetRoomEvents);
                 // sync
                 RESPONSE_FOR(Sync);
+                RESPONSE_FOR(DefineFilter);
                 // membership
                 RESPONSE_FOR(CreateRoom);
                 RESPONSE_FOR(InviteUser);
@@ -92,8 +93,8 @@ namespace Kazv
                 RESPONSE_FOR(GetContent);
                 RESPONSE_FOR(GetContentThumbnail);
 
-                m.addTrigger(UnrecognizedResponse{r});
-                return { m, lager::noop };
+                m.addTrigger(UnrecognizedResponse{std::move(r)});
+                return { std::move(m), lager::noop };
             }
 
 #undef RESPONSE_FOR

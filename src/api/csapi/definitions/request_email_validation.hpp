@@ -36,6 +36,7 @@ template<>
 struct adl_serializer<EmailValidationData> {
   static void to_json(json& jo, const EmailValidationData &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
     jo = static_cast<const RequestEmailValidation &>(pod);
   
     

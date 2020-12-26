@@ -30,6 +30,7 @@ template<>
 struct adl_serializer<ThirdPartyLocation> {
   static void to_json(json& jo, const ThirdPartyLocation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["alias"s] = pod.alias;

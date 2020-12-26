@@ -27,6 +27,7 @@ template<>
 struct adl_serializer<UserIdentifier> {
   static void to_json(json& jo, const UserIdentifier &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
     addPropertyMapToJson(jo, pod.additionalProperties);
     jo["type"s] = pod.type;

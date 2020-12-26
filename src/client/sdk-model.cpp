@@ -51,11 +51,11 @@ namespace Kazv
 
                         for (auto t : triggers) {
                             ee.emit(t);
-                            // start a sync immediately after login successful
+                            // start a sync (from posting filters) immediately after login successful
                             // apparently, the sync is guaranteed to be processed
                             // after this action has been processed
                             if (std::holds_alternative<LoginSuccessful>(t)) {
-                                ctx.dispatch(SyncAction{});
+                                ctx.dispatch(PostInitialFiltersAction{});
                             }
                             // start a sync `syncInterval` ms after another sync
                             else if (std::holds_alternative<SyncSuccessful>(t)) {
@@ -63,6 +63,10 @@ namespace Kazv
                                     [=]() {
                                         ctx.dispatch(SyncAction{});
                                     }, syncInterval);
+                            }
+                            // start a sync after posting initial filters
+                            else if (std::holds_alternative<PostInitialFiltersSuccessful>(t)) {
+                                ctx.dispatch(SyncAction{});
                             }
                         }
                     };

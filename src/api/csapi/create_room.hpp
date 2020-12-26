@@ -298,6 +298,7 @@ std::string roomId() const;
       struct adl_serializer<CreateRoomJob::Invite3pid> {
   static void to_json(json& jo, const CreateRoomJob::Invite3pid &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["id_server"s] = pod.idServer;
@@ -315,6 +316,7 @@ std::string roomId() const;
       struct adl_serializer<CreateRoomJob::StateEvent> {
   static void to_json(json& jo, const CreateRoomJob::StateEvent &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["type"s] = pod.type;

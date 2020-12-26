@@ -29,6 +29,7 @@ template<>
 struct adl_serializer<FieldType> {
   static void to_json(json& jo, const FieldType &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["regexp"s] = pod.regexp;
@@ -78,6 +79,7 @@ template<>
 struct adl_serializer<ProtocolInstance> {
   static void to_json(json& jo, const ProtocolInstance &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["desc"s] = pod.desc;
@@ -151,6 +153,7 @@ template<>
 struct adl_serializer<ThirdPartyProtocol> {
   static void to_json(json& jo, const ThirdPartyProtocol &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["user_fields"s] = pod.userFields;

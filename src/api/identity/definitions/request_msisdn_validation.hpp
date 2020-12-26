@@ -48,6 +48,7 @@ template<>
 struct adl_serializer<RequestMsisdnValidation> {
   static void to_json(json& jo, const RequestMsisdnValidation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["client_secret"s] = pod.clientSecret;

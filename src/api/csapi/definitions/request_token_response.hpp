@@ -38,6 +38,7 @@ template<>
 struct adl_serializer<RequestTokenResponse> {
   static void to_json(json& jo, const RequestTokenResponse &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["sid"s] = pod.sid;

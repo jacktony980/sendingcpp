@@ -28,7 +28,6 @@
 
 #include "sync.hpp"
 
-
 namespace Kazv
 {
     // Atomicity guaranteed: if the sync action is created
@@ -41,55 +40,65 @@ namespace Kazv
     // from the ClientModel model it is passed.
     ClientResult updateClient(ClientModel m, SyncAction)
     {
-        kzo.client.dbg() << "Start syncing with token " << m.syncToken << std::endl;
-        m.addJob(SyncJob(m.serverUrl,
-                         m.token,
-                         {}, // filter
-                         m.syncToken));
+        kzo.client.dbg() << "Start syncing with token " <<
+            (m.syncToken ? m.syncToken.value() : "<null>") << std::endl;
+
+        std::string filter = m.syncToken ? m.incrementalSyncFilterId : m.initialSyncFilterId;
+        m.addJob(m.job<SyncJob>()
+                 .make(filter, m.syncToken));
         return { m, lager::noop };
     }
 
 
     static KazvEventList loadRoomsFromSyncInPlace(ClientModel &m, SyncJob::Rooms rooms)
     {
-        auto l = m.roomList;
-        auto eventsToEmit = KazvEventList{};
+        auto l = std::move(m.roomList);
+        auto eventsToEmit = KazvEventList{}.transient();
 
         auto updateRoomImpl =
             [&l](auto id, auto a) {
                 l = RoomListModel::update(
                     std::move(l),
-                    UpdateRoomAction{id, a});
+                    UpdateRoomAction{std::move(id), std::move(a)});
             };
         auto updateSingleRoom =
-            [&, updateRoomImpl](auto id, auto room, auto membership) {
+            [&, updateRoomImpl](const auto &id, const auto &room, auto membership) {
                 if (!l.has(id) || l[id].membership != membership) {
-                    eventsToEmit = eventsToEmit.push_back(RoomMembershipChanged{membership, id});
+                    eventsToEmit.push_back(RoomMembershipChanged{membership, id});
                 }
                 updateRoomImpl(id, ChangeMembershipAction{membership});
-                eventsToEmit = std::move(eventsToEmit) + intoImmer(
-                    KazvEventList{},
-                    zug::map([=](Event e) -> KazvEvent { return ReceivingRoomTimelineEvent{e, id}; }),
-                    room.timeline.events);
+                eventsToEmit.append(
+                    intoImmer(
+                        KazvEventList{},
+                        zug::map([=](Event e) -> KazvEvent {
+                                     return ReceivingRoomTimelineEvent{std::move(e), id};
+                                 }),
+                        room.timeline.events).transient());
                 updateRoomImpl(id, AppendTimelineAction{room.timeline.events});
                 if (room.state) {
-                    eventsToEmit = std::move(eventsToEmit) + intoImmer(
-                        KazvEventList{},
-                        zug::map([=](Event e) -> KazvEvent { return ReceivingRoomStateEvent{e, id}; }),
-                        room.state.value().events);
+                    eventsToEmit.append(
+                        intoImmer(
+                            KazvEventList{},
+                            zug::map([=](Event e) -> KazvEvent {
+                                         return ReceivingRoomStateEvent{std::move(e), id};
+                                     }),
+                            room.state.value().events).transient());
                     updateRoomImpl(id, AddStateEventsAction{room.state.value().events});
                 }
                 if (room.accountData) {
-                    eventsToEmit = std::move(eventsToEmit) + intoImmer(
-                        KazvEventList{},
-                        zug::map([=](Event e) -> KazvEvent { return ReceivingRoomAccountDataEvent{e, id}; }),
-                        room.state.value().events);
+                    eventsToEmit.append(
+                        intoImmer(
+                            KazvEventList{},
+                            zug::map([=](Event e) -> KazvEvent {
+                                         return ReceivingRoomAccountDataEvent{std::move(e), id};
+                                     }),
+                            room.state.value().events).transient());
                     updateRoomImpl(id, AddAccountDataAction{room.accountData.value().events});
                 }
             };
 
         auto updateJoinedRoom =
-            [=](auto id, auto room) {
+            [=](const auto &id, const auto &room) {
                 updateSingleRoom(id, room, RoomMembership::Join);
                 if (room.ephemeral) {
                     updateRoomImpl(id, AddEphemeralAction{room.ephemeral.value().events});
@@ -99,7 +108,7 @@ namespace Kazv
             };
 
         auto updateInvitedRoom =
-            [=](auto id, auto room) {
+            [=](const auto &id, const auto &room) {
                 updateRoomImpl(id, ChangeMembershipAction{RoomMembership::Invite});
                 if (room.inviteState) {
                     updateRoomImpl(id, ChangeInviteStateAction{room.inviteState.value().events});
@@ -107,25 +116,25 @@ namespace Kazv
             };
 
         auto updateLeftRoom =
-            [=](auto id, auto room) {
+            [=](const auto &id, const auto &room) {
                 updateSingleRoom(id, room, RoomMembership::Leave);
             };
 
-        for (auto &&[id, room]: rooms.join) {
+        for (const auto &[id, room]: rooms.join) {
             updateJoinedRoom(id, room);
         }
 
         // TODO update info for invited rooms
-        for (auto &&[id, room]: rooms.invite) {
+        for (const auto &[id, room]: rooms.invite) {
             updateInvitedRoom(id, room);
         }
 
-        for (auto &&[id, room]: rooms.leave) {
+        for (const auto &[id, room]: rooms.leave) {
             updateLeftRoom(id, room);
         }
 
-        m.roomList = l;
-        return eventsToEmit;
+        m.roomList = std::move(l);
+        return eventsToEmit.persistent();
     }
 
     static KazvEventList loadPresenceFromSyncInPlace(ClientModel &m, EventList presence)
@@ -152,6 +161,7 @@ namespace Kazv
     {
         if (! r.success()) {
             m.addTrigger(SyncFailed{});
+            m.syncing = false;
             kzo.client.dbg() << "Sync failed" << std::endl;
             kzo.client.dbg() << r.statusCode << std::endl;
             if (isBodyJson(r.body)) {
@@ -161,7 +171,7 @@ namespace Kazv
                 kzo.client.dbg() << "Response body: "
                           << std::get<BaseJob::BytesBody>(r.body) << std::endl;
             }
-            return { m, lager::noop };
+            return { std::move(m), lager::noop };
         }
 
         kzo.client.dbg() << "Sync successful" << std::endl;
@@ -173,21 +183,71 @@ namespace Kazv
 
         m.syncToken = r.nextBatch();
 
-        m.addTrigger(SyncSuccessful{m.syncToken});
+        m.addTrigger(SyncSuccessful{r.nextBatch()});
 
         if (rooms) {
-            m.addTriggers(loadRoomsFromSyncInPlace(m, rooms.value()));
+            m.addTriggers(loadRoomsFromSyncInPlace(m, std::move(rooms.value())));
         }
 
         if (presence) {
-            m.addTriggers(loadPresenceFromSyncInPlace(m, presence.value().events));
+            m.addTriggers(loadPresenceFromSyncInPlace(m, std::move(presence.value().events)));
         }
 
         if (accountData) {
-            m.addTriggers(loadAccountDataFromSyncInPlace(m, accountData.value().events));
+            m.addTriggers(loadAccountDataFromSyncInPlace(m, std::move(accountData.value().events)));
         }
 
         // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, PostInitialFiltersAction)
+    {
+        if (m.syncing) {
+            return { std::move(m), lager::noop };
+        }
+
+        Filter initialSyncFilter;
+        initialSyncFilter.room.timeline.limit = 1;
+        initialSyncFilter.room.state.lazyLoadMembers = true;
+        auto firstJob = m.job<DefineFilterJob>()
+            .make(m.userId, initialSyncFilter)
+            .withData(json{{"is", "initialSyncFilter"}})
+            .withQueue("post-filter", CancelFutureIfFailed);
+        kzo.client.dbg() << "First filter: " << firstJob.requestBody() << std::endl;
+        m.addJob(firstJob);
+        Filter incrementalSyncFilter;
+        incrementalSyncFilter.room.timeline.limit = 20;
+        incrementalSyncFilter.room.state.lazyLoadMembers = true;
+        m.addJob(m.job<DefineFilterJob>()
+                 .make(m.userId, incrementalSyncFilter)
+                 .withData(json{{"is", "incrementalSyncFilter"}})
+                 .withQueue("post-filter", CancelFutureIfFailed));
+
+        m.syncing = true;
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, DefineFilterResponse r)
+    {
+        auto is = r.dataStr("is");
+        if (! r.success()) {
+            m.syncing = false;
+            kzo.client.dbg() << "posting filter failed: " << r.errorCode() << r.errorMessage() << std::endl;
+            m.addTrigger(PostInitialFiltersFailed{r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
+
+        kzo.client.dbg() << "filter " << is << " is posted" << std::endl;
+
+        if (is == "incrementalSyncFilter") {
+            m.incrementalSyncFilterId = r.filterId();
+            m.addTrigger(PostInitialFiltersSuccessful{});
+        } else {
+            m.initialSyncFilterId = r.filterId();
+        }
 
         return { std::move(m), lager::noop };
     }

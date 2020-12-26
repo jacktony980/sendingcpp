@@ -24,6 +24,7 @@ template<>
 struct adl_serializer<IdentityServerInformation> {
   static void to_json(json& jo, const IdentityServerInformation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["base_url"s] = pod.baseUrl;

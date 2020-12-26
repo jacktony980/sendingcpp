@@ -20,7 +20,10 @@
 
 #pragma once
 
+#include <memory>
+
 #include <boost/asio.hpp>
+
 #include "jobinterface.hpp"
 #include "descendent.hpp"
 
@@ -43,6 +46,6 @@ namespace Kazv
         void stop();
     private:
         struct Private;
-        Descendent<Private> m_d;
+        std::unique_ptr<Private> m_d;
     };
 }

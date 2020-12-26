@@ -43,6 +43,7 @@ template<>
 struct adl_serializer<RoomFilter> {
   static void to_json(json& jo, const RoomFilter &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     
@@ -119,6 +120,7 @@ template<>
 struct adl_serializer<Filter> {
   static void to_json(json& jo, const Filter &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

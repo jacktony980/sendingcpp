@@ -69,6 +69,14 @@ namespace Kazv
                         m_ctx);
         }
 
+        inline auto roomByCursor(lager::reader<std::string> id) const {
+            return Room(lager::with(rooms(), id)
+                        .xform(zug::map([](auto rooms, auto id) {
+                                            return rooms[id];
+                                        })).make(),
+                        m_ctx);
+        }
+
         inline void passwordLogin(std::string homeserver, std::string username,
                                   std::string password, std::string deviceName) const {
             m_ctx.dispatch(LoginAction{
@@ -127,6 +135,27 @@ namespace Kazv
                                       int height,
                                       std::optional<ThumbnailResizingMethod> method = std::nullopt) const {
             m_ctx.dispatch(DownloadThumbnailAction{mxcUri, width, height, method, std::nullopt});
+        }
+
+        // lager::reader<bool>
+        inline auto syncing() const {
+            return m_client[&ClientModel::syncing];
+        }
+
+        inline void startSyncing() const {
+            using namespace Kazv::CursorOp;
+
+            if (+syncing()) {
+                return;
+            }
+
+            // filters are incomplete
+            if (! (+m_client[&ClientModel::initialSyncFilterId]).empty()
+                && ! (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
+                m_ctx.dispatch(PostInitialFiltersAction{});
+            } else { // sync is just interrupted
+                m_ctx.dispatch(SyncAction{});
+            }
         }
 
     private:

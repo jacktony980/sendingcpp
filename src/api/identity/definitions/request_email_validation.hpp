@@ -45,6 +45,7 @@ template<>
 struct adl_serializer<RequestEmailValidation> {
   static void to_json(json& jo, const RequestEmailValidation &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["client_secret"s] = pod.clientSecret;

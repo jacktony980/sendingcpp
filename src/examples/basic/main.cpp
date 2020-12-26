@@ -23,6 +23,7 @@
 #include <fstream>
 #include <lager/store.hpp>
 #include <lager/event_loop/boost_asio.hpp>
+#include <lager/resources_path.hpp>
 #include <boost/asio.hpp>
 
 #ifndef NDEBUG
@@ -61,32 +62,36 @@ int main(int argc, char *argv[])
     auto eventEmitter =
         Kazv::LagerStoreEventEmitter(lager::with_boost_asio_event_loop{ioContext.get_executor()});
 
-    Kazv::Descendent<Kazv::JobInterface> jobHandler(Kazv::CprJobHandler{ioContext.get_executor()});
+    Kazv::CprJobHandler jobHandler(Kazv::CprJobHandler{ioContext.get_executor()});
 
-#ifndef NDEBUG
-    auto debugger = lager::http_debug_server{argc, (const char **)argv, 8080, "./_deps/lager-src/resources"};
-#endif
+// #ifndef NDEBUG
+//     auto debugger = lager::http_debug_server{argc, (const char **)argv, 8080,
+//                                              lager::resources_path()
+// //"./_deps/lager-src/resources"
+//     };
+// #endif
     auto sdk = Kazv::makeSdk(
         Kazv::SdkModel{},
-        *jobHandler.data(),
+        static_cast<Kazv::CprJobHandler &>(jobHandler),
         static_cast<Kazv::EventInterface &>(eventEmitter),
         lager::with_boost_asio_event_loop{ioContext.get_executor()},
-#ifndef NDEBUG
-        zug::map([](auto &&m) -> Kazv::SdkModel {
-                     return std::forward<decltype(m)>(m);
-                 }),
-        lager::with_debugger(debugger)
-#else
+// #ifndef NDEBUG
+//         zug::map([](auto &&m) -> Kazv::SdkModel {
+//                      return std::forward<decltype(m)>(m);
+//                  }),
+//         lager::with_debugger(debugger)
+// #else
         zug::identity
-#endif
+// #endif
         );
 
     auto store = sdk.context();
     auto c = sdk.client();
 
+    /*
     auto watchable = eventEmitter.watchable();
     watchable.after<Kazv::ReceivingRoomTimelineEvent>(
-        [](auto &&e) {
+        [](auto e) {
             auto [event, roomId] = e;
             std::cout << "\033[1;32mreceiving event " << event.id()
                       << " in " << roomId
@@ -94,6 +99,8 @@ int main(int argc, char *argv[])
                       << ": " << event.content().get().dump() << "\033[0m"
                       << std::endl;
         });
+    */
+    std::thread([&] { ioContext.run(); }).detach();
 
     {
         std::ifstream auth(argv[1]);
@@ -118,17 +125,23 @@ int main(int argc, char *argv[])
             std::string password;
             std::getline(auth, password);
             c.passwordLogin(homeserver, username, password, "libkazv basic example");
+            std::cout << "password login action sent" << std::endl;
         }
 
     }
-    std::thread([&] { ioContext.run(); }).detach();
+
+    std::cout << "starting event loop" << std::endl;
 
     std::size_t command = 1;
     while (true) {
         std::cout << "\033[1;33mCommand[" << command << "]: \033[0m\n";
         std::string l;
-        std::getline(std::cin, l);
+        if (! std::getline(std::cin, l)) {
+            break;
+        }
         parse(l, c);
         ++command;
     }
+
+    jobHandler.stop();
 }

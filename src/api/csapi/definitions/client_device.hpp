@@ -37,6 +37,7 @@ template<>
 struct adl_serializer<Device> {
   static void to_json(json& jo, const Device &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["device_id"s] = pod.deviceId;

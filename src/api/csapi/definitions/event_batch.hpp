@@ -24,6 +24,7 @@ template<>
 struct adl_serializer<EventBatch> {
   static void to_json(json& jo, const EventBatch &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

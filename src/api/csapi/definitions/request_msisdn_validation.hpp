@@ -36,6 +36,7 @@ template<>
 struct adl_serializer<MsisdnValidationData> {
   static void to_json(json& jo, const MsisdnValidationData &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
     jo = static_cast<const RequestMsisdnValidation &>(pod);
   
     

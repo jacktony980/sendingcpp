@@ -24,6 +24,7 @@ template<>
 struct adl_serializer<RoomEventBatch> {
   static void to_json(json& jo, const RoomEventBatch &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

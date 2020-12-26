@@ -291,6 +291,7 @@ public:
       struct adl_serializer<PostPusherJob::PusherData> {
   static void to_json(json& jo, const PostPusherJob::PusherData &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

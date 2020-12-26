@@ -42,6 +42,7 @@ template<>
 struct adl_serializer<PushRule> {
   static void to_json(json& jo, const PushRule &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["actions"s] = pod.actions;

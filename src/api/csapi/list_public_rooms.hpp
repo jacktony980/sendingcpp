@@ -357,6 +357,7 @@ std::optional<int> totalRoomCountEstimate() const;
       struct adl_serializer<QueryPublicRoomsJob::Filter> {
   static void to_json(json& jo, const QueryPublicRoomsJob::Filter &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

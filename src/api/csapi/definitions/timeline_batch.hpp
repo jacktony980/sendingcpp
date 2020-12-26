@@ -27,6 +27,7 @@ template<>
 struct adl_serializer<Timeline> {
   static void to_json(json& jo, const Timeline &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
     jo = static_cast<const RoomEventBatch &>(pod);
   
     

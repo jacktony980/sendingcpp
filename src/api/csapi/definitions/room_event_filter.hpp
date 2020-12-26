@@ -42,6 +42,7 @@ template<>
 struct adl_serializer<RoomEventFilter> {
   static void to_json(json& jo, const RoomEventFilter &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
     jo = static_cast<const EventFilter &>(pod);
   
     

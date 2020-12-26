@@ -46,6 +46,7 @@ template<>
 struct adl_serializer<PushCondition> {
   static void to_json(json& jo, const PushCondition &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["kind"s] = pod.kind;

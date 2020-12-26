@@ -69,10 +69,13 @@ namespace Kazv
         std::string userId;
         std::string token;
         std::string deviceId;
-        bool loggedIn;
+        bool loggedIn{false};
         Error error;
 
-        std::string syncToken;
+        bool syncing{false};
+        std::string initialSyncFilterId;
+        std::string incrementalSyncFilterId;
+        std::optional<std::string> syncToken;
 
         RoomListModel roomList;
         immer::map<std::string /* sender */, Event> presence;
@@ -280,6 +283,10 @@ namespace Kazv
         Response response;
     };
 
+    struct PostInitialFiltersAction
+    {
+    };
+
     inline bool operator==(ClientModel a, ClientModel b)
     {
         return a.serverUrl == b.serverUrl
@@ -302,6 +309,8 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(TokenLoginAction);
     LAGER_CEREAL_STRUCT(LogoutAction);
     LAGER_CEREAL_STRUCT(SyncAction);
+    LAGER_CEREAL_STRUCT(PostInitialFiltersAction);
+
     LAGER_CEREAL_STRUCT(PaginateTimelineAction);
     LAGER_CEREAL_STRUCT(SendMessageAction);
     LAGER_CEREAL_STRUCT(SendStateEventAction);

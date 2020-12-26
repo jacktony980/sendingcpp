@@ -30,6 +30,7 @@ struct adl_serializer<{{qualifiedName}}> {
 {{#in?}}
   static void to_json(json& jo, const {{qualifiedName}} &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   {{#parents}}{{!assume no more one parent}}
     jo = static_cast<const {{name}} &>(pod);
   {{/parents}}

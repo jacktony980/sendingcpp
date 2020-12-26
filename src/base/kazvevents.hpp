@@ -62,6 +62,26 @@ namespace Kazv
         return true;
     }
 
+    struct PostInitialFiltersSuccessful
+    {
+    };
+
+    inline bool operator==(PostInitialFiltersSuccessful, PostInitialFiltersSuccessful)
+    {
+        return true;
+    }
+
+    struct PostInitialFiltersFailed
+    {
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(PostInitialFiltersFailed a, PostInitialFiltersFailed b)
+    {
+        return a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
 
     struct ReceivingPresenceEvent { Event event; };
     inline bool operator==(ReceivingPresenceEvent a, ReceivingPresenceEvent b)
@@ -534,6 +554,7 @@ namespace Kazv
         LoginSuccessful, LoginFailed,
         // sync
         SyncSuccessful, SyncFailed,
+        PostInitialFiltersSuccessful, PostInitialFiltersFailed,
         // paginate
         PaginateSuccessful, PaginateFailed,
         // membership

@@ -36,6 +36,7 @@ template<>
 struct adl_serializer<EventFilter> {
   static void to_json(json& jo, const EventFilter &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     

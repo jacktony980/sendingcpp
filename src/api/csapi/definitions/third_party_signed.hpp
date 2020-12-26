@@ -34,6 +34,7 @@ template<>
 struct adl_serializer<ThirdPartySigned> {
   static void to_json(json& jo, const ThirdPartySigned &pod)
   {
+  if (! jo.is_object()) { jo = json::object(); }
   
   
     jo["sender"s] = pod.sender;
