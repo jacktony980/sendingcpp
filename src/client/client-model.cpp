@@ -24,6 +24,8 @@
 
 #include <immer/flex_vector_transient.hpp>
 
+#include "debug.hpp"
+
 #include "client-model.hpp"
 
 #include "actions/states.hpp"

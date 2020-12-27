@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     auto eventEmitter =
         Kazv::LagerStoreEventEmitter(lager::with_boost_asio_event_loop{ioContext.get_executor()});
 
-    Kazv::CprJobHandler jobHandler(Kazv::CprJobHandler{ioContext.get_executor()});
+    Kazv::CprJobHandler jobHandler{ioContext.get_executor()};
 
 // #ifndef NDEBUG
 //     auto debugger = lager::http_debug_server{argc, (const char **)argv, 8080,
@@ -100,7 +100,6 @@ int main(int argc, char *argv[])
                       << std::endl;
         });
     */
-    std::thread([&] { ioContext.run(); }).detach();
 
     {
         std::ifstream auth(argv[1]);
@@ -131,6 +130,7 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "starting event loop" << std::endl;
+    std::thread([&] { ioContext.run(); }).detach();
 
     std::size_t command = 1;
     while (true) {

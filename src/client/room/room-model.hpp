@@ -73,6 +73,11 @@ namespace Kazv
         EventList events;
     };
 
+    struct SetLocalDraftAction
+    {
+        std::string localDraft;
+    };
+
     struct RoomModel
     {
         using Membership = RoomMembership;
@@ -90,6 +95,8 @@ namespace Kazv
 
         immer::map<std::string, Event> ephemeral;
 
+        std::string localDraft;
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,
@@ -97,7 +104,8 @@ namespace Kazv
             AddAccountDataAction,
             ChangeMembershipAction,
             ChangeInviteStateAction,
-            AddEphemeralAction
+            AddEphemeralAction,
+            SetLocalDraftAction
             >;
 
         static RoomModel update(RoomModel r, Action a);
@@ -115,7 +123,8 @@ namespace Kazv
             && a.accountData == b.accountData
             && a.membership == b.membership
             && a.paginateBackToken == b.paginateBackToken
-            && a.canPaginateBack == b.canPaginateBack;
+            && a.canPaginateBack == b.canPaginateBack
+            && a.localDraft == b.localDraft;
     }
 
     struct UpdateRoomAction
@@ -151,6 +160,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(PrependTimelineAction);
     LAGER_CEREAL_STRUCT(AddAccountDataAction);
     LAGER_CEREAL_STRUCT(ChangeMembershipAction);
+    LAGER_CEREAL_STRUCT(SetLocalDraftAction);
     LAGER_CEREAL_STRUCT(ChangeInviteStateAction);
     LAGER_CEREAL_STRUCT(UpdateRoomAction);
 #endif

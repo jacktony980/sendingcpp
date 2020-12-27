@@ -22,6 +22,8 @@
 #include <zug/sequence.hpp>
 #include <zug/transducer/map.hpp>
 
+#include "debug.hpp"
+
 #include "room-model.hpp"
 #include "cursorutil.hpp"
 
@@ -67,6 +69,10 @@ namespace Kazv
             [&](AddEphemeralAction a) {
                 r.ephemeral = merge(std::move(r.ephemeral), a.events, keyOfEphemeral);
                 return r;
+            },
+            [&](SetLocalDraftAction a) {
+                r.localDraft = a.localDraft;
+                return r;
             }
             );
     }
@@ -74,7 +80,7 @@ namespace Kazv
     RoomListModel RoomListModel::update(RoomListModel l, Action a)
     {
         return lager::match(std::move(a))(
-            [=](UpdateRoomAction a) mutable {
+            [&](UpdateRoomAction a) {
                 l.rooms = std::move(l.rooms)
                     .update(a.roomId,
                             [=](RoomModel oldRoom) {

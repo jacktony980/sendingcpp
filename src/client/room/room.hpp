@@ -28,6 +28,8 @@
 #include <zug/sequence.hpp>
 #include <immer/flex_vector_transient.hpp>
 
+#include "debug.hpp"
+
 #include "client-model.hpp"
 #include "room-model.hpp"
 #include "client/cursorutil.hpp"
@@ -153,6 +155,13 @@ namespace Kazv
         KAZV_WRAP_ATTR(RoomModel, m_room, roomId);
         /*lager::reader<RoomMembership>*/
         KAZV_WRAP_ATTR(RoomModel, m_room, membership);
+        /*lager::reader<std::string>*/
+        KAZV_WRAP_ATTR(RoomModel, m_room, localDraft);
+
+        inline void setLocalDraft(std::string localDraft) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(UpdateRoomAction{+roomId(), SetLocalDraftAction{localDraft}});
+        }
 
         inline void sendMessage(Event msg) const {
             using namespace CursorOp;
