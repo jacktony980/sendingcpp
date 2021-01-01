@@ -92,6 +92,21 @@ namespace Kazv
                                 }));
         }
 
+        /* lager::reader<std::string> */
+        inline auto avatarMxcUri() const {
+            using namespace lager::lenses;
+            return stateEvents()
+                [KeyOfState{"m.room.avatar", ""}]
+                [or_default]
+                .xform(zug::map([](Event ev) {
+                                    auto content = ev.content().get();
+                                    return
+                                        content.contains("avatar")
+                                        ? std::string(content["avatar"])
+                                        : "";
+                                }));
+        }
+
         /* lager::reader<RangeT<std::string>> */
         inline auto members() const {
             using MemberNode = std::pair<std::string, Kazv::Event>;
@@ -179,6 +194,16 @@ namespace Kazv
             };
             Event e{j};
             sendMessage(e);
+        }
+
+        inline void refreshRoomState() const {
+            using namespace CursorOp;
+            m_ctx.dispatch(GetRoomStatesAction{+roomId()});
+        }
+
+        inline void getStateEvent(std::string type, std::string stateKey) const {
+            using namespace CursorOp;
+            m_ctx.dispatch(GetStateEventAction{+roomId(), type, stateKey});
         }
 
         inline void sendStateEvent(Event state) const {

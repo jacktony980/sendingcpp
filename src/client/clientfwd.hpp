@@ -42,6 +42,7 @@ namespace Kazv
     struct SendStateEventAction;
     struct CreateRoomAction;
     struct GetRoomStatesAction;
+    struct GetStateEventAction;
     struct InviteToRoomAction;
     struct JoinRoomByIdAction;
     struct EmitKazvEventsAction;
@@ -78,6 +79,7 @@ namespace Kazv
         SendStateEventAction,
         CreateRoomAction,
         GetRoomStatesAction,
+        GetStateEventAction,
         InviteToRoomAction,
         JoinRoomByIdAction,
 

@@ -28,6 +28,8 @@ namespace Kazv
 {
     ClientResult updateClient(ClientModel m, GetRoomStatesAction a);
     ClientResult processResponse(ClientModel m, GetRoomStateResponse r);
+    ClientResult updateClient(ClientModel m, GetStateEventAction a);
+    ClientResult processResponse(ClientModel m, GetRoomStateWithKeyResponse r);
     ClientResult updateClient(ClientModel m, SendStateEventAction a);
     ClientResult processResponse(ClientModel m, SetRoomStateWithKeyResponse r);
 }

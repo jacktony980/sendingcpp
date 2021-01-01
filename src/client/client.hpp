@@ -26,6 +26,8 @@
 #include <immer/flex_vector_transient.hpp>
 
 #include "client/client-model.hpp"
+#include "client/actions/content.hpp"
+
 #include "room/room.hpp"
 
 namespace Kazv
@@ -124,6 +126,14 @@ namespace Kazv
                                   std::optional<std::string> filename = std::nullopt,
                                   std::optional<std::string> contentType = std::nullopt) const {
             m_ctx.dispatch(UploadContentAction{content, filename, contentType, uploadId});
+        }
+
+        inline std::string mxcUriToHttp(std::string mxcUri) const {
+            using namespace CursorOp;
+            auto [serverName, mediaId] = mxcUriToMediaDesc(mxcUri);
+            return (+m_client)
+                .job<GetContentJob>()
+                .make(serverName, mediaId).url();
         }
 
         inline void downloadContent(std::string mxcUri) const {

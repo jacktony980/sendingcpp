@@ -86,6 +86,7 @@ namespace Kazv
                 // states
                 RESPONSE_FOR(GetRoomState);
                 RESPONSE_FOR(SetRoomStateWithKey);
+                RESPONSE_FOR(GetRoomStateWithKey);
                 // ephemeral
                 RESPONSE_FOR(SetTyping);
                 RESPONSE_FOR(PostReceipt);

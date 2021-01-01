@@ -124,6 +124,7 @@ namespace Kazv
             && a.membership == b.membership
             && a.paginateBackToken == b.paginateBackToken
             && a.canPaginateBack == b.canPaginateBack
+            && a.ephemeral == b.ephemeral
             && a.localDraft == b.localDraft;
     }
 

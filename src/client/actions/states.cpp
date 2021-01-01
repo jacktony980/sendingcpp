@@ -60,6 +60,56 @@ namespace Kazv
         return {std::move(m), lager::noop};
     }
 
+    ClientResult updateClient(ClientModel m, GetStateEventAction a)
+    {
+        auto job = m.job<GetRoomStateWithKeyJob>()
+            .make(a.roomId, a.type, a.stateKey)
+            .withData(json{
+                    {"roomId", a.roomId},
+                    {"type", a.type},
+                    {"stateKey", a.stateKey}
+                });
+
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, GetRoomStateWithKeyResponse r)
+    {
+        auto roomId = r.dataStr("roomId");
+        auto type = r.dataStr("type");
+        auto stateKey = r.dataStr("stateKey");
+
+        if (! r.success()) {
+            m.addTrigger(GetStateEventFailed{roomId, r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
+
+        auto content = r.jsonBody();
+
+        m.addTrigger(GetStateEventSuccessful{roomId, content});
+
+        auto k = KeyOfState{type, stateKey};
+
+        auto eventJson = m.roomList[roomId].stateEvents[k]
+            .originalJson().get();
+
+        eventJson["content"] = content;
+        eventJson["type"] = type;
+        eventJson["state_key"] = stateKey;
+
+        auto a = AddStateEventsAction{EventList{Event{eventJson}}};
+
+        auto l = RoomListModel::update(
+            std::move(m.roomList),
+            UpdateRoomAction{roomId, a});
+
+        m.roomList = std::move(l);
+        return { std::move(m), lager::noop };
+    }
+
+
     ClientResult updateClient(ClientModel m, SendStateEventAction a)
     {
         auto event = a.event;

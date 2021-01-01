@@ -204,6 +204,13 @@ namespace Kazv
         std::string roomId;
     };
 
+    struct GetStateEventAction
+    {
+        std::string roomId;
+        std::string type;
+        std::string stateKey;
+    };
+
     struct InviteToRoomAction
     {
         std::string roomId;
@@ -295,6 +302,9 @@ namespace Kazv
             && a.deviceId == b.deviceId
             && a.loggedIn == b.loggedIn
             && a.error == b.error
+            && a.syncing == b.syncing
+            && a.initialSyncFilterId == b.initialSyncFilterId
+            && a.incrementalSyncFilterId == b.incrementalSyncFilterId
             && a.syncToken == b.syncToken
             && a.roomList == b.roomList
             && a.presence == b.presence
@@ -316,6 +326,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(SendStateEventAction);
     LAGER_CEREAL_STRUCT(CreateRoomAction);
     LAGER_CEREAL_STRUCT(GetRoomStatesAction);
+    LAGER_CEREAL_STRUCT(GetStateEventAction);
     LAGER_CEREAL_STRUCT(InviteToRoomAction);
     LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
     LAGER_CEREAL_STRUCT(JoinRoomAction);
