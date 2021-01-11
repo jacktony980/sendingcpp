@@ -183,8 +183,6 @@ namespace Kazv
 
         m.syncToken = r.nextBatch();
 
-        m.addTrigger(SyncSuccessful{r.nextBatch()});
-
         if (rooms) {
             m.addTriggers(loadRoomsFromSyncInPlace(m, std::move(rooms.value())));
         }
@@ -198,6 +196,8 @@ namespace Kazv
         }
 
         // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
+
+        m.addTrigger(SyncSuccessful{r.nextBatch()});
 
         return { std::move(m), lager::noop };
     }
