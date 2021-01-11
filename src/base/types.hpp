@@ -127,6 +127,13 @@ namespace Kazv
     {
         Invite, Join, Leave
     };
+
+    namespace detail
+    {
+        // emulates declval() but returns lvalue reference
+        template<class T>
+        typename std::add_lvalue_reference<T>::type declref() noexcept;
+    }
 }
 
 namespace nlohmann {

@@ -9,11 +9,13 @@ add_executable(kazvtest
   client/client-test-util.cpp
   client/sync-test.cpp
   kazvjobtest.cpp
+  event-emitter-test.cpp
   )
 
 target_link_libraries(kazvtest
   PRIVATE Catch2::Catch2
   PRIVATE kazv
+  PRIVATE kazveventemitter
   PRIVATE kazvjob
   PRIVATE nlohmann_json::nlohmann_json
   PRIVATE immer
