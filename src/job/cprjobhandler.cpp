@@ -100,10 +100,7 @@ namespace Kazv
         }
 
         void popJobImpl(std::string queueId) {
-            kzo.job.dbg() << "popJobImpl called with " << queueId << std::endl;
             if (! jobQueues[queueId].empty()) {
-                kzo.job.dbg() << "the first job is "
-                       << (jobQueues[queueId].front().status == Waiting ? "Waiting" : "Running") << std::endl;
                 jobQueues[queueId].pop_front();
             }
         }
@@ -114,11 +111,8 @@ namespace Kazv
                 [=] {
                     // precondition: job has a queueId
                     for (auto &[queueId, queue] : jobQueues) { // need to change queue
-                        kzo.job.dbg() << "monitoring queue " << queueId << std::endl;
                         if (! queue.empty()) {
                             auto [job, callback, status] = queue.front();
-                            kzo.job.dbg() << "the first job is "
-                                   << (status == Waiting ? "Waiting" : "Running") << std::endl;
                             if (status == Waiting) {
                                 queue.front().status = Running;
                                 submitImpl(
