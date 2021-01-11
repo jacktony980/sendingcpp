@@ -160,8 +160,8 @@ namespace Kazv
             }
 
             // filters are incomplete
-            if (! (+m_client[&ClientModel::initialSyncFilterId]).empty()
-                && ! (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
+            if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
+                || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
                 m_ctx.dispatch(PostInitialFiltersAction{});
             } else { // sync is just interrupted
                 m_ctx.dispatch(SyncAction{});
