@@ -97,7 +97,8 @@ namespace Kazv
                                immer::array<std::string> invite = {},
                                std::optional<bool> isDirect = {},
                                bool allowFederate = true,
-                               std::optional<std::string> topic = {}) const {
+                               std::optional<std::string> topic = {},
+                               JsonWrap powerLevelContentOverride = json::object()) const {
             CreateRoomAction a;
             a.visibility = v;
             a.name = name;
@@ -105,6 +106,7 @@ namespace Kazv
             a.invite = invite;
             a.isDirect = isDirect;
             a.topic = topic;
+            a.powerLevelContentOverride = powerLevelContentOverride;
             // Synapse won't buy it if we do not provide
             // a creationContent object.
             a.creationContent = json{
