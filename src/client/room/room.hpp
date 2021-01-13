@@ -22,6 +22,7 @@
 #include <lager/reader.hpp>
 #include <lager/context.hpp>
 #include <lager/with.hpp>
+#include <lager/constant.hpp>
 #include <lager/lenses/optional.hpp>
 #include <zug/transducer/map.hpp>
 #include <zug/transducer/filter.hpp>
@@ -147,21 +148,17 @@ namespace Kazv
 
         }
 
+        inline auto memberEventByCursor(lager::reader<std::string> userId) const {
+            return lager::with(m_room[&RoomModel::stateEvents], userId)
+                .xform(zug::map([](auto events, auto userId) {
+                                    auto k = KeyOfState{"m.room.member", userId};
+                                    return events[k];
+                                }));
+        }
+
         /* lager::reader<std::optional<Event>> */
         inline auto memberEventFor(std::string userId) const {
-            return m_room
-                [&RoomModel::stateEvents]
-                .xform(containerMap(immer::flex_vector<Event>{},
-                                    zug::filter([=](auto val) {
-                                                    auto [k, v] = val;
-                                                    auto [type, stateKey] = k;
-                                                    return type == "m.room.member"s && stateKey == userId;
-                                                }) // -> RangeT<pair<KeyofState{...}, Event>>
-                                    | zug::map([](auto val) {
-                                                   auto [k, event] = val;
-                                                   return event;
-                                               })))
-                [0];
+            return memberEventByCursor(lager::make_constant(userId));
         }
 
         lager::reader<bool> encrypted() const;
