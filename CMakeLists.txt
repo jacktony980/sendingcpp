@@ -110,6 +110,8 @@ if(NOT cereal_FOUND)
   FetchContent_MakeAvailable(cereal)
 endif()
 
+find_package(Olm REQUIRED)
+
 if(libkazv_BUILD_EXAMPLES)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(LIBHTTPSERVER REQUIRED libhttpserver)

@@ -5,6 +5,7 @@ add_subdirectory(base)
 add_subdirectory(api)
 add_subdirectory(client)
 add_subdirectory(eventemitter)
+add_subdirectory(crypto)
 
 if(libkazv_BUILD_KAZVJOB)
   add_subdirectory(job)
@@ -16,7 +17,7 @@ add_library(kazv ALIAS kazvall)
 add_library(libkazv::kazv ALIAS kazvall)
 
 
-target_link_libraries(kazvall INTERFACE kazvbase kazvapi kazvclient kazveventemitter)
+target_link_libraries(kazvall INTERFACE kazvbase kazvapi kazvcrypto kazvclient kazveventemitter)
 
 target_include_directories(kazvall
   INTERFACE

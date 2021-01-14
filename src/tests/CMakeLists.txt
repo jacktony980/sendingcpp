@@ -10,6 +10,7 @@ add_executable(kazvtest
   client/sync-test.cpp
   kazvjobtest.cpp
   event-emitter-test.cpp
+  crypto-test.cpp
   )
 
 target_link_libraries(kazvtest
