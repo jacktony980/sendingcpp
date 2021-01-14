@@ -303,27 +303,6 @@ namespace Kazv
         std::string deviceId;
     };
 
-    inline bool operator==(ClientModel a, ClientModel b)
-    {
-        return a.serverUrl == b.serverUrl
-            && a.userId == b.userId
-            && a.token == b.token
-            && a.deviceId == b.deviceId
-            && a.loggedIn == b.loggedIn
-            && a.error == b.error
-            && a.syncing == b.syncing
-            && a.initialSyncFilterId == b.initialSyncFilterId
-            && a.incrementalSyncFilterId == b.incrementalSyncFilterId
-            && a.syncToken == b.syncToken
-            && a.roomList == b.roomList
-            && a.presence == b.presence
-            && a.accountData == b.accountData
-            && a.nextTxnId == b.nextTxnId
-            && a.nextJobs == b.nextJobs
-            && a.nextTriggers == b.nextTriggers
-            && a.toDevice == b.toDevice;
-    }
-
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(LoginAction);
     LAGER_CEREAL_STRUCT(TokenLoginAction);
