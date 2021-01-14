@@ -37,6 +37,8 @@ namespace Kazv
         ~Crypto();
 
         ByteArray identityKeys();
+        std::string ed25519IdentityKey();
+        std::string curve25519IdentityKey();
 
     private:
         std::unique_ptr<CryptoPrivate> m_d;

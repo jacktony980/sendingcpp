@@ -30,4 +30,6 @@ TEST_CASE("Crypto should be copyable", "[crypto]")
     Crypto cryptoClone(crypto);
 
     REQUIRE(crypto.identityKeys() == cryptoClone.identityKeys());
+    REQUIRE(crypto.ed25519IdentityKey() == cryptoClone.ed25519IdentityKey());
+    REQUIRE(crypto.curve25519IdentityKey() == cryptoClone.curve25519IdentityKey());
 }

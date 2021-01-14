@@ -34,4 +34,13 @@ namespace Kazv
         std::generate(ret.begin(), ret.end(), [&] { return rd(); });
         return ret;
     }
+
+    namespace CryptoConstants
+    {
+        inline std::string ed25519{"ed25519"};
+        inline std::string curve25519{"curve25519"};
+
+        inline std::string olmAlgo{"m.olm.v1.curve25519-aes-sha2"};
+        inline std::string megOlmAlgo{"m.megolm.v1.aes-sha2"};
+    }
 }

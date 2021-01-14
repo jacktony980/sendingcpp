@@ -21,12 +21,16 @@
 
 #include <olm/olm.h>
 
+#include <nlohmann/json.hpp>
+
 #include "crypto.hpp"
 
 #include "crypto-util.hpp"
 
 namespace Kazv
 {
+    using namespace CryptoConstants;
+
     struct CryptoPrivate
     {
         CryptoPrivate();
@@ -105,5 +109,21 @@ namespace Kazv
         auto ret = ByteArray(olm_account_identity_keys_length(m_d->account), '\0');
         m_d->checkError(olm_account_identity_keys(m_d->account, ret.data(), ret.size()));
         return ret;
+    }
+
+    std::string Crypto::ed25519IdentityKey()
+    {
+        auto keys = identityKeys();
+        auto keyStr = std::string(keys.begin(), keys.end());
+        auto keyJson = nlohmann::json::parse(keyStr);
+        return keyJson.at(ed25519);
+    }
+
+    std::string Crypto::curve25519IdentityKey()
+    {
+        auto keys = identityKeys();
+        auto keyStr = std::string(keys.begin(), keys.end());
+        auto keyJson = nlohmann::json::parse(keyStr);
+        return keyJson.at(curve25519);
     }
 }
