@@ -83,6 +83,7 @@ namespace Kazv
                 RESPONSE_FOR(ForgetRoom);
                 // send
                 RESPONSE_FOR(SendMessage);
+                RESPONSE_FOR(SendToDevice);
                 // states
                 RESPONSE_FOR(GetRoomState);
                 RESPONSE_FOR(SetRoomStateWithKey);

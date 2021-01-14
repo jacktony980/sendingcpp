@@ -191,6 +191,18 @@ static json syncResponseJson = R"({
       }
     },
     "leave": {}
+  },
+  "to_device": {
+    "events": [
+      {
+        "sender": "@alice:example.com",
+        "type": "m.new_device",
+        "content": {
+          "device_id": "XYZABCDE",
+          "rooms": ["!726s6s6q:example.com"]
+        }
+      }
+    ]
   }
 })"_json;
 
@@ -261,5 +273,12 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
         auto readMarker = +r.readMarker();
 
         REQUIRE(readMarker == eventId);
+    }
+
+    SECTION("toDevice should be updated") {
+        auto toDevice = +client.toDevice();
+
+        REQUIRE(toDevice.size() == 1);
+        REQUIRE(toDevice[0].sender() == "@alice:example.com");
     }
 }

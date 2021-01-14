@@ -20,6 +20,7 @@
 #pragma once
 
 #include <csapi/room_send.hpp>
+#include <csapi/to_device.hpp>
 
 #include "client-model.hpp"
 
@@ -27,4 +28,7 @@ namespace Kazv
 {
     ClientResult updateClient(ClientModel m, SendMessageAction a);
     ClientResult processResponse(ClientModel m, SendMessageResponse r);
+
+    ClientResult updateClient(ClientModel m, SendToDeviceMessageAction a);
+    ClientResult processResponse(ClientModel m, SendToDeviceResponse r);
 }

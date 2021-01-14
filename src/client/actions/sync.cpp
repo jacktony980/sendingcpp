@@ -157,6 +157,25 @@ namespace Kazv
         return eventsToEmit;
     }
 
+    static KazvEventList loadToDeviceFromSyncInPlace(ClientModel &m, JsonWrap toDevice)
+    {
+        if (toDevice.get().contains("events")) {
+            auto events = toDevice.get()["events"];
+            auto msgs = intoImmer(
+                EventList{},
+                zug::map([](const json &j) { return Event(j); }),
+                events);
+
+            m.toDevice = std::move(m.toDevice) + msgs;
+
+            return intoImmer(
+                KazvEventList{},
+                zug::map([](Event e) { return ReceivingToDeviceMessage{e}; }),
+                msgs);
+        }
+        return {};
+    }
+
     ClientResult processResponse(ClientModel m, SyncResponse r)
     {
         if (! r.success()) {
@@ -195,6 +214,7 @@ namespace Kazv
             m.addTriggers(loadAccountDataFromSyncInPlace(m, std::move(accountData.value().events)));
         }
 
+        m.addTriggers(loadToDeviceFromSyncInPlace(m, r.toDevice()));
         // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
 
         m.addTrigger(SyncSuccessful{r.nextBatch()});

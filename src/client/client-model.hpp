@@ -85,6 +85,8 @@ namespace Kazv
         immer::flex_vector<BaseJob> nextJobs;
         immer::flex_vector<KazvEvent> nextTriggers;
 
+        EventList toDevice;
+
         // helpers
         template<class Job>
         struct MakeJobT
@@ -294,6 +296,13 @@ namespace Kazv
     {
     };
 
+    struct SendToDeviceMessageAction
+    {
+        Event event;
+        std::string userId;
+        std::string deviceId;
+    };
+
     inline bool operator==(ClientModel a, ClientModel b)
     {
         return a.serverUrl == b.serverUrl
@@ -311,7 +320,8 @@ namespace Kazv
             && a.accountData == b.accountData
             && a.nextTxnId == b.nextTxnId
             && a.nextJobs == b.nextJobs
-            && a.nextTriggers == b.nextTriggers;
+            && a.nextTriggers == b.nextTriggers
+            && a.toDevice == b.toDevice;
     }
 
 #ifndef NDEBUG
@@ -324,6 +334,7 @@ namespace Kazv
     LAGER_CEREAL_STRUCT(PaginateTimelineAction);
     LAGER_CEREAL_STRUCT(SendMessageAction);
     LAGER_CEREAL_STRUCT(SendStateEventAction);
+    LAGER_CEREAL_STRUCT(SendToDeviceMessageAction);
     LAGER_CEREAL_STRUCT(CreateRoomAction);
     LAGER_CEREAL_STRUCT(GetRoomStatesAction);
     LAGER_CEREAL_STRUCT(GetStateEventAction);

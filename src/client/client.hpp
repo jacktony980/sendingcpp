@@ -63,6 +63,7 @@ namespace Kazv
         KAZV_WRAP_ATTR(ClientModel, m_client, userId)
         KAZV_WRAP_ATTR(ClientModel, m_client, token)
         KAZV_WRAP_ATTR(ClientModel, m_client, deviceId)
+        KAZV_WRAP_ATTR(ClientModel, m_client, toDevice)
 
         /* Room */
         inline auto room(std::string id) const {

@@ -59,6 +59,8 @@ namespace Kazv
     struct DownloadContentAction;
     struct DownloadThumbnailAction;
 
+    struct SendToDeviceMessageAction;
+
     struct ResubmitJobAction;
 
     struct ClientModel;
@@ -96,6 +98,8 @@ namespace Kazv
         UploadContentAction,
         DownloadContentAction,
         DownloadThumbnailAction,
+
+        SendToDeviceMessageAction,
 
         ResubmitJobAction
         >;

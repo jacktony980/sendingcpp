@@ -125,6 +125,16 @@ namespace Kazv
         return a.event == b.event && a.roomId == b.roomId;
     }
 
+    struct ReceivingToDeviceMessage
+    {
+        Event event;
+    };
+
+    inline bool operator==(ReceivingToDeviceMessage a, ReceivingToDeviceMessage b)
+    {
+        return a.event == b.event;
+    }
+
     struct RoomMembershipChanged {
         RoomMembership membership;
         std::string roomId;
@@ -299,6 +309,38 @@ namespace Kazv
     inline bool operator==(SendMessageFailed a, SendMessageFailed b)
     {
         return a.roomId == b.roomId
+            && a.errorCode == b.errorCode
+            && a.error == b.error;
+    }
+
+    struct SendToDeviceMessageSuccessful
+    {
+        std::string userId;
+        std::string deviceId;
+        std::string txnId;
+    };
+
+    inline bool operator==(SendToDeviceMessageSuccessful a, SendToDeviceMessageSuccessful b)
+    {
+        return a.userId == b.userId
+            && a.deviceId == b.deviceId
+            && a.txnId == b.txnId;
+    }
+
+    struct SendToDeviceMessageFailed
+    {
+        std::string userId;
+        std::string deviceId;
+        std::string txnId;
+        std::string errorCode;
+        std::string error;
+    };
+
+    inline bool operator==(SendToDeviceMessageFailed a, SendToDeviceMessageFailed b)
+    {
+        return a.userId == b.userId
+            && a.deviceId == b.deviceId
+            && a.txnId == b.txnId
             && a.errorCode == b.errorCode
             && a.error == b.error;
     }
@@ -576,6 +618,7 @@ namespace Kazv
         ReceivingRoomStateEvent,
         RoomMembershipChanged,
         ReceivingRoomAccountDataEvent,
+        ReceivingToDeviceMessage,
 
         // auth
         LoginSuccessful, LoginFailed,
@@ -592,6 +635,7 @@ namespace Kazv
         ForgetRoomSuccessful, ForgetRoomFailed,
         // send
         SendMessageSuccessful, SendMessageFailed,
+        SendToDeviceMessageSuccessful, SendToDeviceMessageFailed,
         InvalidMessageFormat,
         // states
         GetRoomStatesSuccessful, GetRoomStatesFailed,
