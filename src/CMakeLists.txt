@@ -3,9 +3,9 @@ include(linklibsys)
 
 add_subdirectory(base)
 add_subdirectory(api)
+add_subdirectory(crypto)
 add_subdirectory(client)
 add_subdirectory(eventemitter)
-add_subdirectory(crypto)
 
 if(libkazv_BUILD_KAZVJOB)
   add_subdirectory(job)

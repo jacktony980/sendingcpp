@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
  *
  * This file is part of libkazv.
  *
@@ -74,6 +74,7 @@ namespace Kazv
             , client{"client", KAZV_DEFAULT_OUTPUT_LEVEL}
             , ee{"eventemitter", KAZV_DEFAULT_OUTPUT_LEVEL}
             , job{"job", KAZV_DEFAULT_OUTPUT_LEVEL}
+            , crypto{"crypto", KAZV_DEFAULT_OUTPUT_LEVEL}
         {
             auto env = std::getenv("KAZV_OUTPUT_LEVELS");
             std::string s{env ? env : ""};
@@ -111,6 +112,8 @@ namespace Kazv
                     ee.level = l;
                 } else if (cfg[0] == "job") {
                     job.level = l;
+                } else if (cfg[0] == "crypto") {
+                    crypto.level = l;
                 }
             }
         }

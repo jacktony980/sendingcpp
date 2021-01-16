@@ -23,6 +23,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <debug.hpp>
+
 #include "crypto.hpp"
 
 #include "crypto-util.hpp"
@@ -39,6 +41,7 @@ namespace Kazv
 
         ByteArray accountData;
         OlmAccount *account;
+        immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount;
 
         void checkError(std::size_t code);
     };
@@ -71,7 +74,9 @@ namespace Kazv
 
     void CryptoPrivate::checkError(std::size_t code)
     {
-        // TODO
+        if (code == olm_error()) {
+            kzo.crypto.warn() << "Olm error: " << olm_account_last_error(account) << std::endl;
+        }
     }
 
 
@@ -125,5 +130,28 @@ namespace Kazv
         auto keyStr = std::string(keys.begin(), keys.end());
         auto keyJson = nlohmann::json::parse(keyStr);
         return keyJson.at(curve25519);
+    }
+
+    std::string Crypto::sign(nlohmann::json j)
+    {
+        j.erase("signatures");
+        j.erase("unsigned");
+
+        auto str = j.dump();
+
+        auto ret = ByteArray(olm_account_signature_length(m_d->account), '\0');
+
+        kzo.crypto.dbg() << "We are about to sign: " << str << std::endl;
+
+        m_d->checkError(olm_account_sign(m_d->account,
+                                         str.data(), str.size(),
+                                         ret.data(), ret.size()));
+
+        return std::string{ret.begin(), ret.end()};
+    }
+
+    void Crypto::setUploadedOneTimeKeysCount(immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount)
+    {
+        m_d->uploadedOneTimeKeysCount = uploadedOneTimeKeysCount;
     }
 }

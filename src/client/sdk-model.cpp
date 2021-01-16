@@ -32,6 +32,8 @@ namespace Kazv
                     ClientModel::update(std::move(s.client), a);
                 s.client = std::move(newClient);
 
+                bool hasCrypto{s.client.crypto};
+
                 auto jobs = s.client.popAllJobs();
                 auto triggers = s.client.popAllTriggers();
 
@@ -64,8 +66,16 @@ namespace Kazv
                                         ctx.dispatch(SyncAction{});
                                     }, syncInterval);
                             }
-                            // start a sync after posting initial filters
+                            // start a sync or publish identity keys after posting initial filters
                             else if (std::holds_alternative<PostInitialFiltersSuccessful>(t)) {
+                                if (hasCrypto) {
+                                    ctx.dispatch(UploadIdentityKeysAction{});
+                                } else {
+                                    ctx.dispatch(SyncAction{});
+                                }
+                            }
+                            // start sync after publishing identity keys
+                            else if (std::holds_alternative<UploadIdentityKeysSuccessful>(t)) {
                                 ctx.dispatch(SyncAction{});
                             }
                         }

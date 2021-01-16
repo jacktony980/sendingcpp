@@ -37,6 +37,7 @@
 #include "actions/sync.hpp"
 #include "actions/ephemeral.hpp"
 #include "actions/content.hpp"
+#include "actions/encryption.hpp"
 
 namespace Kazv
 {
@@ -96,6 +97,8 @@ namespace Kazv
                 RESPONSE_FOR(UploadContent);
                 RESPONSE_FOR(GetContent);
                 RESPONSE_FOR(GetContentThumbnail);
+                // encryption
+                RESPONSE_FOR(UploadKeys);
 
                 m.addTrigger(UnrecognizedResponse{std::move(r)});
                 return { std::move(m), lager::noop };

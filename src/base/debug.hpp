@@ -77,6 +77,7 @@ namespace Kazv
             OutputGroup client;
             OutputGroup ee;
             OutputGroup job;
+            OutputGroup crypto;
         };
     }
 

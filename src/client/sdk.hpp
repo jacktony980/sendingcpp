@@ -93,4 +93,24 @@ namespace Kazv
                  std::forward<Xform>(xform),
                  std::forward<Enhancers>(enhancers)... };
     }
+
+    template<class EventLoop, class Xform, class ...Enhancers>
+    inline auto makeDefaultEncryptedSdk(
+        JobInterface &jobHandler,
+        EventInterface &eventEmitter,
+        EventLoop &&eventLoop,
+        Xform &&xform,
+        Enhancers &&...enhancers)
+        -> Sdk<EventLoop, Xform, Enhancers...>
+    {
+        auto m = SdkModel{};
+        m.client.crypto = Crypto();
+
+        return makeSdk(std::move(m),
+                       jobHandler,
+                       eventEmitter,
+                       std::forward<EventLoop>(eventLoop),
+                       std::forward<Xform>(xform),
+                       std::forward<Enhancers>(enhancers)...);
+    }
 }

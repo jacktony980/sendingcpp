@@ -23,6 +23,10 @@
 
 #include "crypto-util.hpp"
 
+#include <nlohmann/json.hpp>
+
+#include <immer/map.hpp>
+
 namespace Kazv
 {
     struct CryptoPrivate;
@@ -39,6 +43,10 @@ namespace Kazv
         ByteArray identityKeys();
         std::string ed25519IdentityKey();
         std::string curve25519IdentityKey();
+
+        std::string sign(nlohmann::json j);
+
+        void setUploadedOneTimeKeysCount(immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount);
 
     private:
         std::unique_ptr<CryptoPrivate> m_d;

@@ -9,6 +9,7 @@ set(kazvclient_SRCS
   actions/send.cpp
   actions/ephemeral.cpp
   actions/content.cpp
+  actions/encryption.cpp
 
   room/room-model.cpp
   )
@@ -17,7 +18,7 @@ add_library(kazvclient ${kazvclient_SRCS})
 add_library(libkazv::kazvclient ALIAS kazvclient)
 set_target_properties(kazvclient PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION 0)
 
-target_link_libraries(kazvclient PUBLIC kazvbase kazvapi)
+target_link_libraries(kazvclient PUBLIC kazvbase kazvapi kazvcrypto)
 
 target_include_directories(kazvclient PRIVATE .)
 

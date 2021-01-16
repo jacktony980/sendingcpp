@@ -166,6 +166,9 @@ namespace Kazv
             if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
                 || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
                 m_ctx.dispatch(PostInitialFiltersAction{});
+            } else if (+m_client[&ClientModel::crypto] // encryption is on
+                       && ! +m_client[&ClientModel::identityKeysUploaded]) { // but identity keys are not published
+                m_ctx.dispatch(UploadIdentityKeysAction{});
             } else { // sync is just interrupted
                 m_ctx.dispatch(SyncAction{});
             }

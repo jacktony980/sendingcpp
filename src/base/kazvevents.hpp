@@ -306,6 +306,16 @@ namespace Kazv
         std::string error;
     };
 
+    struct UploadIdentityKeysSuccessful
+    {
+    };
+
+    struct UploadIdentityKeysFailed
+    {
+        std::string errorCode;
+        std::string error;
+    };
+
     struct UnrecognizedResponse
     {
         Response response;
@@ -354,6 +364,8 @@ namespace Kazv
         UploadContentSuccessful, UploadContentFailed,
         DownloadContentSuccessful, DownloadContentFailed,
         DownloadThumbnailSuccessful, DownloadThumbnailFailed,
+        // encryption
+        UploadIdentityKeysSuccessful, UploadIdentityKeysFailed,
 
         // general
         UnrecognizedResponse

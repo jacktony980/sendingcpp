@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
  *
  * This file is part of libkazv.
  *
@@ -70,8 +70,7 @@ int main(int argc, char *argv[])
 // //"./_deps/lager-src/resources"
 //     };
 // #endif
-    auto sdk = Kazv::makeSdk(
-        Kazv::SdkModel{},
+    auto sdk = Kazv::makeDefaultEncryptedSdk(
         static_cast<Kazv::CprJobHandler &>(jobHandler),
         static_cast<Kazv::EventInterface &>(eventEmitter),
         lager::with_boost_asio_event_loop{ioContext.get_executor()},

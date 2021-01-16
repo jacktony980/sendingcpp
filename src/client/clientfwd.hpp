@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
  *
  * This file is part of libkazv.
  *
@@ -61,6 +61,8 @@ namespace Kazv
 
     struct SendToDeviceMessageAction;
 
+    struct UploadIdentityKeysAction;
+
     struct ResubmitJobAction;
 
     struct ClientModel;
@@ -100,6 +102,8 @@ namespace Kazv
         DownloadThumbnailAction,
 
         SendToDeviceMessageAction,
+
+        UploadIdentityKeysAction,
 
         ResubmitJobAction
         >;

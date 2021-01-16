@@ -36,6 +36,8 @@
 #include <jobinterface.hpp>
 #include <eventinterface.hpp>
 
+#include <crypto.hpp>
+
 #include "clientfwd.hpp"
 #include "error.hpp"
 #include "room/room-model.hpp"
@@ -86,6 +88,8 @@ namespace Kazv
         immer::flex_vector<KazvEvent> nextTriggers;
 
         EventList toDevice;
+        std::optional<Crypto> crypto;
+        bool identityKeysUploaded{false};
 
         // helpers
         template<class Job>
@@ -303,6 +307,10 @@ namespace Kazv
         std::string deviceId;
     };
 
+    struct UploadIdentityKeysAction
+    {
+    };
+
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(LoginAction);
     LAGER_CEREAL_STRUCT(TokenLoginAction);
@@ -339,11 +347,14 @@ namespace Kazv
     {
         ar(m.serverUrl, m.userId, m.token, m.deviceId, m.loggedIn,
            m.error,
+           m.initialSyncFilterId,
+           m.incrementalSyncFilterId,
            m.syncToken,
            m.roomList,
            m.presence,
            m.accountData,
-           m.nextTxnId);
+           m.nextTxnId,
+           m.toDevice);
     }
 }
 CEREAL_CLASS_VERSION(Kazv::ClientModel, 0);
