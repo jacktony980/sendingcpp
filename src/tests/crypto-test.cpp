@@ -27,9 +27,14 @@ using namespace Kazv;
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
     Crypto crypto;
+    auto oneTimeKeys = crypto.genOneTimeKeys(1);
     Crypto cryptoClone(crypto);
 
     REQUIRE(crypto.identityKeys() == cryptoClone.identityKeys());
     REQUIRE(crypto.ed25519IdentityKey() == cryptoClone.ed25519IdentityKey());
     REQUIRE(crypto.curve25519IdentityKey() == cryptoClone.curve25519IdentityKey());
+
+    auto oneTimeKeys2 = cryptoClone.unpublishedOneTimeKeys();
+
+    REQUIRE(oneTimeKeys == oneTimeKeys2);
 }

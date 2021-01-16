@@ -48,6 +48,14 @@ namespace Kazv
 
         void setUploadedOneTimeKeysCount(immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount);
 
+        int maxNumberOfOneTimeKeys();
+
+        nlohmann::json genOneTimeKeys(int num);
+
+        nlohmann::json unpublishedOneTimeKeys();
+
+        void markOneTimeKeysAsPublished();
+
     private:
         std::unique_ptr<CryptoPrivate> m_d;
     };

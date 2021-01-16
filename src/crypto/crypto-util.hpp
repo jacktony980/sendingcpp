@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <string>
 #include <random>
 #include <algorithm>
 #include <vector>
