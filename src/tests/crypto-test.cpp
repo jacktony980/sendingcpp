@@ -27,7 +27,8 @@ using namespace Kazv;
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
     Crypto crypto;
-    auto oneTimeKeys = crypto.genOneTimeKeys(1);
+    crypto.genOneTimeKeys(1);
+    auto oneTimeKeys = crypto.unpublishedOneTimeKeys();
     Crypto cryptoClone(crypto);
 
     REQUIRE(crypto.identityKeys() == cryptoClone.identityKeys());
@@ -37,4 +38,18 @@ TEST_CASE("Crypto should be copyable", "[crypto]")
     auto oneTimeKeys2 = cryptoClone.unpublishedOneTimeKeys();
 
     REQUIRE(oneTimeKeys == oneTimeKeys2);
+    REQUIRE(crypto.numUnpublishedOneTimeKeys() == cryptoClone.numUnpublishedOneTimeKeys());
+}
+
+TEST_CASE("Generating and publishing keys should work", "[crypto]")
+{
+    Crypto crypto;
+    crypto.genOneTimeKeys(1);
+    REQUIRE(crypto.numUnpublishedOneTimeKeys() == 1);
+
+    crypto.genOneTimeKeys(1);
+    REQUIRE(crypto.numUnpublishedOneTimeKeys() == 2);
+
+    crypto.markOneTimeKeysAsPublished();
+    REQUIRE(crypto.numUnpublishedOneTimeKeys() == 0);
 }

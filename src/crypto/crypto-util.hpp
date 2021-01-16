@@ -40,6 +40,7 @@ namespace Kazv
     {
         inline const std::string ed25519{"ed25519"};
         inline const std::string curve25519{"curve25519"};
+        inline const std::string signedCurve25519{"signed_curve25519"};
 
         inline const std::string olmAlgo{"m.olm.v1.curve25519-aes-sha2"};
         inline const std::string megOlmAlgo{"m.megolm.v1.aes-sha2"};

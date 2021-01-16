@@ -311,6 +311,10 @@ namespace Kazv
     {
     };
 
+    struct GenerateAndUploadOneTimeKeysAction
+    {
+    };
+
 #ifndef NDEBUG
     LAGER_CEREAL_STRUCT(LoginAction);
     LAGER_CEREAL_STRUCT(TokenLoginAction);

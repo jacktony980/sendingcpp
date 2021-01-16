@@ -29,12 +29,12 @@ namespace Kazv
     {
         auto j = json::object();
         j[m.userId] = json::object();
-        j[ed25519 + ":" + m.deviceId] = signature;
+        j[m.userId][ed25519 + ":" + m.deviceId] = signature;
 
         return j;
     }
 
-    ClientResult updateClient(ClientModel m, UploadIdentityKeysAction a)
+    ClientResult updateClient(ClientModel m, UploadIdentityKeysAction)
     {
         if (! m.crypto) {
             kzo.client.warn() << "Client::crypto is invalid, ignoring it." << std::endl;
@@ -73,6 +73,63 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
+    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction)
+    {
+        if (! m.crypto) {
+            kzo.client.warn() << "Client::crypto is invalid, ignoring it." << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        auto &crypto = m.crypto.value();
+
+        // Keep half of max supported number of keys
+        int numUploadedKeys = crypto.uploadedOneTimeKeysCount(signedCurve25519);
+        int numKeysNeeded = crypto.maxNumberOfOneTimeKeys() / 2
+            - numUploadedKeys;
+
+        // Subtract the number of existing one-time keys, in case
+        // the previous upload was not successful.
+        int numKeysToGenerate = numKeysNeeded - crypto.numUnpublishedOneTimeKeys();
+
+        kzo.client.dbg() << "Generating one-time keys..." << std::endl;
+        kzo.client.dbg() << "Number needed: " << numKeysNeeded << std::endl;
+
+        if (numKeysNeeded <= 0) { // we have enough already
+            kzo.client.dbg() << "We have enough one-time keys. Ignoring this." << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        if (numKeysToGenerate > 0) {
+            crypto.genOneTimeKeys(numKeysToGenerate);
+        }
+        kzo.client.dbg() << "Generating done." << std::endl;
+
+        auto keys = crypto.unpublishedOneTimeKeys();
+
+        auto cv25519Keys = keys.at(curve25519);
+        immer::map<std::string, Variant> oneTimeKeys;
+        for (auto [id, keyStr] : cv25519Keys.items()) {
+            json keyObject = json::object();
+            keyObject["key"] = keyStr;
+            keyObject["signatures"] = convertSignature(m, crypto.sign(keyObject));
+
+            oneTimeKeys = std::move(oneTimeKeys).set(signedCurve25519 + ":" + id, JsonWrap(keyObject));
+        }
+
+        auto job = m.job<UploadKeysJob>()
+            .make(
+                std::nullopt, // deviceKeys
+                oneTimeKeys)
+            .withData(json{{"is", "oneTimeKeys"}});
+
+        kzo.client.dbg() << "Uploading one time keys" << std::endl;
+
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+
+    };
+
     ClientResult processResponse(ClientModel m, UploadKeysResponse r)
     {
         if (! m.crypto) {
@@ -80,18 +137,33 @@ namespace Kazv
             return { std::move(m), lager::noop };
         }
 
-        if (! r.success()) {
-            kzo.client.dbg() << "Uploading identity keys failed" << std::endl;
-            m.addTrigger(UploadIdentityKeysFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
-        }
-
-        kzo.client.dbg() << "Uploading identity keys successful" << std::endl;
-        m.addTrigger(UploadIdentityKeysSuccessful{});
-
-        m.identityKeysUploaded = true;
-
         auto &crypto = m.crypto.value();
+
+        auto is = r.dataStr("is");
+
+        if (is == "identityKeys") {
+            if (! r.success()) {
+                kzo.client.dbg() << "Uploading identity keys failed" << std::endl;
+                m.addTrigger(UploadIdentityKeysFailed{r.errorCode(), r.errorMessage()});
+                return { std::move(m), lager::noop };
+            }
+
+            kzo.client.dbg() << "Uploading identity keys successful" << std::endl;
+            m.addTrigger(UploadIdentityKeysSuccessful{});
+
+            m.identityKeysUploaded = true;
+        } else {
+            if (! r.success()) {
+                kzo.client.dbg() << "Uploading one-time keys failed" << std::endl;
+                m.addTrigger(UploadOneTimeKeysFailed{r.errorCode(), r.errorMessage()});
+                return { std::move(m), lager::noop };
+            }
+
+            kzo.client.dbg() << "Uploading one-time keys successful" << std::endl;
+            m.addTrigger(UploadOneTimeKeysSuccessful{});
+
+            crypto.markOneTimeKeysAsPublished();
+        }
 
         crypto.setUploadedOneTimeKeysCount(r.oneTimeKeyCounts());
 

@@ -316,6 +316,16 @@ namespace Kazv
         std::string error;
     };
 
+    struct UploadOneTimeKeysSuccessful
+    {
+    };
+
+    struct UploadOneTimeKeysFailed
+    {
+        std::string errorCode;
+        std::string error;
+    };
+
     struct UnrecognizedResponse
     {
         Response response;
@@ -366,6 +376,7 @@ namespace Kazv
         DownloadThumbnailSuccessful, DownloadThumbnailFailed,
         // encryption
         UploadIdentityKeysSuccessful, UploadIdentityKeysFailed,
+        UploadOneTimeKeysSuccessful, UploadOneTimeKeysFailed,
 
         // general
         UnrecognizedResponse

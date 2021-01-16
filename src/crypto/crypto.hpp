@@ -48,11 +48,25 @@ namespace Kazv
 
         void setUploadedOneTimeKeysCount(immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount);
 
+        int uploadedOneTimeKeysCount(std::string algorithm) const;
+
         int maxNumberOfOneTimeKeys();
 
-        nlohmann::json genOneTimeKeys(int num);
+        void genOneTimeKeys(int num);
 
+        /**
+         * According to olm.h, this returns an object like
+         *
+         * {
+         *     curve25519: {
+         *         "AAAAAA": "wo76WcYtb0Vk/pBOdmduiGJ0wIEjW4IBMbbQn7aSnTo",
+         *         "AAAAAB": "LRvjo46L1X2vx69sS9QNFD29HWulxrmW11Up5AfAjgU"
+         *     }
+         * }
+         */
         nlohmann::json unpublishedOneTimeKeys();
+
+        int numUnpublishedOneTimeKeys() const;
 
         void markOneTimeKeysAsPublished();
 

@@ -42,8 +42,9 @@ namespace Kazv
         ByteArray accountData;
         OlmAccount *account;
         immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount;
+        int numUnpublishedKeys{0};
 
-        void checkError(std::size_t code) const;
+        std::size_t checkError(std::size_t code) const;
     };
 
     CryptoPrivate::CryptoPrivate()
@@ -63,27 +64,25 @@ namespace Kazv
     CryptoPrivate::CryptoPrivate(const CryptoPrivate &that)
         : accountData(olm_account_size(), 0)
         , account(olm_account(accountData.data()))
+        , uploadedOneTimeKeysCount(that.uploadedOneTimeKeysCount)
+        , numUnpublishedKeys(that.numUnpublishedKeys)
     {
-        kzo.crypto.dbg() << "Trying to pickle account..." << std::endl;
         auto pickleData = ByteArray(olm_pickle_account_length(that.account), '\0');
         auto key = ByteArray(3, 'x');
         // XXX: olm_pickle_account is technically taking a (non-const) OlmAccount *
         // but error will be set only if there is some problem...
         that.checkError(olm_pickle_account(that.account, key.data(), key.size(),
                                            pickleData.data(), pickleData.size()));
-        kzo.crypto.dbg() << "Pickling account done." << std::endl;
-
-        kzo.crypto.dbg() << "Trying to unpickle account..." << std::endl;
         checkError(olm_unpickle_account(account, key.data(), key.size(),
                                         pickleData.data(), pickleData.size()));
-        kzo.crypto.dbg() << "Unpickling account done." << std::endl;
     }
 
-    void CryptoPrivate::checkError(std::size_t code) const
+    std::size_t CryptoPrivate::checkError(std::size_t code) const
     {
         if (code == olm_error()) {
             kzo.crypto.warn() << "Olm error: " << olm_account_last_error(account) << std::endl;
         }
+        return code;
     }
 
 
@@ -167,16 +166,18 @@ namespace Kazv
         return olm_account_max_number_of_one_time_keys(m_d->account);
     }
 
-    nlohmann::json Crypto::genOneTimeKeys(int num)
+    void Crypto::genOneTimeKeys(int num)
     {
         auto random = genRandom(olm_account_generate_one_time_keys_random_length(m_d->account, num));
-        m_d->checkError(
+        auto res = m_d->checkError(
             olm_account_generate_one_time_keys(
                 m_d->account,
                 num,
                 random.data(), random.size()));
 
-        return unpublishedOneTimeKeys();
+        if (res != olm_error()) {
+            m_d->numUnpublishedKeys += num;
+        }
     }
 
     nlohmann::json Crypto::unpublishedOneTimeKeys()
@@ -189,6 +190,19 @@ namespace Kazv
 
     void Crypto::markOneTimeKeysAsPublished()
     {
-        m_d->checkError(olm_account_mark_keys_as_published(m_d->account));
+        auto ret = m_d->checkError(olm_account_mark_keys_as_published(m_d->account));
+        if (ret != olm_error()) {
+            m_d->numUnpublishedKeys = 0;
+        }
+    }
+
+    int Crypto::numUnpublishedOneTimeKeys() const
+    {
+        return m_d->numUnpublishedKeys;
+    }
+
+    int Crypto::uploadedOneTimeKeysCount(std::string algorithm) const
+    {
+        return m_d->uploadedOneTimeKeysCount[algorithm];
     }
 }

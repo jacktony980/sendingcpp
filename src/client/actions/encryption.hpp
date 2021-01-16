@@ -26,5 +26,6 @@
 namespace Kazv
 {
     ClientResult updateClient(ClientModel m, UploadIdentityKeysAction a);
+    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction a);
     ClientResult processResponse(ClientModel m, UploadKeysResponse r);
 }

@@ -87,7 +87,6 @@ int main(int argc, char *argv[])
     auto store = sdk.context();
     auto c = sdk.client();
 
-    /*
     auto watchable = eventEmitter.watchable();
     watchable.after<Kazv::ReceivingRoomTimelineEvent>(
         [](auto e) {
@@ -98,7 +97,14 @@ int main(int argc, char *argv[])
                       << ": " << event.content().get().dump() << "\033[0m"
                       << std::endl;
         });
-    */
+    watchable.after<Kazv::ReceivingToDeviceMessage>(
+        [](auto e) {
+            auto [event] = e;
+            std::cout << "\033[1;32mreceiving to-device event "
+                      << event.originalJson().get().dump()
+                      << "\033[0m"
+                      << std::endl;
+        });
 
     {
         std::ifstream auth(argv[1]);

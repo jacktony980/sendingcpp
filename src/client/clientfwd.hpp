@@ -62,6 +62,7 @@ namespace Kazv
     struct SendToDeviceMessageAction;
 
     struct UploadIdentityKeysAction;
+    struct GenerateAndUploadOneTimeKeysAction;
 
     struct ResubmitJobAction;
 
@@ -104,6 +105,7 @@ namespace Kazv
         SendToDeviceMessageAction,
 
         UploadIdentityKeysAction,
+        GenerateAndUploadOneTimeKeysAction,
 
         ResubmitJobAction
         >;
