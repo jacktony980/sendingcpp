@@ -22,19 +22,19 @@ libkazv support the following functionalities:
 - Receipts and fully-read markers
 - Leaving and forgetting rooms
 - Content repository
+- Send-to-device messages
 
 These functionalities are currently not supported:
 
+- E2EE (partial, can receive but not send)
 - Banning and kicking
 - Setting presence
-- Send-to-device messages
 - Device management
 - Direct messages
 - Redactions
 - Room history visibility
 - Registering
 - VoIP
-- E2EE
 - Room tagging
 - Searching
 - Room previews
