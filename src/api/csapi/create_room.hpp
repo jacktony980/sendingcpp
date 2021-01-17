@@ -296,6 +296,7 @@ std::string roomId() const;
       using namespace Kazv;
       template<>
       struct adl_serializer<CreateRoomJob::Invite3pid> {
+
   static void to_json(json& jo, const CreateRoomJob::Invite3pid &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -311,9 +312,28 @@ std::string roomId() const;
     
   }
 
+  static void from_json(const json &jo, CreateRoomJob::Invite3pid& result)
+  {
+  
+    if (jo.contains("id_server"s)) {
+      result.idServer = jo.at("id_server"s);
+    }
+    if (jo.contains("id_access_token"s)) {
+      result.idAccessToken = jo.at("id_access_token"s);
+    }
+    if (jo.contains("medium"s)) {
+      result.medium = jo.at("medium"s);
+    }
+    if (jo.contains("address"s)) {
+      result.address = jo.at("address"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<CreateRoomJob::StateEvent> {
+
   static void to_json(json& jo, const CreateRoomJob::StateEvent &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -325,6 +345,21 @@ std::string roomId() const;
     addToJsonIfNeeded(jo, "state_key"s, pod.stateKey);
     jo["content"s] = pod.content;
     
+  }
+
+  static void from_json(const json &jo, CreateRoomJob::StateEvent& result)
+  {
+  
+    if (jo.contains("type"s)) {
+      result.type = jo.at("type"s);
+    }
+    if (jo.contains("state_key"s)) {
+      result.stateKey = jo.at("state_key"s);
+    }
+    if (jo.contains("content"s)) {
+      result.content = jo.at("content"s);
+    }
+  
   }
 
 };

@@ -242,6 +242,19 @@ EventList accountData() const;
       template<>
       struct adl_serializer<InitialSyncJob::PaginationChunk> {
 
+  static void to_json(json& jo, const InitialSyncJob::PaginationChunk &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["start"s] = pod.start;
+    
+    jo["end"s] = pod.end;
+    
+    jo["chunk"s] = pod.chunk;
+    
+  }
+
   static void from_json(const json &jo, InitialSyncJob::PaginationChunk& result)
   {
   
@@ -256,9 +269,31 @@ EventList accountData() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<InitialSyncJob::RoomInfo> {
+
+  static void to_json(json& jo, const InitialSyncJob::RoomInfo &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["room_id"s] = pod.roomId;
+    
+    jo["membership"s] = pod.membership;
+    
+    
+    addToJsonIfNeeded(jo, "invite"s, pod.invite);
+    
+    addToJsonIfNeeded(jo, "messages"s, pod.messages);
+    
+    addToJsonIfNeeded(jo, "state"s, pod.state);
+    
+    addToJsonIfNeeded(jo, "visibility"s, pod.visibility);
+    
+    addToJsonIfNeeded(jo, "account_data"s, pod.accountData);
+  }
 
   static void from_json(const json &jo, InitialSyncJob::RoomInfo& result)
   {
@@ -286,6 +321,7 @@ EventList accountData() const;
     }
   
   }
+
 };
     }
 

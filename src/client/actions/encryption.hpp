@@ -30,4 +30,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, UploadKeysResponse r);
 
     ClientModel tryDecryptEvents(ClientModel m);
+
+    ClientResult updateClient(ClientModel m, QueryKeysAction a);
+    ClientResult processResponse(ClientModel m, QueryKeysResponse r);
 }

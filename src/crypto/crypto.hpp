@@ -80,6 +80,11 @@ namespace Kazv
 
         bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
 
+        /// Check whether the signature of userId/deviceId is valid in object
+        bool verify(nlohmann::json object, std::string userId, std::string deviceId, std::string ed25519Key);
+
+        MaybeString getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const;
+
     private:
         friend class Session;
         friend class SessionPrivate;

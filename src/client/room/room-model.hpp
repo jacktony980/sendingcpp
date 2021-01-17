@@ -103,6 +103,8 @@ namespace Kazv
 
         bool encrypted{false};
 
+        immer::flex_vector<std::string> joinedMemberIds() const;
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,

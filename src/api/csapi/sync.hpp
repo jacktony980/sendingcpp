@@ -377,6 +377,19 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
       template<>
       struct adl_serializer<SyncJob::RoomSummary> {
 
+  static void to_json(json& jo, const SyncJob::RoomSummary &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "m.heroes"s, pod.mHeroes);
+    
+    addToJsonIfNeeded(jo, "m.joined_member_count"s, pod.mJoinedMemberCount);
+    
+    addToJsonIfNeeded(jo, "m.invited_member_count"s, pod.mInvitedMemberCount);
+  }
+
   static void from_json(const json &jo, SyncJob::RoomSummary& result)
   {
   
@@ -391,9 +404,21 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::UnreadNotificationCounts> {
+
+  static void to_json(json& jo, const SyncJob::UnreadNotificationCounts &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "highlight_count"s, pod.highlightCount);
+    
+    addToJsonIfNeeded(jo, "notification_count"s, pod.notificationCount);
+  }
 
   static void from_json(const json &jo, SyncJob::UnreadNotificationCounts& result)
   {
@@ -406,9 +431,29 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::JoinedRoom> {
+
+  static void to_json(json& jo, const SyncJob::JoinedRoom &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "summary"s, pod.summary);
+    
+    addToJsonIfNeeded(jo, "state"s, pod.state);
+    
+    addToJsonIfNeeded(jo, "timeline"s, pod.timeline);
+    
+    addToJsonIfNeeded(jo, "ephemeral"s, pod.ephemeral);
+    
+    addToJsonIfNeeded(jo, "account_data"s, pod.accountData);
+    
+    addToJsonIfNeeded(jo, "unread_notifications"s, pod.unreadNotifications);
+  }
 
   static void from_json(const json &jo, SyncJob::JoinedRoom& result)
   {
@@ -433,9 +478,19 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::InviteState> {
+
+  static void to_json(json& jo, const SyncJob::InviteState &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "events"s, pod.events);
+  }
 
   static void from_json(const json &jo, SyncJob::InviteState& result)
   {
@@ -445,9 +500,19 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::InvitedRoom> {
+
+  static void to_json(json& jo, const SyncJob::InvitedRoom &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "invite_state"s, pod.inviteState);
+  }
 
   static void from_json(const json &jo, SyncJob::InvitedRoom& result)
   {
@@ -457,9 +522,23 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::LeftRoom> {
+
+  static void to_json(json& jo, const SyncJob::LeftRoom &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "state"s, pod.state);
+    
+    addToJsonIfNeeded(jo, "timeline"s, pod.timeline);
+    
+    addToJsonIfNeeded(jo, "account_data"s, pod.accountData);
+  }
 
   static void from_json(const json &jo, SyncJob::LeftRoom& result)
   {
@@ -475,9 +554,23 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SyncJob::Rooms> {
+
+  static void to_json(json& jo, const SyncJob::Rooms &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "join"s, pod.join);
+    
+    addToJsonIfNeeded(jo, "invite"s, pod.invite);
+    
+    addToJsonIfNeeded(jo, "leave"s, pod.leave);
+  }
 
   static void from_json(const json &jo, SyncJob::Rooms& result)
   {
@@ -493,6 +586,7 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     }
   
   }
+
 };
     }
 

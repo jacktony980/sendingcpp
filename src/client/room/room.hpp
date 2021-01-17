@@ -110,42 +110,9 @@ namespace Kazv
 
         /* lager::reader<RangeT<std::string>> */
         inline auto members() const {
-            using MemberNode = std::pair<std::string, Kazv::Event>;
-            auto memberNameTransducer =
-                zug::filter(
-                    [](auto val) {
-                        auto [k, v] = val;
-                        auto [type, stateKey] = k;
-                        return type == "m.room.member"s;
-                    })
-                | zug::map(
-                    [](auto val) {
-                        auto [k, v] = val;
-                        auto [type, stateKey] = k;
-                        return MemberNode{stateKey, v};
-                    })
-                | zug::filter(
-                    [](auto val) {
-                        auto [stateKey, ev] = val;
-                        return ev.content().get()
-                            .at("membership"s) == "join"s;
-                    })
-                | zug::map(
-                    [](auto val) {
-                        auto [stateKey, ev] = val;
-                        return stateKey;
-                    });
-
-            return m_room
-                [&RoomModel::stateEvents]
-                .xform(zug::map(
-                           [=](auto eventMap) {
-                               return intoImmer(
-                                   immer::flex_vector<std::string>{},
-                                   memberNameTransducer,
-                                   eventMap);
-                           }));
-
+            return m_room.xform(zug::map([=](auto room) {
+                                             return room.joinedMemberIds();
+                                         }));
         }
 
         inline auto memberEventByCursor(lager::reader<std::string> userId) const {

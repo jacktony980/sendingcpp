@@ -136,7 +136,7 @@ public:
     {{#models.model}}
       template<>
       struct adl_serializer<{{qualifiedName}}> {
-{{#in?}}
+
   static void to_json(json& jo, const {{qualifiedName}} &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -152,8 +152,7 @@ public:
     {{^required?}}addToJsonIfNeeded(jo, "{{baseName}}"s, pod.{{nameCamelCase}});{{/required?}}
   {{/vars}}
   }
-{{/in?}}
-{{#out?}}
+
   static void from_json(const json &jo, {{qualifiedName}}& result)
   {
   {{#parents}}
@@ -169,7 +168,7 @@ public:
     result.{{nameCamelCase}} = jo;
   {{/propertyMap}}
   }
-{{/out?}}
+
 };
     {{/models.model}}
     }

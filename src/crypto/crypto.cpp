@@ -38,6 +38,8 @@ namespace Kazv
     CryptoPrivate::CryptoPrivate()
         : accountData(olm_account_size(), 0)
         , account(olm_account(accountData.data()))
+        , utilityData(olm_utility_size(), '\0')
+        , utility(olm_utility(utilityData.data()))
     {
         auto randLen = olm_create_account_random_length(account);
         auto randomData = genRandom(randLen);
@@ -56,6 +58,8 @@ namespace Kazv
         , numUnpublishedKeys(that.numUnpublishedKeys)
         , knownSessions(that.knownSessions)
         , inboundGroupSessions(that.inboundGroupSessions)
+        , utilityData(olm_utility_size(), '\0')
+        , utility(olm_utility(utilityData.data()))
     {
         unpickle(that.pickle());
     }
@@ -83,6 +87,15 @@ namespace Kazv
         }
         return code;
     }
+
+    std::size_t CryptoPrivate::checkUtilError(std::size_t code) const
+    {
+        if (code == olm_error()) {
+            kzo.crypto.warn() << "Olm utility error: " << olm_utility_last_error(utility) << std::endl;
+        }
+        return code;
+    }
+
 
     MaybeString CryptoPrivate::decryptOlm(nlohmann::json content)
     {
@@ -314,5 +327,48 @@ namespace Kazv
             return true;
         }
         return false;
+    }
+
+    bool Crypto::verify(nlohmann::json object, std::string userId, std::string deviceId, std::string ed25519Key)
+    {
+        if (! object.contains("signatures")) {
+            return false;
+        }
+        std::string signature;
+        try {
+            signature = object.at("signatures").at(userId).at(ed25519 + ":" + deviceId);
+        } catch(const std::exception &) {
+            return false;
+        }
+        object.erase("signatures");
+        object.erase("unsigned");
+
+        auto message = object.dump();
+
+        auto res = m_d->checkUtilError(
+            olm_ed25519_verify(m_d->utility,
+                               ed25519Key.c_str(), ed25519Key.size(),
+                               message.c_str(), message.size(),
+                               signature.data(), signature.size()));
+
+        return res != olm_error();
+    }
+
+    MaybeString Crypto::getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const
+    {
+        auto content = eventJson.at("content");
+
+        auto senderKey = content.at("sender_key").get<std::string>();
+        auto sessionId = content.at("session_id").get<std::string>();
+        auto roomId = eventJson.at("room_id").get<std::string>();
+
+        auto k = KeyOfGroupSession{roomId, senderKey, sessionId};
+
+        if (m_d->inboundGroupSessions.find(k) == m_d->inboundGroupSessions.end()) {
+            return NotBut("We do not have the keys for this");
+        } else {
+            auto &session = m_d->inboundGroupSessions.at(k);
+            return session.ed25519Key();
+        }
     }
 }

@@ -18,6 +18,7 @@
  */
 
 #include <zug/transducer/filter.hpp>
+#include <zug/transducer/cat.hpp>
 
 #include "encryption.hpp"
 
@@ -189,6 +190,19 @@ namespace Kazv
         bool valid = true;
 
         try {
+            std::string senderCurve25519Key = e.originalJson().get()
+                .at("content").at("sender_key");
+
+            auto deviceInfoOpt = m.deviceLists.findByCurve25519Key(e.sender(), senderCurve25519Key);
+
+            if (! deviceInfoOpt) {
+                kzo.client.dbg() << "Device key " << senderCurve25519Key
+                                 << " unknown, thus invalid" << std::endl;
+                valid = false;
+            }
+
+            auto deviceInfo = deviceInfoOpt.value();
+
             std::string algo = e.originalJson().get().at("content").at("algorithm");
             if (algo == olmAlgo) {
                 if (! (plainJson.at("sender") == e.sender())) {
@@ -203,14 +217,31 @@ namespace Kazv
                     kzo.client.dbg() << "Recipient key does not match, thus invalid" << std::endl;
                     valid = false;
                 }
-                // TODO: check sender's key
+                auto thisEd25519Key = plainJson.at("keys").at(ed25519).get<std::string>();
+                if (thisEd25519Key != deviceInfo.ed25519Key) {
+                    kzo.client.dbg() << "Sender ed25519 key does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
             } else if (algo == megOlmAlgo) {
                 if (! (plainJson.at("room_id").get<std::string>() ==
                        e.originalJson().get().at("room_id").get<std::string>())) {
                     kzo.client.dbg() << "Room id does not match, thus invalid" << std::endl;
                     valid = false;
                 }
-                // TODO: check sender key
+                if (e.originalJson().get().at("content").at("device_id").get<std::string>()
+                    != deviceInfo.deviceId) {
+                    kzo.client.dbg() << "Device id does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
+                auto actualEd25519Key = crypto.getInboundGroupSessionEd25519KeyFromEvent(e.originalJson().get());
+                if ((! actualEd25519Key)
+                    || deviceInfo.ed25519Key != actualEd25519Key.value()) {
+                    kzo.client.dbg() << "sender ed25519 key does not match, thus invalid" << std::endl;
+                    kzo.client.dbg() << "From group session: "
+                                     << (actualEd25519Key ? actualEd25519Key.value() : "<none>") << std::endl;
+                    kzo.client.dbg() << "From device info: " << deviceInfo.ed25519Key << std::endl;
+                    valid = false;
+                }
             } else {
                 kzo.client.dbg() << "Unknown algorithm, thus invalid" << std::endl;
                 valid = false;
@@ -280,8 +311,10 @@ namespace Kazv
 
                 auto k = KeyOfGroupSession{roomId, senderKey, sessionId};
 
-                if (crypto.createInboundGroupSession(k, sessionKey, "" /* TODO */)) {
-                    return false;
+                std::string ed25519Key = e.decryptedJson().get().at("keys").at(ed25519);
+
+                if (crypto.createInboundGroupSession(k, sessionKey, ed25519Key)) {
+                    return false; // such that this event is removed
                 }
                 return true;
             };
@@ -322,5 +355,69 @@ namespace Kazv
         }
 
         return m;
+    }
+
+    ClientResult updateClient(ClientModel m, QueryKeysAction a)
+    {
+        if (! m.crypto) {
+            kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        immer::map<std::string, immer::array<std::string>> deviceKeys;
+        auto encryptedUsers = m.deviceLists.outdatedUsers();
+
+        if (encryptedUsers.empty()) {
+            kzo.client.dbg() << "Keys are up-to-date." << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        kzo.client.dbg() << "We need to query keys for: " << std::endl;
+        for (auto userId: encryptedUsers) {
+            kzo.client.dbg() << userId << std::endl;
+            deviceKeys = std::move(deviceKeys).set(userId, {});
+        }
+        kzo.client.dbg() << "^" << std::endl;
+
+        auto job = m.job<QueryKeysJob>()
+            .make(std::move(deviceKeys),
+                  std::nullopt, // timeout
+                  a.isInitialSync ? std::nullopt : m.syncToken
+                );
+
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, QueryKeysResponse r)
+    {
+        if (! m.crypto) {
+            kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        if (! r.success()) {
+            kzo.client.dbg() << "query keys failed" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        kzo.client.dbg() << "Received a query key response" << std::endl;
+        auto &crypto = m.crypto.value();
+
+        auto usersMap = r.deviceKeys();
+
+        for (auto [userId, deviceMap] : usersMap) {
+            for (auto [deviceId, deviceInfo] : deviceMap) {
+                kzo.client.dbg() << "Key for " << userId
+                                 << "/" << deviceId
+                                 << ": " << json(deviceInfo).dump()
+                                 << std::endl;
+                m.deviceLists.addDevice(userId, deviceId, deviceInfo, crypto);
+            }
+            m.deviceLists.markUpToDate(userId);
+        }
+
+        return { std::move(m), lager::noop };
     }
 }

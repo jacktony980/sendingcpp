@@ -45,6 +45,8 @@ namespace Kazv
         MaybeString decrypt(std::string message, std::string eventId, Timestamp originServerTs);
 
         bool valid() const;
+
+        std::string ed25519Key() const;
     private:
         std::unique_ptr<InboundGroupSessionPrivate> m_d;
     };

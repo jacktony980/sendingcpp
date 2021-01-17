@@ -198,6 +198,15 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
       template<>
       struct adl_serializer<QueryKeysJob::UnsignedDeviceInfo> {
 
+  static void to_json(json& jo, const QueryKeysJob::UnsignedDeviceInfo &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "device_display_name"s, pod.deviceDisplayName);
+  }
+
   static void from_json(const json &jo, QueryKeysJob::UnsignedDeviceInfo& result)
   {
   
@@ -206,9 +215,20 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
     }
   
   }
+
 };
       template<>
       struct adl_serializer<QueryKeysJob::DeviceInformation> {
+
+  static void to_json(json& jo, const QueryKeysJob::DeviceInformation &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+    jo = static_cast<const DeviceKeys &>(pod);
+    //nlohmann::to_json(jo, static_cast<const DeviceKeys &>(pod));
+  
+    
+    addToJsonIfNeeded(jo, "unsigned"s, pod.unsignedData);
+  }
 
   static void from_json(const json &jo, QueryKeysJob::DeviceInformation& result)
   {
@@ -219,6 +239,7 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
     }
   
   }
+
 };
     }
 

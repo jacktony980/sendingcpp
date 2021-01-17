@@ -82,6 +82,15 @@ immer::array<LoginFlow> flows() const;
       template<>
       struct adl_serializer<GetLoginFlowsJob::LoginFlow> {
 
+  static void to_json(json& jo, const GetLoginFlowsJob::LoginFlow &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "type"s, pod.type);
+  }
+
   static void from_json(const json &jo, GetLoginFlowsJob::LoginFlow& result)
   {
   
@@ -90,6 +99,7 @@ immer::array<LoginFlow> flows() const;
     }
   
   }
+
 };
     }
 

@@ -241,6 +241,7 @@ ResultCategories searchCategories() const;
       using namespace Kazv;
       template<>
       struct adl_serializer<SearchJob::IncludeEventContext> {
+
   static void to_json(json& jo, const SearchJob::IncludeEventContext &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -254,9 +255,25 @@ ResultCategories searchCategories() const;
     addToJsonIfNeeded(jo, "include_profile"s, pod.includeProfile);
   }
 
+  static void from_json(const json &jo, SearchJob::IncludeEventContext& result)
+  {
+  
+    if (jo.contains("before_limit"s)) {
+      result.beforeLimit = jo.at("before_limit"s);
+    }
+    if (jo.contains("after_limit"s)) {
+      result.afterLimit = jo.at("after_limit"s);
+    }
+    if (jo.contains("include_profile"s)) {
+      result.includeProfile = jo.at("include_profile"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<SearchJob::Group> {
+
   static void to_json(json& jo, const SearchJob::Group &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -266,9 +283,19 @@ ResultCategories searchCategories() const;
     addToJsonIfNeeded(jo, "key"s, pod.key);
   }
 
+  static void from_json(const json &jo, SearchJob::Group& result)
+  {
+  
+    if (jo.contains("key"s)) {
+      result.key = jo.at("key"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<SearchJob::Groupings> {
+
   static void to_json(json& jo, const SearchJob::Groupings &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -278,9 +305,19 @@ ResultCategories searchCategories() const;
     addToJsonIfNeeded(jo, "group_by"s, pod.groupBy);
   }
 
+  static void from_json(const json &jo, SearchJob::Groupings& result)
+  {
+  
+    if (jo.contains("group_by"s)) {
+      result.groupBy = jo.at("group_by"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<SearchJob::RoomEventsCriteria> {
+
   static void to_json(json& jo, const SearchJob::RoomEventsCriteria &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -302,9 +339,37 @@ ResultCategories searchCategories() const;
     addToJsonIfNeeded(jo, "groupings"s, pod.groupings);
   }
 
+  static void from_json(const json &jo, SearchJob::RoomEventsCriteria& result)
+  {
+  
+    if (jo.contains("search_term"s)) {
+      result.searchTerm = jo.at("search_term"s);
+    }
+    if (jo.contains("keys"s)) {
+      result.keys = jo.at("keys"s);
+    }
+    if (jo.contains("filter"s)) {
+      result.filter = jo.at("filter"s);
+    }
+    if (jo.contains("order_by"s)) {
+      result.orderBy = jo.at("order_by"s);
+    }
+    if (jo.contains("event_context"s)) {
+      result.eventContext = jo.at("event_context"s);
+    }
+    if (jo.contains("include_state"s)) {
+      result.includeState = jo.at("include_state"s);
+    }
+    if (jo.contains("groupings"s)) {
+      result.groupings = jo.at("groupings"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<SearchJob::Categories> {
+
   static void to_json(json& jo, const SearchJob::Categories &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -314,9 +379,29 @@ ResultCategories searchCategories() const;
     addToJsonIfNeeded(jo, "room_events"s, pod.roomEvents);
   }
 
+  static void from_json(const json &jo, SearchJob::Categories& result)
+  {
+  
+    if (jo.contains("room_events"s)) {
+      result.roomEvents = jo.at("room_events"s);
+    }
+  
+  }
+
 };
       template<>
       struct adl_serializer<SearchJob::UserProfile> {
+
+  static void to_json(json& jo, const SearchJob::UserProfile &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "displayname"s, pod.displayname);
+    
+    addToJsonIfNeeded(jo, "avatar_url"s, pod.avatarUrl);
+  }
 
   static void from_json(const json &jo, SearchJob::UserProfile& result)
   {
@@ -329,9 +414,27 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SearchJob::EventContext> {
+
+  static void to_json(json& jo, const SearchJob::EventContext &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "start"s, pod.start);
+    
+    addToJsonIfNeeded(jo, "end"s, pod.end);
+    
+    addToJsonIfNeeded(jo, "profile_info"s, pod.profileInfo);
+    
+    addToJsonIfNeeded(jo, "events_before"s, pod.eventsBefore);
+    
+    addToJsonIfNeeded(jo, "events_after"s, pod.eventsAfter);
+  }
 
   static void from_json(const json &jo, SearchJob::EventContext& result)
   {
@@ -353,9 +456,23 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SearchJob::Result> {
+
+  static void to_json(json& jo, const SearchJob::Result &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "rank"s, pod.rank);
+    
+    addToJsonIfNeeded(jo, "result"s, pod.result);
+    
+    addToJsonIfNeeded(jo, "context"s, pod.context);
+  }
 
   static void from_json(const json &jo, SearchJob::Result& result)
   {
@@ -371,9 +488,23 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SearchJob::GroupValue> {
+
+  static void to_json(json& jo, const SearchJob::GroupValue &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "next_batch"s, pod.nextBatch);
+    
+    addToJsonIfNeeded(jo, "order"s, pod.order);
+    
+    addToJsonIfNeeded(jo, "results"s, pod.results);
+  }
 
   static void from_json(const json &jo, SearchJob::GroupValue& result)
   {
@@ -389,9 +520,29 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SearchJob::ResultRoomEvents> {
+
+  static void to_json(json& jo, const SearchJob::ResultRoomEvents &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "count"s, pod.count);
+    
+    addToJsonIfNeeded(jo, "highlights"s, pod.highlights);
+    
+    addToJsonIfNeeded(jo, "results"s, pod.results);
+    
+    addToJsonIfNeeded(jo, "state"s, pod.state);
+    
+    addToJsonIfNeeded(jo, "groups"s, pod.groups);
+    
+    addToJsonIfNeeded(jo, "next_batch"s, pod.nextBatch);
+  }
 
   static void from_json(const json &jo, SearchJob::ResultRoomEvents& result)
   {
@@ -416,9 +567,19 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<SearchJob::ResultCategories> {
+
+  static void to_json(json& jo, const SearchJob::ResultCategories &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "room_events"s, pod.roomEvents);
+  }
 
   static void from_json(const json &jo, SearchJob::ResultCategories& result)
   {
@@ -428,6 +589,7 @@ ResultCategories searchCategories() const;
     }
   
   }
+
 };
     }
 

@@ -111,6 +111,25 @@ immer::array<Notification> notifications() const;
       template<>
       struct adl_serializer<GetNotificationsJob::Notification> {
 
+  static void to_json(json& jo, const GetNotificationsJob::Notification &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["actions"s] = pod.actions;
+    
+    jo["event"s] = pod.event;
+    
+    
+    addToJsonIfNeeded(jo, "profile_tag"s, pod.profileTag);
+    jo["read"s] = pod.read;
+    
+    jo["room_id"s] = pod.roomId;
+    
+    jo["ts"s] = pod.ts;
+    
+  }
+
   static void from_json(const json &jo, GetNotificationsJob::Notification& result)
   {
   
@@ -134,6 +153,7 @@ immer::array<Notification> notifications() const;
     }
   
   }
+
 };
     }
 

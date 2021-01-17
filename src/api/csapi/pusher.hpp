@@ -114,6 +114,17 @@ immer::array<Pusher> pushers() const;
       template<>
       struct adl_serializer<GetPushersJob::PusherData> {
 
+  static void to_json(json& jo, const GetPushersJob::PusherData &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "url"s, pod.url);
+    
+    addToJsonIfNeeded(jo, "format"s, pod.format);
+  }
+
   static void from_json(const json &jo, GetPushersJob::PusherData& result)
   {
   
@@ -125,9 +136,33 @@ immer::array<Pusher> pushers() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<GetPushersJob::Pusher> {
+
+  static void to_json(json& jo, const GetPushersJob::Pusher &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["pushkey"s] = pod.pushkey;
+    
+    jo["kind"s] = pod.kind;
+    
+    jo["app_id"s] = pod.appId;
+    
+    jo["app_display_name"s] = pod.appDisplayName;
+    
+    jo["device_display_name"s] = pod.deviceDisplayName;
+    
+    
+    addToJsonIfNeeded(jo, "profile_tag"s, pod.profileTag);
+    jo["lang"s] = pod.lang;
+    
+    jo["data"s] = pod.data;
+    
+  }
 
   static void from_json(const json &jo, GetPushersJob::Pusher& result)
   {
@@ -158,6 +193,7 @@ immer::array<Pusher> pushers() const;
     }
   
   }
+
 };
     }
 
@@ -289,6 +325,7 @@ public:
       using namespace Kazv;
       template<>
       struct adl_serializer<PostPusherJob::PusherData> {
+
   static void to_json(json& jo, const PostPusherJob::PusherData &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -298,6 +335,18 @@ public:
     addToJsonIfNeeded(jo, "url"s, pod.url);
     
     addToJsonIfNeeded(jo, "format"s, pod.format);
+  }
+
+  static void from_json(const json &jo, PostPusherJob::PusherData& result)
+  {
+  
+    if (jo.contains("url"s)) {
+      result.url = jo.at("url"s);
+    }
+    if (jo.contains("format"s)) {
+      result.format = jo.at("format"s);
+    }
+  
   }
 
 };

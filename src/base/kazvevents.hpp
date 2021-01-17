@@ -37,6 +37,7 @@ namespace Kazv
     struct SyncSuccessful
     {
         std::string nextToken;
+        bool isInitialSync;
     };
 
     struct SyncFailed

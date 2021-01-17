@@ -63,6 +63,7 @@ namespace Kazv
 
     struct UploadIdentityKeysAction;
     struct GenerateAndUploadOneTimeKeysAction;
+    struct QueryKeysAction;
 
     struct ResubmitJobAction;
 
@@ -106,6 +107,7 @@ namespace Kazv
 
         UploadIdentityKeysAction,
         GenerateAndUploadOneTimeKeysAction,
+        QueryKeysAction,
 
         ResubmitJobAction
         >;

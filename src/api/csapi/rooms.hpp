@@ -387,6 +387,17 @@ immer::map<std::string, RoomMember> joined() const;
       template<>
       struct adl_serializer<GetJoinedMembersByRoomJob::RoomMember> {
 
+  static void to_json(json& jo, const GetJoinedMembersByRoomJob::RoomMember &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "display_name"s, pod.displayName);
+    
+    addToJsonIfNeeded(jo, "avatar_url"s, pod.avatarUrl);
+  }
+
   static void from_json(const json &jo, GetJoinedMembersByRoomJob::RoomMember& result)
   {
   
@@ -398,6 +409,7 @@ immer::map<std::string, RoomMember> joined() const;
     }
   
   }
+
 };
     }
 

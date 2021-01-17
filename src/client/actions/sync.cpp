@@ -20,6 +20,9 @@
 
 #include <lager/util.hpp>
 #include <zug/transducer/map.hpp>
+#include <zug/transducer/cat.hpp>
+#include <zug/transducer/filter.hpp>
+#include <zug/sequence.hpp>
 
 #include <jobinterface.hpp>
 #include <debug.hpp>
@@ -45,9 +48,12 @@ namespace Kazv
         kzo.client.dbg() << "Start syncing with token " <<
             (m.syncToken ? m.syncToken.value() : "<null>") << std::endl;
 
+        bool isInitialSync = ! m.syncToken;
+
         std::string filter = m.syncToken ? m.incrementalSyncFilterId : m.initialSyncFilterId;
         m.addJob(m.job<SyncJob>()
-                 .make(filter, m.syncToken));
+                 .make(filter, m.syncToken)
+                 .withData(json{{"is", isInitialSync ? "initial" : "incremental"}}));
         return { m, lager::noop };
     }
 
@@ -231,12 +237,46 @@ namespace Kazv
         }
 
         m.addTriggers(loadToDeviceFromSyncInPlace(m, r.toDevice()));
-        // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
 
-        auto model = tryDecryptEvents(std::move(m));
-        m = std::move(model);
+        auto is = r.dataStr("is");
+        auto isInitialSync = is == "initial";
 
-        m.addTrigger(SyncSuccessful{r.nextBatch()});
+        if (m.crypto) {
+            kzo.client.dbg() << "E2EE is on. Processing device lists and one-time key counts." << std::endl;
+            auto &crypto = m.crypto.value();
+            // TODO: process deviceLists,
+            if (isInitialSync) {
+                auto encryptedUsers =
+                    zug::sequence(
+                        zug::map([](auto n) { return n.second; })
+                        | zug::filter([](auto room) { return room.encrypted; })
+                        | zug::map([](auto room) { return room.joinedMemberIds(); })
+                        | zug::cat,
+                        // no need to use distinct here as the map will overwrite
+                        m.roomList.rooms);
+
+                m.deviceLists.track(std::move(encryptedUsers));
+            } else {
+                const auto &l = r.deviceLists().get();
+                if (l.contains("changed")) {
+                    const auto &changed = l.at("changed");
+                    m.deviceLists.track(changed);
+                }
+
+                if (l.contains("left")) {
+                    const auto &left = l.at("left");
+                    m.deviceLists.untrack(left);
+                }
+            }
+
+            // deviceOneTimeKeysCount
+            crypto.setUploadedOneTimeKeysCount(r.deviceOneTimeKeysCount());
+
+            auto model = tryDecryptEvents(std::move(m));
+            m = std::move(model);
+        }
+
+        m.addTrigger(SyncSuccessful{r.nextBatch(), isInitialSync});
 
         return { std::move(m), lager::noop };
     }

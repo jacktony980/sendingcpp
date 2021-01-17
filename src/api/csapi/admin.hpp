@@ -122,6 +122,19 @@ immer::map<std::string, DeviceInfo> devices() const;
       template<>
       struct adl_serializer<GetWhoIsJob::ConnectionInfo> {
 
+  static void to_json(json& jo, const GetWhoIsJob::ConnectionInfo &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "ip"s, pod.ip);
+    
+    addToJsonIfNeeded(jo, "last_seen"s, pod.lastSeen);
+    
+    addToJsonIfNeeded(jo, "user_agent"s, pod.userAgent);
+  }
+
   static void from_json(const json &jo, GetWhoIsJob::ConnectionInfo& result)
   {
   
@@ -136,9 +149,19 @@ immer::map<std::string, DeviceInfo> devices() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<GetWhoIsJob::SessionInfo> {
+
+  static void to_json(json& jo, const GetWhoIsJob::SessionInfo &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "connections"s, pod.connections);
+  }
 
   static void from_json(const json &jo, GetWhoIsJob::SessionInfo& result)
   {
@@ -148,9 +171,19 @@ immer::map<std::string, DeviceInfo> devices() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<GetWhoIsJob::DeviceInfo> {
+
+  static void to_json(json& jo, const GetWhoIsJob::DeviceInfo &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    
+    addToJsonIfNeeded(jo, "sessions"s, pod.sessions);
+  }
 
   static void from_json(const json &jo, GetWhoIsJob::DeviceInfo& result)
   {
@@ -160,6 +193,7 @@ immer::map<std::string, DeviceInfo> devices() const;
     }
   
   }
+
 };
     }
 

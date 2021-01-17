@@ -355,6 +355,7 @@ std::optional<int> totalRoomCountEstimate() const;
       using namespace Kazv;
       template<>
       struct adl_serializer<QueryPublicRoomsJob::Filter> {
+
   static void to_json(json& jo, const QueryPublicRoomsJob::Filter &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -362,6 +363,15 @@ std::optional<int> totalRoomCountEstimate() const;
   
     
     addToJsonIfNeeded(jo, "generic_search_term"s, pod.genericSearchTerm);
+  }
+
+  static void from_json(const json &jo, QueryPublicRoomsJob::Filter& result)
+  {
+  
+    if (jo.contains("generic_search_term"s)) {
+      result.genericSearchTerm = jo.at("generic_search_term"s);
+    }
+  
   }
 
 };

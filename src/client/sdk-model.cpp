@@ -62,8 +62,10 @@ namespace Kazv
                             // start a sync `syncInterval` ms after another sync
                             // if we use encryption, also upload one-time keys needed
                             else if (std::holds_alternative<SyncSuccessful>(t)) {
+                                auto syncSuccessful = std::get<SyncSuccessful>(t);
                                 if (hasCrypto) {
                                     ctx.dispatch(GenerateAndUploadOneTimeKeysAction{});
+                                    ctx.dispatch(QueryKeysAction{syncSuccessful.isInitialSync});
                                 }
                                 jh.setTimeout(
                                     [=]() {

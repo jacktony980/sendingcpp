@@ -103,6 +103,15 @@ Capabilities capabilities() const;
       template<>
       struct adl_serializer<GetCapabilitiesJob::ChangePasswordCapability> {
 
+  static void to_json(json& jo, const GetCapabilitiesJob::ChangePasswordCapability &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["enabled"s] = pod.enabled;
+    
+  }
+
   static void from_json(const json &jo, GetCapabilitiesJob::ChangePasswordCapability& result)
   {
   
@@ -111,9 +120,21 @@ Capabilities capabilities() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<GetCapabilitiesJob::RoomVersionsCapability> {
+
+  static void to_json(json& jo, const GetCapabilitiesJob::RoomVersionsCapability &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["default"s] = pod.defaultVersion;
+    
+    jo["available"s] = pod.available;
+    
+  }
 
   static void from_json(const json &jo, GetCapabilitiesJob::RoomVersionsCapability& result)
   {
@@ -126,9 +147,21 @@ Capabilities capabilities() const;
     }
   
   }
+
 };
       template<>
       struct adl_serializer<GetCapabilitiesJob::Capabilities> {
+
+  static void to_json(json& jo, const GetCapabilitiesJob::Capabilities &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+    addPropertyMapToJson(jo, pod.additionalProperties);
+    
+    addToJsonIfNeeded(jo, "m.change_password"s, pod.changePassword);
+    
+    addToJsonIfNeeded(jo, "m.room_versions"s, pod.roomVersions);
+  }
 
   static void from_json(const json &jo, GetCapabilitiesJob::Capabilities& result)
   {
@@ -141,6 +174,7 @@ Capabilities capabilities() const;
     }
     result.additionalProperties = jo;
   }
+
 };
     }
 

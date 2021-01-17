@@ -21,6 +21,7 @@
 #include <lager/util.hpp>
 #include <zug/sequence.hpp>
 #include <zug/transducer/map.hpp>
+#include <zug/transducer/filter.hpp>
 
 #include "debug.hpp"
 
@@ -94,5 +95,40 @@ namespace Kazv
                 return l;
             }
             );
+    }
+
+    immer::flex_vector<std::string> RoomModel::joinedMemberIds() const
+    {
+        using MemberNode = std::pair<std::string, Kazv::Event>;
+
+        auto memberNameTransducer =
+            zug::filter(
+                [](auto val) {
+                    auto [k, v] = val;
+                    auto [type, stateKey] = k;
+                    return type == "m.room.member"s;
+                })
+            | zug::map(
+                [](auto val) {
+                    auto [k, v] = val;
+                    auto [type, stateKey] = k;
+                    return MemberNode{stateKey, v};
+                })
+            | zug::filter(
+                [](auto val) {
+                    auto [stateKey, ev] = val;
+                    return ev.content().get()
+                        .at("membership"s) == "join"s;
+                })
+            | zug::map(
+                [](auto val) {
+                    auto [stateKey, ev] = val;
+                    return stateKey;
+                });
+
+        return intoImmer(
+            immer::flex_vector<std::string>{},
+            memberNameTransducer,
+            stateEvents);
     }
 }

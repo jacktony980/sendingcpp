@@ -88,6 +88,15 @@ immer::map<std::string, Tag> tags() const;
       template<>
       struct adl_serializer<GetRoomTagsJob::Tag> {
 
+  static void to_json(json& jo, const GetRoomTagsJob::Tag &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+    addPropertyMapToJson(jo, pod.additionalProperties);
+    
+    addToJsonIfNeeded(jo, "order"s, pod.order);
+  }
+
   static void from_json(const json &jo, GetRoomTagsJob::Tag& result)
   {
   
@@ -96,6 +105,7 @@ immer::map<std::string, Tag> tags() const;
     }
     result.additionalProperties = jo;
   }
+
 };
     }
 

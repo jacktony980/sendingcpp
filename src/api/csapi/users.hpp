@@ -111,6 +111,19 @@ bool limited() const;
       template<>
       struct adl_serializer<SearchUserDirectoryJob::User> {
 
+  static void to_json(json& jo, const SearchUserDirectoryJob::User &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["user_id"s] = pod.userId;
+    
+    
+    addToJsonIfNeeded(jo, "display_name"s, pod.displayName);
+    
+    addToJsonIfNeeded(jo, "avatar_url"s, pod.avatarUrl);
+  }
+
   static void from_json(const json &jo, SearchUserDirectoryJob::User& result)
   {
   
@@ -125,6 +138,7 @@ bool limited() const;
     }
   
   }
+
 };
     }
 

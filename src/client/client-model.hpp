@@ -39,6 +39,7 @@
 #include <crypto.hpp>
 
 #include "clientfwd.hpp"
+#include "device-list-tracker.hpp"
 #include "error.hpp"
 #include "room/room-model.hpp"
 
@@ -90,6 +91,8 @@ namespace Kazv
         EventList toDevice;
         std::optional<Crypto> crypto;
         bool identityKeysUploaded{false};
+
+        DeviceListTracker deviceLists;
 
         // helpers
         template<class Job>
@@ -313,6 +316,11 @@ namespace Kazv
 
     struct GenerateAndUploadOneTimeKeysAction
     {
+    };
+
+    struct QueryKeysAction
+    {
+        bool isInitialSync;
     };
 
 #ifndef NDEBUG

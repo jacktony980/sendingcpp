@@ -99,6 +99,7 @@ namespace Kazv
                 RESPONSE_FOR(GetContentThumbnail);
                 // encryption
                 RESPONSE_FOR(UploadKeys);
+                RESPONSE_FOR(QueryKeys);
 
                 m.addTrigger(UnrecognizedResponse{std::move(r)});
                 return { std::move(m), lager::noop };

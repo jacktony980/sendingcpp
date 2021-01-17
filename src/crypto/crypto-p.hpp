@@ -45,6 +45,11 @@ namespace Kazv
         std::unordered_map<std::string /* theirCurve25519IdentityKey */, Session> knownSessions;
         std::unordered_map<KeyOfGroupSession, InboundGroupSession> inboundGroupSessions;
 
+        ByteArray utilityData;
+        OlmUtility *utility;
+
+        std::size_t checkUtilError(std::size_t code) const;
+
         ByteArray pickle() const;
         void unpickle(ByteArray data);
 

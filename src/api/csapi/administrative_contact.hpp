@@ -109,6 +109,21 @@ immer::array<ThirdPartyIdentifier> threepids() const;
       template<>
       struct adl_serializer<GetAccount3PIDsJob::ThirdPartyIdentifier> {
 
+  static void to_json(json& jo, const GetAccount3PIDsJob::ThirdPartyIdentifier &pod)
+  {
+  if (! jo.is_object()) { jo = json::object(); }
+  
+  
+    jo["medium"s] = pod.medium;
+    
+    jo["address"s] = pod.address;
+    
+    jo["validated_at"s] = pod.validatedAt;
+    
+    jo["added_at"s] = pod.addedAt;
+    
+  }
+
   static void from_json(const json &jo, GetAccount3PIDsJob::ThirdPartyIdentifier& result)
   {
   
@@ -126,6 +141,7 @@ immer::array<ThirdPartyIdentifier> threepids() const;
     }
   
   }
+
 };
     }
 
@@ -213,6 +229,7 @@ public:
       using namespace Kazv;
       template<>
       struct adl_serializer<Post3PIDsJob::ThreePidCredentials> {
+
   static void to_json(json& jo, const Post3PIDsJob::ThreePidCredentials &pod)
   {
   if (! jo.is_object()) { jo = json::object(); }
@@ -226,6 +243,24 @@ public:
     
     jo["sid"s] = pod.sid;
     
+  }
+
+  static void from_json(const json &jo, Post3PIDsJob::ThreePidCredentials& result)
+  {
+  
+    if (jo.contains("client_secret"s)) {
+      result.clientSecret = jo.at("client_secret"s);
+    }
+    if (jo.contains("id_server"s)) {
+      result.idServer = jo.at("id_server"s);
+    }
+    if (jo.contains("id_access_token"s)) {
+      result.idAccessToken = jo.at("id_access_token"s);
+    }
+    if (jo.contains("sid"s)) {
+      result.sid = jo.at("sid"s);
+    }
+  
   }
 
 };

@@ -166,4 +166,9 @@ namespace Kazv
 
         return std::string(plainText.begin(), plainText.begin() + actualSize);
     }
+
+    std::string InboundGroupSession::ed25519Key() const
+    {
+        return m_d->ed25519Key;
+    }
 }
