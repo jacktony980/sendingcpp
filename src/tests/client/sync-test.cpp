@@ -212,7 +212,7 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 
     auto store = createTestClientStore();
 
-    auto resp = createResponse("Sync", syncResponseJson);
+    auto resp = createResponse("Sync", syncResponseJson, json{{"is", "initial"}});
 
     auto client = Client(store, store);
 
