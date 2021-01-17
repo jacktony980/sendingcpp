@@ -76,7 +76,9 @@ namespace Kazv
 
         /// Returns decrypted message if we can decrypt it
         /// otherwise returns the error
-        MaybeString decrypt(nlohmann::json content);
+        MaybeString decrypt(nlohmann::json eventJson);
+
+        bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
 
     private:
         friend class Session;

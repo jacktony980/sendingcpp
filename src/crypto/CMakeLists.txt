@@ -1,6 +1,8 @@
 set(kazvcrypto_SRCS
   crypto.cpp
-  session.cpp)
+  session.cpp
+  inbound-group-session.cpp
+  )
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})
 add_library(libkazv::kazvcrypto ALIAS kazvcrypto)

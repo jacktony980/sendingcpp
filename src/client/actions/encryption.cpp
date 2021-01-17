@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <zug/transducer/filter.hpp>
+
 #include "encryption.hpp"
 
 #include <debug.hpp>
@@ -180,30 +182,15 @@ namespace Kazv
                 {"body", "**This message cannot be decrypted due to " + reason + ".**"}}}};
     }
 
-    static Event decryptEvent(ClientModel &m, Event e)
+    static bool verifyEvent(ClientModel &m, Event e, const json &plainJson)
     {
-        // no need for decryption
-        if (e.decrypted() || (! e.encrypted())) {
-            return e;
-        }
+        auto crypto = m.crypto.value();
 
-        auto &crypto = m.crypto.value();
+        bool valid = true;
 
-        kzo.client.dbg() << "About to decrypt event: "
-                         << e.originalJson().get().dump() << std::endl;
-        auto content = e.originalJson().get().at("content");
-
-        auto maybePlainText = crypto.decrypt(content);
-
-        if (! maybePlainText) {
-            kzo.client.dbg() << "Cannot decrypt: " << maybePlainText.reason() << std::endl;
-            return e.setDecryptedJson(cannotDecryptEvent(maybePlainText.reason()), Event::NotDecrypted);
-        } else {
-            kzo.client.dbg() << "Decrypted message: " << maybePlainText.value() << std::endl;
-            auto plainJson = json::parse(maybePlainText.value());
-            bool valid = true;
-
-            try {
+        try {
+            std::string algo = e.originalJson().get().at("content").at("algorithm");
+            if (algo == olmAlgo) {
                 if (! (plainJson.at("sender") == e.sender())) {
                     kzo.client.dbg() << "Sender does not match, thus invalid" << std::endl;
                     valid = false;
@@ -217,10 +204,46 @@ namespace Kazv
                     valid = false;
                 }
                 // TODO: check sender's key
-            } catch (const std::exception &) {
-                kzo.client.dbg() << "json format is not correct, thus invalid" << std::endl;
+            } else if (algo == megOlmAlgo) {
+                if (! (plainJson.at("room_id").get<std::string>() ==
+                       e.originalJson().get().at("room_id").get<std::string>())) {
+                    kzo.client.dbg() << "Room id does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
+                // TODO: check sender key
+            } else {
+                kzo.client.dbg() << "Unknown algorithm, thus invalid" << std::endl;
                 valid = false;
             }
+        } catch (const std::exception &) {
+            kzo.client.dbg() << "json format is not correct, thus invalid" << std::endl;
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    static Event decryptEvent(ClientModel &m, Event e)
+    {
+        // no need for decryption
+        if (e.decrypted() || (! e.encrypted())) {
+            return e;
+        }
+
+        auto &crypto = m.crypto.value();
+
+        kzo.client.dbg() << "About to decrypt event: "
+                         << e.originalJson().get().dump() << std::endl;
+
+        auto maybePlainText = crypto.decrypt(e.originalJson().get());
+
+        if (! maybePlainText) {
+            kzo.client.dbg() << "Cannot decrypt: " << maybePlainText.reason() << std::endl;
+            return e.setDecryptedJson(cannotDecryptEvent(maybePlainText.reason()), Event::NotDecrypted);
+        } else {
+            kzo.client.dbg() << "Decrypted message: " << maybePlainText.value() << std::endl;
+            auto plainJson = json::parse(maybePlainText.value());
+            auto valid = verifyEvent(m, e, plainJson);
             if (valid) {
                 kzo.client.dbg() << "The decrypted event is valid." << std::endl;
             }
@@ -236,15 +259,67 @@ namespace Kazv
             kzo.client.dbg() << "We have no encryption enabled--ignoring decryption request" << std::endl;
             return m;
         }
+        auto &crypto = m.crypto.value();
 
         kzo.client.dbg() << "Trying to decrypt events..." << std::endl;
 
         auto decryptFunc = [&](auto e) { return decryptEvent(m, e); };
 
+        auto takeOutRoomKeyEvents =
+            [&](auto e) {
+                if (e.type() != "m.room_key") {
+                    // Leave it as it is
+                    return true;
+                }
+
+                auto content = e.content();
+                std::string roomId = content.get().at("room_id");
+                std::string sessionId = content.get().at("session_id");
+                std::string sessionKey = content.get().at("session_key");
+                std::string senderKey = e.originalJson().get().at("content").at("sender_key");
+
+                auto k = KeyOfGroupSession{roomId, senderKey, sessionId};
+
+                if (crypto.createInboundGroupSession(k, sessionKey, "" /* TODO */)) {
+                    return false;
+                }
+                return true;
+            };
+
         m.toDevice = intoImmer(
             EventList{},
-            zug::map(decryptFunc),
+            zug::map(decryptFunc)
+            | zug::filter(takeOutRoomKeyEvents),
             std::move(m.toDevice));
+
+        auto decryptEventInRoom =
+            [&](auto id, auto room) {
+                if (! room.encrypted) {
+                    return;
+                } else {
+                    auto messages = room.messages;
+                    room.messages = merge(
+                        room.messages,
+                        intoImmer(
+                            EventList{},
+                            zug::filter([](auto n) {
+                                            auto e = n.second;
+                                            return e.encrypted();
+                                        })
+                            | zug::map([=](auto n) {
+                                           auto event = n.second;
+                                           return decryptFunc(event);
+                                       }),
+                            std::move(messages)),
+                        keyOfTimeline);
+                    m.roomList.rooms = std::move(m.roomList.rooms).set(id, room);
+                }
+            };
+
+        auto rooms = m.roomList.rooms;
+        for (auto [id, room]: rooms) {
+            decryptEventInRoom(id, room);
+        }
 
         return m;
     }

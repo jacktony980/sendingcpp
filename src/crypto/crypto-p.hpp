@@ -17,13 +17,16 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <olm/olm.h>
 
-#include <map>
+#include <unordered_map>
 
 #include "crypto.hpp"
 #include "crypto-util.hpp"
 #include "session.hpp"
+#include "inbound-group-session.hpp"
 
 namespace Kazv
 {
@@ -39,7 +42,11 @@ namespace Kazv
         OlmAccount *account;
         immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount;
         int numUnpublishedKeys{0};
-        std::map<std::string /* theirCurve25519IdentityKey */, Session> knownSessions;
+        std::unordered_map<std::string /* theirCurve25519IdentityKey */, Session> knownSessions;
+        std::unordered_map<KeyOfGroupSession, InboundGroupSession> inboundGroupSessions;
+
+        ByteArray pickle() const;
+        void unpickle(ByteArray data);
 
         ByteArray identityKeys();
         std::string ed25519IdentityKey();
@@ -48,7 +55,8 @@ namespace Kazv
         std::size_t checkError(std::size_t code) const;
 
         MaybeString decryptOlm(nlohmann::json content);
-        MaybeString decryptMegOlm(nlohmann::json content);
+        // Here we need the full event for eventId and originServerTs
+        MaybeString decryptMegOlm(nlohmann::json eventJson);
 
         /// returns whether the session is successfully established
         bool createInboundSession(std::string theirCurve25519IdentityKey,

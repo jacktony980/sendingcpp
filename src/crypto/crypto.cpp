@@ -24,6 +24,7 @@
 #include <nlohmann/json.hpp>
 
 #include <debug.hpp>
+#include <event.hpp>
 
 #include "crypto-p.hpp"
 #include "session-p.hpp"
@@ -54,13 +55,23 @@ namespace Kazv
         , uploadedOneTimeKeysCount(that.uploadedOneTimeKeysCount)
         , numUnpublishedKeys(that.numUnpublishedKeys)
         , knownSessions(that.knownSessions)
+        , inboundGroupSessions(that.inboundGroupSessions)
     {
-        auto pickleData = ByteArray(olm_pickle_account_length(that.account), '\0');
+        unpickle(that.pickle());
+    }
+
+    ByteArray CryptoPrivate::pickle() const
+    {
         auto key = ByteArray(3, 'x');
-        // XXX: olm_pickle_account is technically taking a (non-const) OlmAccount *
-        // but error will be set only if there is some problem...
-        that.checkError(olm_pickle_account(that.account, key.data(), key.size(),
-                                           pickleData.data(), pickleData.size()));
+        auto pickleData = ByteArray(olm_pickle_account_length(account), '\0');
+        checkError(olm_pickle_account(account, key.data(), key.size(),
+                                      pickleData.data(), pickleData.size()));
+        return pickleData;
+    }
+
+    void CryptoPrivate::unpickle(ByteArray pickleData)
+    {
+        auto key = ByteArray(3, 'x');
         checkError(olm_unpickle_account(account, key.data(), key.size(),
                                         pickleData.data(), pickleData.size()));
     }
@@ -115,9 +126,26 @@ namespace Kazv
         }
     }
 
-    MaybeString CryptoPrivate::decryptMegOlm(nlohmann::json content)
+    MaybeString CryptoPrivate::decryptMegOlm(nlohmann::json eventJson)
     {
-        return NotBut("Unimplemented");
+        auto content = eventJson.at("content");
+
+        auto senderKey = content.at("sender_key").get<std::string>();
+        auto sessionId = content.at("session_id").get<std::string>();
+        auto roomId = eventJson.at("room_id").get<std::string>();
+
+        auto k = KeyOfGroupSession{roomId, senderKey, sessionId};
+
+        if (inboundGroupSessions.find(k) == inboundGroupSessions.end()) {
+            return NotBut("We do not have the keys for this");
+        } else {
+            auto msg = content.at("ciphertext").get<std::string>();
+            auto eventId = eventJson.at("event_id").get<std::string>();
+            auto originServerTs = eventJson.at("origin_server_ts").get<Timestamp>();
+            auto &session = inboundGroupSessions.at(k);
+
+            return session.decrypt(msg, eventId, originServerTs);
+        }
     }
 
     bool CryptoPrivate::createInboundSession(std::string theirCurve25519IdentityKey,
@@ -266,14 +294,25 @@ namespace Kazv
         return m_d->uploadedOneTimeKeysCount[algorithm];
     }
 
-    MaybeString Crypto::decrypt(nlohmann::json content)
+    MaybeString Crypto::decrypt(nlohmann::json eventJson)
     {
+        auto content = eventJson.at("content");
         auto algo = content.at("algorithm").get<std::string>();
         if (algo == olmAlgo) {
             return m_d->decryptOlm(std::move(content));
         } else if (algo == megOlmAlgo) {
-            return m_d->decryptMegOlm(std::move(content));
+            return m_d->decryptMegOlm(eventJson);
         }
         return NotBut("Algorithm " + algo + " not supported");
+    }
+
+    bool Crypto::createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key)
+    {
+        auto session = InboundGroupSession(sessionKey, ed25519Key);
+        if (session.valid()) {
+            m_d->inboundGroupSessions.insert_or_assign(k, std::move(session));
+            return true;
+        }
+        return false;
     }
 }

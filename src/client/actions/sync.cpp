@@ -69,14 +69,22 @@ namespace Kazv
                     eventsToEmit.push_back(RoomMembershipChanged{membership, id});
                 }
                 updateRoomImpl(id, ChangeMembershipAction{membership});
+
+                auto timelineEvents =
+                    intoImmer(
+                        EventList{},
+                        zug::map([=](Event e) {
+                                     return Event::fromSync(e, id);
+                                 }),
+                        room.timeline.events);
                 eventsToEmit.append(
                     intoImmer(
                         KazvEventList{},
                         zug::map([=](Event e) -> KazvEvent {
                                      return ReceivingRoomTimelineEvent{std::move(e), id};
                                  }),
-                        room.timeline.events).transient());
-                updateRoomImpl(id, AppendTimelineAction{room.timeline.events});
+                        timelineEvents).transient());
+                updateRoomImpl(id, AppendTimelineAction{timelineEvents});
                 if (room.state) {
                     eventsToEmit.append(
                         intoImmer(

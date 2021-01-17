@@ -24,9 +24,25 @@
 #include <algorithm>
 #include <vector>
 
+#include <boost/container_hash/hash.hpp>
+
 namespace Kazv
 {
-    using ByteArray = std::vector<char>;
+    using ByteArray = std::vector<unsigned char>;
+
+    struct KeyOfGroupSession
+    {
+        std::string roomId;
+        std::string senderKey;
+        std::string sessionId;
+    };
+
+    inline bool operator==(KeyOfGroupSession a, KeyOfGroupSession b)
+    {
+        return a.roomId == b.roomId
+            && a.senderKey == b.senderKey
+            && a.sessionId == b.sessionId;
+    }
 
     [[nodiscard]] inline ByteArray genRandom(int len)
     {
@@ -45,4 +61,18 @@ namespace Kazv
         inline const std::string olmAlgo{"m.olm.v1.curve25519-aes-sha2"};
         inline const std::string megOlmAlgo{"m.megolm.v1.aes-sha2"};
     }
+}
+
+namespace std
+{
+    template<> struct hash<Kazv::KeyOfGroupSession>
+    {
+        std::size_t operator()(const Kazv::KeyOfGroupSession & k) const noexcept {
+            std::size_t seed = 0;
+            boost::hash_combine(seed, k.roomId);
+            boost::hash_combine(seed, k.senderKey);
+            boost::hash_combine(seed, k.sessionId);
+            return seed;
+        }
+    };
 }

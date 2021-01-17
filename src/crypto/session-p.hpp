@@ -43,6 +43,9 @@ namespace Kazv
 
         bool valid{false};
 
+        ByteArray pickle() const;
+        bool unpickle(ByteArray data);
+
         std::size_t checkError(std::size_t code) const;
 
         std::string error() const { return olm_session_last_error(session); }

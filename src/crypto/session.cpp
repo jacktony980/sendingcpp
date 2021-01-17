@@ -81,20 +81,28 @@ namespace Kazv
     SessionPrivate::SessionPrivate(const SessionPrivate &that)
         : SessionPrivate()
     {
-        auto pickleData = ByteArray(olm_pickle_session_length(that.session), '\0');
-        auto key = ByteArray(3, 'x');
-        auto res = that.checkError(olm_pickle_session(
-                                       that.session,
-                                       key.data(), key.size(),
-                                       pickleData.data(), pickleData.size()));
+        valid = unpickle(that.pickle());
+    }
 
-        auto res2 = checkError(olm_unpickle_session(
+    ByteArray SessionPrivate::pickle() const
+    {
+        auto pickleData = ByteArray(olm_pickle_session_length(session), '\0');
+        auto key = ByteArray(3, 'x');
+        checkError(olm_pickle_session(session,
+                                      key.data(), key.size(),
+                                      pickleData.data(), pickleData.size()));
+        return pickleData;
+    }
+
+    bool SessionPrivate::unpickle(ByteArray pickleData)
+    {
+        auto key = ByteArray(3, 'x');
+        auto res = checkError(olm_unpickle_session(
                                    session,
                                    key.data(), key.size(),
                                    pickleData.data(), pickleData.size()));
-        if (res != olm_error() && res2 != olm_error()) {
-            valid = true;
-        }
+
+        return res != olm_error();
     }
 
     Session::Session()
