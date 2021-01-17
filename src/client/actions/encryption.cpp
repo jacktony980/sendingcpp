@@ -180,12 +180,14 @@ namespace Kazv
                 {"body", "**This message cannot be decrypted due to " + reason + ".**"}}}};
     }
 
-    Event decryptEvent(Crypto &crypto, Event e)
+    static Event decryptEvent(ClientModel &m, Event e)
     {
         // no need for decryption
         if (e.decrypted() || (! e.encrypted())) {
             return e;
         }
+
+        auto &crypto = m.crypto.value();
 
         kzo.client.dbg() << "About to decrypt event: "
                          << e.originalJson().get().dump() << std::endl;
@@ -199,7 +201,32 @@ namespace Kazv
         } else {
             kzo.client.dbg() << "Decrypted message: " << maybePlainText.value() << std::endl;
             auto plainJson = json::parse(maybePlainText.value());
-            return e.setDecryptedJson(plainJson, Event::Decrypted);
+            bool valid = true;
+
+            try {
+                if (! (plainJson.at("sender") == e.sender())) {
+                    kzo.client.dbg() << "Sender does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
+                if (! (plainJson.at("recipient") == m.userId)) {
+                    kzo.client.dbg() << "Recipient does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
+                if (! (plainJson.at("recipient_keys").at(ed25519) == crypto.ed25519IdentityKey())) {
+                    kzo.client.dbg() << "Recipient key does not match, thus invalid" << std::endl;
+                    valid = false;
+                }
+                // TODO: check sender's key
+            } catch (const std::exception &) {
+                kzo.client.dbg() << "json format is not correct, thus invalid" << std::endl;
+                valid = false;
+            }
+            if (valid) {
+                kzo.client.dbg() << "The decrypted event is valid." << std::endl;
+            }
+            return valid
+                ? e.setDecryptedJson(plainJson, Event::Decrypted)
+                : e.setDecryptedJson(cannotDecryptEvent("invalid event"), Event::NotDecrypted);
         }
     }
 
@@ -211,9 +238,8 @@ namespace Kazv
         }
 
         kzo.client.dbg() << "Trying to decrypt events..." << std::endl;
-        auto &crypto = m.crypto.value();
 
-        auto decryptFunc = [&](auto e) { return decryptEvent(crypto, e); };
+        auto decryptFunc = [&](auto e) { return decryptEvent(m, e); };
 
         m.toDevice = intoImmer(
             EventList{},
