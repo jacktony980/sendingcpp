@@ -25,27 +25,14 @@
 
 #include <debug.hpp>
 
-#include "crypto.hpp"
+#include "crypto-p.hpp"
+#include "session-p.hpp"
 
 #include "crypto-util.hpp"
 
 namespace Kazv
 {
     using namespace CryptoConstants;
-
-    struct CryptoPrivate
-    {
-        CryptoPrivate();
-        CryptoPrivate(const CryptoPrivate &that);
-        ~CryptoPrivate();
-
-        ByteArray accountData;
-        OlmAccount *account;
-        immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount;
-        int numUnpublishedKeys{0};
-
-        std::size_t checkError(std::size_t code) const;
-    };
 
     CryptoPrivate::CryptoPrivate()
         : accountData(olm_account_size(), 0)
@@ -66,6 +53,7 @@ namespace Kazv
         , account(olm_account(accountData.data()))
         , uploadedOneTimeKeysCount(that.uploadedOneTimeKeysCount)
         , numUnpublishedKeys(that.numUnpublishedKeys)
+        , knownSessions(that.knownSessions)
     {
         auto pickleData = ByteArray(olm_pickle_account_length(that.account), '\0');
         auto key = ByteArray(3, 'x');
@@ -83,6 +71,68 @@ namespace Kazv
             kzo.crypto.warn() << "Olm error: " << olm_account_last_error(account) << std::endl;
         }
         return code;
+    }
+
+    MaybeString CryptoPrivate::decryptOlm(nlohmann::json content)
+    {
+        auto theirCurve25519IdentityKey = content.at("sender_key").get<std::string>();
+
+        auto ourCurve25519IdentityKey = curve25519IdentityKey();
+
+        if (! content.at("ciphertext").contains(ourCurve25519IdentityKey)) {
+            return NotBut("Message not intended for us");
+        }
+
+        auto type = content.at("ciphertext").at(ourCurve25519IdentityKey).at("type").get<int>();
+        auto body = content.at("ciphertext").at(ourCurve25519IdentityKey).at("body").get<std::string>();
+
+        auto hasKnownSession = knownSessions.find(theirCurve25519IdentityKey) != knownSessions.end();
+
+        if (type == 0) { // pre-key message
+            bool shouldCreateNewSession =
+                // there is no possible session
+                (! hasKnownSession)
+                // the possible session does not match this message
+                || (! knownSessions.at(theirCurve25519IdentityKey).matches(body));
+
+            if (shouldCreateNewSession) {
+                auto created = createInboundSession(theirCurve25519IdentityKey, body);
+                if (! created) { // cannot create session, thus cannot decrypt
+                    return NotBut("Cannot create session");
+                }
+            }
+
+            auto &session = knownSessions.at(theirCurve25519IdentityKey);
+
+            return session.decrypt(type, body);
+        } else {
+            if (! hasKnownSession) {
+                return NotBut("No available session");
+            }
+
+            auto &session = knownSessions.at(theirCurve25519IdentityKey);
+            return session.decrypt(type, body);
+        }
+    }
+
+    MaybeString CryptoPrivate::decryptMegOlm(nlohmann::json content)
+    {
+        return NotBut("Unimplemented");
+    }
+
+    bool CryptoPrivate::createInboundSession(std::string theirCurve25519IdentityKey,
+                                             std::string message)
+    {
+        auto s = Session(InboundSessionTag{}, account,
+                         theirCurve25519IdentityKey, message);
+
+        if (s.valid()) {
+            checkError(olm_remove_one_time_keys(account, s.m_d->session));
+            knownSessions.insert_or_assign(theirCurve25519IdentityKey, std::move(s));
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -115,14 +165,14 @@ namespace Kazv
         return *this;
     }
 
-    ByteArray Crypto::identityKeys()
+    ByteArray CryptoPrivate::identityKeys()
     {
-        auto ret = ByteArray(olm_account_identity_keys_length(m_d->account), '\0');
-        m_d->checkError(olm_account_identity_keys(m_d->account, ret.data(), ret.size()));
+        auto ret = ByteArray(olm_account_identity_keys_length(account), '\0');
+        checkError(olm_account_identity_keys(account, ret.data(), ret.size()));
         return ret;
     }
 
-    std::string Crypto::ed25519IdentityKey()
+    std::string CryptoPrivate::ed25519IdentityKey()
     {
         auto keys = identityKeys();
         auto keyStr = std::string(keys.begin(), keys.end());
@@ -130,12 +180,22 @@ namespace Kazv
         return keyJson.at(ed25519);
     }
 
-    std::string Crypto::curve25519IdentityKey()
+    std::string CryptoPrivate::curve25519IdentityKey()
     {
         auto keys = identityKeys();
         auto keyStr = std::string(keys.begin(), keys.end());
         auto keyJson = nlohmann::json::parse(keyStr);
         return keyJson.at(curve25519);
+    }
+
+    std::string Crypto::ed25519IdentityKey()
+    {
+        return m_d->ed25519IdentityKey();
+    }
+
+    std::string Crypto::curve25519IdentityKey()
+    {
+        return m_d->curve25519IdentityKey();
     }
 
     std::string Crypto::sign(nlohmann::json j)
@@ -204,5 +264,16 @@ namespace Kazv
     int Crypto::uploadedOneTimeKeysCount(std::string algorithm) const
     {
         return m_d->uploadedOneTimeKeysCount[algorithm];
+    }
+
+    MaybeString Crypto::decrypt(nlohmann::json content)
+    {
+        auto algo = content.at("algorithm").get<std::string>();
+        if (algo == olmAlgo) {
+            return m_d->decryptOlm(std::move(content));
+        } else if (algo == megOlmAlgo) {
+            return m_d->decryptMegOlm(std::move(content));
+        }
+        return NotBut("Algorithm " + algo + " not supported");
     }
 }

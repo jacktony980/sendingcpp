@@ -20,6 +20,7 @@
 #include "encryption.hpp"
 
 #include <debug.hpp>
+#include "cursorutil.hpp"
 
 namespace Kazv
 {
@@ -170,4 +171,55 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
+    static JsonWrap cannotDecryptEvent(std::string reason)
+    {
+        return json{
+            {"type", "m.room.message"},
+            {"content", {
+                {"msgtype","moe.kazv.mxc.cannot.decrypt"},
+                {"body", "**This message cannot be decrypted due to " + reason + ".**"}}}};
+    }
+
+    Event decryptEvent(Crypto &crypto, Event e)
+    {
+        // no need for decryption
+        if (e.decrypted() || (! e.encrypted())) {
+            return e;
+        }
+
+        kzo.client.dbg() << "About to decrypt event: "
+                         << e.originalJson().get().dump() << std::endl;
+        auto content = e.originalJson().get().at("content");
+
+        auto maybePlainText = crypto.decrypt(content);
+
+        if (! maybePlainText) {
+            kzo.client.dbg() << "Cannot decrypt: " << maybePlainText.reason() << std::endl;
+            return e.setDecryptedJson(cannotDecryptEvent(maybePlainText.reason()), Event::NotDecrypted);
+        } else {
+            kzo.client.dbg() << "Decrypted message: " << maybePlainText.value() << std::endl;
+            auto plainJson = json::parse(maybePlainText.value());
+            return e.setDecryptedJson(plainJson, Event::Decrypted);
+        }
+    }
+
+    ClientModel tryDecryptEvents(ClientModel m)
+    {
+        if (! m.crypto) {
+            kzo.client.dbg() << "We have no encryption enabled--ignoring decryption request" << std::endl;
+            return m;
+        }
+
+        kzo.client.dbg() << "Trying to decrypt events..." << std::endl;
+        auto &crypto = m.crypto.value();
+
+        auto decryptFunc = [&](auto e) { return decryptEvent(crypto, e); };
+
+        m.toDevice = intoImmer(
+            EventList{},
+            zug::map(decryptFunc),
+            std::move(m.toDevice));
+
+        return m;
+    }
 }

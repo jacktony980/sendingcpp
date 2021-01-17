@@ -28,6 +28,8 @@
 
 #include "sync.hpp"
 
+#include "encryption.hpp"
+
 namespace Kazv
 {
     // Atomicity guaranteed: if the sync action is created
@@ -84,6 +86,12 @@ namespace Kazv
                                      }),
                             room.state.value().events).transient());
                     updateRoomImpl(id, AddStateEventsAction{room.state.value().events});
+
+                    // If m.room.encryption state event appears,
+                    // configure the room to use encryption.
+                    if (l[id].stateEvents.find(KeyOfState{"m.room.encryption", ""})) {
+                        updateRoomImpl(id, SetRoomEncryptionAction{});
+                    }
                 }
                 if (room.accountData) {
                     eventsToEmit.append(
@@ -216,6 +224,9 @@ namespace Kazv
 
         m.addTriggers(loadToDeviceFromSyncInPlace(m, r.toDevice()));
         // TODO: process toDevice, deviceLists, deviceOneTimeKeysCount
+
+        auto model = tryDecryptEvents(std::move(m));
+        m = std::move(model);
 
         m.addTrigger(SyncSuccessful{r.nextBatch()});
 

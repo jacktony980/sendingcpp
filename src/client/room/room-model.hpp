@@ -78,6 +78,10 @@ namespace Kazv
         std::string localDraft;
     };
 
+    struct SetRoomEncryptionAction
+    {
+    };
+
     struct RoomModel
     {
         using Membership = RoomMembership;
@@ -97,6 +101,8 @@ namespace Kazv
 
         std::string localDraft;
 
+        bool encrypted{false};
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,
@@ -105,7 +111,8 @@ namespace Kazv
             ChangeMembershipAction,
             ChangeInviteStateAction,
             AddEphemeralAction,
-            SetLocalDraftAction
+            SetLocalDraftAction,
+            SetRoomEncryptionAction
             >;
 
         static RoomModel update(RoomModel r, Action a);
@@ -125,7 +132,8 @@ namespace Kazv
             && a.paginateBackToken == b.paginateBackToken
             && a.canPaginateBack == b.canPaginateBack
             && a.ephemeral == b.ephemeral
-            && a.localDraft == b.localDraft;
+            && a.localDraft == b.localDraft
+            && a.encrypted == b.encrypted;
     }
 
     struct UpdateRoomAction

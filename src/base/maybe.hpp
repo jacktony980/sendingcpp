@@ -19,15 +19,30 @@
 
 #pragma once
 
-#include "client-model.hpp"
-
-#include "csapi/keys.hpp"
+#include <string>
+#include <optional>
 
 namespace Kazv
 {
-    ClientResult updateClient(ClientModel m, UploadIdentityKeysAction a);
-    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction a);
-    ClientResult processResponse(ClientModel m, UploadKeysResponse r);
+    class NotBut
+    {
+        std::string m_reason;
+    public:
+        explicit NotBut(std::string r) : m_reason(r) {}
+        std::string reason() const { return m_reason; }
+    };
 
-    ClientModel tryDecryptEvents(ClientModel m);
+    template<class T>
+    class Maybe : public std::optional<T>
+    {
+        std::string m_reason;
+        using BaseT = std::optional<T>;
+    public:
+        Maybe(T x) : BaseT(x) {}
+        Maybe(NotBut r) : BaseT(), m_reason(r.reason()) {}
+
+        std::string reason() const { return m_reason; }
+    };
+
+    using MaybeString = Maybe<std::string>;
 }

@@ -73,6 +73,10 @@ namespace Kazv
             [&](SetLocalDraftAction a) {
                 r.localDraft = a.localDraft;
                 return r;
+            },
+            [&](SetRoomEncryptionAction) {
+                r.encrypted = true;
+                return r;
             }
             );
     }

@@ -19,15 +19,33 @@
 
 #pragma once
 
-#include "client-model.hpp"
-
-#include "csapi/keys.hpp"
+#include "session.hpp"
 
 namespace Kazv
 {
-    ClientResult updateClient(ClientModel m, UploadIdentityKeysAction a);
-    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction a);
-    ClientResult processResponse(ClientModel m, UploadKeysResponse r);
+    struct SessionPrivate
+    {
+        SessionPrivate();
+        SessionPrivate(OutboundSessionTag,
+                       OlmAccount *acc,
+                       std::string theirIdentityKey,
+                       std::string theirOneTimeKey);
+        SessionPrivate(InboundSessionTag,
+                       OlmAccount *acc,
+                       std::string theirIdentityKey,
+                       std::string message);
 
-    ClientModel tryDecryptEvents(ClientModel m);
+        SessionPrivate(const SessionPrivate &that);
+        ~SessionPrivate() = default;
+
+        ByteArray sessionData;
+        OlmSession *session{0};
+
+        bool valid{false};
+
+        std::size_t checkError(std::size_t code) const;
+
+        std::string error() const { return olm_session_last_error(session); }
+    };
+
 }

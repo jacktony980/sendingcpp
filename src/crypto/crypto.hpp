@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
  *
  * This file is part of libkazv.
  *
@@ -21,14 +21,19 @@
 
 #include <memory>
 
-#include "crypto-util.hpp"
-
 #include <nlohmann/json.hpp>
 
 #include <immer/map.hpp>
 
+#include <maybe.hpp>
+
+#include "crypto-util.hpp"
+
+
 namespace Kazv
 {
+    class Session;
+
     struct CryptoPrivate;
     class Crypto
     {
@@ -40,7 +45,6 @@ namespace Kazv
         Crypto &operator=(Crypto &&that);
         ~Crypto();
 
-        ByteArray identityKeys();
         std::string ed25519IdentityKey();
         std::string curve25519IdentityKey();
 
@@ -70,7 +74,13 @@ namespace Kazv
 
         void markOneTimeKeysAsPublished();
 
+        /// Returns decrypted message if we can decrypt it
+        /// otherwise returns the error
+        MaybeString decrypt(nlohmann::json content);
+
     private:
+        friend class Session;
+        friend class SessionPrivate;
         std::unique_ptr<CryptoPrivate> m_d;
     };
 }
