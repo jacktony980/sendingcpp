@@ -131,4 +131,20 @@ namespace Kazv
             memberNameTransducer,
             stateEvents);
     }
+
+    static Timestamp defaultRotateMs = 604800000;
+    static int defaultRotateMsgs = 100;
+
+    MegOlmSessionRotateDesc RoomModel::sessionRotateDesc() const
+    {
+        auto k = KeyOfState{"m.room.encryption", ""};
+        auto content = stateEvents[k].content().get();
+        auto ms = content.contains("rotation_period_ms")
+            ? content["rotation_period_ms"].get<Timestamp>()
+            : defaultRotateMs;
+        auto msgs = content.contains("rotation_period_msgs")
+            ? content["rotation_period_msgs"].get<int>()
+            : defaultRotateMsgs;
+        return MegOlmSessionRotateDesc{ ms, msgs };
+    }
 }

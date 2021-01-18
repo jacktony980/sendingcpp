@@ -28,11 +28,17 @@
 #include <maybe.hpp>
 
 #include "crypto-util.hpp"
-
+#include "time-util.hpp"
 
 namespace Kazv
 {
     class Session;
+
+    struct MegOlmSessionRotateDesc
+    {
+        Timestamp ms{};
+        int messages{};
+    };
 
     struct CryptoPrivate;
     class Crypto
@@ -78,12 +84,20 @@ namespace Kazv
         /// otherwise returns the error
         MaybeString decrypt(nlohmann::json eventJson);
 
+        std::string encryptOlm(nlohmann::json eventJson);
+
+        /// returns the content template with everything but deviceId
+        /// eventJson should contain type, room_id and content
+        nlohmann::json encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc);
+
         bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
 
         /// Check whether the signature of userId/deviceId is valid in object
         bool verify(nlohmann::json object, std::string userId, std::string deviceId, std::string ed25519Key);
 
         MaybeString getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const;
+
+        void forceRotateMegOlmSession(std::string roomId);
 
     private:
         friend class Session;

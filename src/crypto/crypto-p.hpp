@@ -27,6 +27,7 @@
 #include "crypto-util.hpp"
 #include "session.hpp"
 #include "inbound-group-session.hpp"
+#include "outbound-group-session.hpp"
 
 namespace Kazv
 {
@@ -44,6 +45,8 @@ namespace Kazv
         int numUnpublishedKeys{0};
         std::unordered_map<std::string /* theirCurve25519IdentityKey */, Session> knownSessions;
         std::unordered_map<KeyOfGroupSession, InboundGroupSession> inboundGroupSessions;
+
+        std::unordered_map<std::string /* roomId */, OutboundGroupSession> outboundGroupSessions;
 
         ByteArray utilityData;
         OlmUtility *utility;
@@ -66,6 +69,10 @@ namespace Kazv
         /// returns whether the session is successfully established
         bool createInboundSession(std::string theirCurve25519IdentityKey,
                                   std::string message);
+
+        bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
+
+        bool reuseOrCreateOutboundGroupSession(std::string roomId, MegOlmSessionRotateDesc desc);
     };
 
 }

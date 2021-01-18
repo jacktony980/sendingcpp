@@ -31,6 +31,8 @@
 #include <csapi/sync.hpp>
 #include <event.hpp>
 
+#include <crypto.hpp>
+
 #include "data/cereal_map.hpp"
 
 #include "clientutil.hpp"
@@ -102,8 +104,15 @@ namespace Kazv
         std::string localDraft;
 
         bool encrypted{false};
+        /// a marker to indicate whether we need to rotate
+        /// the session key earlier than it expires
+        /// (e.g. when a user in the room's device list changed
+        /// or when someone joins or leaves)
+        bool shouldRotateSessionKey{true};
 
         immer::flex_vector<std::string> joinedMemberIds() const;
+
+        MegOlmSessionRotateDesc sessionRotateDesc() const;
 
         using Action = std::variant<
             AddStateEventsAction,

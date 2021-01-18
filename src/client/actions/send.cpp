@@ -33,7 +33,20 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, SendMessageAction a)
     {
-        auto origJson = a.event.originalJson().get();
+        auto event = std::move(a.event);
+        auto roomId = a.roomId;
+
+        auto beforeEncryption = event.originalJson().get();
+        if (!beforeEncryption.contains("type") || !beforeEncryption.contains("content")) {
+            m.addTrigger(InvalidMessageFormat{});
+            return { std::move(m), lager::noop };
+        }
+
+        if (m.roomList[roomId].encrypted && ! event.encrypted()) {
+            event = m.megOlmEncrypt(std::move(event), roomId);
+        }
+
+        auto origJson = event.originalJson().get();
         if (!origJson.contains("type") || !origJson.contains("content")) {
             m.addTrigger(InvalidMessageFormat{});
             return { std::move(m), lager::noop };

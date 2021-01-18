@@ -244,7 +244,7 @@ namespace Kazv
         if (m.crypto) {
             kzo.client.dbg() << "E2EE is on. Processing device lists and one-time key counts." << std::endl;
             auto &crypto = m.crypto.value();
-            // TODO: process deviceLists,
+            // process deviceLists
             if (isInitialSync) {
                 auto encryptedUsers =
                     zug::sequence(
@@ -256,6 +256,7 @@ namespace Kazv
                         m.roomList.rooms);
 
                 m.deviceLists.track(std::move(encryptedUsers));
+
             } else {
                 const auto &l = r.deviceLists().get();
                 if (l.contains("changed")) {
@@ -267,6 +268,7 @@ namespace Kazv
                     const auto &left = l.at("left");
                     m.deviceLists.untrack(left);
                 }
+                // TODO: rotate megolm keys for rooms whose users' device list has changed
             }
 
             // deviceOneTimeKeysCount

@@ -108,4 +108,56 @@ namespace Kazv
 #undef RESPONSE_FOR
             );
     }
+
+    Event ClientModel::megOlmEncrypt(Event e, std::string roomId)
+    {
+        if (!crypto) {
+            kzo.client.dbg() << "We do not have e2ee, so do not encrypt events" << std::endl;
+            return e;
+        }
+
+        if (e.encrypted()) {
+            kzo.client.dbg() << "The event is already encrypted. Ignoring it." << std::endl;
+            return e;
+        }
+
+        auto &c = crypto.value();
+
+        auto j = e.originalJson().get();
+        auto r = roomList[roomId];
+
+        if (! r.encrypted) {
+            kzo.client.dbg() << "The room " << roomId
+                             << " is not encrypted, so do not encrypt events" << std::endl;
+            return e;
+        }
+
+        auto desc = r.sessionRotateDesc();
+
+        if (r.shouldRotateSessionKey) {
+            c.forceRotateMegOlmSession(roomId);
+        }
+
+        // we no longer need to rotate session
+        // until next time a device change happens
+        roomList.rooms = std::move(roomList.rooms)
+            .update(roomId, [](auto r) { r.shouldRotateSessionKey = false; return r; });
+
+        // so that Crypto::encryptMegOlm() can find room id
+        j["room_id"] = roomId;
+
+        auto content = c.encryptMegOlm(j, desc);
+        j["type"] = "m.room.encrypted";
+        j["content"] = std::move(content);
+        j["content"]["device_id"] = deviceId;
+
+        kzo.client.dbg() << "Encrypted json is " << j.dump() << std::endl;
+
+        return Event(JsonWrap(j));
+    }
+
+    Event ClientModel::olmEncrypt(Event e)
+    {
+        return e;
+    }
 }

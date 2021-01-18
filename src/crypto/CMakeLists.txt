@@ -2,6 +2,7 @@ set(kazvcrypto_SRCS
   crypto.cpp
   session.cpp
   inbound-group-session.cpp
+  outbound-group-session.cpp
   )
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})

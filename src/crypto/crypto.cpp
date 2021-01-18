@@ -30,6 +30,7 @@
 #include "session-p.hpp"
 
 #include "crypto-util.hpp"
+#include "time-util.hpp"
 
 namespace Kazv
 {
@@ -174,6 +175,36 @@ namespace Kazv
         }
 
         return false;
+    }
+
+    bool CryptoPrivate::reuseOrCreateOutboundGroupSession(std::string roomId, MegOlmSessionRotateDesc desc)
+    {
+        auto it = outboundGroupSessions.find(roomId);
+        bool valid = true;
+        if (it == outboundGroupSessions.end()) {
+            valid = false;
+        } else {
+            auto &session = it->second;
+            if (currentTimeMs() - session.creationTimeMs() >= desc.ms) {
+                valid = false;
+            } else if (session.messageIndex() >= desc.messages) {
+                valid = false;
+            }
+        }
+        if (! valid) {
+            outboundGroupSessions.insert_or_assign(roomId, OutboundGroupSession());
+            auto &session = outboundGroupSessions.at(roomId);
+            auto sessionId = session.sessionId();
+            auto sessionKey = session.sessionKey();
+            auto senderKey = curve25519IdentityKey();
+
+            auto k = KeyOfGroupSession{roomId, senderKey, sessionId};
+
+            if (! createInboundGroupSession(k, sessionKey, ed25519IdentityKey())) {
+                kzo.client.warn() << "Create inbound group session from outbound group session failed. We may not be able to read our own messages." << std::endl;
+            }
+        }
+        return valid;
     }
 
 
@@ -321,9 +352,14 @@ namespace Kazv
 
     bool Crypto::createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key)
     {
+        return m_d->createInboundGroupSession(std::move(k), std::move(sessionKey), std::move(ed25519Key));
+    }
+
+    bool CryptoPrivate::createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key)
+    {
         auto session = InboundGroupSession(sessionKey, ed25519Key);
         if (session.valid()) {
-            m_d->inboundGroupSessions.insert_or_assign(k, std::move(session));
+            inboundGroupSessions.insert_or_assign(k, std::move(session));
             return true;
         }
         return false;
@@ -370,5 +406,43 @@ namespace Kazv
             auto &session = m_d->inboundGroupSessions.at(k);
             return session.ed25519Key();
         }
+    }
+
+    std::string Crypto::encryptOlm(nlohmann::json eventJson)
+    {
+        return "";
+    }
+
+    nlohmann::json Crypto::encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc)
+    {
+        auto roomId = eventJson.at("room_id").get<std::string>();
+        auto content = eventJson.at("content");
+        auto type = eventJson.at("type").get<std::string>();
+
+        auto jsonToEncrypt = nlohmann::json::object();
+        jsonToEncrypt["room_id"] = roomId;
+        jsonToEncrypt["content"] = std::move(content);
+        jsonToEncrypt["type"] = type;
+
+        auto textToEncrypt = std::move(jsonToEncrypt).dump();
+
+        m_d->reuseOrCreateOutboundGroupSession(roomId, desc);
+        auto &session = m_d->outboundGroupSessions.at(roomId);
+
+        auto ciphertext = session.encrypt(std::move(textToEncrypt));
+
+        return json{
+            {"algorithm", CryptoConstants::megOlmAlgo},
+            {"sender_key", curve25519IdentityKey()},
+            {"ciphertext", ciphertext},
+            {"session_id", session.sessionId()},
+        };
+    }
+
+    void Crypto::forceRotateMegOlmSession(std::string roomId)
+    {
+        // just let the session expire 0ms after creation and
+        // we will have a new one
+        m_d->reuseOrCreateOutboundGroupSession(std::move(roomId), MegOlmSessionRotateDesc());
     }
 }

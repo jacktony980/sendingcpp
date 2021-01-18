@@ -94,6 +94,10 @@ namespace Kazv
 
         DeviceListTracker deviceLists;
 
+        Event megOlmEncrypt(Event e, std::string roomId);
+        // TODO: need more parameters
+        Event olmEncrypt(Event e);
+
         // helpers
         template<class Job>
         struct MakeJobT
