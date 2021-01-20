@@ -19,12 +19,15 @@
 
 #include <vector>
 
+#include <zug/transducer/filter.hpp>
+
 #include <olm/olm.h>
 
 #include <nlohmann/json.hpp>
 
 #include <debug.hpp>
 #include <event.hpp>
+#include <cursorutil.hpp>
 
 #include "crypto-p.hpp"
 #include "session-p.hpp"
@@ -58,7 +61,9 @@ namespace Kazv
         , uploadedOneTimeKeysCount(that.uploadedOneTimeKeysCount)
         , numUnpublishedKeys(that.numUnpublishedKeys)
         , knownSessions(that.knownSessions)
+        , outboundSessions(that.outboundSessions)
         , inboundGroupSessions(that.inboundGroupSessions)
+        , outboundGroupSessions(that.outboundGroupSessions)
         , utilityData(olm_utility_size(), '\0')
         , utility(olm_utility(utilityData.data()))
     {
@@ -408,12 +413,26 @@ namespace Kazv
         }
     }
 
-    std::string Crypto::encryptOlm(nlohmann::json eventJson)
+    nlohmann::json Crypto::encryptOlm(nlohmann::json eventJson, std::string userId, std::string deviceId)
     {
-        return "";
+        try {
+            auto &session = m_d->outboundSessions.at(KeyOfOutboundSession{userId, deviceId});
+            auto [type, body] = session.encrypt(eventJson.dump());
+            return nlohmann::json{
+                {
+                    session.theirIdentityKey(), {
+                        {"type", type},
+                        {"body", body}
+                    }
+                }
+            };
+        } catch (const std::exception &) {
+            return nlohmann::json::object();
+        }
     }
 
-    nlohmann::json Crypto::encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc)
+    std::pair<nlohmann::json, std::optional<std::string>>
+    Crypto::encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc)
     {
         auto roomId = eventJson.at("room_id").get<std::string>();
         auto content = eventJson.at("content");
@@ -426,16 +445,22 @@ namespace Kazv
 
         auto textToEncrypt = std::move(jsonToEncrypt).dump();
 
-        m_d->reuseOrCreateOutboundGroupSession(roomId, desc);
+        auto reused = m_d->reuseOrCreateOutboundGroupSession(roomId, desc);
         auto &session = m_d->outboundGroupSessions.at(roomId);
+        // sessionKey() returns the key for the next message to be decrypted
+        // so we need to call it before encrypt()
+        auto sessionKey = session.sessionKey();
 
         auto ciphertext = session.encrypt(std::move(textToEncrypt));
 
-        return json{
-            {"algorithm", CryptoConstants::megOlmAlgo},
-            {"sender_key", curve25519IdentityKey()},
-            {"ciphertext", ciphertext},
-            {"session_id", session.sessionId()},
+        return {
+            json{
+                {"algorithm", CryptoConstants::megOlmAlgo},
+                {"sender_key", curve25519IdentityKey()},
+                {"ciphertext", ciphertext},
+                {"session_id", session.sessionId()},
+            },
+            reused ? std::nullopt : std::optional<std::string>(sessionKey)
         };
     }
 
@@ -444,5 +469,38 @@ namespace Kazv
         // just let the session expire 0ms after creation and
         // we will have a new one
         m_d->reuseOrCreateOutboundGroupSession(std::move(roomId), MegOlmSessionRotateDesc());
+    }
+
+    auto Crypto::devicesMissingOutboundSessionKey(UserIdToDeviceIdMap userIdToDeviceIdMap) const -> UserIdToDeviceIdMap
+    {
+        auto ret = UserIdToDeviceIdMap{};
+        for (auto [userId, devices] : userIdToDeviceIdMap) {
+            auto unknownDevices =
+                intoImmer(immer::flex_vector<std::string>{},
+                          zug::filter([=](auto deviceId) {
+                                          auto k = KeyOfOutboundSession{userId, deviceId};
+                                          return m_d->outboundSessions.find(k) == m_d->outboundSessions.end();
+                                      }),
+                          devices);
+            if (! unknownDevices.empty()) {
+                ret = std::move(ret).set(userId, std::move(unknownDevices));
+            }
+        }
+        return ret;
+    }
+
+    void Crypto::createOutboundSession(std::string userId, std::string deviceId, std::string theirIdentityKey,
+                                       std::string theirOneTimeKey)
+    {
+        // TODO
+        auto session = Session(OutboundSessionTag{},
+                               m_d->account,
+                               theirIdentityKey,
+                               theirOneTimeKey);
+
+        if (session.valid()) {
+            m_d->outboundSessions.insert_or_assign(KeyOfOutboundSession{userId, deviceId},
+                                                   std::move(session));
+        }
     }
 }

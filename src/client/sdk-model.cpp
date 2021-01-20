@@ -19,6 +19,8 @@
 
 #include "sdk-model.hpp"
 
+#include <debug.hpp>
+
 namespace Kazv
 {
 
@@ -38,7 +40,7 @@ namespace Kazv
                 auto triggers = s.client.popAllTriggers();
 
                 auto eff =
-                    [=, clientEff=std::move(clientEff)](auto &&ctx) {
+                    [=](auto &&ctx) {
                         clientEff(ctx);
 
                         auto &jh = getJobHandler(ctx);
@@ -83,6 +85,10 @@ namespace Kazv
                             // start sync after publishing identity keys
                             else if (std::holds_alternative<UploadIdentityKeysSuccessful>(t)) {
                                 ctx.dispatch(SyncAction{});
+                            }
+                            else if (std::holds_alternative<ClaimKeysSuccessful>(t)) {
+                                auto [event, devicesToSend] = std::get<ClaimKeysSuccessful>(t);
+                                ctx.dispatch(SendToDeviceMessageAction{event, devicesToSend});
                             }
                         }
                     };

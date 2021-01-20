@@ -42,8 +42,17 @@ namespace Kazv
             return { std::move(m), lager::noop };
         }
 
-        if (m.roomList[roomId].encrypted && ! event.encrypted()) {
-            event = m.megOlmEncrypt(std::move(event), roomId);
+        auto shouldSendKey = false;
+        std::string sessionKey;
+        if (m.crypto) {
+            if (m.roomList[roomId].encrypted && ! event.encrypted()) {
+                auto res = m.megOlmEncrypt(std::move(event), roomId);
+                event = res.first;
+                shouldSendKey = !! res.second;
+                if (shouldSendKey) {
+                    sessionKey = res.second.value();
+                }
+            }
         }
 
         auto origJson = event.originalJson().get();
@@ -77,7 +86,32 @@ namespace Kazv
 
         m.addJob(std::move(job));
 
-        return { std::move(m), lager::noop };
+        auto devicesToSend = immer::map<std::string, immer::flex_vector<std::string>>{};
+        if (shouldSendKey) {
+            kzo.client.dbg() << "We should also send the session key." << std::endl;
+
+            auto roomMembers = m.roomList[roomId].joinedMemberIds();
+            kzo.client.dbg() << "room members" << std::endl;
+
+            for (auto userId : roomMembers) {
+                devicesToSend = std::move(devicesToSend)
+                    .set(userId, m.devicesToSendKeys(userId));
+            }
+        }
+
+        return { std::move(m),
+                 shouldSendKey
+                 ? ClientEffect([=, sessionId=content.at("session_id")](auto &&ctx) {
+                                    kzo.client.dbg() << "dispatching cliamkeys action" << std::endl;
+                                    ctx.dispatch(ClaimKeysAndSendSessionKeyAction{
+                                            roomId,
+                                            sessionId,
+                                            sessionKey,
+                                            devicesToSend
+                                        });
+                                })
+                 : ClientEffect(lager::noop)
+        };
     }
 
     ClientResult processResponse(ClientModel m, SendMessageResponse r)
@@ -113,15 +147,20 @@ namespace Kazv
 
         m.nextTxnId = increaseTxnId(m.nextTxnId);
 
-        auto deviceIdToContentMap =
-            immer::map<std::string, JsonWrap>{}.set(a.deviceId, content);
         auto messages =
-            immer::map<std::string, immer::map<std::string, JsonWrap>>{}.set(a.userId, deviceIdToContentMap);
+            immer::map<std::string, immer::map<std::string, JsonWrap>>{};
+
+        for (auto [userId, devices] : a.devicesToSend) {
+            auto deviceIdToContentMap = immer::map<std::string, JsonWrap>{};
+            for (auto deviceId : devices) {
+                deviceIdToContentMap = std::move(deviceIdToContentMap).set(deviceId, content);
+            }
+            messages = std::move(messages).set(userId, deviceIdToContentMap);
+        }
 
         auto job = m.job<SendToDeviceJob>()
             .make(type, txnId, messages)
-            .withData(json{{"userId", a.userId},
-                           {"deviceId", a.deviceId},
+            .withData(json{{"devicesToSend", a.devicesToSend},
                            {"txnId", txnId}});
 
         m.addJob(std::move(job));
@@ -131,16 +170,15 @@ namespace Kazv
 
     ClientResult processResponse(ClientModel m, SendToDeviceResponse r)
     {
-        auto userId = r.dataStr("userId");
-        auto deviceId = r.dataStr("deviceId");
+        auto devicesToSend = r.dataJson("devicesToSend");
         auto txnId = r.dataStr("txnId");
 
         if (! r.success()) {
-            m.addTrigger(SendToDeviceMessageFailed{userId, deviceId, txnId, r.errorCode(), r.errorMessage()});
+            m.addTrigger(SendToDeviceMessageFailed{devicesToSend, txnId, r.errorCode(), r.errorMessage()});
             return { std::move(m), lager::noop };
         }
 
-        m.addTrigger(SendToDeviceMessageSuccessful{userId, deviceId, txnId});
+        m.addTrigger(SendToDeviceMessageSuccessful{devicesToSend, txnId});
         return { std::move(m), lager::noop };
 
     }

@@ -94,9 +94,11 @@ namespace Kazv
 
         DeviceListTracker deviceLists;
 
-        Event megOlmEncrypt(Event e, std::string roomId);
-        // TODO: need more parameters
-        Event olmEncrypt(Event e);
+        immer::flex_vector<std::string /* deviceId */> devicesToSendKeys(std::string userId) const;
+
+        std::pair<Event, std::optional<std::string> /* sessionKey */> megOlmEncrypt(Event e, std::string roomId);
+        /// precondition: the one-time keys for those devices must already be claimed
+        Event olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap);
 
         // helpers
         template<class Job>
@@ -310,8 +312,7 @@ namespace Kazv
     struct SendToDeviceMessageAction
     {
         Event event;
-        std::string userId;
-        std::string deviceId;
+        immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
     };
 
     struct UploadIdentityKeysAction
@@ -325,6 +326,14 @@ namespace Kazv
     struct QueryKeysAction
     {
         bool isInitialSync;
+    };
+
+    struct ClaimKeysAndSendSessionKeyAction
+    {
+        std::string roomId;
+        std::string sessionId;
+        std::string sessionKey;
+        immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
     };
 
 #ifndef NDEBUG

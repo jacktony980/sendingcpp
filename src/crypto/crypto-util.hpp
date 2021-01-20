@@ -44,6 +44,18 @@ namespace Kazv
             && a.sessionId == b.sessionId;
     }
 
+    struct KeyOfOutboundSession
+    {
+        std::string userId;
+        std::string deviceId;
+    };
+
+    inline bool operator==(KeyOfOutboundSession a, KeyOfOutboundSession b)
+    {
+        return a.userId == b.userId
+            && a.deviceId == b.deviceId;
+    };
+
     [[nodiscard]] inline ByteArray genRandom(int len)
     {
         auto rd = std::random_device{};
@@ -72,6 +84,16 @@ namespace std
             boost::hash_combine(seed, k.roomId);
             boost::hash_combine(seed, k.senderKey);
             boost::hash_combine(seed, k.sessionId);
+            return seed;
+        }
+    };
+
+    template<> struct hash<Kazv::KeyOfOutboundSession>
+    {
+        std::size_t operator()(const Kazv::KeyOfOutboundSession & k) const noexcept {
+            std::size_t seed = 0;
+            boost::hash_combine(seed, k.userId);
+            boost::hash_combine(seed, k.deviceId);
             return seed;
         }
     };

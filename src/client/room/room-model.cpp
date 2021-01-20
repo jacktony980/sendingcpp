@@ -147,4 +147,17 @@ namespace Kazv
             : defaultRotateMsgs;
         return MegOlmSessionRotateDesc{ ms, msgs };
     }
+
+    bool RoomModel::hasUser(std::string userId) const
+    {
+        try {
+            auto ev = stateEvents.at(KeyOfState{"m.room.member", userId});
+            if (ev.content().get().at("membership") == "join") {
+                return true;
+            }
+        } catch (const std::exception &) {
+            return false;
+        }
+        return false;
+    }
 }

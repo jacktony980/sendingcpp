@@ -24,6 +24,7 @@
 #include <nlohmann/json.hpp>
 
 #include <immer/map.hpp>
+#include <immer/flex_vector.hpp>
 
 #include <maybe.hpp>
 
@@ -84,11 +85,22 @@ namespace Kazv
         /// otherwise returns the error
         MaybeString decrypt(nlohmann::json eventJson);
 
-        std::string encryptOlm(nlohmann::json eventJson);
+
+        /** returns a json object that looks like
+         * {
+         *   "<their identity key>": {
+         *     "type": <number>,
+         *     "body": "<body>"
+         *   }
+         * }
+         */
+        nlohmann::json encryptOlm(nlohmann::json eventJson, std::string userId, std::string deviceId);
 
         /// returns the content template with everything but deviceId
         /// eventJson should contain type, room_id and content
-        nlohmann::json encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc);
+        /// if the session is rotated, also returns the session key
+        std::pair<nlohmann::json, std::optional<std::string>>
+        encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc);
 
         bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
 
@@ -98,6 +110,12 @@ namespace Kazv
         MaybeString getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const;
 
         void forceRotateMegOlmSession(std::string roomId);
+
+        using UserIdToDeviceIdMap = immer::map<std::string, immer::flex_vector<std::string>>;
+        UserIdToDeviceIdMap devicesMissingOutboundSessionKey(UserIdToDeviceIdMap userIdToDeviceIdMap) const;
+
+        void createOutboundSession(std::string userId, std::string deviceId, std::string theirIdentityKey,
+                                   std::string theirOneTimeKey);
 
     private:
         friend class Session;

@@ -268,7 +268,6 @@ namespace Kazv
                     const auto &left = l.at("left");
                     m.deviceLists.untrack(left);
                 }
-                // TODO: rotate megolm keys for rooms whose users' device list has changed
             }
 
             // deviceOneTimeKeysCount

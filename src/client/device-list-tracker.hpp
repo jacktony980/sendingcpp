@@ -29,18 +29,30 @@
 
 namespace Kazv
 {
+    enum DeviceTrustLevel
+    {
+        Blocked,
+        Unseen,
+        Seen,
+        Verified,
+    };
+
     struct DeviceKeyInfo
     {
         std::string deviceId;
         std::string ed25519Key;
         std::string curve25519Key;
         std::optional<std::string> displayName;
+        DeviceTrustLevel trustLevel{Unseen};
     };
+
+    bool operator==(DeviceKeyInfo a, DeviceKeyInfo b);
 
     struct DeviceListTracker
     {
+        using DeviceMapT = immer::map<std::string /* deviceId */, DeviceKeyInfo>;
         immer::map<std::string /* userId */, bool /* outdated */> usersToTrackDeviceLists;
-        immer::map<std::string /* userId */, immer::map<std::string /* deviceId */, DeviceKeyInfo>> deviceLists;
+        immer::map<std::string /* userId */, DeviceMapT> deviceLists;
 
         template<class RangeT>
         void track(RangeT &&userIds) {
@@ -63,9 +75,14 @@ namespace Kazv
 
         void markUpToDate(std::string userId);
 
+        DeviceMapT devicesFor(std::string userId) const;
+
         std::optional<DeviceKeyInfo> get(std::string userId, std::string deviceId) const;
 
         std::optional<DeviceKeyInfo> findByEd25519Key(std::string userId, std::string ed25519Key) const;
         std::optional<DeviceKeyInfo> findByCurve25519Key(std::string userId, std::string curve25519Key) const;
+
+        /// returns a list of users whose device list has changed
+        immer::flex_vector<std::string> diff(DeviceListTracker that) const;
     };
 }

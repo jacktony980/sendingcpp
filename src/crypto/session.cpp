@@ -47,6 +47,8 @@ namespace Kazv
                                    std::string theirOneTimeKey)
         : SessionPrivate()
     {
+        this->theirIdentityKey = theirIdentityKey;
+
         auto random = genRandom(olm_create_outbound_session_random_length(session));
 
         auto res = checkError(olm_create_outbound_session(
@@ -81,6 +83,7 @@ namespace Kazv
     SessionPrivate::SessionPrivate(const SessionPrivate &that)
         : SessionPrivate()
     {
+        theirIdentityKey = that.theirIdentityKey;
         valid = unpickle(that.pickle());
     }
 
@@ -197,5 +200,32 @@ namespace Kazv
         }
 
         return std::string(plainTextBuffer.begin(), plainTextBuffer.begin() + actualSize);
+    }
+
+    std::pair<int, std::string> Session::encrypt(std::string plainText)
+    {
+        auto randomData = genRandom(olm_encrypt_random_length(m_d->session));
+
+        auto type = m_d->checkError(olm_encrypt_message_type(m_d->session));
+
+        auto size = m_d->checkError(olm_encrypt_message_length(m_d->session, plainText.size()));
+
+        auto buf = ByteArray(size, '\0');
+
+        auto actualSize = m_d->checkError(
+            olm_encrypt(m_d->session, plainText.c_str(), plainText.size(),
+                        randomData.data(), randomData.size(),
+                        buf.data(), buf.size()));
+
+        if (actualSize != olm_error()) {
+            return { type, std::string(buf.begin(), buf.begin() + actualSize) };
+        }
+
+        return { -1, "" };
+    }
+
+    std::string Session::theirIdentityKey() const
+    {
+        return m_d->theirIdentityKey;
     }
 }

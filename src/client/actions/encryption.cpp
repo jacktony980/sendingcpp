@@ -420,4 +420,116 @@ namespace Kazv
 
         return { std::move(m), lager::noop };
     }
+
+    ClientResult updateClient(ClientModel m, ClaimKeysAndSendSessionKeyAction a)
+    {
+        if (! m.crypto) {
+            kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        auto &c = m.crypto.value();
+
+        kzo.client.dbg() << "claim keys for: " << json(a.devicesToSend).dump() << std::endl;
+
+        auto devicesToClaimKeys = c.devicesMissingOutboundSessionKey(a.devicesToSend);
+
+        auto oneTimeKeys = immer::map<std::string, immer::map<std::string, std::string>>{};
+        for (auto [userId, devices] : devicesToClaimKeys) {
+            auto devKeys = immer::map<std::string, std::string>{};
+            for (auto deviceId: devices) {
+                devKeys = std::move(devKeys).set(deviceId, signedCurve25519);
+            }
+            oneTimeKeys = std::move(oneTimeKeys).set(userId, devKeys);
+        }
+
+        auto job = m.job<ClaimKeysJob>()
+            .make(std::move(oneTimeKeys))
+            .withData(json{
+                    {"roomId", a.roomId},
+                    {"sessionId", a.sessionId},
+                    {"sessionKey", a.sessionKey},
+                    {"devicesToSend", a.devicesToSend}
+                });
+        m.addJob(std::move(job));
+
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, ClaimKeysResponse r)
+    {
+        if (! m.crypto) {
+            kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        if (! r.success()) {
+            kzo.client.dbg() << "claim keys failed" << std::endl;
+            m.addTrigger(ClaimKeysFailed{r.errorCode(), r.errorMessage()});
+            return { std::move(m), lager::noop };
+        }
+
+        kzo.client.dbg() << "claim keys successful" << std::endl;
+
+        auto &c = m.crypto.value();
+
+        auto roomId = r.dataStr("roomId");
+        auto sessionKey = r.dataStr("sessionKey");
+        auto sessionId = r.dataStr("sessionId");
+        auto devicesToSend =
+            immer::map<std::string, immer::flex_vector<std::string>>(r.dataJson("devicesToSend"));
+
+        if (! r.success()) {
+            kzo.client.dbg() << "claiming keys failed" << std::endl;
+            return { std::move(m), lager::noop };
+        }
+
+        // create outbound sessions for those devices
+        auto oneTimeKeys = r.oneTimeKeys();
+
+        for (auto [userId, deviceMap] : oneTimeKeys) {
+            for (auto [deviceId, keyVar] : deviceMap) {
+                if (std::holds_alternative<JsonWrap>(keyVar)) {
+                    auto keys = std::get<JsonWrap>(keyVar).get();
+                    for (auto [keyId, key] : keys.items()) {
+                        auto deviceInfoOpt = m.deviceLists.get(userId, deviceId);
+                        if (deviceInfoOpt) {
+                            auto deviceInfo = deviceInfoOpt.value();
+                            kzo.client.dbg() << "Verifying key for " << userId
+                                             << "/" << deviceId
+                                             << key.dump()
+                                             << " with ed25519 key "
+                                             << deviceInfo.ed25519Key << std::endl;
+                            auto verified = c.verify(key, userId, deviceId, deviceInfo.ed25519Key);
+                            kzo.client.dbg() << (verified ? "passed" : "did not pass") << std::endl;
+                            if (verified && key.contains("key")) {
+                                auto theirOneTimeKey = key.at("key");
+                                kzo.client.dbg() << "creating outbound session for it" << std::endl;
+                                c.createOutboundSession(userId, deviceId,
+                                                        deviceInfo.curve25519Key, theirOneTimeKey);
+                                kzo.client.dbg() << "done" << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        auto eventJson = json{
+            {"content", {{"algorithm", megOlmAlgo},
+                         {"room_id", roomId},
+                         {"session_id", sessionId},
+                         {"session_key", sessionKey}}},
+            {"type", "m.room_key"}
+        };
+
+        kzo.client.dbg() << "the original key event: " << eventJson.dump() << std::endl;
+        // send the actual key, encrypted
+        auto event = m.olmEncrypt(Event(JsonWrap(eventJson)), devicesToSend);
+        kzo.client.dbg() << "encrypted key event: " << event.originalJson().get().dump() << std::endl;
+
+        m.addTrigger(ClaimKeysSuccessful{event, devicesToSend});
+
+        return { std::move(m), lager::noop };
+    }
 }

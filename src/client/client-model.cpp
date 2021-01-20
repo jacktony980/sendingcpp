@@ -22,6 +22,8 @@
 #include <lager/context.hpp>
 #include <functional>
 
+#include <zug/transducer/filter.hpp>
+
 #include <immer/flex_vector_transient.hpp>
 
 #include "debug.hpp"
@@ -43,7 +45,9 @@ namespace Kazv
 {
     auto ClientModel::update(ClientModel m, Action a) -> Result
     {
-        return lager::match(std::move(a))(
+        auto oldDeviceLists = m.deviceLists;
+
+        auto [newClient, effect] = lager::match(std::move(a))(
             [&](Error::Action a) -> Result {
                 m.error = Error::update(m.error, a);
                 return {std::move(m), lager::noop};
@@ -100,6 +104,7 @@ namespace Kazv
                 // encryption
                 RESPONSE_FOR(UploadKeys);
                 RESPONSE_FOR(QueryKeys);
+                RESPONSE_FOR(ClaimKeys);
 
                 m.addTrigger(UnrecognizedResponse{std::move(r)});
                 return { std::move(m), lager::noop };
@@ -107,9 +112,77 @@ namespace Kazv
 
 #undef RESPONSE_FOR
             );
+
+        // Rotate megolm keys for rooms whose users' device list has changed
+        auto changedUsers = newClient.deviceLists.diff(oldDeviceLists);
+        if (! changedUsers.empty()) {
+            for (auto [roomId, room] : newClient.roomList.rooms) {
+                auto it = std::find_if(changedUsers.begin(), changedUsers.end(),
+                                       [=](auto userId) { return room.hasUser(userId); });
+                if (it != changedUsers.end()) {
+                    newClient.roomList.rooms =
+                        std::move(newClient.roomList.rooms)
+                        .update(roomId, [](auto room) {
+                                            room.shouldRotateSessionKey = true;
+                                            return room;
+                                        });
+                }
+            }
+        }
+
+        return { std::move(newClient), std::move(effect) };
     }
 
-    Event ClientModel::megOlmEncrypt(Event e, std::string roomId)
+    std::pair<Event, std::optional<std::string>> ClientModel::megOlmEncrypt(Event e, std::string roomId)
+    {
+        if (!crypto) {
+            kzo.client.dbg() << "We do not have e2ee, so do not encrypt events" << std::endl;
+            return { e, std::nullopt };
+        }
+
+        if (e.encrypted()) {
+            kzo.client.dbg() << "The event is already encrypted. Ignoring it." << std::endl;
+            return { e, std::nullopt };
+        }
+
+        auto &c = crypto.value();
+
+        auto j = e.originalJson().get();
+        auto r = roomList[roomId];
+
+        if (! r.encrypted) {
+            kzo.client.dbg() << "The room " << roomId
+                             << " is not encrypted, so do not encrypt events" << std::endl;
+            return { e, std::nullopt };
+        }
+
+        auto desc = r.sessionRotateDesc();
+
+        if (r.shouldRotateSessionKey) {
+            kzo.client.dbg() << "We should rotate this session." << std::endl;
+            desc = MegOlmSessionRotateDesc{}; // 0ms and 0 msgs, so guaranteed to rotate
+        }
+
+        // we no longer need to rotate session
+        // until next time a device change happens
+        roomList.rooms = std::move(roomList.rooms)
+            .update(roomId, [](auto r) { r.shouldRotateSessionKey = false; return r; });
+
+        // so that Crypto::encryptMegOlm() can find room id
+        j["room_id"] = roomId;
+
+        auto [content, keyOpt] = c.encryptMegOlm(j, desc);
+        j["type"] = "m.room.encrypted";
+        j["content"] = std::move(content);
+        j["content"]["device_id"] = deviceId;
+
+        kzo.client.dbg() << "Encrypted json is " << j.dump() << std::endl;
+        kzo.client.dbg() << "Session key is " << (keyOpt ? keyOpt.value() : "<not rotated>") << std::endl;
+
+        return { Event(JsonWrap(j)), keyOpt };
+    }
+
+    Event ClientModel::olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap)
     {
         if (!crypto) {
             kzo.client.dbg() << "We do not have e2ee, so do not encrypt events" << std::endl;
@@ -123,41 +196,62 @@ namespace Kazv
 
         auto &c = crypto.value();
 
-        auto j = e.originalJson().get();
-        auto r = roomList[roomId];
+        auto origJson = e.originalJson().get();
 
-        if (! r.encrypted) {
-            kzo.client.dbg() << "The room " << roomId
-                             << " is not encrypted, so do not encrypt events" << std::endl;
-            return e;
+        auto encJson = json::object();
+        encJson["content"] = json{
+            {"algorithm", CryptoConstants::olmAlgo},
+            {"ciphertext", json::object()},
+            {"sender_key", c.curve25519IdentityKey()},
+        };
+
+        encJson["type"] = "m.room.encrypted";
+
+        for (auto [userId, devices] : userIdToDeviceIdMap) {
+            for (auto dev : devices) {
+                auto devInfoOpt = deviceLists.get(userId, dev);
+                if (! devInfoOpt) {
+                    continue;
+                }
+                auto devInfo = devInfoOpt.value();
+                auto jsonForThisDevice = origJson;
+                jsonForThisDevice["sender"] = this->userId;
+                jsonForThisDevice["recipient"] = userId;
+                jsonForThisDevice["recipient_keys"] = json{
+                    {CryptoConstants::ed25519, devInfo.ed25519Key}
+                };
+                jsonForThisDevice["keys"] = json{
+                    {CryptoConstants::ed25519, c.ed25519IdentityKey()}
+                };
+                encJson["content"]["ciphertext"]
+                    .merge_patch(c.encryptOlm(jsonForThisDevice, userId, dev));
+            }
         }
 
-        auto desc = r.sessionRotateDesc();
-
-        if (r.shouldRotateSessionKey) {
-            c.forceRotateMegOlmSession(roomId);
-        }
-
-        // we no longer need to rotate session
-        // until next time a device change happens
-        roomList.rooms = std::move(roomList.rooms)
-            .update(roomId, [](auto r) { r.shouldRotateSessionKey = false; return r; });
-
-        // so that Crypto::encryptMegOlm() can find room id
-        j["room_id"] = roomId;
-
-        auto content = c.encryptMegOlm(j, desc);
-        j["type"] = "m.room.encrypted";
-        j["content"] = std::move(content);
-        j["content"]["device_id"] = deviceId;
-
-        kzo.client.dbg() << "Encrypted json is " << j.dump() << std::endl;
-
-        return Event(JsonWrap(j));
+        return Event(JsonWrap(encJson));
     }
 
-    Event ClientModel::olmEncrypt(Event e)
+    immer::flex_vector<std::string /* deviceId */> ClientModel::devicesToSendKeys(std::string userId) const
     {
-        return e;
+        auto trustLevelNeeded = DeviceTrustLevel::Unseen;
+
+        // XXX: preliminary approach
+        auto shouldSendP = [=](auto deviceInfo, auto /* deviceMap */) {
+                               return deviceInfo.trustLevel >= trustLevelNeeded;
+                           };
+
+
+        auto devices = deviceLists.devicesFor(userId);
+
+        return intoImmer(
+            immer::flex_vector<std::string>{},
+            zug::filter([=](auto n) {
+                         auto [id, dev] = n;
+                         return shouldSendP(dev, devices);
+                     })
+            | zug::map([=](auto n) {
+                           return n.first;
+                       }),
+            devices);
     }
 }

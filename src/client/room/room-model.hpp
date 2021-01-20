@@ -114,6 +114,8 @@ namespace Kazv
 
         MegOlmSessionRotateDesc sessionRotateDesc() const;
 
+        bool hasUser(std::string userId) const;
+
         using Action = std::variant<
             AddStateEventsAction,
             AppendTimelineAction,

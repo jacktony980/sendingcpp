@@ -169,15 +169,13 @@ namespace Kazv
 
     struct SendToDeviceMessageSuccessful
     {
-        std::string userId;
-        std::string deviceId;
+        immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
         std::string txnId;
     };
 
     struct SendToDeviceMessageFailed
     {
-        std::string userId;
-        std::string deviceId;
+        immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
         std::string txnId;
         std::string errorCode;
         std::string error;
@@ -327,6 +325,18 @@ namespace Kazv
         std::string error;
     };
 
+    struct ClaimKeysSuccessful
+    {
+        Event eventToSend;
+        immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
+    };
+
+    struct ClaimKeysFailed
+    {
+        std::string errorCode;
+        std::string error;
+    };
+
     struct UnrecognizedResponse
     {
         Response response;
@@ -378,6 +388,7 @@ namespace Kazv
         // encryption
         UploadIdentityKeysSuccessful, UploadIdentityKeysFailed,
         UploadOneTimeKeysSuccessful, UploadOneTimeKeysFailed,
+        ClaimKeysSuccessful, ClaimKeysFailed,
 
         // general
         UnrecognizedResponse

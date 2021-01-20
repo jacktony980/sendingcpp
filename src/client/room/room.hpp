@@ -33,7 +33,7 @@
 
 #include "client-model.hpp"
 #include "room-model.hpp"
-#include "client/cursorutil.hpp"
+#include <cursorutil.hpp>
 
 namespace Kazv
 {

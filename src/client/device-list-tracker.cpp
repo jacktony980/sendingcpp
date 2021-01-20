@@ -22,6 +22,9 @@
 #include <algorithm>
 
 #include <zug/transducer/filter.hpp>
+#include <zug/sequence.hpp>
+#include <zug/transducer/distinct.hpp>
+#include <zug/transducer/chain.hpp>
 
 #include <debug.hpp>
 
@@ -128,4 +131,32 @@ namespace Kazv
         }
     }
 
+    immer::flex_vector<std::string> DeviceListTracker::diff(DeviceListTracker that) const
+    {
+        auto users = zug::sequence(zug::map([](auto n) { return n.first; }), deviceLists);
+        auto thatUsers = zug::sequence(zug::map([](auto n) { return n.first; }), that.deviceLists);
+        auto changedUsers = intoImmer(
+            immer::flex_vector<std::string>{},
+            zug::chain(std::move(thatUsers))
+            | zug::distinct
+            | zug::filter([=](auto userId) {
+                              return deviceLists[userId] != that.deviceLists[userId];
+                          }),
+            std::move(users));
+        return changedUsers;
+    }
+
+    auto DeviceListTracker::devicesFor(std::string userId) const -> DeviceMapT
+    {
+        return deviceLists[userId];
+    }
+
+    bool operator==(DeviceKeyInfo a, DeviceKeyInfo b)
+    {
+        return a.deviceId == b.deviceId
+            && a.ed25519Key == b.ed25519Key
+            && a.curve25519Key == b.curve25519Key
+            && a.displayName == b.displayName
+            && a.trustLevel == b.trustLevel;
+    }
 }

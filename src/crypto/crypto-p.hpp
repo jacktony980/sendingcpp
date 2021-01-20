@@ -44,6 +44,7 @@ namespace Kazv
         immer::map<std::string /* algorithm */, int> uploadedOneTimeKeysCount;
         int numUnpublishedKeys{0};
         std::unordered_map<std::string /* theirCurve25519IdentityKey */, Session> knownSessions;
+        std::unordered_map<KeyOfOutboundSession, Session> outboundSessions;
         std::unordered_map<KeyOfGroupSession, InboundGroupSession> inboundGroupSessions;
 
         std::unordered_map<std::string /* roomId */, OutboundGroupSession> outboundGroupSessions;

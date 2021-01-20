@@ -22,7 +22,7 @@
 
 #include <zug/into_vector.hpp>
 
-#include <client/cursorutil.hpp>
+#include <cursorutil.hpp>
 #include <client/client.hpp>
 
 #include "client-test-util.hpp"
