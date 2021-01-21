@@ -94,27 +94,35 @@ namespace Kazv
          *   }
          * }
          */
-        nlohmann::json encryptOlm(nlohmann::json eventJson, std::string userId, std::string deviceId);
+        nlohmann::json encryptOlm(nlohmann::json eventJson, std::string theirCurve25519IdentityKey);
 
         /// returns the content template with everything but deviceId
         /// eventJson should contain type, room_id and content
-        /// if the session is rotated, also returns the session key
-        std::pair<nlohmann::json, std::optional<std::string>>
-        encryptMegOlm(nlohmann::json eventJson, MegOlmSessionRotateDesc desc);
+        nlohmann::json encryptMegOlm(nlohmann::json eventJson);
 
         bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
+
+        std::string outboundGroupSessionInitialKey(std::string roomId);
+
+        std::string outboundGroupSessionCurrentKey(std::string roomId);
 
         /// Check whether the signature of userId/deviceId is valid in object
         bool verify(nlohmann::json object, std::string userId, std::string deviceId, std::string ed25519Key);
 
         MaybeString getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const;
 
-        void forceRotateMegOlmSession(std::string roomId);
+        /// Returns the new session key
+        std::string rotateMegOlmSession(std::string roomId);
+
+        /// Returns the new session key only if it is rotated
+        std::optional<std::string> rotateMegOlmSessionIfNeeded(std::string roomId, MegOlmSessionRotateDesc desc);
 
         using UserIdToDeviceIdMap = immer::map<std::string, immer::flex_vector<std::string>>;
-        UserIdToDeviceIdMap devicesMissingOutboundSessionKey(UserIdToDeviceIdMap userIdToDeviceIdMap) const;
+        UserIdToDeviceIdMap devicesMissingOutboundSessionKey(
+            immer::map<std::string, immer::map<std::string /* deviceId */,
+            std::string /* curve25519IdentityKey */>> keyMap) const;
 
-        void createOutboundSession(std::string userId, std::string deviceId, std::string theirIdentityKey,
+        void createOutboundSession(std::string theirIdentityKey,
                                    std::string theirOneTimeKey);
 
     private:

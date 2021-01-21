@@ -58,19 +58,13 @@ namespace Kazv
         Session &operator=(Session &&that);
         ~Session();
 
-        /// only for inbound sessions
         bool matches(std::string message);
 
         bool valid() const;
 
-        /// only for inbound sessions
         MaybeString decrypt(int type, std::string message);
 
-        /// only for outbound sessions
         std::pair<int /* type */, std::string /* message */> encrypt(std::string plainText);
-
-        /// only for outbound sessions
-        std::string theirIdentityKey() const;
 
     private:
         friend class Crypto;

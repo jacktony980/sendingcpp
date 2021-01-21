@@ -158,9 +158,12 @@ namespace Kazv
 
         auto desc = r.sessionRotateDesc();
 
+        auto keyOpt = std::optional<std::string>{};
         if (r.shouldRotateSessionKey) {
             kzo.client.dbg() << "We should rotate this session." << std::endl;
-            desc = MegOlmSessionRotateDesc{}; // 0ms and 0 msgs, so guaranteed to rotate
+            keyOpt = c.rotateMegOlmSession(roomId);
+        } else {
+            keyOpt = c.rotateMegOlmSessionIfNeeded(roomId, desc);
         }
 
         // we no longer need to rotate session
@@ -171,7 +174,7 @@ namespace Kazv
         // so that Crypto::encryptMegOlm() can find room id
         j["room_id"] = roomId;
 
-        auto [content, keyOpt] = c.encryptMegOlm(j, desc);
+        auto content = c.encryptMegOlm(j);
         j["type"] = "m.room.encrypted";
         j["content"] = std::move(content);
         j["content"]["device_id"] = deviceId;
@@ -224,7 +227,7 @@ namespace Kazv
                     {CryptoConstants::ed25519, c.ed25519IdentityKey()}
                 };
                 encJson["content"]["ciphertext"]
-                    .merge_patch(c.encryptOlm(jsonForThisDevice, userId, dev));
+                    .merge_patch(c.encryptOlm(jsonForThisDevice, devInfo.curve25519Key));
             }
         }
 

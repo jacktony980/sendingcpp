@@ -432,7 +432,23 @@ namespace Kazv
 
         kzo.client.dbg() << "claim keys for: " << json(a.devicesToSend).dump() << std::endl;
 
-        auto devicesToClaimKeys = c.devicesMissingOutboundSessionKey(a.devicesToSend);
+        auto keyMap = immer::map<std::string, immer::map<std::string /* deviceId */,
+                                                         std::string /* curve25519IdentityKey */>>{};
+
+
+        for (auto [userId, devices] : a.devicesToSend) {
+            auto deviceToKey = immer::map<std::string, std::string>{};
+            for (auto deviceId : devices) {
+                auto infoOpt = m.deviceLists.get(userId, deviceId);
+                if (infoOpt) {
+                    deviceToKey = std::move(deviceToKey)
+                        .set(deviceId, infoOpt.value().curve25519Key);
+                }
+            }
+            keyMap = std::move(keyMap).set(userId, deviceToKey);
+        }
+
+        auto devicesToClaimKeys = c.devicesMissingOutboundSessionKey(keyMap);
 
         auto oneTimeKeys = immer::map<std::string, immer::map<std::string, std::string>>{};
         for (auto [userId, devices] : devicesToClaimKeys) {
@@ -505,8 +521,7 @@ namespace Kazv
                             if (verified && key.contains("key")) {
                                 auto theirOneTimeKey = key.at("key");
                                 kzo.client.dbg() << "creating outbound session for it" << std::endl;
-                                c.createOutboundSession(userId, deviceId,
-                                                        deviceInfo.curve25519Key, theirOneTimeKey);
+                                c.createOutboundSession(deviceInfo.curve25519Key, theirOneTimeKey);
                                 kzo.client.dbg() << "done" << std::endl;
                             }
                         }

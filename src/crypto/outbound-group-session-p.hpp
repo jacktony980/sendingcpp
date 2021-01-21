@@ -40,11 +40,16 @@ namespace Kazv
 
         Timestamp creationTime;
 
+        std::string initialSessionKey;
+
+
         std::size_t checkError(std::size_t code) const;
         std::string error() const;
 
         ByteArray pickle() const;
         bool unpickle(ByteArray pickleData);
+
+        std::string sessionKey();
     };
 
 }

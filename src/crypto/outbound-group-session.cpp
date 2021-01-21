@@ -49,6 +49,7 @@ namespace Kazv
 
         if (res != olm_error()) {
             valid = true;
+            initialSessionKey = sessionKey();
         }
 
         creationTime = currentTimeMs();
@@ -58,6 +59,7 @@ namespace Kazv
         : sessionData(olm_outbound_group_session_size(), '\0')
         , session(olm_outbound_group_session(sessionData.data()))
         , creationTime(that.creationTime)
+        , initialSessionKey(that.initialSessionKey)
     {
         valid = unpickle(that.pickle());
     }
@@ -133,14 +135,24 @@ namespace Kazv
         return std::string(encrypted.begin(), encrypted.begin() + actualSize);
     }
 
-    std::string OutboundGroupSession::sessionKey()
+    std::string OutboundGroupSessionPrivate::sessionKey()
     {
-        auto size = olm_outbound_group_session_key_length(m_d->session);
+        auto size = olm_outbound_group_session_key_length(session);
         auto keyBuf = ByteArray(size, '\0');
-        auto actualSize = m_d->checkError(
-            olm_outbound_group_session_key(m_d->session, keyBuf.data(), keyBuf.size()));
+        auto actualSize = checkError(
+            olm_outbound_group_session_key(session, keyBuf.data(), keyBuf.size()));
 
         return std::string(keyBuf.begin(), keyBuf.begin() + actualSize);
+    }
+
+    std::string OutboundGroupSession::sessionKey()
+    {
+        return m_d->sessionKey();
+    }
+
+    std::string OutboundGroupSession::initialSessionKey() const
+    {
+        return m_d->initialSessionKey;
     }
 
     std::string OutboundGroupSession::sessionId()

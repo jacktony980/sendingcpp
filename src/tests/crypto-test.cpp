@@ -23,6 +23,7 @@
 #include <crypto/crypto.hpp>
 
 using namespace Kazv;
+using namespace Kazv::CryptoConstants;
 
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
@@ -51,4 +52,57 @@ TEST_CASE("Generating and publishing keys should work", "[crypto]")
 
     crypto.markOneTimeKeysAsPublished();
     REQUIRE(crypto.numUnpublishedOneTimeKeys() == 0);
+}
+
+TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
+{
+    Crypto a;
+    Crypto b;
+
+    a.genOneTimeKeys(1);
+
+    // Get A publish the key and send to B
+    auto k = a.unpublishedOneTimeKeys();
+    a.markOneTimeKeysAsPublished();
+
+    auto oneTimeKey = std::string{};
+
+    for (auto [id, key] : k[curve25519].items()) {
+        oneTimeKey = key;
+    }
+
+    auto aIdKey = a.curve25519IdentityKey();
+    b.createOutboundSession(aIdKey, oneTimeKey);
+
+    auto origJson = json{{"test", "mew"}};
+    auto encryptedMsg = b.encryptOlm(origJson, aIdKey);
+    auto encJson = json{
+        {"content",
+         {
+             {"algorithm", olmAlgo},
+             {"ciphertext", encryptedMsg},
+             {"sender_key", b.curve25519IdentityKey()}
+         }
+        }
+    };
+
+    auto decryptedOpt = a.decrypt(encJson);
+
+    REQUIRE(decryptedOpt);
+
+    auto decryptedJson = json::parse(decryptedOpt.value());
+
+    REQUIRE(decryptedJson == origJson);
+
+    using StrMap = immer::map<std::string, std::string>;
+    auto devMap = immer::map<std::string, StrMap>()
+        .set("b", StrMap().set("dev", b.curve25519IdentityKey()));
+
+    auto devices = a.devicesMissingOutboundSessionKey(devMap);
+
+    // No device should be missing an olm session, as A has received an
+    // inbound olm session before.
+    auto expected = immer::map<std::string, immer::flex_vector<std::string>>();
+
+    REQUIRE(devices == expected);
 }

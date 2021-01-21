@@ -46,6 +46,7 @@ namespace Kazv
         bool valid() const;
 
         std::string sessionKey();
+        std::string initialSessionKey() const;
         std::string sessionId();
 
         int messageIndex();

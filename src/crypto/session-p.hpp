@@ -43,9 +43,6 @@ namespace Kazv
 
         bool valid{false};
 
-        /// only for outbound sessions
-        std::string theirIdentityKey;
-
         ByteArray pickle() const;
         bool unpickle(ByteArray data);
 

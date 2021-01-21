@@ -47,8 +47,6 @@ namespace Kazv
                                    std::string theirOneTimeKey)
         : SessionPrivate()
     {
-        this->theirIdentityKey = theirIdentityKey;
-
         auto random = genRandom(olm_create_outbound_session_random_length(session));
 
         auto res = checkError(olm_create_outbound_session(
@@ -83,7 +81,6 @@ namespace Kazv
     SessionPrivate::SessionPrivate(const SessionPrivate &that)
         : SessionPrivate()
     {
-        theirIdentityKey = that.theirIdentityKey;
         valid = unpickle(that.pickle());
     }
 
@@ -222,10 +219,5 @@ namespace Kazv
         }
 
         return { -1, "" };
-    }
-
-    std::string Session::theirIdentityKey() const
-    {
-        return m_d->theirIdentityKey;
     }
 }
