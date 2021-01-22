@@ -23,10 +23,11 @@ libkazv support the following functionalities:
 - Leaving and forgetting rooms
 - Content repository
 - Send-to-device messages
+- E2EE (send and receive events only)
 
 These functionalities are currently not supported:
 
-- E2EE (partial, can receive but not send)
+- E2EE (for attachments)
 - Banning and kicking
 - Setting presence
 - Device management
