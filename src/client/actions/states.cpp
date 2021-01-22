@@ -27,14 +27,17 @@
 
 namespace Kazv
 {
-    ClientResult updateClient(ClientModel m, GetRoomStatesAction a)
+    BaseJob clientPerform(ClientModel m, GetRoomStatesAction a)
     {
         auto roomId = a.roomId;
-        auto job = m.job<GetRoomStateJob>()
+        return m.job<GetRoomStateJob>()
             .make(roomId)
             .withData(json{{"roomId", roomId}});
+    }
 
-        m.addJob(std::move(job));
+    ClientResult updateClient(ClientModel m, GetRoomStatesAction a)
+    {
+        m.addJob(clientPerform(m, a));
 
         return { std::move(m), lager::noop };
     }
@@ -53,10 +56,19 @@ namespace Kazv
         auto events = r.data();
 
         auto action = UpdateRoomAction{
-            std::move(roomId),
+            roomId,
             AddStateEventsAction{std::move(events)}
         };
         m.roomList = RoomListModel::update(std::move(m.roomList), action);
+
+        if (m.crypto && m.roomList[roomId].encrypted) {
+            m.deviceLists.track(m.roomList[roomId].joinedMemberIds());
+        }
+        m.roomList = RoomListModel::update(std::move(m.roomList),
+                                           UpdateRoomAction{roomId, MarkMembersFullyLoadedAction{}});
+
+        //m.addTrigger(ShouldQueryKeys{false});
+
         return {std::move(m), lager::noop};
     }
 

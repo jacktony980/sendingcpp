@@ -26,6 +26,7 @@
 
 namespace Kazv
 {
+    BaseJob clientPerform(ClientModel m, GetRoomStatesAction a);
     ClientResult updateClient(ClientModel m, GetRoomStatesAction a);
     ClientResult processResponse(ClientModel m, GetRoomStateResponse r);
     ClientResult updateClient(ClientModel m, GetStateEventAction a);

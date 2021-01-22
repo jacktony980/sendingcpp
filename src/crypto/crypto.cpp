@@ -496,8 +496,8 @@ namespace Kazv
                                               == m_d->knownSessions.end();
                                       })
                           | zug::map([=](auto kv) {
-                                         auto [_, key] = kv;
-                                         return key;
+                                         auto [deviceId, key] = kv;
+                                         return deviceId;
                                      }),
                           devices);
             if (! unknownDevices.empty()) {

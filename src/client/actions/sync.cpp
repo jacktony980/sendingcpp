@@ -100,12 +100,6 @@ namespace Kazv
                                      }),
                             room.state.value().events).transient());
                     updateRoomImpl(id, AddStateEventsAction{room.state.value().events});
-
-                    // If m.room.encryption state event appears,
-                    // configure the room to use encryption.
-                    if (l[id].stateEvents.find(KeyOfState{"m.room.encryption", ""})) {
-                        updateRoomImpl(id, SetRoomEncryptionAction{});
-                    }
                 }
                 if (room.accountData) {
                     eventsToEmit.append(
@@ -277,7 +271,8 @@ namespace Kazv
             m = std::move(model);
         }
 
-        m.addTrigger(SyncSuccessful{r.nextBatch(), isInitialSync});
+        m.addTrigger(SyncSuccessful{r.nextBatch()});
+        m.addTrigger(ShouldQueryKeys{isInitialSync});
 
         return { std::move(m), lager::noop };
     }

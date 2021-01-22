@@ -36,6 +36,13 @@ namespace Kazv
         return lager::match(std::move(a))(
             [&](AddStateEventsAction a) {
                 r.stateEvents = merge(std::move(r.stateEvents), a.stateEvents, keyOfState);
+
+                // If m.room.encryption state event appears,
+                // configure the room to use encryption.
+                if (r.stateEvents.find(KeyOfState{"m.room.encryption", ""})) {
+                    auto newRoom = update(std::move(r), SetRoomEncryptionAction{});
+                    r = std::move(newRoom);
+                }
                 return r;
             },
             [&](AppendTimelineAction a) {
@@ -77,6 +84,10 @@ namespace Kazv
             },
             [&](SetRoomEncryptionAction) {
                 r.encrypted = true;
+                return r;
+            },
+            [&](MarkMembersFullyLoadedAction) {
+                r.membersFullyLoaded = true;
                 return r;
             }
             );

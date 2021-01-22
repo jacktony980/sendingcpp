@@ -31,6 +31,7 @@
 
 #include "debug.hpp"
 
+#include "sdk-model.hpp"
 #include "client-model.hpp"
 #include "room-model.hpp"
 #include <cursorutil.hpp>
@@ -136,6 +137,8 @@ namespace Kazv
         KAZV_WRAP_ATTR(RoomModel, m_room, membership);
         /*lager::reader<std::string>*/
         KAZV_WRAP_ATTR(RoomModel, m_room, localDraft);
+        /* lager::reader<bool> */
+        KAZV_WRAP_ATTR(RoomModel, m_room, membersFullyLoaded);
 
         inline void setLocalDraft(std::string localDraft) const {
             using namespace CursorOp;

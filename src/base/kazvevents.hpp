@@ -37,7 +37,6 @@ namespace Kazv
     struct SyncSuccessful
     {
         std::string nextToken;
-        bool isInitialSync;
     };
 
     struct SyncFailed
@@ -342,6 +341,12 @@ namespace Kazv
         Response response;
     };
 
+
+    struct ShouldQueryKeys
+    {
+        bool isInitialSync;
+    };
+
     using KazvEvent = std::variant<
         // use this for placeholder of "no events yet"
         // otherwise the first LoginSuccessful event cannot be detected
@@ -391,7 +396,9 @@ namespace Kazv
         ClaimKeysSuccessful, ClaimKeysFailed,
 
         // general
-        UnrecognizedResponse
+        UnrecognizedResponse,
+        ShouldQueryKeys
+
         >;
 
     using KazvEventList = immer::flex_vector<KazvEvent>;

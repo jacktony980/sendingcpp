@@ -31,6 +31,7 @@ namespace Kazv
 
     ClientModel tryDecryptEvents(ClientModel m);
 
+    std::optional<BaseJob> clientPerform(ClientModel m, QueryKeysAction a);
     ClientResult updateClient(ClientModel m, QueryKeysAction a);
     ClientResult processResponse(ClientModel m, QueryKeysResponse r);
 

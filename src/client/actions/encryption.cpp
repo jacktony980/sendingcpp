@@ -357,11 +357,11 @@ namespace Kazv
         return m;
     }
 
-    ClientResult updateClient(ClientModel m, QueryKeysAction a)
+    std::optional<BaseJob> clientPerform(ClientModel m, QueryKeysAction a)
     {
         if (! m.crypto) {
             kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
-            return { std::move(m), lager::noop };
+            return std::nullopt;
         }
 
         immer::map<std::string, immer::array<std::string>> deviceKeys;
@@ -369,7 +369,7 @@ namespace Kazv
 
         if (encryptedUsers.empty()) {
             kzo.client.dbg() << "Keys are up-to-date." << std::endl;
-            return { std::move(m), lager::noop };
+            return std::nullopt;
         }
 
         kzo.client.dbg() << "We need to query keys for: " << std::endl;
@@ -384,8 +384,15 @@ namespace Kazv
                   std::nullopt, // timeout
                   a.isInitialSync ? std::nullopt : m.syncToken
                 );
+        return job;
+    }
 
-        m.addJob(std::move(job));
+    ClientResult updateClient(ClientModel m, QueryKeysAction a)
+    {
+        auto jobOpt = clientPerform(m, a);
+        if (jobOpt) {
+            m.addJob(jobOpt.value());
+        }
 
         return { std::move(m), lager::noop };
     }
@@ -437,18 +444,25 @@ namespace Kazv
 
 
         for (auto [userId, devices] : a.devicesToSend) {
+            kzo.client.dbg() << "Iterating through user " << userId << std::endl;
             auto deviceToKey = immer::map<std::string, std::string>{};
             for (auto deviceId : devices) {
+                kzo.client.dbg() << "Device: " << deviceId << std::endl;
                 auto infoOpt = m.deviceLists.get(userId, deviceId);
                 if (infoOpt) {
+                    kzo.client.dbg() << "Got device info, curve25519 key is: " << infoOpt.value().curve25519Key << std::endl;
                     deviceToKey = std::move(deviceToKey)
                         .set(deviceId, infoOpt.value().curve25519Key);
+                } else {
+                    kzo.client.dbg() << "Did not get device info" <<  std::endl;
                 }
             }
             keyMap = std::move(keyMap).set(userId, deviceToKey);
         }
 
         auto devicesToClaimKeys = c.devicesMissingOutboundSessionKey(keyMap);
+
+        kzo.client.dbg() << "Really claim keys for: " << json(devicesToClaimKeys).dump() << std::endl;
 
         auto oneTimeKeys = immer::map<std::string, immer::map<std::string, std::string>>{};
         for (auto [userId, devices] : devicesToClaimKeys) {
@@ -487,6 +501,8 @@ namespace Kazv
 
         kzo.client.dbg() << "claim keys successful" << std::endl;
 
+        kzo.client.dbg() << "Json body: " << r.jsonBody().get().dump() << std::endl;
+
         auto &c = m.crypto.value();
 
         auto roomId = r.dataStr("roomId");
@@ -494,11 +510,6 @@ namespace Kazv
         auto sessionId = r.dataStr("sessionId");
         auto devicesToSend =
             immer::map<std::string, immer::flex_vector<std::string>>(r.dataJson("devicesToSend"));
-
-        if (! r.success()) {
-            kzo.client.dbg() << "claiming keys failed" << std::endl;
-            return { std::move(m), lager::noop };
-        }
 
         // create outbound sessions for those devices
         auto oneTimeKeys = r.oneTimeKeys();

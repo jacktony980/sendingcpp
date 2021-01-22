@@ -21,6 +21,9 @@
 
 #include <debug.hpp>
 
+#include "actions/encryption.hpp"
+#include "actions/states.hpp"
+
 namespace Kazv
 {
 
@@ -28,6 +31,39 @@ namespace Kazv
 
     SdkResult SdkModel::update(SdkModel s, SdkAction a)
     {
+
+        // HACK
+        if (std::holds_alternative<ClientAction>(a)) {
+            auto ca = std::get<ClientAction>(a);
+            if (std::holds_alternative<SendMessageAction>(ca)) {
+                auto sendMsg = std::get<SendMessageAction>(ca);
+                bool hasCrypto{s.client.crypto};
+                if (hasCrypto) {
+                    auto roomId = sendMsg.roomId;
+                    auto event = sendMsg.event;
+                    auto room = s.client.roomList[roomId];
+                    if (! room.membersFullyLoaded) {
+                        kzo.client.dbg() << "The members of " << roomId
+                                         << " are not fully loaded." << std::endl;
+                        auto job = clientPerform(s.client, GetRoomStatesAction{roomId});
+                        return {
+                            s,
+                            [=](auto &&ctx) {
+                                auto &jh = getJobHandler(ctx);
+                                jh.submit(job,
+                                          [=](Response r) {
+                                              ctx.dispatch(ProcessResponseAction{r});
+                                              ctx.dispatch(AfterGetRoomStates{roomId, event});
+                                          });
+                            }
+                        };
+                    }
+                    // if fully loaded, let it flow down
+                }
+                // if not, let it flow down
+            }
+        }
+
         return lager::match(a)(
             [&](ClientAction a) -> SdkResult {
                 auto [newClient, clientEff] =
@@ -67,7 +103,6 @@ namespace Kazv
                                 auto syncSuccessful = std::get<SyncSuccessful>(t);
                                 if (hasCrypto) {
                                     ctx.dispatch(GenerateAndUploadOneTimeKeysAction{});
-                                    ctx.dispatch(QueryKeysAction{syncSuccessful.isInitialSync});
                                 }
                                 jh.setTimeout(
                                     [=]() {
@@ -90,10 +125,38 @@ namespace Kazv
                                 auto [event, devicesToSend] = std::get<ClaimKeysSuccessful>(t);
                                 ctx.dispatch(SendToDeviceMessageAction{event, devicesToSend});
                             }
+                            else if (std::holds_alternative<ShouldQueryKeys>(t) && hasCrypto) {
+                                ctx.dispatch(QueryKeysAction{std::get<ShouldQueryKeys>(t).isInitialSync});
+                            }
                         }
                     };
 
                 return { std::move(s), eff };
+            },
+            [&](AfterGetRoomStates a) -> SdkResult {
+                return {
+                    s,
+                    [=](auto &&ctx) {
+                        auto &jh = getJobHandler(ctx);
+                        auto room = s.client.roomList[a.roomId];
+                        if (! room.membersFullyLoaded) {
+                            kzo.client.dbg() << "Loading members of " << a.roomId
+                                             << " failed." << std::endl;
+                            return;
+                        }
+
+                        // XXX
+                        auto jobOpt = clientPerform(s.client, QueryKeysAction{true});
+
+                        if (jobOpt) {
+                            jh.submit(jobOpt.value(),
+                                      [=](Response r) {
+                                          ctx.dispatch(ProcessResponseAction{r});
+                                          ctx.dispatch(SendMessageAction{a.roomId, a.event});
+                                      });
+                        }
+                    }
+                };
             }
             );
     }

@@ -25,8 +25,15 @@ namespace Kazv
 {
     struct SdkModel;
 
+    struct AfterGetRoomStates
+    {
+        std::string roomId;
+        Event event;
+    };
+
     using SdkAction = std::variant<
-        ClientAction
+        ClientAction,
+        AfterGetRoomStates
         >;
 
     using SdkEffect = lager::effect<SdkAction, lager::deps<JobInterface &, EventInterface &>>;
