@@ -19,6 +19,7 @@
 
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <lager/debug/cereal/struct.hpp>
 #include <lager/debug/cereal/immer_flex_vector.hpp>

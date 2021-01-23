@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
+
 #include <csapi/create_room.hpp>
 #include <csapi/inviting.hpp>
 #include <csapi/joining.hpp>

@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
+
 // eager requires tuplify but did not include it.
 // This is a bug.
 #include <zug/tuplify.hpp>

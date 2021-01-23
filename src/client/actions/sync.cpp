@@ -17,6 +17,7 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
 
 #include <lager/util.hpp>
 #include <zug/transducer/map.hpp>

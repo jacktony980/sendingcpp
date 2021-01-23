@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <csapi/room_send.hpp>
 #include <csapi/to_device.hpp>

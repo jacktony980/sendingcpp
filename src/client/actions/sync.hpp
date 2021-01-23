@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <csapi/sync.hpp>
 #include <csapi/filter.hpp>

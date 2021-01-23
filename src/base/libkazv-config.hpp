@@ -17,23 +17,10 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 #pragma once
-#include <libkazv-config.hpp>
 
-#include <chrono>
-
-#include <event.hpp>
-
-namespace Kazv
-{
-    namespace detail
-    {
-        using ClockT = std::chrono::system_clock;
-    }
-
-    inline Timestamp currentTimeMs()
-    {
-        auto now = detail::ClockT::now();
-        return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    }
-}
+// https://github.com/arximboldi/zug/issues/24
+#ifndef ZUG_VARIANT_BOOST
+#define ZUG_VARIANT_BOOST 1
+#endif

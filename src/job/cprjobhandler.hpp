@@ -19,6 +19,7 @@
 
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <memory>
 

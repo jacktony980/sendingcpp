@@ -19,6 +19,7 @@
 
 
 #pragma once
+#include "libkazv-config.hpp"
 #include <functional>
 
 #include "basejob.hpp"

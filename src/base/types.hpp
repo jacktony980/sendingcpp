@@ -19,6 +19,8 @@
 
 
 #pragma once
+#include "libkazv-config.hpp"
+
 #include <string>
 #include <variant>
 

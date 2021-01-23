@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <lager/store.hpp>
 #include <lager/event_loop/manual.hpp>

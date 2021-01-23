@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
+
 #include <zug/transducer/filter.hpp>
 #include <zug/transducer/cat.hpp>
 

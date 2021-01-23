@@ -19,6 +19,7 @@
 
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #ifndef NDEBUG
 #include <lager/debug/cereal/struct.hpp>

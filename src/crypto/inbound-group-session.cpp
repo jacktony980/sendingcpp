@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
+
 
 #include "inbound-group-session-p.hpp"
 

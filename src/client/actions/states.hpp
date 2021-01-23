@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <csapi/rooms.hpp>
 #include <csapi/room_state.hpp>

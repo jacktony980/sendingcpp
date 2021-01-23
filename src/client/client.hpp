@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <lager/reader.hpp>
 #include <immer/box.hpp>

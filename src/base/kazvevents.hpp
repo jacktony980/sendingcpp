@@ -19,6 +19,7 @@
 
 
 #pragma once
+#include "libkazv-config.hpp"
 #include <variant>
 #include "types.hpp"
 #include "event.hpp"

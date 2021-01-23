@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include <csapi/typing.hpp>
 #include <csapi/receipts.hpp>

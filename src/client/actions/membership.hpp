@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 
 #include "client-model.hpp"
 #include <csapi/create_room.hpp>

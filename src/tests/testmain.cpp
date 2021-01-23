@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libkazv-config.hpp>
+
 
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>

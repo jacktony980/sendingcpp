@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include "libkazv-config.hpp"
 
 #include <iterator>
 #include <boost/hana/type.hpp>

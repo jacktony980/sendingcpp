@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <libkazv-config.hpp>
 #include <string>
 #include <immer/map.hpp>
 #include <immer/flex_vector.hpp>
