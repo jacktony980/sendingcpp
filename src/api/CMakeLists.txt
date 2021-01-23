@@ -18,4 +18,4 @@ target_include_directories(kazvapi
   $<INSTALL_INTERFACE:include/kazv/api>
   )
 
-install(TARGETS kazvapi EXPORT libkazvConfig LIBRARY)
+install(TARGETS kazvapi EXPORT libkazvTargets LIBRARY)

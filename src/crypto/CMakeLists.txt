@@ -19,4 +19,4 @@ target_include_directories(kazvcrypto
   $<INSTALL_INTERFACE:include/kazv/crypto>
   )
 
-install(TARGETS kazvcrypto EXPORT libkazvConfig LIBRARY)
+install(TARGETS kazvcrypto EXPORT libkazvTargets LIBRARY)

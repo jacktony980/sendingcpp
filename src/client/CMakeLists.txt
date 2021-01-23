@@ -29,4 +29,4 @@ target_include_directories(kazvclient
   $<INSTALL_INTERFACE:include/kazv/client>
   )
 
-install(TARGETS kazvclient EXPORT libkazvConfig LIBRARY)
+install(TARGETS kazvclient EXPORT libkazvTargets LIBRARY)

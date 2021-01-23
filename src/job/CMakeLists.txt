@@ -19,4 +19,13 @@ target_include_directories(kazvjob
   $<INSTALL_INTERFACE:include/kazv/job>
   )
 
-install( TARGETS kazvjob EXPORT libkazvConfig LIBRARY)
+install( TARGETS kazvjob EXPORT libkazv-jobTargets LIBRARY)
+install(EXPORT libkazv-jobTargets
+  NAMESPACE
+    libkazv::
+  DESTINATION
+    ${ConfigPackageLocation}
+)
+install(
+  FILES ${libkazvSourceRoot}/cmake/libkazv-jobConfig.cmake
+  DESTINATION ${ConfigPackageLocation})

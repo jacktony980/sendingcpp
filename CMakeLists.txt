@@ -9,6 +9,8 @@ endif()
 
 project(libkazv)
 
+set(libkazvSourceRoot ${CMAKE_CURRENT_SOURCE_DIR})
+
 set(libkazv_VERSION_MAJOR 0)
 set(libkazv_VERSION_MINOR 0)
 set(libkazv_VERSION_PATCH 0)
@@ -121,13 +123,23 @@ if(libkazv_OUTPUT_LEVEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")
 endif()
 
+set(ConfigPackageLocation lib/cmake/libkazv)
+
 add_subdirectory(src)
 
-
-set(ConfigPackageLocation lib/cmake/libkazv)
-install(EXPORT libkazvConfig
+install(EXPORT libkazvTargets
   NAMESPACE
     libkazv::
   DESTINATION
     ${ConfigPackageLocation}
 )
+
+install(
+  FILES cmake/libkazvConfig.cmake
+  DESTINATION ${ConfigPackageLocation})
+
+# cpr does not install a good config file.
+# We use the find module instead.
+install(
+  FILES cmake/Findcpr.cmake
+  DESTINATION ${ConfigPackageLocation})

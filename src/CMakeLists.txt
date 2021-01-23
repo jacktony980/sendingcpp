@@ -25,7 +25,7 @@ target_include_directories(kazvall
   $<INSTALL_INTERFACE:include/kazv>
   )
 
-install(TARGETS kazvall EXPORT libkazvConfig)
+install(TARGETS kazvall EXPORT libkazvTargets)
 
 if(libkazv_INSTALL_HEADERS)
   install(

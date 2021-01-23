@@ -10,4 +10,4 @@ target_include_directories(kazveventemitter
   $<INSTALL_INTERFACE:include/kazv/eventemitter>
   )
 
-install(TARGETS kazveventemitter EXPORT libkazvConfig)
+install(TARGETS kazveventemitter EXPORT libkazvTargets)

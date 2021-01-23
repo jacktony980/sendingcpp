@@ -23,4 +23,4 @@ target_include_directories(kazvbase
   $<INSTALL_INTERFACE:include/kazv/base>
   )
 
-install(TARGETS kazvbase EXPORT libkazvConfig LIBRARY)
+install(TARGETS kazvbase EXPORT libkazvTargets LIBRARY)
