@@ -11,6 +11,7 @@ add_executable(kazvtest
   kazvjobtest.cpp
   event-emitter-test.cpp
   crypto-test.cpp
+  promise-test.cpp
   )
 
 target_link_libraries(kazvtest

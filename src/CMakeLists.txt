@@ -2,6 +2,7 @@
 include(linklibsys)
 
 add_subdirectory(base)
+add_subdirectory(store)
 add_subdirectory(api)
 add_subdirectory(crypto)
 add_subdirectory(client)
