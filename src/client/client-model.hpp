@@ -34,8 +34,6 @@
 #endif
 
 #include <csapi/sync.hpp>
-#include <jobinterface.hpp>
-#include <eventinterface.hpp>
 
 #include <crypto.hpp>
 
