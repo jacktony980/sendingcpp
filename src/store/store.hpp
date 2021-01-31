@@ -23,7 +23,7 @@
 #include <lager/deps.hpp>
 #include <lager/util.hpp>
 #include <lager/context.hpp>
-
+#include <lager/store.hpp>
 #include "context.hpp"
 
 namespace Kazv
@@ -100,16 +100,54 @@ namespace Kazv
         ContextT m_ctx;
     };
 
-    template<class Action,
+    template<class ActionTraits,
+             class Tag,
              class Model,
              class Reducer,
              class PH,
-             class Deps = lager::deps<>,
-             class Tag = lager::automatic_tag>
-    auto makeStore(Model initialModel, Reducer reducer, PH &&ph, Deps deps = {})
+             class Deps>
+    auto makeStoreImpl(ActionTraits action, Model initialModel, Reducer reducer, PH &&ph, Deps &&deps)
     {
+        using Action = typename ActionTraits::type;
         return Store<Action, Model, Reducer, Deps, Tag>(
             std::move(initialModel), std::move(reducer),
-            std::forward<PH>(ph), std::move(deps));
+            std::forward<PH>(ph), std::forward<Deps>(deps));
+    }
+
+    template<class Action,
+             class Tag = lager::automatic_tag,
+             class Model,
+             class Reducer,
+             class PH,
+             class ...Enhancers
+             >
+    auto makeStore(Model &&initialModel, Reducer &&reducer, PH &&ph, Enhancers &&...enhancers)
+    {
+        auto enhancer = zug::comp(std::forward<Enhancers>(enhancers)...);
+        auto factory = enhancer(
+            [&](auto actionTraits,
+                auto &&model,
+                auto &&reducer,
+                auto &&ph,
+                auto &&deps) {
+                using ActionTraits = decltype(actionTraits);
+
+                using ModelF = decltype(model);
+                using ReducerF = decltype(reducer);
+                using PHF = decltype(ph);
+                using DepsF = decltype(deps);
+
+                using ActionT = typename ActionTraits::type;
+                using ModelT = std::decay_t<ModelF>;
+                using ReducerT = std::decay_t<ReducerF>;
+                using DepsT = std::decay_t<DepsF>;
+                return Store<ActionT, ModelT, ReducerT, DepsT, Tag>(
+                    std::forward<ModelF>(initialModel), std::forward<ReducerF>(reducer),
+                    std::forward<PHF>(ph), std::forward<DepsF>(deps));
+            });
+        return factory(
+            lager::type_<Action>{},
+            std::forward<Model>(initialModel), std::forward<Reducer>(reducer),
+            std::forward<PH>(ph), lager::deps<>{});
     }
 }

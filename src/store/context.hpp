@@ -85,6 +85,10 @@ namespace Kazv
             return m_ph.createResolved(v);
         }
 
+        BoolPromiseInterface promiseInterface() const {
+            return m_ph;
+        }
+
     private:
         template <typename AnotherAction, typename AnotherDeps>
         friend class Context;

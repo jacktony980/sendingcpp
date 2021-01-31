@@ -64,7 +64,7 @@ TEST_CASE("Store should behave properly", "[store]")
                          }
                      };
 
-    auto store = makeStore<Action>(Model{}, update, ph, lager::make_deps(std::ref(bi)));
+    auto store = makeStore<Action>(Model{}, update, ph, lager::with_deps(std::ref(bi)));
 
     lager::reader<Model> reader = store;
 

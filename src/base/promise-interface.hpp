@@ -261,6 +261,20 @@ namespace Kazv
             return m_d->createResolved(v);
         }
 
+        template<class RangeT>
+        BoolPromise all(RangeT promises) const {
+            if (promises.empty()) {
+                return createResolved(true);
+            }
+            auto p1 = promises.begin();
+            promises.erase(promises.begin());
+            return p1.then([=, promises=std::move(promises)](bool val) mutable {
+                               if (! val) {
+                                   return createResolved(false);
+                               }
+                               return all(std::move(promises));
+                           });
+        }
 
     private:
         struct Concept
