@@ -18,7 +18,7 @@ add_library(kazv ALIAS kazvall)
 add_library(libkazv::kazv ALIAS kazvall)
 
 
-target_link_libraries(kazvall INTERFACE kazvbase kazvapi kazvcrypto kazvclient kazveventemitter)
+target_link_libraries(kazvall INTERFACE kazvbase kazvstore kazvapi kazvcrypto kazvclient kazveventemitter)
 
 target_include_directories(kazvall
   INTERFACE

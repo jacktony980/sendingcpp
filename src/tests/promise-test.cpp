@@ -84,3 +84,29 @@ TEST_CASE("Promise should behave properly", "[promise]")
 
     REQUIRE(v == std::vector<int>{ 1, 2, 3 });
 }
+
+
+TEST_CASE("BoolPromise should behave properly", "[promise]")
+{
+    boost::asio::io_context ioContext;
+    auto ph = BoolPromiseInterface(AsioPromiseHandler(ioContext.get_executor()));
+
+    auto p1 = ph.create([](auto resolve) {
+                            resolve(true);
+                        });
+    auto p2 = p1.then([](bool v) {
+                          REQUIRE(v == true);
+                      });
+
+    auto p3 = p2.then([&](bool v) {
+                          REQUIRE(v == true);
+                          return ph.createResolved(false);
+                      });
+
+    auto p4 = p3.then([](bool v) {
+                          REQUIRE(v == false);
+                      });
+
+
+    ioContext.run();
+}

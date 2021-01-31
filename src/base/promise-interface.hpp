@@ -100,6 +100,88 @@ namespace Kazv
         DeriveT<T> *m_derived;
     };
 
+    class BoolPromise : TypelessPromise
+    {
+    public:
+        using DataT = bool;
+
+        template<class DeriveT>
+        BoolPromise(DeriveT obj)
+            : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {}
+
+        BoolPromise(const BoolPromise &that)
+            : m_d(that.m_d->clone())
+            {}
+
+        BoolPromise(BoolPromise &&that)
+            : m_d(std::move(that.m_d))
+            {}
+
+        BoolPromise &operator=(const BoolPromise &that) {
+            m_d = that.m_d->clone();
+            return *this;
+        }
+
+        BoolPromise &operator=(BoolPromise &&that) {
+            m_d = std::move(that.m_d);
+            return *this;
+        }
+
+        template<class F>
+        BoolPromise then(F &&f) {
+            if constexpr (std::is_same_v<std::invoke_result_t<F, bool>, void>) {
+                return m_d->thenVoid(f);
+            } else if constexpr (std::is_same_v<std::invoke_result_t<F, bool>, bool>) {
+                return m_d->thenBool(f);
+            } else {
+                return m_d->thenPromise(f);
+            }
+        }
+
+        bool ready() const { return m_d->ready(); }
+        bool get() const { return m_d->get(); }
+
+    private:
+        struct Concept
+        {
+            virtual ~Concept() = default;
+            virtual BoolPromise thenVoid(std::function<void(bool)> f) = 0;
+            virtual BoolPromise thenBool(std::function<bool(bool)> f) = 0;
+            virtual BoolPromise thenPromise(std::function<BoolPromise(bool)> f) = 0;
+            virtual std::unique_ptr<Concept> clone() const = 0;
+            virtual bool ready() const = 0;
+            virtual bool get() const = 0;
+        };
+
+        template<class DeriveT>
+        struct Model : public Concept
+        {
+            Model(DeriveT obj) : instance(std::move(obj)) {}
+            ~Model() override = default;
+            BoolPromise thenVoid(std::function<void(bool)> f) override {
+                return instance.then([=](bool v) { f(v); return true; });
+            }
+            BoolPromise thenBool(std::function<bool(bool)> f) override {
+                return instance.then([=](bool v) { return f(v); });
+            }
+            BoolPromise thenPromise(std::function<BoolPromise(bool)> f) override {
+                return instance.then([=](bool v) { return f(v); });
+            }
+            std::unique_ptr<Concept> clone() const override {
+                return std::unique_ptr<Concept>(new Model<DeriveT>(instance));
+            }
+            bool ready() const override {
+                return instance.ready();
+            }
+            bool get() const override {
+                return instance.get();
+            }
+            DeriveT instance;
+        };
+
+        std::unique_ptr<Concept> m_d;
+    };
+
     template<class DeriveT, template<class> class PromiseT>
     class PromiseInterface
     {
@@ -127,4 +209,47 @@ namespace Kazv
     auto PromiseInterface<DeriveT, PromiseT>::createResolved(T &&val) -> PromiseT<T> {
         return m_derived->createResolved(std::forward<T>(val));
     }
+
+    class BoolPromiseInterface
+    {
+    public:
+        using ResolveT = std::function<void(bool)>;
+
+        template<class DeriveT>
+        BoolPromiseInterface(DeriveT obj)
+            : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {}
+
+        BoolPromise create(std::function<void(ResolveT)> f) {
+            return m_d->create(f);
+        }
+
+        BoolPromise createResolved(bool v) {
+            return m_d->createResolved(v);
+        }
+
+
+    private:
+        struct Concept
+        {
+            virtual ~Concept() = default;
+            virtual BoolPromise create(std::function<void(ResolveT)> f) = 0;
+            virtual BoolPromise createResolved(bool v) = 0;
+        };
+
+        template<class DeriveT>
+        struct Model : public Concept
+        {
+            Model(DeriveT obj) : instance(std::move(obj)) {}
+            ~Model() override = default;
+            BoolPromise create(std::function<void(ResolveT)> f) override {
+                return instance.template create<bool>(f);
+            }
+            BoolPromise createResolved(bool v) override {
+                return instance.createResolved(v);
+            }
+            DeriveT instance;
+        };
+
+        std::unique_ptr<Concept> m_d;
+    };
 }

@@ -49,19 +49,19 @@ namespace Kazv
     {
         using BaseT = AbstractPromise<detail::AsioPromiseHelper<Exec>::template PromiseType, T>;
 
-        template<class FuncT, class ResolveT>
+        template<class FuncT, class PromiseT, class ResolveT>
         struct WaitHelper
         {
             void wait() {
-                if (fut.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-                    auto res = func(fut.get());
+                if (p.ready()) {
+                    auto res = func(p.get());
                     using ResT = decltype(res);
                     if constexpr (isPromise<ResT>) {
                         boost::asio::post(
                             executor,
-                            [w=WaitHelper<detail::IdentityFunc, ResolveT>{
+                            [w=WaitHelper<detail::IdentityFunc, ResT, ResolveT>{
                                     executor,
-                                    res.m_val,
+                                    res,
                                     detail::IdentityFunc{},
                                     resolve,
                                 }]() mutable {
@@ -81,7 +81,7 @@ namespace Kazv
             }
 
             Exec executor;
-            std::shared_future<T> fut;
+            PromiseT p;
             FuncT func;
             ResolveT resolve;
         };
@@ -123,16 +123,25 @@ namespace Kazv
             return AsioPromise<Exec,
                                PromiseThenResult<FuncT, typename BaseT::DataT>>(
                 m_executor,
-                [=, func=std::forward<FuncT>(func), fut=m_val](auto resolve) {
+                [=, func=std::forward<FuncT>(func), *this](auto resolve) {
                     auto waitHelper = WaitHelper<std::decay_t<FuncT>,
+                                                 AsioPromise,
                                                  std::decay_t<decltype(resolve)>>{
                         m_executor,
-                        fut,
+                        *this,
                         func,
                         resolve
                     };
                     waitHelper.wait();
                 });
+        }
+
+        bool ready() const {
+            return m_val.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+        }
+
+        T get() const {
+            return m_val.get();
         }
     private:
         Exec m_executor;
@@ -156,21 +165,21 @@ namespace Kazv
 
         AsioPromiseHandler(const AsioPromiseHandler &that)
             : BaseT(this)
-            , m_executor(that.executor)
+            , m_executor(that.m_executor)
             {}
 
         AsioPromiseHandler(AsioPromiseHandler &&that)
             : BaseT(this)
-            , m_executor(std::move(that.executor))
+            , m_executor(std::move(that.m_executor))
             {}
 
         AsioPromiseHandler &operator=(const AsioPromiseHandler &that) {
-            m_executor = that.executor;
+            m_executor = that.m_executor;
             return *this;
         }
 
         AsioPromiseHandler &operator=(AsioPromiseHandler &&that) {
-            m_executor = std::move(that.executor);
+            m_executor = std::move(that.m_executor);
             return *this;
         }
 
@@ -180,8 +189,8 @@ namespace Kazv
         }
 
         template<class T>
-        PromiseT<T> createResolved(T &&val) {
-            return PromiseT<T>(m_executor, std::forward<T>(val));
+        PromiseT<T> createResolved(T val) {
+            return PromiseT<T>(m_executor, std::move(val));
         }
 
     private:
