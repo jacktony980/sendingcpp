@@ -22,8 +22,11 @@
 
 #include <catch2/catch.hpp>
 
+#include <boost/asio.hpp>
+
 #include <zug/into_vector.hpp>
 
+#include <asio-promise-handler.hpp>
 #include <cursorutil.hpp>
 #include <client/client.hpp>
 
@@ -212,13 +215,18 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 {
     using namespace Kazv::CursorOp;
 
-    auto store = createTestClientStore();
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto store = createTestClientStore(ph);
 
     auto resp = createResponse("Sync", syncResponseJson, json{{"is", "initial"}});
 
     auto client = Client(store, store);
 
     store.dispatch(ProcessResponseAction{resp});
+
+    io.run();
 
     auto rooms = +client.rooms();
 

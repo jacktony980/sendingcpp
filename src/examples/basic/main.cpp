@@ -33,6 +33,8 @@
 #include <lager/debug/http_server.hpp>
 #endif
 
+#include <asio-promise-handler.hpp>
+
 #include <cprjobhandler.hpp>
 #include <lagerstoreeventemitter.hpp>
 #include <sdk.hpp>
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
     auto sdk = Kazv::makeDefaultEncryptedSdk(
         static_cast<Kazv::CprJobHandler &>(jobHandler),
         static_cast<Kazv::EventInterface &>(eventEmitter),
-        lager::with_boost_asio_event_loop{ioContext.get_executor()},
+        Kazv::AsioPromiseHandler{ioContext.get_executor()},
 // #ifndef NDEBUG
 //         zug::map([](auto &&m) -> Kazv::SdkModel {
 //                      return std::forward<decltype(m)>(m);

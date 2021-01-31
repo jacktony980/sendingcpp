@@ -42,7 +42,7 @@ namespace Kazv
     class Room
     {
     public:
-        inline Room(lager::reader<RoomModel> room, lager::context<ClientAction> ctx)
+        inline Room(lager::reader<RoomModel> room, Context<ClientAction> ctx)
             : m_room(room)
             , m_ctx(ctx) {}
 
@@ -319,6 +319,6 @@ namespace Kazv
 
     private:
         lager::reader<RoomModel> m_room;
-        lager::context<ClientAction> m_ctx;
+        Context<ClientAction> m_ctx;
     };
 }

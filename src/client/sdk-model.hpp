@@ -20,6 +20,7 @@
 #pragma once
 #include <libkazv-config.hpp>
 
+#include <context.hpp>
 #include "client-model.hpp"
 
 namespace Kazv
@@ -37,7 +38,7 @@ namespace Kazv
         AfterGetRoomStates
         >;
 
-    using SdkEffect = lager::effect<SdkAction, lager::deps<JobInterface &, EventInterface &>>;
+    using SdkEffect = Effect<SdkAction, lager::deps<JobInterface &, EventInterface &>>;
 
     using SdkResult = std::pair<SdkModel, SdkEffect>;
 

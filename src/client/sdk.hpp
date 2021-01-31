@@ -21,6 +21,8 @@
 #include <libkazv-config.hpp>
 #include <lager/store.hpp>
 
+#include <store.hpp>
+
 #include "sdk-model.hpp"
 #include "client.hpp"
 
@@ -34,7 +36,7 @@ namespace Kazv
         using ActionT = typename ModelT::Action;
 
         using StoreT = decltype(
-            lager::make_store<ActionT>(
+            makeStore<ActionT>(
                 std::declval<ModelT>(),
                 &ModelT::update,
                 std::declval<EventLoop>(),
@@ -45,7 +47,7 @@ namespace Kazv
                 std::declval<Enhancers>()...)
             );
 
-        using ContextT = lager::context<ActionT>;
+        using ContextT = Context<ActionT>;
     public:
         Sdk(ModelT model,
             JobInterface &jobHandler,
@@ -53,7 +55,7 @@ namespace Kazv
             EventLoop &&eventLoop,
             Xform &&xform,
             Enhancers &&...enhancers)
-            : m_store(lager::make_store<ActionT>(
+            : m_store(makeStore<ActionT>(
                           std::move(model),
                           &ModelT::update,
                           std::forward<EventLoop>(eventLoop),
@@ -61,7 +63,7 @@ namespace Kazv
                               std::ref(jobHandler),
                               std::ref(eventEmitter)),
                           std::forward<Enhancers>(enhancers)...))
-            , m_sdk(m_store.xform(std::forward<Xform>(xform)))
+            , m_sdk(m_store.reader().xform(std::forward<Xform>(xform)))
             , m_client(m_sdk[&ModelT::client]) {}
 
         ContextT context() const {

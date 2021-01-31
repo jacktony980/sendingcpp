@@ -57,6 +57,12 @@ namespace Kazv
             ? j.at("well_known").at("m.homeserver").at("base_url").get<std::string>()
             : r.dataStr("serverUrl");
 
+        // Synapse will return the server url with trailing slash
+        // and not recognize double slashes in the middle
+        while (serverUrl.back() == '/') {
+            serverUrl.pop_back();
+        }
+
         m.serverUrl = serverUrl;
         m.userId = r.userId().value_or(DEFVAL);
         m.token = r.accessToken().value_or(DEFVAL);

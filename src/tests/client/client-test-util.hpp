@@ -23,6 +23,8 @@
 #include <lager/store.hpp>
 #include <lager/event_loop/manual.hpp>
 
+#include <store.hpp>
+
 #include <client/client-model.hpp>
 #include <base/basejob.hpp>
 using namespace Kazv;
@@ -31,10 +33,10 @@ ClientModel createTestClientModel();
 
 Response createResponse(std::string jobId, JsonWrap j, JsonWrap data = {});
 
-inline auto createTestClientStore()
+inline auto createTestClientStore(BoolPromiseInterface ph)
 {
-    return lager::make_store<ClientAction>(
+    return makeStore<ClientAction>(
         createTestClientModel(),
         &ClientModel::update,
-        lager::with_manual_event_loop{});
+        std::move(ph));
 }

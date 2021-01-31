@@ -24,6 +24,7 @@
 #include <variant>
 
 #include <lager/context.hpp>
+#include <context.hpp>
 
 #include "error.hpp"
 #include "room/room-model.hpp"
@@ -115,7 +116,7 @@ namespace Kazv
         ResubmitJobAction
         >;
 
-    using ClientEffect = lager::effect<ClientAction, lager::deps<>>;
+    using ClientEffect = Effect<ClientAction, lager::deps<>>;
 
     using ClientResult = std::pair<ClientModel, ClientEffect>;
 }

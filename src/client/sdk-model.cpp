@@ -19,6 +19,8 @@
 
 #include <libkazv-config.hpp>
 
+#include <zug/into_vector.hpp>
+
 #include "sdk-model.hpp"
 
 #include <debug.hpp>
@@ -79,17 +81,27 @@ namespace Kazv
 
                 auto eff =
                     [=](auto &&ctx) {
-                        clientEff(ctx);
+                        auto sdkEffect = SdkEffect(clientEff);
+                        sdkEffect(ctx);
 
                         auto &jh = getJobHandler(ctx);
                         auto &ee = getEventEmitter(ctx);
 
-                        for (auto j : jobs) {
-                            jh.submit(j,
-                                      [=](Response r) {
-                                          ctx.dispatch(ProcessResponseAction{r});
-                                      });
-                        }
+                        auto ph = ctx.promiseInterface();
+
+                        auto promises = zug::into_vector(
+                            zug::map([=, &jh](auto j) {
+                                         return ctx.createWaitingPromise(
+                                             [=, &jh](auto resolve) {
+                                                 jh.submit(
+                                                     j,
+                                                     [=](Response r) {
+                                                         resolve(ctx.dispatch(ProcessResponseAction{r}));
+                                                     });
+                                             });
+                                     }), jobs);
+
+                        auto combinedPromise = ph.all(promises);
 
                         for (auto t : triggers) {
                             ee.emit(t);
@@ -131,6 +143,7 @@ namespace Kazv
                                 ctx.dispatch(QueryKeysAction{std::get<ShouldQueryKeys>(t).isInitialSync});
                             }
                         }
+                        return combinedPromise;
                     };
 
                 return { std::move(s), eff };

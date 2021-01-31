@@ -40,78 +40,97 @@ namespace Kazv
 
         template<class PH>
         Store(Model initialModel, Reducer reducer, PH &&ph, Deps deps)
-            : m_state(lager::make_state(std::move(initialModel), Tag{}))
-            , m_reducer(reducer)
-            , m_ph(std::forward<PH>(ph))
-            , m_ctx([=](auto a) { return dispatch(std::move(a)); }, m_ph, deps)
+            : m_d{std::make_shared<Private>(
+                lager::make_state(std::move(initialModel), Tag{}),
+                reducer,
+                BoolPromiseInterface{std::forward<PH>(ph)},
+                deps)}
             {}
 
         Store(const Store &that) = delete;
         Store &operator=(const Store &that) = delete;
 
         Store(Store &&that)
-            : m_state(std::move(that.m_state))
-            , m_reducer(std::move(that.m_reducer))
-            , m_ph(std::move(that.m_ph))
-            , m_ctx([=](auto a) { return dispatch(std::move(a)); }, m_ph, std::move(that.m_ctx.deps()))
+            : m_d(std::move(that.m_d))
             {}
 
         Store &operator=(Store &&that) {
-            m_state = std::move(that.m_state);
-            m_reducer = std::move(that.reducr);
-            m_ph = std::move(that.m_ph);
-            m_ctx = ContextT([=](auto a) { return dispatch(std::move(a)); }, m_ph, std::move(that.m_ctx.deps()));
+            m_d = std::move(that.m_d);
             return *this;
         }
 
         auto dispatch(Action a) -> BoolPromise {
-            return m_ph.createResolved(true)
-                .then(
-                    [=, a=std::move(a)](auto) {
-                        if constexpr (hasEffect<Reducer, Model, Action, Deps>) {
-                            auto [newModel, eff] = m_reducer(m_state.get(), a);
-                            m_state.set(newModel);
-                            return eff(m_ctx);
-                        } else {
-                            auto newModel = m_reducer(m_state.get(), a);
-                            m_state.set(newModel);
-                            return m_ph.createResolved(true);
-                        }
-                    });
-        }
+            return m_d->dispatch(std::move(a));
+        };
 
         operator lager::reader<Model>() const {
-            return m_state;
+            return m_d->state;
+        }
+
+        lager::reader<Model> reader() const {
+            return m_d->state;
         }
 
         template<class A2, class D2>
         operator Context<A2, D2>() const {
-            return m_ctx;
+            return m_d->ctx;
         }
 
         ContextT context() const {
-            return m_ctx;
+            return m_d->ctx;
         }
 
     private:
-        lager::state<Model, Tag> m_state;
-        Reducer m_reducer;
-        BoolPromiseInterface m_ph;
-        ContextT m_ctx;
+        struct Private
+        {
+            Private(lager::state<Model, Tag> state,
+                    Reducer reducer,
+                    BoolPromiseInterface ph,
+                    Deps deps)
+                : state(std::move(state))
+                , reducer(std::move(reducer))
+                , ph(std::move(ph))
+                  // this Private will remain untouched between moves of Stores
+                  // so it is safe to capture by referenced
+                , ctx([this](auto a) { return dispatch(std::move(a)); }, this->ph, deps)
+                {}
+            ~Private() = default;
+            lager::state<Model, Tag> state;
+            Reducer reducer;
+            BoolPromiseInterface ph;
+            ContextT ctx;
+
+            auto dispatch(Action a) -> BoolPromise {
+                return ph.createResolved(true)
+                    .then(
+                        [this, a=std::move(a)](auto) {
+                            if constexpr (hasEffect<Reducer, Model, Action, Deps>) {
+                            auto [newModel, eff] = reducer(state.get(), a);
+                            state.set(newModel);
+                            return eff(ctx);
+                        } else {
+                            auto newModel = reducer(state.get(), a);
+                            state.set(newModel);
+                            return ph.createResolved(true);
+                        }
+                    });
+        }
+        };
+        std::shared_ptr<Private> m_d;
     };
 
-    template<class ActionTraits,
-             class Tag,
-             class Model,
-             class Reducer,
-             class PH,
-             class Deps>
-    auto makeStoreImpl(ActionTraits action, Model initialModel, Reducer reducer, PH &&ph, Deps &&deps)
+    namespace detail
     {
-        using Action = typename ActionTraits::type;
-        return Store<Action, Model, Reducer, Deps, Tag>(
-            std::move(initialModel), std::move(reducer),
-            std::forward<PH>(ph), std::forward<Deps>(deps));
+        constexpr auto compose()
+        {
+            return zug::identity;
+        }
+
+        template<class F1, class ...Fs>
+        constexpr auto compose(F1 &&f1, Fs &&...fs)
+        {
+            return zug::comp(std::forward<F1>(f1), std::forward<Fs>(fs)...);
+        }
     }
 
     template<class Action,
@@ -123,7 +142,7 @@ namespace Kazv
              >
     auto makeStore(Model &&initialModel, Reducer &&reducer, PH &&ph, Enhancers &&...enhancers)
     {
-        auto enhancer = zug::comp(std::forward<Enhancers>(enhancers)...);
+        auto enhancer = detail::compose(std::forward<Enhancers>(enhancers)...);
         auto factory = enhancer(
             [&](auto actionTraits,
                 auto &&model,

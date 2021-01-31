@@ -220,14 +220,14 @@ namespace Kazv
 
         template<class DeriveT>
         BoolPromiseInterface(DeriveT obj)
-            : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {
+            : m_d(std::unique_ptr<Concept>(new Model<std::decay_t<DeriveT>>(std::move(obj)))) {
             if (! m_d) {
                 throw std::logic_error("promise handler is empty");
             }
         }
 
         BoolPromiseInterface(const BoolPromiseInterface &that)
-            : m_d(that.m_d->clone()) {
+            : m_d(that.m_d) {
             if (! m_d) {
                 throw std::logic_error("promise handler is empty");
             }
@@ -240,7 +240,7 @@ namespace Kazv
         }
 
         BoolPromiseInterface &operator=(const BoolPromiseInterface &that) {
-            m_d = that.m_d->clone();
+            m_d = that.m_d;
             return *this;
         }
 
@@ -266,9 +266,9 @@ namespace Kazv
             if (promises.empty()) {
                 return createResolved(true);
             }
-            auto p1 = promises.begin();
+            auto p1 = *(promises.begin());
             promises.erase(promises.begin());
-            return p1.then([=, promises=std::move(promises)](bool val) mutable {
+            return p1.then([*this, promises=std::move(promises)](bool val) mutable {
                                if (! val) {
                                    return createResolved(false);
                                }
@@ -283,12 +283,12 @@ namespace Kazv
             virtual BoolPromise create(std::function<void(ResolveT)> f) = 0;
             virtual BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) = 0;
             virtual BoolPromise createResolved(bool v) = 0;
-            virtual std::unique_ptr<Concept> clone() const = 0;
         };
 
         template<class DeriveT>
         struct Model : public Concept
         {
+            static_assert(std::is_same_v<std::decay_t<DeriveT>, DeriveT>, "DeriveT must not be a reference");
             Model(DeriveT obj) : instance(std::move(obj)) {}
             ~Model() override = default;
             BoolPromise create(std::function<void(ResolveT)> f) override {
@@ -300,12 +300,9 @@ namespace Kazv
             BoolPromise createResolved(bool v) override {
                 return instance.createResolved(v);
             }
-            std::unique_ptr<Concept> clone() const override {
-                return std::unique_ptr<Concept>(new Model<DeriveT>(instance));
-            }
             DeriveT instance;
         };
 
-        std::unique_ptr<Concept> m_d;
+        std::shared_ptr<Concept> m_d;
     };
 }

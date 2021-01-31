@@ -38,7 +38,7 @@ namespace Kazv
     {
     public:
         inline Client(lager::reader<ClientModel> client,
-                      lager::context<ClientAction> ctx)
+                      Context<ClientAction> ctx)
             : m_client(std::move(client))
             , m_ctx(std::move(ctx)) {}
 
@@ -178,7 +178,7 @@ namespace Kazv
 
     private:
         lager::reader<ClientModel> m_client;
-        lager::context<ClientAction> m_ctx;
+        Context<ClientAction> m_ctx;
     };
 
 }

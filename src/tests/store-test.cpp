@@ -69,6 +69,7 @@ TEST_CASE("Store should behave properly", "[store]")
     lager::reader<Model> reader = store;
 
     Context<Action> ctx = store.context();
+    Context<Action> ctx2 = ctx;
 
     store.dispatch(1)
         .then([=](auto res) {
@@ -82,7 +83,7 @@ TEST_CASE("Store should behave properly", "[store]")
                   REQUIRE(reader.get() == 3); // 1 + 2
               })
         .then([=](auto) {
-                  return ctx.dispatch(-5);
+                  return ctx2.dispatch(-5);
               })
         .then([=](auto) {
                   REQUIRE(reader.get() == -1); // 3 - 5 + 1
@@ -107,4 +108,60 @@ TEST_CASE("Store should behave properly", "[store]")
 
     ioContext.run();
     REQUIRE(results[0] == -2); // 3 - 5
+}
+
+TEST_CASE("Store and Context can be moved", "[store]")
+{
+    boost::asio::io_context ioContext;
+    auto ph = AsioPromiseHandler(ioContext.get_executor());
+
+    using Model = int;
+    using Action = int;
+    using Result = std::pair<Model, Effect<Action>>;
+    using Reducer = std::function<Result(Model, Action)>;
+
+    Reducer update = [](Model m, Action a) -> Result {
+                         return { m + a, lager::noop };
+                     };
+
+    auto store = makeStore<Action>(Model{}, update, ph);
+
+    Context<Action> ctx = store.context();
+    lager::reader<Model> reader = store.reader();
+
+    SECTION("Store can be moved without invalidating Contexts") {
+        auto p1 = ctx.dispatch(1)
+            .then([=](auto) {
+                      REQUIRE(reader.get() == 1);
+                  });
+
+        auto store2 = std::move(store);
+
+        p1
+            .then([=](auto) {
+                      return ctx.dispatch(1);
+                  })
+            .then([=](auto) {
+                      REQUIRE(reader.get() == 2);
+                  });
+    }
+
+    SECTION("Context can be moved without affecting dispatched actions") {
+        auto p1 = ctx.dispatch(1)
+            .then([=](auto) {
+                      REQUIRE(reader.get() == 1);
+                  });
+
+        auto ctx2 = std::move(ctx);
+
+        p1
+            .then([=](auto) {
+                      return ctx2.dispatch(1);
+                  })
+            .then([=](auto) {
+                      REQUIRE(reader.get() == 2);
+                  });
+    }
+
+    ioContext.run();
 }
