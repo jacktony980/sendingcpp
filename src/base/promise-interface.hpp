@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <memory>
 #include <type_traits>
 #include <functional>
@@ -214,16 +216,48 @@ namespace Kazv
     {
     public:
         using ResolveT = std::function<void(bool)>;
+        using ResolveToPromiseT = std::function<void(BoolPromise)>;
 
         template<class DeriveT>
         BoolPromiseInterface(DeriveT obj)
-            : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {}
+            : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {
+            if (! m_d) {
+                throw std::logic_error("promise handler is empty");
+            }
+        }
 
-        BoolPromise create(std::function<void(ResolveT)> f) {
+        BoolPromiseInterface(const BoolPromiseInterface &that)
+            : m_d(that.m_d->clone()) {
+            if (! m_d) {
+                throw std::logic_error("promise handler is empty");
+            }
+        }
+        BoolPromiseInterface(BoolPromiseInterface &&that)
+            : m_d(std::move(that.m_d)) {
+            if (! m_d) {
+                throw std::logic_error("promise handler is empty");
+            }
+        }
+
+        BoolPromiseInterface &operator=(const BoolPromiseInterface &that) {
+            m_d = that.m_d->clone();
+            return *this;
+        }
+
+        BoolPromiseInterface &operator=(BoolPromiseInterface &&that) {
+            m_d = std::move(that.m_d);
+            return *this;
+        }
+
+        BoolPromise create(std::function<void(ResolveT)> f) const {
             return m_d->create(f);
         }
 
-        BoolPromise createResolved(bool v) {
+        BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) const {
+            return m_d->createResolveToPromise(f);
+        }
+
+        BoolPromise createResolved(bool v) const {
             return m_d->createResolved(v);
         }
 
@@ -233,7 +267,9 @@ namespace Kazv
         {
             virtual ~Concept() = default;
             virtual BoolPromise create(std::function<void(ResolveT)> f) = 0;
+            virtual BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) = 0;
             virtual BoolPromise createResolved(bool v) = 0;
+            virtual std::unique_ptr<Concept> clone() const = 0;
         };
 
         template<class DeriveT>
@@ -244,8 +280,14 @@ namespace Kazv
             BoolPromise create(std::function<void(ResolveT)> f) override {
                 return instance.template create<bool>(f);
             }
+            BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) override {
+                return instance.template create<bool>(f);
+            }
             BoolPromise createResolved(bool v) override {
                 return instance.createResolved(v);
+            }
+            std::unique_ptr<Concept> clone() const override {
+                return std::unique_ptr<Concept>(new Model<DeriveT>(instance));
             }
             DeriveT instance;
         };

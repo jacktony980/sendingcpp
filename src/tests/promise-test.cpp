@@ -68,7 +68,7 @@ TEST_CASE("Promise should behave properly", "[promise]")
                                      auto timer = std::make_shared<boost::asio::steady_timer>(ioContext);
                                      timer->expires_after(std::chrono::milliseconds(300));
                                      timer->async_wait(
-                                         [timer, resolve](const boost::system::error_code& error) mutable {
+                                         [timer, resolve](const boost::system::error_code& error) {
                                              if (! error) {
                                                  resolve(20);
                                              }

@@ -17,6 +17,8 @@
  * along with libkazv.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <boost/asio.hpp>
 
 #include <promise-interface.hpp>
@@ -52,7 +54,7 @@ namespace Kazv
         template<class FuncT, class PromiseT, class ResolveT>
         struct WaitHelper
         {
-            void wait() {
+            void wait() const {
                 if (p.ready()) {
                     auto res = func(p.get());
                     using ResT = decltype(res);
@@ -85,6 +87,28 @@ namespace Kazv
             FuncT func;
             ResolveT resolve;
         };
+
+        struct ResolveHelper
+        {
+            template<class ValT>
+            void operator()(ValT val) const {
+                using ResT = std::decay_t<decltype(val)>;
+                if constexpr (isPromise<ResT>) {
+                    auto w = WaitHelper<detail::IdentityFunc, ResT, ResolveHelper>{
+                        executor,
+                        val,
+                        detail::IdentityFunc{},
+                        *this
+                    };
+                    w.wait();
+                } else {
+                    p->set_value(std::move(val));
+                }
+            }
+
+            Exec executor;
+            std::shared_ptr<std::promise<T>> p;
+        };
     public:
         AsioPromise(Exec executor, T value)
             : BaseT(this)
@@ -100,10 +124,7 @@ namespace Kazv
             , m_executor(std::move(executor)) {
             auto p = std::make_shared<std::promise<T>>();
             m_val = p->get_future().share();
-            auto resolve =
-                [p=std::move(p)](T val) mutable {
-                    p->set_value(std::move(val));
-                };
+            auto resolve = ResolveHelper{m_executor, p};
 
             boost::asio::post(
                 m_executor,
