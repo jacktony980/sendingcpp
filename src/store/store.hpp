@@ -84,7 +84,12 @@ namespace Kazv
             return m_state;
         }
 
-        operator ContextT() const {
+        template<class A2, class D2>
+        operator Context<A2, D2>() const {
+            return m_ctx;
+        }
+
+        ContextT context() const {
             return m_ctx;
         }
 

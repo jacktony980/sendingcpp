@@ -86,6 +86,8 @@ namespace Kazv
         }
 
     private:
+        template <typename AnotherAction, typename AnotherDeps>
+        friend class Context;
         BoolPromiseInterface m_ph;
         std::function<BoolPromise(Action)> m_dispatcher;
     };

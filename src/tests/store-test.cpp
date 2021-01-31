@@ -25,17 +25,29 @@
 
 using namespace Kazv;
 
+struct BackInserter
+{
+    BackInserter(const BackInserter &) = delete;
+    BackInserter(BackInserter &&) = default;
+
+    void operator()(int a) const { insertFunc(a); }
+    std::function<void(int)> insertFunc;
+};
+
 TEST_CASE("Store should behave properly", "[store]")
 {
     boost::asio::io_context ioContext;
     auto ph = AsioPromiseHandler(ioContext.get_executor());
 
+    std::vector<int> results;
+
+    BackInserter bi = { [&results](int a) { results.push_back(a); } };
+
     using Model = int;
     using Action = int;
-    using Result = std::pair<Model, Effect<Action>>;
+    using Deps = lager::deps<BackInserter &>;
+    using Result = std::pair<Model, Effect<Action, Deps>>;
     using Reducer = std::function<Result(Model, Action)>;
-
-    std::vector<int> results;
 
     Reducer update = [&results](Model m, Action a) -> Result {
                          if (a > 0) {
@@ -44,18 +56,19 @@ TEST_CASE("Store should behave properly", "[store]")
                              auto newM = m + a;
                              return { newM,
                                       [&results, newM](auto &&ctx) {
-                                          results.push_back(newM);
+                                          auto &bi = lager::get<BackInserter &>(ctx);
+                                          bi(newM);
                                           return ctx.dispatch(1);
                                       }
                              };
                          }
                      };
 
-    auto store = makeStore<Action>(Model{}, update, ph);
+    auto store = makeStore<Action>(Model{}, update, ph, lager::make_deps(std::ref(bi)));
 
     lager::reader<Model> reader = store;
 
-    Context<Action> ctx = store;
+    Context<Action> ctx = store.context();
 
     store.dispatch(1)
         .then([=](auto res) {
