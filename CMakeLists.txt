@@ -101,7 +101,7 @@ if(NOT Lager_FOUND)
   set(lager_BUILD_DOCS OFF)
   set(lager_EMBED_RESOURCES_PATH OFF)
   FetchContent_Declare(lager GIT_REPOSITORY https://github.com/arximboldi/lager GIT_TAG
-    ed56efe616f4577ce3f5748c092706d558543308)
+    71eca6b0ebbccf3e0e54324b6967f047e49ba92d)
   FetchContent_MakeAvailable(lager)
 endif()
 

@@ -106,8 +106,8 @@ namespace Kazv
             , m_store(
                 lager::make_store<Action>(
                     Model{},
-                    &update,
                     loop,
+                    lager::with_reducer(&update),
                     lager::with_deps(std::ref(m_holder))))
             , m_postingFunc(
                 [loop=loop](auto &&func) mutable {
@@ -171,8 +171,8 @@ namespace Kazv
         using StoreT =
             decltype(lager::make_store<Action>(
                          Model{},
-                         &update,
                          lager::with_manual_event_loop{},
+                         lager::with_reducer(&update),
                          lager::with_deps(std::ref(detail::declref<ListenerHolder>()))));
 
         using PostingFunc = std::function<void(std::function<void()>)>;

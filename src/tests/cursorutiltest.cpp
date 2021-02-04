@@ -163,8 +163,8 @@ TEST_CASE("cursorop should perform correctly", "[cursorop]")
 
     auto store = lager::make_store<Whole::Action>(
         src1,
-        &Whole::update,
-        lager::with_manual_event_loop{});
+        lager::with_manual_event_loop{},
+        lager::with_reducer(&Whole::update));
 
     lager::reader<Whole> reader = store;
     auto w = WholeWrap(reader);
