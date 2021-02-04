@@ -8,7 +8,7 @@ target_include_directories(kazvstore
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-  $<INSTALL_INTERFACE:include/kazv/eventemitter>
+  $<INSTALL_INTERFACE:include/kazv/store>
   )
 
 install(TARGETS kazvstore EXPORT libkazvTargets)
