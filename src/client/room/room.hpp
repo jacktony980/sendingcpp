@@ -39,10 +39,19 @@
 
 namespace Kazv
 {
+    /**
+     * Represent a Matrix room.
+     */
     class Room
     {
     public:
         using PromiseT = SingleTypePromise<DefaultRetType>;
+        /**
+         * Constructor.
+         *
+         * Construct the room with @c roomId .
+         *
+         */
         Room(lager::reader<SdkModel> sdk,
              lager::reader<std::string> roomId,
              Context<ClientAction> ctx);
@@ -286,6 +295,15 @@ namespace Kazv
                                   immer::flex_vector<std::string>{}));
         }
 
+        /**
+         * Set the typing status of the current user in this room.
+         *
+         * @param typing Whether the user is now typing.
+         * @param timeoutMs How long this typing status should last,
+         * in milliseconds.
+         * @return A Promise that resolves when the typing status
+         * has been sent, or when there is an error.
+         */
         PromiseT setTyping(bool typing, std::optional<int> timeoutMs) const;
 
         /* lager::reader<MapT<std::string, Event>> */
@@ -317,8 +335,22 @@ namespace Kazv
                        | jsonAtOr("event_id", std::string{}));
         }
 
+        /**
+         * Leave this room.
+         *
+         * @return A Promise that resolves when the state event
+         * for the leaving has been sent, or when there is an error.
+         */
         PromiseT leave() const;
 
+        /**
+         * Forget this room.
+         *
+         * One can only forget a room when they have already left it.
+         *
+         * @return A Promise that resolves when the room has been
+         * forgot, or when there is an error.
+         */
         PromiseT forget() const;
 
         /* lager::reader<JsonWrap> */
@@ -334,6 +366,14 @@ namespace Kazv
                        | jsonAtOr("pinned", immer::flex_vector<std::string>{}));
         }
 
+        /**
+         * Set pinned events of this room
+         *
+         * @param eventIds The event ids of the new pinned events
+         *
+         * @return A Promise that resolves when the state event
+         * for the pinned events change has been sent, or when there is an error.
+         */
         PromiseT setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
     private:
         lager::reader<SdkModel> m_sdk;
