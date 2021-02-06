@@ -27,15 +27,8 @@ namespace Kazv
 {
     struct SdkModel;
 
-    struct AfterGetRoomStates
-    {
-        std::string roomId;
-        Event event;
-    };
-
     using SdkAction = std::variant<
-        ClientAction,
-        AfterGetRoomStates
+        ClientAction
         >;
 
     using SdkEffect = Effect<SdkAction, lager::deps<JobInterface &, EventInterface &>>;
@@ -47,6 +40,7 @@ namespace Kazv
         ClientModel client;
 
         inline operator ClientModel() const { return client; }
+        inline const ClientModel &c() const { return client; }
 
         using Action = SdkAction;
         using Effect = SdkEffect;

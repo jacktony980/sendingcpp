@@ -42,9 +42,9 @@ namespace Kazv
     class Room
     {
     public:
-        inline Room(lager::reader<RoomModel> room, Context<ClientAction> ctx)
-            : m_room(room)
-            , m_ctx(ctx) {}
+        Room(lager::reader<SdkModel> sdk,
+             lager::reader<std::string> roomId,
+             Context<ClientAction> ctx);
 
         /* lager::reader<MapT<KeyOfState, Event>> */
         inline auto stateEvents() const {
@@ -146,10 +146,7 @@ namespace Kazv
             m_ctx.dispatch(UpdateRoomAction{+roomId(), SetLocalDraftAction{localDraft}});
         }
 
-        inline void sendMessage(Event msg) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(SendMessageAction{+roomId(), msg});
-        }
+        BoolPromise sendMessage(Event msg) const;
 
         inline void sendTextMessage(std::string text) const {
             json j{
@@ -318,6 +315,7 @@ namespace Kazv
         }
 
     private:
+        lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;
         Context<ClientAction> m_ctx;
     };

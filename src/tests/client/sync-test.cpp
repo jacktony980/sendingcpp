@@ -28,6 +28,7 @@
 
 #include <asio-promise-handler.hpp>
 #include <cursorutil.hpp>
+#include <sdk-model.hpp>
 #include <client/client.hpp>
 
 #include "client-test-util.hpp"
@@ -222,7 +223,7 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 
     auto resp = createResponse("Sync", syncResponseJson, json{{"is", "initial"}});
 
-    auto client = Client(store, store);
+    auto client = Client(store.reader().map([](auto c) { return SdkModel{c}; }), store);
 
     store.dispatch(ProcessResponseAction{resp});
 

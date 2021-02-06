@@ -23,6 +23,7 @@
 #include <iterator>
 #include <boost/hana/type.hpp>
 
+#include <lager/constant.hpp>
 #include <lager/reader.hpp>
 #include <lager/lenses/optional.hpp>
 
@@ -166,6 +167,65 @@ namespace Kazv
                              return def;
                          }
                      });
+    }
+
+    namespace detail
+    {
+        struct AllTrueT
+        {
+            template<class B1, class ...Bs>
+            constexpr auto operator()(B1 &&b1, Bs &&...bs) const {
+                return std::forward<B1>(b1)
+                    && operator()(std::forward<Bs>(bs)...);
+            }
+
+            constexpr auto operator()() const {
+                return true;
+            }
+        };
+
+        constexpr AllTrueT allTrue{};
+
+        struct AnyTrueT
+        {
+            template<class B1, class ...Bs>
+            constexpr auto operator()(B1 &&b1, Bs &&...bs) const {
+                return std::forward<B1>(b1)
+                    || operator()(std::forward<Bs>(bs)...);
+            }
+
+            constexpr auto operator()() const {
+                return false;
+            }
+        };
+
+        constexpr AnyTrueT anyTrue{};
+    }
+
+    template<class Cursor, class ...Cursors>
+    constexpr auto allCursors(Cursor &&first, Cursors &&...cursors)
+    {
+        return lager::with(std::forward<Cursor>(first),
+                           std::forward<Cursors>(cursors)...)
+            .map(detail::allTrue);
+    }
+
+    inline auto allCursors()
+    {
+        return lager::make_constant(detail::allTrue());
+    }
+
+    template<class Cursor, class ...Cursors>
+    constexpr auto anyCursor(Cursor &&first, Cursors &&...cursors)
+    {
+        return lager::with(std::forward<Cursor>(first),
+                           std::forward<Cursors>(cursors)...)
+            .map(detail::anyTrue);
+    }
+
+    inline auto anyCursor()
+    {
+        return lager::make_constant(detail::anyTrue());
     }
 }
 

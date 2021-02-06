@@ -1,6 +1,7 @@
 set(kazvclient_SRCS
   sdk-model.cpp
   client-model.cpp
+  client.cpp
   actions/auth.cpp
   actions/sync.cpp
   actions/paginate.cpp
@@ -13,6 +14,7 @@ set(kazvclient_SRCS
   device-list-tracker.cpp
 
   room/room-model.cpp
+  room/room.cpp
   )
 
 add_library(kazvclient ${kazvclient_SRCS})

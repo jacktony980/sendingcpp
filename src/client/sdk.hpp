@@ -71,7 +71,7 @@ namespace Kazv
         }
 
         Client client() const {
-            return {m_client, ContextT(m_store)};
+            return {m_sdk, ContextT(m_store)};
         }
 
     private:

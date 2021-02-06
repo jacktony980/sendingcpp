@@ -37,10 +37,8 @@ namespace Kazv
     class Client
     {
     public:
-        inline Client(lager::reader<ClientModel> client,
-                      Context<ClientAction> ctx)
-            : m_client(std::move(client))
-            , m_ctx(std::move(ctx)) {}
+        Client(lager::reader<SdkModel> sdk,
+               Context<ClientAction> ctx);
 
         /* lager::reader<immer::map<std::string, Room>> */
         inline auto rooms() const {
@@ -67,20 +65,9 @@ namespace Kazv
         KAZV_WRAP_ATTR(ClientModel, m_client, deviceId)
         KAZV_WRAP_ATTR(ClientModel, m_client, toDevice)
 
-        /* Room */
-        inline auto room(std::string id) const {
-            return Room(rooms()[std::move(id)]
-                        [lager::lenses::or_default].make(),
-                        m_ctx);
-        }
+        Room room(std::string id) const;
 
-        inline auto roomByCursor(lager::reader<std::string> id) const {
-            return Room(lager::with(rooms(), id)
-                        .xform(zug::map([](auto rooms, auto id) {
-                                            return rooms[id];
-                                        })).make(),
-                        m_ctx);
-        }
+        Room roomByCursor(lager::reader<std::string> id) const;
 
         inline void passwordLogin(std::string homeserver, std::string username,
                                   std::string password, std::string deviceName) const {
@@ -177,6 +164,7 @@ namespace Kazv
         }
 
     private:
+        lager::reader<SdkModel> m_sdk;
         lager::reader<ClientModel> m_client;
         Context<ClientAction> m_ctx;
     };
