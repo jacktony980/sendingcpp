@@ -131,6 +131,17 @@ namespace Kazv
             return memberEventByCursor(lager::make_constant(userId));
         }
 
+        /**
+         * Get whether this room is encrypted.
+         *
+         * The encryption status is changed to true if the client
+         * receives a state event that turns on encryption.
+         * If that state event is removed later, the status will
+         * not be changed.
+         *
+         * @return A lager::reader<bool> that contains
+         * whether this room is encrypted.
+         */
         lager::reader<bool> encrypted() const;
 
         /*lager::reader<std::string>*/
@@ -142,18 +153,79 @@ namespace Kazv
         /* lager::reader<bool> */
         KAZV_WRAP_ATTR(RoomModel, m_room, membersFullyLoaded);
 
+        /**
+         * Set local draft for this room.
+         *
+         * After the returned Promise is resolved,
+         * @c localDraft() will contain @c localDraft .
+         *
+         * @param localDraft The local draft to send.
+         * @return A Promise that resolves when the local draft
+         * has been set, or when there is an error.
+         */
         PromiseT setLocalDraft(std::string localDraft) const;
 
+        /**
+         * Send an event to this room.
+         *
+         * @param msg The message to send
+         * @return A Promise that resolves when the event has been sent,
+         * or when there is an error.
+         */
         PromiseT sendMessage(Event msg) const;
 
+        /**
+         * Send a text message to this room.
+         *
+         * @param text The text
+         * @return A Promise that resolves when the text message has
+         * been sent, or when there is an error.
+         */
         PromiseT sendTextMessage(std::string text) const;
 
+        /**
+         * Get the full state of this room.
+         *
+         * This method will update the Client as needed.
+         *
+         * After the returned Promise resolves successfully,
+         * @c stateEvents() will contain the fetched state.
+         *
+         * @return A Promise that resolves when the room state
+         * has been fetched, or when there is an error.
+         */
         PromiseT refreshRoomState() const;
 
+        /**
+         * Get one state event with @c type and @c stateKey .
+         *
+         * This method will update the Client as needed.
+         *
+         * After the returned Promise resolves successfully,
+         * @c state({type,stateKey}) will contain the fetched
+         * state event.
+         *
+         * @return A Promise that resolves when the state
+         * event has been fetched, or when there is an error.
+         */
         PromiseT getStateEvent(std::string type, std::string stateKey) const;
 
+        /**
+         * Send a state event to this room.
+         *
+         * @param state The state event to send.
+         * @return A Promise that resolves when the state event
+         * has been sent, or when there is an error.
+         */
         PromiseT sendStateEvent(Event state) const;
 
+        /**
+         * Set the room name.
+         *
+         * @param name The new name for this room.
+         * @return A Promise that resolves when the state event
+         * for the name change has been sent, or when there is an error.
+         */
         PromiseT setName(std::string name) const;
 
         // lager::reader<std::string>
@@ -166,8 +238,22 @@ namespace Kazv
                        | jsonAtOr("topic"s, ""s));
         }
 
+        /**
+         * Set the room topic.
+         *
+         * @param topic The new topic for this room.
+         * @return A Promise that resolves when the state event
+         * for the topic change has been sent, or when there is an error.
+         */
         PromiseT setTopic(std::string topic) const;
 
+        /**
+         * Invite a user to this room
+         *
+         * @param userId The user id for the user to invite.
+         * @return A Promise that resolves when the state event
+         * for the invite has been sent, or when there is an error.
+         */
         PromiseT invite(std::string userId) const;
 
         /* lager::reader<MapT<std::string, Event>> */
