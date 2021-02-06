@@ -27,12 +27,15 @@
 
 namespace Kazv
 {
-    template<class Action, class Deps = lager::deps<>>
-    class Context : public Deps
+    template<class T, class Action, class Deps = lager::deps<>>
+    class ContextBase : public Deps
     {
     public:
+        using RetType = T;
+        using PromiseInterfaceT = SingleTypePromiseInterface<RetType>;
+        using PromiseT = SingleTypePromise<RetType>;
         template<class Func>
-        Context(Func &&dispatcher, BoolPromiseInterface ph, Deps deps)
+        ContextBase(Func &&dispatcher, PromiseInterfaceT ph, Deps deps)
             : Deps(std::move(deps))
             , m_ph(ph)
             , m_dispatcher(std::forward<Func>(dispatcher))
@@ -42,7 +45,7 @@ namespace Kazv
         template<class AnotherAction, class AnotherDeps,
                  std::enable_if_t<std::is_convertible_v<Action, AnotherAction>
                                   && std::is_convertible_v<AnotherDeps, Deps>, int> = 0>
-        Context(const Context<AnotherAction, AnotherDeps> &that)
+        ContextBase(const ContextBase<RetType, AnotherAction, AnotherDeps> &that)
             : Deps(that)
             , m_ph(that.m_ph)
             , m_dispatcher(that.m_dispatcher)
@@ -52,7 +55,7 @@ namespace Kazv
         template<class AnotherAction, class AnotherDeps, class Conv,
                  std::enable_if_t<std::is_convertible_v<std::invoke_result_t<Conv, Action>, AnotherAction>
                                   && std::is_convertible_v<AnotherDeps, Deps>, int> = 0>
-        Context(const Context<AnotherAction, AnotherDeps> &that, Conv &&conv)
+        ContextBase(const ContextBase<RetType, AnotherAction, AnotherDeps> &that, Conv &&conv)
             : Deps(that)
             , m_ph(that.m_ph)
             , m_dispatcher([=,
@@ -63,7 +66,7 @@ namespace Kazv
             {
             }
 
-        BoolPromise dispatch(Action a) const {
+        PromiseT dispatch(Action a) const {
             return m_dispatcher(std::move(a));
         }
 
@@ -72,45 +75,50 @@ namespace Kazv
         }
 
         template<class Func>
-        BoolPromise createPromise(Func func) const {
+        PromiseT createPromise(Func func) const {
             return m_ph.create(std::move(func));
         }
 
         template<class Func>
-        BoolPromise createWaitingPromise(Func func) const {
+        PromiseT createWaitingPromise(Func func) const {
             return m_ph.createResolveToPromise(std::move(func));
         }
 
-        BoolPromise createResolvedPromise(bool v) const {
+        PromiseT createResolvedPromise(bool v) const {
             return m_ph.createResolved(v);
         }
 
-        BoolPromiseInterface promiseInterface() const {
+        PromiseInterfaceT promiseInterface() const {
             return m_ph;
         }
 
     private:
-        template <typename AnotherAction, typename AnotherDeps>
-        friend class Context;
-        BoolPromiseInterface m_ph;
-        std::function<BoolPromise(Action)> m_dispatcher;
+        template<class R2, class A2, typename D2>
+        friend class ContextBase;
+        PromiseInterfaceT m_ph;
+        std::function<PromiseT(Action)> m_dispatcher;
     };
 
-    template<class Action, class Deps = lager::deps<>>
-    class Effect
+    template<class A, class D = lager::deps<>>
+    using Context = ContextBase<bool, A, D>;
+
+    template<class T, class Action, class Deps = lager::deps<>>
+    class EffectBase
     {
     public:
-        using ContextT = Context<Action, Deps>;
+        using RetType = T;
+        using PromiseT = SingleTypePromise<RetType>;
+        using ContextT = ContextBase<RetType, Action, Deps>;
 
         template<class Func>
-        Effect(Func func) {
+        EffectBase(Func func) {
             if constexpr (std::is_same_v<std::invoke_result_t<Func, ContextT>, void>) {
                 m_d = [func=std::move(func)](const auto &ctx) {
                           return ctx.createPromise(
                               [ctx,
                                func](auto resolve) {
                                   func(ctx);
-                                  resolve(true);
+                                  resolve(PromiseCombination::defaultForPromiseThen(RetType()));
                               });
                       };
             } else {
@@ -124,13 +132,16 @@ namespace Kazv
             }
         }
 
-        BoolPromise operator()(const ContextT &ctx) const {
+        PromiseT operator()(const ContextT &ctx) const {
             return m_d(ctx);
         }
 
     private:
-        std::function<BoolPromise(const ContextT &)> m_d;
+        std::function<PromiseT(const ContextT &)> m_d;
     };
+
+    template<class A, class D = lager::deps<>>
+    using Effect = EffectBase<bool, A, D>;
 
     template<class Reducer, class Model, class Action, class Deps>
     constexpr bool hasEffect = boost::hana::is_valid(
