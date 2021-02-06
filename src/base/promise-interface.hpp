@@ -170,7 +170,7 @@ namespace Kazv
         }
 
         bool ready() const { return m_d->ready(); }
-        bool get() const { return m_d->get(); }
+        DataT get() const { return m_d->get(); }
 
     private:
         struct Concept
@@ -294,7 +294,7 @@ namespace Kazv
             return m_d->createResolveToPromise(f);
         }
 
-        PromiseT createResolved(bool v) const {
+        PromiseT createResolved(DataT v) const {
             return m_d->createResolved(v);
         }
 
@@ -303,7 +303,7 @@ namespace Kazv
             using PromiseCombination::dataCombine;
             using PromiseCombination::dataCombineNone;
             if (promises.empty()) {
-                return createResolved(dataCombineNone(bool{}));
+                return createResolved(dataCombineNone(DataT{}));
             }
             auto p1 = *(promises.begin());
             promises.erase(promises.begin());

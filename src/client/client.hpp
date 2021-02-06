@@ -37,6 +37,7 @@ namespace Kazv
     class Client
     {
     public:
+        using PromiseT = SingleTypePromise<DefaultRetType>;
         Client(lager::reader<SdkModel> sdk,
                Context<ClientAction> ctx);
 
@@ -69,13 +70,13 @@ namespace Kazv
 
         Room roomByCursor(lager::reader<std::string> id) const;
 
-        BoolPromise passwordLogin(std::string homeserver, std::string username,
+        PromiseT passwordLogin(std::string homeserver, std::string username,
                                   std::string password, std::string deviceName) const;
 
-        BoolPromise tokenLogin(std::string homeserver, std::string username,
+        PromiseT tokenLogin(std::string homeserver, std::string username,
                                std::string token, std::string deviceId) const;
 
-        BoolPromise createRoom(RoomVisibility v,
+        PromiseT createRoom(RoomVisibility v,
                                std::optional<std::string> name = {},
                                std::optional<std::string> alias = {},
                                immer::array<std::string> invite = {},
@@ -84,11 +85,11 @@ namespace Kazv
                                std::optional<std::string> topic = {},
                                JsonWrap powerLevelContentOverride = json::object()) const;
 
-        BoolPromise joinRoomById(std::string roomId) const;
+        PromiseT joinRoomById(std::string roomId) const;
 
-        BoolPromise joinRoom(std::string roomId, immer::array<std::string> serverName) const;
+        PromiseT joinRoom(std::string roomId, immer::array<std::string> serverName) const;
 
-        BoolPromise uploadContent(immer::box<Bytes> content,
+        PromiseT uploadContent(immer::box<Bytes> content,
                                   std::string uploadId,
                                   std::optional<std::string> filename = std::nullopt,
                                   std::optional<std::string> contentType = std::nullopt) const;
@@ -101,9 +102,9 @@ namespace Kazv
                 .make(serverName, mediaId).url();
         }
 
-        BoolPromise downloadContent(std::string mxcUri) const;
+        PromiseT downloadContent(std::string mxcUri) const;
 
-        BoolPromise downloadThumbnail(std::string mxcUri,
+        PromiseT downloadThumbnail(std::string mxcUri,
                                       int width,
                                       int height,
                                       std::optional<ThumbnailResizingMethod> method = std::nullopt) const;
@@ -113,7 +114,7 @@ namespace Kazv
             return m_client[&ClientModel::syncing];
         }
 
-        BoolPromise startSyncing() const;
+        PromiseT startSyncing() const;
 
     private:
         lager::reader<SdkModel> m_sdk;

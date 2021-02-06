@@ -33,7 +33,7 @@ ClientModel createTestClientModel();
 
 Response createResponse(std::string jobId, JsonWrap j, JsonWrap data = {});
 
-inline auto createTestClientStore(BoolPromiseInterface ph)
+inline auto createTestClientStore(SingleTypePromiseInterface<DefaultRetType> ph)
 {
     return makeStore<ClientAction>(
         createTestClientModel(),

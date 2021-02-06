@@ -42,6 +42,7 @@ namespace Kazv
     class Room
     {
     public:
+        using PromiseT = SingleTypePromise<DefaultRetType>;
         Room(lager::reader<SdkModel> sdk,
              lager::reader<std::string> roomId,
              Context<ClientAction> ctx);
@@ -141,19 +142,19 @@ namespace Kazv
         /* lager::reader<bool> */
         KAZV_WRAP_ATTR(RoomModel, m_room, membersFullyLoaded);
 
-        BoolPromise setLocalDraft(std::string localDraft) const;
+        PromiseT setLocalDraft(std::string localDraft) const;
 
-        BoolPromise sendMessage(Event msg) const;
+        PromiseT sendMessage(Event msg) const;
 
-        BoolPromise sendTextMessage(std::string text) const;
+        PromiseT sendTextMessage(std::string text) const;
 
-        BoolPromise refreshRoomState() const;
+        PromiseT refreshRoomState() const;
 
-        BoolPromise getStateEvent(std::string type, std::string stateKey) const;
+        PromiseT getStateEvent(std::string type, std::string stateKey) const;
 
-        BoolPromise sendStateEvent(Event state) const;
+        PromiseT sendStateEvent(Event state) const;
 
-        BoolPromise setName(std::string name) const;
+        PromiseT setName(std::string name) const;
 
         // lager::reader<std::string>
         inline auto topic() const {
@@ -165,9 +166,9 @@ namespace Kazv
                        | jsonAtOr("topic"s, ""s));
         }
 
-        BoolPromise setTopic(std::string topic) const;
+        PromiseT setTopic(std::string topic) const;
 
-        BoolPromise invite(std::string userId) const;
+        PromiseT invite(std::string userId) const;
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto ephemeralEvents() const {
@@ -199,7 +200,7 @@ namespace Kazv
                                   immer::flex_vector<std::string>{}));
         }
 
-        BoolPromise setTyping(bool typing, std::optional<int> timeoutMs) const;
+        PromiseT setTyping(bool typing, std::optional<int> timeoutMs) const;
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto accountDataEvents() const {
@@ -230,9 +231,9 @@ namespace Kazv
                        | jsonAtOr("event_id", std::string{}));
         }
 
-        BoolPromise leave() const;
+        PromiseT leave() const;
 
-        BoolPromise forget() const;
+        PromiseT forget() const;
 
         /* lager::reader<JsonWrap> */
         inline auto avatar() const {
@@ -247,7 +248,7 @@ namespace Kazv
                        | jsonAtOr("pinned", immer::flex_vector<std::string>{}));
         }
 
-        BoolPromise setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
+        PromiseT setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
     private:
         lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;

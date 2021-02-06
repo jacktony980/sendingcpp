@@ -23,10 +23,54 @@
 
 #include <boost/hana.hpp>
 
+#include <jsonwrap.hpp>
 #include <promise-interface.hpp>
 
 namespace Kazv
 {
+    class EffectStatus
+    {
+    public:
+        inline EffectStatus() : m_succ(true) {}
+        inline EffectStatus(bool succ) : m_succ(succ) {}
+        inline EffectStatus(bool succ, JsonWrap d) : m_succ(succ), m_data(d) {}
+
+        inline bool success() const { return m_succ; }
+        inline explicit operator bool() const { return success(); }
+        inline const JsonWrap &data() const { return m_data; }
+    private:
+        bool m_succ;
+        JsonWrap m_data;
+    };
+
+    inline EffectStatus createDefaultForPromiseThen(EffectStatus)
+    {
+        return EffectStatus{true};
+    }
+
+    inline EffectStatus dataCombine(EffectStatus a, EffectStatus b)
+    {
+        auto succ = a.success() && b.success();
+        auto data = a.data().get().is_array()
+            ? a.data().get()
+            : json::array({a.data().get()});
+        if (b.data().get().is_array()) {
+            for (const auto &i: b.data().get()) {
+                data.push_back(i);
+            }
+        } else {
+            data.push_back(b.data().get());
+        }
+        return {succ, data};
+    }
+
+    inline EffectStatus dataCombineNone(EffectStatus)
+    {
+        return EffectStatus(true);
+    }
+
+    using DefaultRetType = EffectStatus;
+
     template<class T, class Action, class Deps = lager::deps<>>
     class ContextBase : public Deps
     {
@@ -84,7 +128,7 @@ namespace Kazv
             return m_ph.createResolveToPromise(std::move(func));
         }
 
-        PromiseT createResolvedPromise(bool v) const {
+        PromiseT createResolvedPromise(RetType v) const {
             return m_ph.createResolved(v);
         }
 
@@ -100,7 +144,7 @@ namespace Kazv
     };
 
     template<class A, class D = lager::deps<>>
-    using Context = ContextBase<bool, A, D>;
+    using Context = ContextBase<DefaultRetType, A, D>;
 
     template<class T, class Action, class Deps = lager::deps<>>
     class EffectBase
@@ -123,7 +167,7 @@ namespace Kazv
                       };
             } else {
                 m_d = [func=std::move(func)](const auto &ctx) {
-                          return ctx.createResolvedPromise(true)
+                          return ctx.createResolvedPromise(PromiseCombination::defaultForPromiseThen(RetType()))
                               .then([ctx,
                                      func](auto) {
                                         return func(ctx);
@@ -141,11 +185,11 @@ namespace Kazv
     };
 
     template<class A, class D = lager::deps<>>
-    using Effect = EffectBase<bool, A, D>;
+    using Effect = EffectBase<DefaultRetType, A, D>;
 
-    template<class Reducer, class Model, class Action, class Deps>
+    template<class Reducer, class RetType, class Model, class Action, class Deps>
     constexpr bool hasEffect = boost::hana::is_valid(
-        []() -> decltype((void)Effect<Action, Deps>(
+        []() -> decltype((void)EffectBase<RetType, Action, Deps>(
                              std::get<1>(std::declval<std::invoke_result_t<Reducer, Model, Action>>()))) {}
         )();
 

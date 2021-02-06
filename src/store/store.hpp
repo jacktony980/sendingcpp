@@ -29,37 +29,41 @@
 namespace Kazv
 {
     template<class Action,
+             class EffectRetType,
              class Model,
              class Reducer,
              class Deps = lager::deps<>,
              class Tag = lager::automatic_tag>
-    class Store
+    class StoreBase
     {
     public:
-        using ContextT = Context<Action, Deps>;
+        using RetType = EffectRetType;
+        using PromiseInterfaceT = SingleTypePromiseInterface<RetType>;
+        using PromiseT = SingleTypePromise<RetType>;
+        using ContextT = ContextBase<RetType, Action, Deps>;
 
         template<class PH>
-        Store(Model initialModel, Reducer reducer, PH &&ph, Deps deps)
+        StoreBase(Model initialModel, Reducer reducer, PH &&ph, Deps deps)
             : m_d{std::make_shared<Private>(
                 lager::make_state(std::move(initialModel), Tag{}),
                 reducer,
-                BoolPromiseInterface{std::forward<PH>(ph)},
+                PromiseInterfaceT{std::forward<PH>(ph)},
                 deps)}
             {}
 
-        Store(const Store &that) = delete;
-        Store &operator=(const Store &that) = delete;
+        StoreBase(const StoreBase &that) = delete;
+        StoreBase &operator=(const StoreBase &that) = delete;
 
-        Store(Store &&that)
+        StoreBase(StoreBase &&that)
             : m_d(std::move(that.m_d))
             {}
 
-        Store &operator=(Store &&that) {
+        StoreBase &operator=(StoreBase &&that) {
             m_d = std::move(that.m_d);
             return *this;
         }
 
-        auto dispatch(Action a) -> BoolPromise {
+        auto dispatch(Action a) -> PromiseT {
             return m_d->dispatch(std::move(a));
         };
 
@@ -85,26 +89,26 @@ namespace Kazv
         {
             Private(lager::state<Model, Tag> state,
                     Reducer reducer,
-                    BoolPromiseInterface ph,
+                    PromiseInterfaceT ph,
                     Deps deps)
                 : state(std::move(state))
                 , reducer(std::move(reducer))
                 , ph(std::move(ph))
-                  // this Private will remain untouched between moves of Stores
+                  // this Private will remain untouched between moves of StoreBases
                   // so it is safe to capture by referenced
                 , ctx([this](auto a) { return dispatch(std::move(a)); }, this->ph, deps)
                 {}
             ~Private() = default;
             lager::state<Model, Tag> state;
             Reducer reducer;
-            BoolPromiseInterface ph;
+            PromiseInterfaceT ph;
             ContextT ctx;
 
-            auto dispatch(Action a) -> BoolPromise {
+            auto dispatch(Action a) -> PromiseT {
                 return ph.createResolved(true)
                     .then(
                         [this, a=std::move(a)](auto) {
-                            if constexpr (hasEffect<Reducer, Model, Action, Deps>) {
+                            if constexpr (hasEffect<Reducer, RetType, Model, Action, Deps>) {
                             auto [newModel, eff] = reducer(state.get(), a);
                             state.set(newModel);
                             return eff(ctx);
@@ -118,6 +122,13 @@ namespace Kazv
         };
         std::shared_ptr<Private> m_d;
     };
+
+    template<class Action,
+             class Model,
+             class Reducer,
+             class Deps = lager::deps<>,
+             class Tag = lager::automatic_tag>
+    using Store = StoreBase<Action, DefaultRetType, Model, Reducer, Deps, Tag>;
 
     namespace detail
     {

@@ -37,13 +37,16 @@ namespace Kazv
     {
     }
 
-    BoolPromise Room::setLocalDraft(std::string localDraft) const
+    auto Room::setLocalDraft(std::string localDraft) const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(UpdateRoomAction{+roomId(), SetLocalDraftAction{localDraft}});
     }
 
-    BoolPromise Room::sendMessage(Event msg) const {
+    auto Room::sendMessage(Event msg) const
+        -> PromiseT
+    {
         using namespace CursorOp;
         auto hasCrypto = ~m_sdk.map([](const auto &sdk) -> bool {
                                         return sdk.c().crypto.has_value();
@@ -95,7 +98,8 @@ namespace Kazv
                   });
     }
 
-    BoolPromise Room::sendTextMessage(std::string text) const
+    auto Room::sendTextMessage(std::string text) const
+        -> PromiseT
     {
         json j{
             {"type", "m.room.message"},
@@ -109,25 +113,29 @@ namespace Kazv
         return sendMessage(e);
     }
 
-    BoolPromise Room::refreshRoomState() const
+    auto Room::refreshRoomState() const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(GetRoomStatesAction{+roomId()});
     }
 
-    BoolPromise Room::getStateEvent(std::string type, std::string stateKey) const
+    auto Room::getStateEvent(std::string type, std::string stateKey) const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(GetStateEventAction{+roomId(), type, stateKey});
     }
 
-    BoolPromise Room::sendStateEvent(Event state) const
+    auto Room::sendStateEvent(Event state) const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(SendStateEventAction{+roomId(), state});
     }
 
-    BoolPromise Room::setName(std::string name) const
+    auto Room::setName(std::string name) const
+        -> PromiseT
     {
         json j{
             {"type", "m.room.name"},
@@ -140,7 +148,8 @@ namespace Kazv
         return sendStateEvent(e);
     }
 
-    BoolPromise Room::setTopic(std::string topic) const
+    auto Room::setTopic(std::string topic) const
+        -> PromiseT
     {
         json j{
             {"type", "m.room.topic"},
@@ -153,31 +162,36 @@ namespace Kazv
         return sendStateEvent(e);
     }
 
-    BoolPromise Room::invite(std::string userId) const
+    auto Room::invite(std::string userId) const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(InviteToRoomAction{+roomId(), userId});
     }
 
-    BoolPromise Room::setTyping(bool typing, std::optional<int> timeoutMs) const
+    auto Room::setTyping(bool typing, std::optional<int> timeoutMs) const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(SetTypingAction{+roomId(), typing, timeoutMs});
     }
 
-    BoolPromise Room::leave() const
+    auto Room::leave() const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(LeaveRoomAction{+roomId()});
     }
 
-    BoolPromise Room::forget() const
+    auto Room::forget() const
+        -> PromiseT
     {
         using namespace CursorOp;
         return m_ctx.dispatch(ForgetRoomAction{+roomId()});
     }
 
-    BoolPromise Room::setPinnedEvents(immer::flex_vector<std::string> eventIds) const
+    auto Room::setPinnedEvents(immer::flex_vector<std::string> eventIds) const
+        -> PromiseT
     {
         json j{
             {"type", "m.room.pinned_events"},
