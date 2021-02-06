@@ -6,7 +6,7 @@
 
 #include "filter.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -6,7 +6,7 @@
 
 #include "list_joined_rooms.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

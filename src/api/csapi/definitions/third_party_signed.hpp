@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 /// A signature of an ``m.third_party_invite`` token to prove that this user
 /// owns a third party identity which has been invited to the room.
 struct ThirdPartySigned
@@ -30,6 +30,7 @@ struct ThirdPartySigned
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<ThirdPartySigned> {
   static void to_json(json& jo, const ThirdPartySigned &pod)
@@ -66,6 +67,6 @@ struct adl_serializer<ThirdPartySigned> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

@@ -6,7 +6,7 @@
 
 #include "third_party_membership.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

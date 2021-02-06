@@ -6,7 +6,7 @@
 
 #include "message_pagination.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

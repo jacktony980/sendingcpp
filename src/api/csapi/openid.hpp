@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/openid_token.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Get an OpenID token object to verify the requester's identity.
  *
@@ -89,10 +89,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

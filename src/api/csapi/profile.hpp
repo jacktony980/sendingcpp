@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Set the user's display name.
  *
@@ -66,10 +66,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the user's display name.
@@ -135,10 +136,11 @@ std::optional<std::string> displayname() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Set the user's avatar URL.
@@ -198,10 +200,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the user's avatar URL.
@@ -267,10 +270,11 @@ std::optional<std::string> avatarUrl() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get this user's profile information.
@@ -341,10 +345,11 @@ std::optional<std::string> displayname() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

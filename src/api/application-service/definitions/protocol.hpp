@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 /// Definition of valid values for a field.
 struct FieldType
 {       
@@ -25,6 +25,7 @@ struct FieldType
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<FieldType> {
   static void to_json(json& jo, const FieldType &pod)
@@ -51,7 +52,7 @@ struct adl_serializer<FieldType> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 struct ProtocolInstance
@@ -75,6 +76,7 @@ struct ProtocolInstance
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<ProtocolInstance> {
   static void to_json(json& jo, const ProtocolInstance &pod)
@@ -111,7 +113,7 @@ struct adl_serializer<ProtocolInstance> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 struct ThirdPartyProtocol
@@ -149,6 +151,7 @@ struct ThirdPartyProtocol
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<ThirdPartyProtocol> {
   static void to_json(json& jo, const ThirdPartyProtocol &pod)
@@ -190,6 +193,6 @@ struct adl_serializer<ThirdPartyProtocol> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

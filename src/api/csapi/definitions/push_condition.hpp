@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct PushCondition
 {       
@@ -42,6 +42,7 @@ struct PushCondition
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<PushCondition> {
   static void to_json(json& jo, const PushCondition &pod)
@@ -78,6 +79,6 @@ struct adl_serializer<PushCondition> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

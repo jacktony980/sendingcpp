@@ -6,7 +6,7 @@
 
 #include "registration.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

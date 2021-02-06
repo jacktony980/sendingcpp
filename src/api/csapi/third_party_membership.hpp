@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Invite a user to participate in a particular room.
  *
@@ -119,10 +119,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

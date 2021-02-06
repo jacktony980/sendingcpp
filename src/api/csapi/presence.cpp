@@ -6,7 +6,7 @@
 
 #include "presence.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -6,7 +6,7 @@
 
 #include "users.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

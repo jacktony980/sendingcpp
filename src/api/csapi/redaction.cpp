@@ -6,7 +6,7 @@
 
 #include "redaction.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

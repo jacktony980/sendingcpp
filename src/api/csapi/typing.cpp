@@ -6,7 +6,7 @@
 
 #include "typing.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

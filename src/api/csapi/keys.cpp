@@ -6,7 +6,7 @@
 
 #include "keys.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

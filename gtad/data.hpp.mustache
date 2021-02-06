@@ -5,7 +5,7 @@
 {{#imports}}
 #include {{_}}{{/imports}}
 
-namespace Kazv {
+namespace Kazv::Api {
 {{#models}}
     {{#model}}
 {{>docCommentShort}}
@@ -25,6 +25,7 @@ struct {{name}}{{#parents?}} : {{#parents}}{{name}}{{>cjoin}}{{/parents}}{{/pare
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<{{qualifiedName}}> {
 {{#in?}}
@@ -62,8 +63,8 @@ struct adl_serializer<{{qualifiedName}}> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
     {{/model}}
 {{/models}}
-} // namespace Kazv
+} // namespace Kazv::Api

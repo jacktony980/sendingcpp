@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/wellknown/full.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets Matrix server discovery information about the domain.
  *
@@ -78,10 +78,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

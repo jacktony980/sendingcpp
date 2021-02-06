@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Kick a user from the room.
  *
@@ -75,10 +75,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

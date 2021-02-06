@@ -7,7 +7,7 @@
 #include "types.hpp"
 #include "csapi/definitions/room_event_batch.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct Timeline : RoomEventBatch
 {       
@@ -23,6 +23,7 @@ struct Timeline : RoomEventBatch
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<Timeline> {
   static void to_json(json& jo, const Timeline &pod)
@@ -49,6 +50,6 @@ struct adl_serializer<Timeline> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

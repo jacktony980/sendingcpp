@@ -6,7 +6,7 @@
 
 #include "pusher.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

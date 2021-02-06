@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Send a receipt for the given event ID.
  *
@@ -73,10 +73,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

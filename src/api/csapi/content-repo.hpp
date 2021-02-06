@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "types.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Upload some content to the content repository.
  *
@@ -75,10 +75,11 @@ std::string contentUri() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Download content from the content repository.
@@ -175,10 +176,11 @@ std::optional<std::string> contentDisposition() const
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Download content from the content repository overriding the file name
@@ -282,10 +284,11 @@ std::optional<std::string> contentDisposition() const
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Download a thumbnail of content from the content repository
@@ -385,10 +388,11 @@ std::optional<std::string> contentType() const
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get information about a URL for a client
@@ -468,10 +472,11 @@ std::optional<std::string> ogImage() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the configuration for the content repository.
@@ -542,10 +547,11 @@ std::optional<std::int_fast64_t> uploadSize() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

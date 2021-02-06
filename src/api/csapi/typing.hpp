@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Informs the server that the user has started or stopped typing.
  *
@@ -75,10 +75,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

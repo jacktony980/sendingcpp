@@ -6,7 +6,7 @@
 
 #include "joining.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

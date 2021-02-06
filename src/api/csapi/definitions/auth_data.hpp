@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 /// Used by clients to submit authentication information to the interactive-authentication API
 struct AuthenticationData
 {       
@@ -26,6 +26,7 @@ struct AuthenticationData
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<AuthenticationData> {
   static void to_json(json& jo, const AuthenticationData &pod)
@@ -52,6 +53,6 @@ struct adl_serializer<AuthenticationData> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

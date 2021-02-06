@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct ThirdPartyUser
 {       
@@ -26,6 +26,7 @@ struct ThirdPartyUser
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<ThirdPartyUser> {
   static void to_json(json& jo, const ThirdPartyUser &pod)
@@ -57,6 +58,6 @@ struct adl_serializer<ThirdPartyUser> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

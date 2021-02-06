@@ -6,7 +6,7 @@
 
 #include "profile.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

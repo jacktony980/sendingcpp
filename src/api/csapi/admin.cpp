@@ -6,7 +6,7 @@
 
 #include "admin.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

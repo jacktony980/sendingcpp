@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct PublicRoomsChunk
 {       
@@ -46,6 +46,7 @@ struct PublicRoomsChunk
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<PublicRoomsChunk> {
   static void to_json(json& jo, const PublicRoomsChunk &pod)
@@ -107,7 +108,7 @@ struct adl_serializer<PublicRoomsChunk> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 /// A list of the rooms on the server.
 struct PublicRoomsResponse
@@ -135,6 +136,7 @@ struct PublicRoomsResponse
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<PublicRoomsResponse> {
   static void to_json(json& jo, const PublicRoomsResponse &pod)
@@ -171,6 +173,6 @@ struct adl_serializer<PublicRoomsResponse> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

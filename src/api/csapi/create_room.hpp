@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Create a new room
  *
@@ -294,6 +294,7 @@ std::string roomId() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<CreateRoomJob::Invite3pid> {
 
@@ -365,7 +366,7 @@ std::string roomId() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

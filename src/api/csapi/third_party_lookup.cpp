@@ -6,7 +6,7 @@
 
 #include "third_party_lookup.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -6,7 +6,7 @@
 
 #include "tags.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

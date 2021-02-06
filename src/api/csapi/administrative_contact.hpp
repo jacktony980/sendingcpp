@@ -10,7 +10,7 @@
 #include "csapi/definitions/auth_data.hpp"
 #include "csapi/definitions/request_email_validation.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets a list of a user's third party identifiers.
  *
@@ -106,6 +106,7 @@ immer::array<ThirdPartyIdentifier> threepids() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetAccount3PIDsJob::ThirdPartyIdentifier> {
 
@@ -145,7 +146,7 @@ immer::array<ThirdPartyIdentifier> threepids() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Adds contact information to the user's account.
@@ -227,6 +228,7 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<Post3PIDsJob::ThreePidCredentials> {
 
@@ -266,7 +268,7 @@ public:
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Adds contact information to the user's account.
@@ -335,10 +337,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Binds a 3PID to the user's account through an Identity Service.
@@ -409,10 +412,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Deletes a third party identifier from the user's account
@@ -495,10 +499,11 @@ std::string idServerUnbindResult() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Removes a user's third party identifier from an identity server.
@@ -580,10 +585,11 @@ std::string idServerUnbindResult() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Begins the validation process for an email address for association with the user's account.
@@ -666,10 +672,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Begins the validation process for a phone number for association with the user's account.
@@ -750,10 +757,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

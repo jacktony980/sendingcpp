@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct EventFilter
 {       
@@ -32,6 +32,7 @@ struct EventFilter
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<EventFilter> {
   static void to_json(json& jo, const EventFilter &pod)
@@ -73,6 +74,6 @@ struct adl_serializer<EventFilter> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

@@ -6,7 +6,7 @@
 
 #include "directory.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

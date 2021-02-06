@@ -6,7 +6,7 @@
 
 #include "content-repo.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   std::map<std::string, std::string> UploadContentJob::buildHeader(std::optional<std::string> contentType)

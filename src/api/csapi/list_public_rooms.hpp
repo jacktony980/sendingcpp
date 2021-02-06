@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/public_rooms_response.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets the visibility of a room in the directory
  *
@@ -70,10 +70,11 @@ std::optional<std::string> visibility() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Sets the visibility of a room in the room directory
@@ -138,10 +139,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Lists the public rooms on the server.
@@ -235,10 +237,11 @@ std::optional<int> totalRoomCountEstimate() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Lists the public rooms on the server with optional filter.
@@ -353,6 +356,7 @@ std::optional<int> totalRoomCountEstimate() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<QueryPublicRoomsJob::Filter> {
 
@@ -377,7 +381,7 @@ std::optional<int> totalRoomCountEstimate() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

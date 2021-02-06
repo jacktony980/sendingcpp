@@ -6,7 +6,7 @@
 
 #include "notifications.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

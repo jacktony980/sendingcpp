@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets a list of events that the user has been notified about
  *
@@ -108,6 +108,7 @@ immer::array<Notification> notifications() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetNotificationsJob::Notification> {
 
@@ -157,7 +158,7 @@ immer::array<Notification> notifications() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

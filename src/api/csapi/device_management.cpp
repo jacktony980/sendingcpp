@@ -6,7 +6,7 @@
 
 #include "device_management.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

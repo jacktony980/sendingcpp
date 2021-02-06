@@ -7,7 +7,7 @@
 #include "types.hpp"
 #include "csapi/definitions/../../identity/definitions/request_email_validation.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct EmailValidationData : RequestEmailValidation
 {       
@@ -32,6 +32,7 @@ struct EmailValidationData : RequestEmailValidation
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<EmailValidationData> {
   static void to_json(json& jo, const EmailValidationData &pod)
@@ -58,6 +59,6 @@ struct adl_serializer<EmailValidationData> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

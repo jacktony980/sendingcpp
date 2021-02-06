@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/device_keys.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Upload end-to-end encryption keys.
  *
@@ -80,10 +80,11 @@ immer::map<std::string, int> oneTimeKeyCounts() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Download device identity keys.
@@ -195,6 +196,7 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<QueryKeysJob::UnsignedDeviceInfo> {
 
@@ -243,7 +245,7 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Claim one-time encryption keys.
@@ -326,10 +328,11 @@ immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Query users with recent device key updates.
@@ -418,10 +421,11 @@ immer::array<std::string> left() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

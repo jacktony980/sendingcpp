@@ -6,7 +6,7 @@
 
 #include "account-data.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

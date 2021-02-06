@@ -6,7 +6,7 @@
 
 #include "room_state.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

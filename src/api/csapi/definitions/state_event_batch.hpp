@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct StateEventBatch
 {       
@@ -20,6 +20,7 @@ struct StateEventBatch
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<StateEventBatch> {
   static void to_json(json& jo, const StateEventBatch &pod)
@@ -41,6 +42,6 @@ struct adl_serializer<StateEventBatch> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

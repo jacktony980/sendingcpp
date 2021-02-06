@@ -6,7 +6,7 @@
 
 #include "peeking_events.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

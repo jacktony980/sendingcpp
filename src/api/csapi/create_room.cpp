@@ -6,7 +6,7 @@
 
 #include "create_room.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

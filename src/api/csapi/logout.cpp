@@ -6,7 +6,7 @@
 
 #include "logout.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -31,6 +31,7 @@
 
 namespace Kazv
 {
+    using namespace Api;
     class JobInterface;
     class EventInterface;
 

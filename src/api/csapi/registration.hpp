@@ -10,7 +10,7 @@
 #include "csapi/definitions/auth_data.hpp"
 #include "csapi/definitions/request_email_validation.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Register for an account on this homeserver.
  *
@@ -163,10 +163,11 @@ std::optional<std::string> deviceId() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Begins the validation process for an email to be used during registration.
@@ -243,10 +244,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Requests a validation token be sent to the given phone number for the purpose of registering an account
@@ -323,10 +325,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Changes a user's password.
@@ -404,10 +407,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Requests a validation token be sent to the given email address for the purpose of resetting a user's password
@@ -512,10 +516,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Requests a validation token be sent to the given phone number for the purpose of resetting a user's password.
@@ -618,10 +623,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Deactivate a user's account.
@@ -713,10 +719,11 @@ std::string idServerUnbindResult() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Checks to see if a username is available on the server.
@@ -792,10 +799,11 @@ std::optional<bool> available() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

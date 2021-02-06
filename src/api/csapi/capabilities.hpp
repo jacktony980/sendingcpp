@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets information about the server's capabilities.
  *
@@ -100,6 +100,7 @@ Capabilities capabilities() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetCapabilitiesJob::ChangePasswordCapability> {
 
@@ -178,7 +179,7 @@ Capabilities capabilities() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

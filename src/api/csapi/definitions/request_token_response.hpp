@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 struct RequestTokenResponse
 {       
@@ -34,6 +34,7 @@ struct RequestTokenResponse
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<RequestTokenResponse> {
   static void to_json(json& jo, const RequestTokenResponse &pod)
@@ -60,6 +61,6 @@ struct adl_serializer<RequestTokenResponse> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

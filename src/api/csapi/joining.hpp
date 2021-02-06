@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/third_party_signed.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Start the requesting user participating in a particular room.
  *
@@ -84,10 +84,11 @@ std::string roomId() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Start the requesting user participating in a particular room.
@@ -168,10 +169,11 @@ std::string roomId() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

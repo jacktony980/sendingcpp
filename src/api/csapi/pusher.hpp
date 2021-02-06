@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets the current pushers for the authenticated user
  *
@@ -111,6 +111,7 @@ immer::array<Pusher> pushers() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetPushersJob::PusherData> {
 
@@ -197,7 +198,7 @@ immer::array<Pusher> pushers() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Modify a pusher for this user on the homeserver.
@@ -323,6 +324,7 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<PostPusherJob::PusherData> {
 
@@ -352,7 +354,7 @@ public:
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

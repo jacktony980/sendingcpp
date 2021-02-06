@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "event.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Listen on the event stream.
  *
@@ -90,10 +90,11 @@ EventList chunk() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the user's current state.
@@ -239,6 +240,7 @@ EventList accountData() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<InitialSyncJob::PaginationChunk> {
 
@@ -325,7 +327,7 @@ EventList accountData() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get a single event by event ID.
@@ -399,10 +401,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

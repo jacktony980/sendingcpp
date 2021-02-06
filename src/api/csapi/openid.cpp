@@ -6,7 +6,7 @@
 
 #include "openid.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

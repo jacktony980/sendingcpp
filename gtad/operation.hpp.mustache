@@ -5,7 +5,7 @@
 {{#imports}}
 #include {{_}}{{/imports}}
 
-namespace Kazv {
+namespace Kazv::Api {
 {{#operations.operation}}
 
 /*!{{>docCommentSummary}}{{#description}}
@@ -129,10 +129,11 @@ public:
       {{#responses}}
       using {{camelCaseOperationId}}Response = {{camelCaseOperationId}}Job::JobResponse;
       {{/responses}}
-      } {{! namespace Kazv}}
+      } {{! namespace Kazv::Api}}
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     {{#models.model}}
       template<>
       struct adl_serializer<{{qualifiedName}}> {
@@ -173,8 +174,8 @@ public:
     {{/models.model}}
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 {{/operations.operation}}
 
-} // namespace Kazv
+} // namespace Kazv::Api

@@ -6,7 +6,7 @@
 
 #include "sso_login_redirect.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

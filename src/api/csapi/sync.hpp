@@ -10,7 +10,7 @@
 #include "csapi/definitions/state_event_batch.hpp"
 #include "csapi/definitions/timeline_batch.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Synchronise the client's state and receive new messages.
  *
@@ -374,6 +374,7 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<SyncJob::RoomSummary> {
 
@@ -590,7 +591,7 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

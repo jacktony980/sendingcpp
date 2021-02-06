@@ -6,7 +6,7 @@
 
 #include "event_context.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

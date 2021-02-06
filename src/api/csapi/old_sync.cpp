@@ -6,7 +6,7 @@
 
 #include "old_sync.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

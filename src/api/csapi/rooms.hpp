@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "event.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Get a single event by event ID.
  *
@@ -79,10 +79,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the state identified by the type and key.
@@ -151,10 +152,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get all state events in the current state of a room.
@@ -223,10 +225,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Get the m.room.member events for the room.
@@ -306,10 +309,11 @@ EventList chunk() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Gets the list of currently joined users and their profile data.
@@ -384,6 +388,7 @@ immer::map<std::string, RoomMember> joined() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetJoinedMembersByRoomJob::RoomMember> {
 
@@ -413,7 +418,7 @@ immer::map<std::string, RoomMember> joined() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

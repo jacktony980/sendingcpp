@@ -6,7 +6,7 @@
 
 #include "leaving.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

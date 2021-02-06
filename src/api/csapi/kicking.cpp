@@ -6,7 +6,7 @@
 
 #include "kicking.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

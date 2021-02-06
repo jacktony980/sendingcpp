@@ -6,7 +6,7 @@
 
 #include "search.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

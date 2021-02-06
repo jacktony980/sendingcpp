@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Snapshot the current state of a room and its most recent messages.
  *
@@ -118,6 +118,7 @@ EventList accountData() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<RoomInitialSyncJob::PaginationChunk> {
 
@@ -152,7 +153,7 @@ EventList accountData() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

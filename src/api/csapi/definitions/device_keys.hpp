@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 /// Device identity keys
 struct DeviceKeys
 {       
@@ -40,6 +40,7 @@ struct DeviceKeys
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<DeviceKeys> {
   static void to_json(json& jo, const DeviceKeys &pod)
@@ -81,6 +82,6 @@ struct adl_serializer<DeviceKeys> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

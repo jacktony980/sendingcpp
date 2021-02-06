@@ -6,7 +6,7 @@
 
 #include "administrative_contact.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

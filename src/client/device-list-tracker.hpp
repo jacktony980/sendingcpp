@@ -72,7 +72,7 @@ namespace Kazv
 
         immer::flex_vector<std::string> outdatedUsers() const;
 
-        bool addDevice(std::string userId, std::string deviceId, QueryKeysJob::DeviceInformation deviceInfo, Crypto &crypto);
+        bool addDevice(std::string userId, std::string deviceId, Api::QueryKeysJob::DeviceInformation deviceInfo, Crypto &crypto);
 
         void markUpToDate(std::string userId);
 

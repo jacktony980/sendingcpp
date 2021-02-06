@@ -6,7 +6,7 @@
 
 #include "room_upgrades.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

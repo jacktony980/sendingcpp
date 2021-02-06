@@ -6,7 +6,7 @@
 
 #include "appservice_room_directory.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

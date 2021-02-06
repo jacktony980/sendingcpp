@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/sync_filter.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Upload a new filter.
  *
@@ -78,10 +78,11 @@ std::string filterId() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Download a filter
@@ -152,10 +153,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 #include "csapi/definitions/room_event_filter.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Perform a server-side search.
  *
@@ -239,6 +239,7 @@ ResultCategories searchCategories() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<SearchJob::IncludeEventContext> {
 
@@ -593,7 +594,7 @@ ResultCategories searchCategories() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

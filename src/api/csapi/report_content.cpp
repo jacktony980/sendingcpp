@@ -6,7 +6,7 @@
 
 #include "report_content.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

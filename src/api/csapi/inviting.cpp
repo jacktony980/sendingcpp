@@ -6,7 +6,7 @@
 
 #include "inviting.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -6,7 +6,7 @@
 
 #include "room_initial_sync.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

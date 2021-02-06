@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief List the tags for a room.
  *
@@ -85,6 +85,7 @@ immer::map<std::string, Tag> tags() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetRoomTagsJob::Tag> {
 
@@ -109,7 +110,7 @@ immer::map<std::string, Tag> tags() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Add a tag to a room.
@@ -179,10 +180,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Remove a tag from the room.
@@ -245,10 +247,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

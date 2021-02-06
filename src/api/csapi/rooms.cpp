@@ -6,7 +6,7 @@
 
 #include "rooms.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

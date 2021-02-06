@@ -7,7 +7,7 @@
 #include "types.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 /// Identification information for a user
 struct UserIdentifier
 {       
@@ -23,6 +23,7 @@ struct UserIdentifier
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<UserIdentifier> {
   static void to_json(json& jo, const UserIdentifier &pod)
@@ -44,6 +45,6 @@ struct adl_serializer<UserIdentifier> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

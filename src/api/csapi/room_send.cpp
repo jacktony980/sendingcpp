@@ -6,7 +6,7 @@
 
 #include "room_send.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

@@ -48,7 +48,7 @@ namespace Kazv
     }
 
 
-    bool DeviceListTracker::addDevice(std::string userId, std::string deviceId, QueryKeysJob::DeviceInformation deviceInfo, Crypto &crypto)
+    bool DeviceListTracker::addDevice(std::string userId, std::string deviceId, Api::QueryKeysJob::DeviceInformation deviceInfo, Crypto &crypto)
     {
         using namespace CryptoConstants;
         if (userId != deviceInfo.userId

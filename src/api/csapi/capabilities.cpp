@@ -6,7 +6,7 @@
 
 #include "capabilities.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

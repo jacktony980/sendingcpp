@@ -6,7 +6,7 @@
 
 #include "pushrules.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

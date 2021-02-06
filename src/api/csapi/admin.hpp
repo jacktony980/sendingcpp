@@ -7,7 +7,7 @@
 #include "basejob.hpp"
 
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Gets information about a particular user.
  *
@@ -119,6 +119,7 @@ immer::map<std::string, DeviceInfo> devices() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetWhoIsJob::ConnectionInfo> {
 
@@ -197,7 +198,7 @@ immer::map<std::string, DeviceInfo> devices() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

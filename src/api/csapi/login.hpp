@@ -8,7 +8,7 @@
 #include "csapi/definitions/wellknown/full.hpp"
 #include "csapi/definitions/user_identifier.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Get the supported login types to authenticate users
  *
@@ -79,6 +79,7 @@ immer::array<LoginFlow> flows() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
       template<>
       struct adl_serializer<GetLoginFlowsJob::LoginFlow> {
 
@@ -103,7 +104,7 @@ immer::array<LoginFlow> flows() const;
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Authenticates the user.
@@ -230,10 +231,11 @@ std::optional<DiscoveryInformation> wellKnown() const;
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

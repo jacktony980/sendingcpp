@@ -6,7 +6,7 @@
 
 #include "whoami.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

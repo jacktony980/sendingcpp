@@ -9,7 +9,7 @@
 #include "csapi/../application-service/definitions/protocol.hpp"
 #include "csapi/../application-service/definitions/location.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 
 /*! \brief Retrieve metadata about all protocols that a homeserver supports.
  *
@@ -75,10 +75,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Retrieve metadata about a specific protocol that the homeserver supports.
@@ -147,10 +148,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Retrieve Matrix-side portals rooms leading to a third party location.
@@ -230,10 +232,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Retrieve the Matrix User ID of a corresponding third party user.
@@ -306,10 +309,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Reverse-lookup third party locations given a Matrix room alias.
@@ -379,10 +383,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
 /*! \brief Reverse-lookup third party users given a Matrix User ID.
@@ -451,10 +456,11 @@ public:
       namespace nlohmann
       {
       using namespace Kazv;
+      using namespace Kazv::Api;
     
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
 
-} // namespace Kazv
+} // namespace Kazv::Api

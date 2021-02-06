@@ -8,7 +8,7 @@
 #include "csapi/definitions/wellknown/identity_server.hpp"
 #include "csapi/definitions/wellknown/homeserver.hpp"
 
-namespace Kazv {
+namespace Kazv::Api {
 /// Used by clients to determine the homeserver, identity server, and other
 /// optional components they should be interacting with.
 struct DiscoveryInformation
@@ -30,6 +30,7 @@ struct DiscoveryInformation
 namespace nlohmann
 {
 using namespace Kazv;
+using namespace Kazv::Api;
 template<>
 struct adl_serializer<DiscoveryInformation> {
   static void to_json(json& jo, const DiscoveryInformation &pod)
@@ -56,6 +57,6 @@ struct adl_serializer<DiscoveryInformation> {
 };
     }
 
-    namespace Kazv
+    namespace Kazv::Api
     {
-} // namespace Kazv
+} // namespace Kazv::Api

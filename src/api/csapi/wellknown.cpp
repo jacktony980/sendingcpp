@@ -6,7 +6,7 @@
 
 #include "wellknown.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

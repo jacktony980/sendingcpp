@@ -6,7 +6,7 @@
 
 #include "banning.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

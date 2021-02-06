@@ -6,7 +6,7 @@
 
 #include "receipts.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   

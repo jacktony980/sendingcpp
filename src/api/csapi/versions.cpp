@@ -6,7 +6,7 @@
 
 #include "versions.hpp"
 
-namespace Kazv
+namespace Kazv::Api
 {
 
   
