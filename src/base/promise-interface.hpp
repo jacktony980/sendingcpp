@@ -102,41 +102,70 @@ namespace Kazv
         DeriveT<T> *m_derived;
     };
 
-    class BoolPromise : TypelessPromise
+    namespace PromiseCombination
+    {
+        constexpr bool createDefaultForPromiseThen(bool) { return true; }
+        constexpr bool dataCombine(bool a, bool b) { return a && b; }
+        constexpr bool dataCombineNone(bool) { return true; }
+
+        template<class T, class = void>
+        struct DefaultForPromiseT
+        {
+            constexpr T operator()() const { return T(); }
+        };
+
+        template<class T>
+        struct DefaultForPromiseT<
+            T,
+            std::void_t<decltype(createDefaultForPromiseThen(std::declval<T>()))>>
+        {
+            constexpr T operator()() const { return createDefaultForPromiseThen(T()); }
+        };
+
+        template<class T>
+        constexpr T defaultForPromiseThen(T)
+        {
+            return DefaultForPromiseT<T>{}();
+        }
+    }
+
+
+    template<class T>
+    class SingleTypePromise : TypelessPromise
     {
     public:
-        using DataT = bool;
+        using DataT = T;
 
         template<class DeriveT>
-        BoolPromise(DeriveT obj)
+        SingleTypePromise(DeriveT obj)
             : m_d(std::unique_ptr<Concept>(new Model<DeriveT>(std::move(obj)))) {}
 
-        BoolPromise(const BoolPromise &that)
+        SingleTypePromise(const SingleTypePromise &that)
             : m_d(that.m_d->clone())
             {}
 
-        BoolPromise(BoolPromise &&that)
+        SingleTypePromise(SingleTypePromise &&that)
             : m_d(std::move(that.m_d))
             {}
 
-        BoolPromise &operator=(const BoolPromise &that) {
+        SingleTypePromise &operator=(const SingleTypePromise &that) {
             m_d = that.m_d->clone();
             return *this;
         }
 
-        BoolPromise &operator=(BoolPromise &&that) {
+        SingleTypePromise &operator=(SingleTypePromise &&that) {
             m_d = std::move(that.m_d);
             return *this;
         }
 
         template<class F>
-        BoolPromise then(F &&f) {
-            if constexpr (std::is_same_v<std::invoke_result_t<F, bool>, void>) {
+        SingleTypePromise then(F &&f) {
+            if constexpr (std::is_same_v<std::invoke_result_t<F, DataT>, void>) {
                 return m_d->thenVoid(f);
-            } else if constexpr (std::is_same_v<std::invoke_result_t<F, bool>, bool>) {
-                return m_d->thenBool(f);
-            } else {
+            } else if constexpr(isPromise<std::invoke_result_t<F, DataT>>) {
                 return m_d->thenPromise(f);
+            } else {
+                return m_d->thenData(f);
             }
         }
 
@@ -147,12 +176,12 @@ namespace Kazv
         struct Concept
         {
             virtual ~Concept() = default;
-            virtual BoolPromise thenVoid(std::function<void(bool)> f) = 0;
-            virtual BoolPromise thenBool(std::function<bool(bool)> f) = 0;
-            virtual BoolPromise thenPromise(std::function<BoolPromise(bool)> f) = 0;
+            virtual SingleTypePromise thenVoid(std::function<void(DataT)> f) = 0;
+            virtual SingleTypePromise thenData(std::function<DataT(DataT)> f) = 0;
+            virtual SingleTypePromise thenPromise(std::function<SingleTypePromise(DataT)> f) = 0;
             virtual std::unique_ptr<Concept> clone() const = 0;
             virtual bool ready() const = 0;
-            virtual bool get() const = 0;
+            virtual DataT get() const = 0;
         };
 
         template<class DeriveT>
@@ -160,14 +189,17 @@ namespace Kazv
         {
             Model(DeriveT obj) : instance(std::move(obj)) {}
             ~Model() override = default;
-            BoolPromise thenVoid(std::function<void(bool)> f) override {
-                return instance.then([=](bool v) { f(v); return true; });
+            SingleTypePromise thenVoid(std::function<void(DataT)> f) override {
+                return instance.then([=](DataT v) {
+                                         f(v);
+                                         return PromiseCombination::defaultForPromiseThen(DataT());
+                                     });
             }
-            BoolPromise thenBool(std::function<bool(bool)> f) override {
-                return instance.then([=](bool v) { return f(v); });
+            SingleTypePromise thenData(std::function<DataT(DataT)> f) override {
+                return instance.then([=](DataT v) { return f(v); });
             }
-            BoolPromise thenPromise(std::function<BoolPromise(bool)> f) override {
-                return instance.then([=](bool v) { return f(v); });
+            SingleTypePromise thenPromise(std::function<SingleTypePromise(DataT)> f) override {
+                return instance.then([=](DataT v) { return f(v); });
             }
             std::unique_ptr<Concept> clone() const override {
                 return std::unique_ptr<Concept>(new Model<DeriveT>(instance));
@@ -175,7 +207,7 @@ namespace Kazv
             bool ready() const override {
                 return instance.ready();
             }
-            bool get() const override {
+            DataT get() const override {
                 return instance.get();
             }
             DeriveT instance;
@@ -183,6 +215,8 @@ namespace Kazv
 
         std::unique_ptr<Concept> m_d;
     };
+
+    using BoolPromise = SingleTypePromise<bool>;
 
     template<class DeriveT, template<class> class PromiseT>
     class PromiseInterface
@@ -212,67 +246,72 @@ namespace Kazv
         return m_derived->createResolved(std::forward<T>(val));
     }
 
-    class BoolPromiseInterface
+    template<class T>
+    class SingleTypePromiseInterface
     {
     public:
-        using ResolveT = std::function<void(bool)>;
-        using ResolveToPromiseT = std::function<void(BoolPromise)>;
+        using DataT = T;
+        using PromiseT = SingleTypePromise<DataT>;
+        using ResolveT = std::function<void(DataT)>;
+        using ResolveToPromiseT = std::function<void(PromiseT)>;
 
         template<class DeriveT>
-        BoolPromiseInterface(DeriveT obj)
+        SingleTypePromiseInterface(DeriveT obj)
             : m_d(std::unique_ptr<Concept>(new Model<std::decay_t<DeriveT>>(std::move(obj)))) {
             if (! m_d) {
                 throw std::logic_error("promise handler is empty");
             }
         }
 
-        BoolPromiseInterface(const BoolPromiseInterface &that)
+        SingleTypePromiseInterface(const SingleTypePromiseInterface &that)
             : m_d(that.m_d) {
             if (! m_d) {
                 throw std::logic_error("promise handler is empty");
             }
         }
-        BoolPromiseInterface(BoolPromiseInterface &&that)
+        SingleTypePromiseInterface(SingleTypePromiseInterface &&that)
             : m_d(std::move(that.m_d)) {
             if (! m_d) {
                 throw std::logic_error("promise handler is empty");
             }
         }
 
-        BoolPromiseInterface &operator=(const BoolPromiseInterface &that) {
+        SingleTypePromiseInterface &operator=(const SingleTypePromiseInterface &that) {
             m_d = that.m_d;
             return *this;
         }
 
-        BoolPromiseInterface &operator=(BoolPromiseInterface &&that) {
+        SingleTypePromiseInterface &operator=(SingleTypePromiseInterface &&that) {
             m_d = std::move(that.m_d);
             return *this;
         }
 
-        BoolPromise create(std::function<void(ResolveT)> f) const {
+        PromiseT create(std::function<void(ResolveT)> f) const {
             return m_d->create(f);
         }
 
-        BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) const {
+        PromiseT createResolveToPromise(std::function<void(ResolveToPromiseT)> f) const {
             return m_d->createResolveToPromise(f);
         }
 
-        BoolPromise createResolved(bool v) const {
+        PromiseT createResolved(bool v) const {
             return m_d->createResolved(v);
         }
 
         template<class RangeT>
-        BoolPromise all(RangeT promises) const {
+        PromiseT all(RangeT promises) const {
+            using PromiseCombination::dataCombine;
+            using PromiseCombination::dataCombineNone;
             if (promises.empty()) {
-                return createResolved(true);
+                return createResolved(dataCombineNone(bool{}));
             }
             auto p1 = *(promises.begin());
             promises.erase(promises.begin());
-            return p1.then([*this, promises=std::move(promises)](bool val) mutable {
-                               if (! val) {
-                                   return createResolved(false);
-                               }
-                               return all(std::move(promises));
+            return p1.then([*this, promises=std::move(promises)](DataT val) mutable {
+                               return all(std::move(promises))
+                                   .then([=](DataT val2) {
+                                             return dataCombine(val, val2);
+                                         });
                            });
         }
 
@@ -280,9 +319,9 @@ namespace Kazv
         struct Concept
         {
             virtual ~Concept() = default;
-            virtual BoolPromise create(std::function<void(ResolveT)> f) = 0;
-            virtual BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) = 0;
-            virtual BoolPromise createResolved(bool v) = 0;
+            virtual PromiseT create(std::function<void(ResolveT)> f) = 0;
+            virtual PromiseT createResolveToPromise(std::function<void(ResolveToPromiseT)> f) = 0;
+            virtual PromiseT createResolved(DataT v) = 0;
         };
 
         template<class DeriveT>
@@ -291,13 +330,13 @@ namespace Kazv
             static_assert(std::is_same_v<std::decay_t<DeriveT>, DeriveT>, "DeriveT must not be a reference");
             Model(DeriveT obj) : instance(std::move(obj)) {}
             ~Model() override = default;
-            BoolPromise create(std::function<void(ResolveT)> f) override {
-                return instance.template create<bool>(f);
+            PromiseT create(std::function<void(ResolveT)> f) override {
+                return instance.template create<DataT>(f);
             }
-            BoolPromise createResolveToPromise(std::function<void(ResolveToPromiseT)> f) override {
-                return instance.template create<bool>(f);
+            PromiseT createResolveToPromise(std::function<void(ResolveToPromiseT)> f) override {
+                return instance.template create<DataT>(f);
             }
-            BoolPromise createResolved(bool v) override {
+            PromiseT createResolved(DataT v) override {
                 return instance.createResolved(v);
             }
             DeriveT instance;
@@ -305,4 +344,6 @@ namespace Kazv
 
         std::shared_ptr<Concept> m_d;
     };
+
+    using BoolPromiseInterface = SingleTypePromiseInterface<bool>;
 }
