@@ -141,52 +141,19 @@ namespace Kazv
         /* lager::reader<bool> */
         KAZV_WRAP_ATTR(RoomModel, m_room, membersFullyLoaded);
 
-        inline void setLocalDraft(std::string localDraft) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(UpdateRoomAction{+roomId(), SetLocalDraftAction{localDraft}});
-        }
+        BoolPromise setLocalDraft(std::string localDraft) const;
 
         BoolPromise sendMessage(Event msg) const;
 
-        inline void sendTextMessage(std::string text) const {
-            json j{
-                {"type", "m.room.message"},
-                {"content", {
-                        {"msgtype", "m.text"},
-                        {"body", text}
-                    }
-                }
-            };
-            Event e{j};
-            sendMessage(e);
-        }
+        BoolPromise sendTextMessage(std::string text) const;
 
-        inline void refreshRoomState() const {
-            using namespace CursorOp;
-            m_ctx.dispatch(GetRoomStatesAction{+roomId()});
-        }
+        BoolPromise refreshRoomState() const;
 
-        inline void getStateEvent(std::string type, std::string stateKey) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(GetStateEventAction{+roomId(), type, stateKey});
-        }
+        BoolPromise getStateEvent(std::string type, std::string stateKey) const;
 
-        inline void sendStateEvent(Event state) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(SendStateEventAction{+roomId(), state});
-        }
+        BoolPromise sendStateEvent(Event state) const;
 
-        inline void setName(std::string name) const {
-            json j{
-                {"type", "m.room.name"},
-                {"content", {
-                        {"name", name}
-                    }
-                }
-            };
-            Event e{j};
-            sendStateEvent(e);
-        }
+        BoolPromise setName(std::string name) const;
 
         // lager::reader<std::string>
         inline auto topic() const {
@@ -198,22 +165,9 @@ namespace Kazv
                        | jsonAtOr("topic"s, ""s));
         }
 
-        inline void setTopic(std::string topic) const {
-            json j{
-                {"type", "m.room.topic"},
-                {"content", {
-                        {"topic", topic}
-                    }
-                }
-            };
-            Event e{j};
-            sendStateEvent(e);
-        }
+        BoolPromise setTopic(std::string topic) const;
 
-        inline void invite(std::string userId) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(InviteToRoomAction{+roomId(), userId});
-        }
+        BoolPromise invite(std::string userId) const;
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto ephemeralEvents() const {
@@ -245,10 +199,7 @@ namespace Kazv
                                   immer::flex_vector<std::string>{}));
         }
 
-        inline void setTyping(bool typing, std::optional<int> timeoutMs) const {
-            using namespace CursorOp;
-            m_ctx.dispatch(SetTypingAction{+roomId(), typing, timeoutMs});
-        }
+        BoolPromise setTyping(bool typing, std::optional<int> timeoutMs) const;
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto accountDataEvents() const {
@@ -279,15 +230,9 @@ namespace Kazv
                        | jsonAtOr("event_id", std::string{}));
         }
 
-        inline void leave() const {
-            using namespace CursorOp;
-            m_ctx.dispatch(LeaveRoomAction{+roomId()});
-        }
+        BoolPromise leave() const;
 
-        inline void forget() const {
-            using namespace CursorOp;
-            m_ctx.dispatch(ForgetRoomAction{+roomId()});
-        }
+        BoolPromise forget() const;
 
         /* lager::reader<JsonWrap> */
         inline auto avatar() const {
@@ -302,18 +247,7 @@ namespace Kazv
                        | jsonAtOr("pinned", immer::flex_vector<std::string>{}));
         }
 
-        inline void setPinnedEvents(immer::flex_vector<std::string> eventIds) const {
-            json j{
-                {"type", "m.room.pinned_events"},
-                {"content", {
-                        {"pinned", eventIds}
-                    }
-                }
-            };
-            Event e{j};
-            sendStateEvent(e);
-        }
-
+        BoolPromise setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
     private:
         lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;

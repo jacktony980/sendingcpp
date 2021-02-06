@@ -37,6 +37,12 @@ namespace Kazv
     {
     }
 
+    BoolPromise Room::setLocalDraft(std::string localDraft) const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(UpdateRoomAction{+roomId(), SetLocalDraftAction{localDraft}});
+    }
+
     BoolPromise Room::sendMessage(Event msg) const {
         using namespace CursorOp;
         auto hasCrypto = ~m_sdk.map([](const auto &sdk) -> bool {
@@ -88,4 +94,100 @@ namespace Kazv
                       return ctx.dispatch(SendMessageAction{rid, msg});
                   });
     }
+
+    BoolPromise Room::sendTextMessage(std::string text) const
+    {
+        json j{
+            {"type", "m.room.message"},
+            {"content", {
+                    {"msgtype", "m.text"},
+                    {"body", text}
+                }
+            }
+        };
+        Event e{j};
+        return sendMessage(e);
+    }
+
+    BoolPromise Room::refreshRoomState() const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(GetRoomStatesAction{+roomId()});
+    }
+
+    BoolPromise Room::getStateEvent(std::string type, std::string stateKey) const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(GetStateEventAction{+roomId(), type, stateKey});
+    }
+
+    BoolPromise Room::sendStateEvent(Event state) const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(SendStateEventAction{+roomId(), state});
+    }
+
+    BoolPromise Room::setName(std::string name) const
+    {
+        json j{
+            {"type", "m.room.name"},
+            {"content", {
+                    {"name", name}
+                }
+            }
+        };
+        Event e{j};
+        return sendStateEvent(e);
+    }
+
+    BoolPromise Room::setTopic(std::string topic) const
+    {
+        json j{
+            {"type", "m.room.topic"},
+            {"content", {
+                    {"topic", topic}
+                }
+            }
+        };
+        Event e{j};
+        return sendStateEvent(e);
+    }
+
+    BoolPromise Room::invite(std::string userId) const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(InviteToRoomAction{+roomId(), userId});
+    }
+
+    BoolPromise Room::setTyping(bool typing, std::optional<int> timeoutMs) const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(SetTypingAction{+roomId(), typing, timeoutMs});
+    }
+
+    BoolPromise Room::leave() const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(LeaveRoomAction{+roomId()});
+    }
+
+    BoolPromise Room::forget() const
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(ForgetRoomAction{+roomId()});
+    }
+
+    BoolPromise Room::setPinnedEvents(immer::flex_vector<std::string> eventIds) const
+    {
+        json j{
+            {"type", "m.room.pinned_events"},
+            {"content", {
+                    {"pinned", eventIds}
+                }
+            }
+        };
+        Event e{j};
+        return sendStateEvent(e);
+    }
+
 }

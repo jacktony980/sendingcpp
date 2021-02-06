@@ -69,56 +69,29 @@ namespace Kazv
 
         Room roomByCursor(lager::reader<std::string> id) const;
 
-        inline void passwordLogin(std::string homeserver, std::string username,
-                                  std::string password, std::string deviceName) const {
-            m_ctx.dispatch(LoginAction{
-                    homeserver, username, password, deviceName});
-        }
+        BoolPromise passwordLogin(std::string homeserver, std::string username,
+                                  std::string password, std::string deviceName) const;
 
-        inline void tokenLogin(std::string homeserver, std::string username,
-                               std::string token, std::string deviceId) const {
-            m_ctx.dispatch(TokenLoginAction{
-                    homeserver, username, token, deviceId});
-        }
+        BoolPromise tokenLogin(std::string homeserver, std::string username,
+                               std::string token, std::string deviceId) const;
 
-        inline void createRoom(RoomVisibility v,
+        BoolPromise createRoom(RoomVisibility v,
                                std::optional<std::string> name = {},
                                std::optional<std::string> alias = {},
                                immer::array<std::string> invite = {},
                                std::optional<bool> isDirect = {},
                                bool allowFederate = true,
                                std::optional<std::string> topic = {},
-                               JsonWrap powerLevelContentOverride = json::object()) const {
-            CreateRoomAction a;
-            a.visibility = v;
-            a.name = name;
-            a.roomAliasName = alias;
-            a.invite = invite;
-            a.isDirect = isDirect;
-            a.topic = topic;
-            a.powerLevelContentOverride = powerLevelContentOverride;
-            // Synapse won't buy it if we do not provide
-            // a creationContent object.
-            a.creationContent = json{
-                {"m.federate", allowFederate}
-            };
-            m_ctx.dispatch(std::move(a));
-        }
+                               JsonWrap powerLevelContentOverride = json::object()) const;
 
-        inline void joinRoomById(std::string roomId) const {
-            m_ctx.dispatch(JoinRoomByIdAction{roomId});
-        }
+        BoolPromise joinRoomById(std::string roomId) const;
 
-        inline void joinRoom(std::string roomId, immer::array<std::string> serverName) const {
-            m_ctx.dispatch(JoinRoomAction{roomId, serverName});
-        }
+        BoolPromise joinRoom(std::string roomId, immer::array<std::string> serverName) const;
 
-        inline void uploadContent(immer::box<Bytes> content,
+        BoolPromise uploadContent(immer::box<Bytes> content,
                                   std::string uploadId,
                                   std::optional<std::string> filename = std::nullopt,
-                                  std::optional<std::string> contentType = std::nullopt) const {
-            m_ctx.dispatch(UploadContentAction{content, filename, contentType, uploadId});
-        }
+                                  std::optional<std::string> contentType = std::nullopt) const;
 
         inline std::string mxcUriToHttp(std::string mxcUri) const {
             using namespace CursorOp;
@@ -128,40 +101,19 @@ namespace Kazv
                 .make(serverName, mediaId).url();
         }
 
-        inline void downloadContent(std::string mxcUri) const {
-            m_ctx.dispatch(DownloadContentAction{mxcUri});
-        }
+        BoolPromise downloadContent(std::string mxcUri) const;
 
-        inline void downloadThumbnail(std::string mxcUri,
+        BoolPromise downloadThumbnail(std::string mxcUri,
                                       int width,
                                       int height,
-                                      std::optional<ThumbnailResizingMethod> method = std::nullopt) const {
-            m_ctx.dispatch(DownloadThumbnailAction{mxcUri, width, height, method, std::nullopt});
-        }
+                                      std::optional<ThumbnailResizingMethod> method = std::nullopt) const;
 
         // lager::reader<bool>
         inline auto syncing() const {
             return m_client[&ClientModel::syncing];
         }
 
-        inline void startSyncing() const {
-            using namespace Kazv::CursorOp;
-
-            if (+syncing()) {
-                return;
-            }
-
-            // filters are incomplete
-            if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
-                || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
-                m_ctx.dispatch(PostInitialFiltersAction{});
-            } else if (+m_client[&ClientModel::crypto] // encryption is on
-                       && ! +m_client[&ClientModel::identityKeysUploaded]) { // but identity keys are not published
-                m_ctx.dispatch(UploadIdentityKeysAction{});
-            } else { // sync is just interrupted
-                m_ctx.dispatch(SyncAction{});
-            }
-        }
+        BoolPromise startSyncing() const;
 
     private:
         lager::reader<SdkModel> m_sdk;
