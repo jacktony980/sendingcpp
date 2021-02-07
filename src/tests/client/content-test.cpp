@@ -50,7 +50,7 @@ TEST_CASE("Upload content should give the mxc uri", "[client][content]")
     store.dispatch(ProcessResponseAction{resp})
         .then([](auto stat) {
                   REQUIRE(stat.success());
-                  auto mxcUri = stat.data().get().at("mxcUri").template get<std::string>();
+                  auto mxcUri = stat.dataStr("mxcUri");
                   REQUIRE(mxcUri == std::string("mxc://example.com/AQwafuaFswefuhsfAFAgsw"));
               });
 

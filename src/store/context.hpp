@@ -35,9 +35,76 @@ namespace Kazv
         inline EffectStatus(bool succ) : m_succ(succ) {}
         inline EffectStatus(bool succ, JsonWrap d) : m_succ(succ), m_data(d) {}
 
+        /**
+         * Get whether this is successful.
+         *
+         * @return Whether this is successful.
+         */
         inline bool success() const { return m_succ; }
+        /**
+         * Conversion to bool.
+         *
+         * @return `success()`.
+         */
         inline explicit operator bool() const { return success(); }
+        /**
+         * Get the attached data.
+         *
+         * @return A JsonWrap containing the attached data.
+         */
         inline const JsonWrap &data() const { return m_data; }
+
+        /**
+         * Get the data at `key`.
+         *
+         * This requires `data()` to contain a json object.
+         *
+         * @param key The key.
+         * @return A json with the data at `key`.
+         */
+        inline const json &dataJson(std::string key) const {
+            return data().get().at(key);
+        }
+
+        /**
+         * Get the data at `index` at `key`.
+         *
+         * This requires `data()` to contain a json array of json objects.
+         *
+         * @param index The index.
+         * @param key The key.
+         * @return A json with the data at `index` at `key`.
+         */
+        inline const json &dataJson(int index, std::string key) const {
+            return data().get().at(index).at(key);
+        }
+
+        /**
+         * Get the data string at `key`.
+         *
+         * This requires `data()` to contain a json object, and
+         * `data().get().at(key)` to be a json string.
+         *
+         * @param key The key.
+         * @return A std::string for the data at `key`.
+         */
+        inline std::string dataStr(std::string key) const {
+            return dataJson(key).template get<std::string>();
+        }
+
+        /**
+         * Get the data at `index` at `key`.
+         *
+         * This requires `data()` to contain a json array of json objects,
+         * and `data().get().at(index).at(key)` to be a json string.
+         *
+         * @param index The index.
+         * @param key The key.
+         * @return A std::string for the data at `index` at `key`.
+         */
+        inline std::string dataStr(int index, std::string key) const {
+            return dataJson(index, key).template get<std::string>();
+        }
     private:
         bool m_succ;
         JsonWrap m_data;
