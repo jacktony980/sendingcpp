@@ -196,7 +196,10 @@ namespace Kazv
          * @param filename The name of the file.
          * @param contentType The content type of the file.
          * @return A Promise that resolves when the upload is successful,
-         * or when there is an error.
+         * or when there is an error. If it successfully resolves to `r`,
+         * `r.data().get().at("mxcUri").template get<std::string>()`
+         * will be the MXC URI of the uploaded
+         * content.
          */
         PromiseT uploadContent(immer::box<Bytes> content,
                                std::string uploadId,

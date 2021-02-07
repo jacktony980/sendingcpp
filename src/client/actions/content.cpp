@@ -21,6 +21,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "status-utils.hpp"
+
 #include "content.hpp"
 
 namespace Kazv
@@ -58,10 +60,16 @@ namespace Kazv
         auto uploadId = r.dataStr("uploadId");
         if (! r.success()) {
             m.addTrigger(UploadContentFailed{uploadId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
-        m.addTrigger(UploadContentSuccessful{r.contentUri(), uploadId});
-        return { std::move(m), lager::noop };
+        auto mxcUri = r.contentUri();
+        m.addTrigger(UploadContentSuccessful{mxcUri, uploadId});
+        return {
+            std::move(m),
+            [=](auto &&) {
+                return EffectStatus{/* succ = */ true, json{{"mxcUri", mxcUri}}};
+            }
+        };
     }
 
     ClientResult updateClient(ClientModel m, DownloadContentAction a)

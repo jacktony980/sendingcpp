@@ -154,6 +154,21 @@ namespace Kazv
         using PromiseT = SingleTypePromise<RetType>;
         using ContextT = ContextBase<RetType, Action, Deps>;
 
+        /**
+         * Constructor.
+         *
+         * @return An effect that runs `func` upon invocation.
+         * The effect will return a Promise that
+         * \arg resolves after the effect is invoked, to
+         * `PromiseCombination::defaultForPromiseThen(RetType())`,
+         * if `func(ctx)` returns void;
+         * \arg resolves after `func(ctx)` is resolved, to
+         * what `func(ctx)` resolves to, if `func(ctx)`
+         * returns a Promise;
+         * \arg resolves after the effect is invoked, to
+         * `func(ctx)` (converted to `RetType` if it is not already one),
+         * otherwise.
+         */
         template<class Func>
         EffectBase(Func func) {
             if constexpr (std::is_same_v<std::invoke_result_t<Func, ContextT>, void>) {

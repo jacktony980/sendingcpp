@@ -8,6 +8,7 @@ add_executable(kazvtest
   cursorutiltest.cpp
   client/client-test-util.cpp
   client/sync-test.cpp
+  client/content-test.cpp
   kazvjobtest.cpp
   event-emitter-test.cpp
   crypto-test.cpp
