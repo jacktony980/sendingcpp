@@ -112,7 +112,7 @@ namespace Kazv
 
     inline EffectStatus createDefaultForPromiseThen(EffectStatus)
     {
-        return EffectStatus{true};
+        return EffectStatus{true, json::array()};
     }
 
     inline EffectStatus dataCombine(EffectStatus a, EffectStatus b)

@@ -21,6 +21,8 @@
 
 #include <asio-promise-handler.hpp>
 
+#include <context.hpp>
+
 using namespace Kazv;
 
 struct MockDataStruct
@@ -107,6 +109,43 @@ TEST_CASE("BoolPromise should behave properly", "[promise]")
                           REQUIRE(v == false);
                       });
 
+
+    ioContext.run();
+}
+
+TEST_CASE("EffectStatus should combine properly with .all()", "[promise][store]")
+{
+    boost::asio::io_context ioContext;
+    using PH = SingleTypePromiseInterface<EffectStatus>;
+    using PromiseT = typename PH::PromiseT;
+    auto ph = PH(AsioPromiseHandler(ioContext.get_executor()));
+
+    auto e1 = EffectStatus(true, json{{"foo", "bar"}});
+    auto e2 = EffectStatus(true, json{{"foo2", "bar2"}});
+    auto e3 = EffectStatus(false, json{{"foo3", "bar3"}});
+
+    auto p1 = ph.createResolved(e1);
+    auto p2 = ph.createResolved(e2);
+    auto p3 = ph.createResolved(e3);
+
+    SECTION(".all(singlePromise) should give the Promise as-is") {
+        ph.all(std::vector<PromiseT>{p1})
+            .then([](auto e) {
+                      REQUIRE(e.success());
+                      REQUIRE(e.dataStr("foo") == "bar");
+                  });
+    }
+
+    SECTION(".all(multiplePromises) should give out the data"
+            " as an array and compute successfulness using &&") {
+        ph.all(std::vector<PromiseT>{p2, p3, p1})
+            .then([](auto e) {
+                      REQUIRE(! e.success());
+                      REQUIRE(e.dataStr(0, "foo2") == "bar2");
+                      REQUIRE(e.dataStr(1, "foo3") == "bar3");
+                      REQUIRE(e.dataStr(2, "foo") == "bar");
+                  });
+    }
 
     ioContext.run();
 }

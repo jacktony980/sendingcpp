@@ -307,6 +307,9 @@ namespace Kazv
             }
             auto p1 = *(promises.begin());
             promises.erase(promises.begin());
+            if (promises.empty()) {
+                return p1;
+            }
             return p1.then([*this, promises=std::move(promises)](DataT val) mutable {
                                return all(std::move(promises))
                                    .then([=](DataT val2) {
