@@ -47,16 +47,36 @@ namespace Kazv
                                std::string password, std::string deviceName) const
         -> PromiseT
     {
-        return m_ctx.dispatch(LoginAction{
+        auto p1 = m_ctx.dispatch(LoginAction{
                 homeserver, username, password, deviceName});
+        p1
+            .then([*this](auto stat) {
+                      if (! stat.success()) {
+                          return;
+                      }
+                      // It is meaningless to wait for it in a Promise
+                      // that is never exposed to the user.
+                      startSyncing();
+                  });
+
+        return p1;
     }
 
     auto Client::tokenLogin(std::string homeserver, std::string username,
                             std::string token, std::string deviceId) const
         -> PromiseT
     {
-        return m_ctx.dispatch(TokenLoginAction{
+        auto p1 = m_ctx.dispatch(TokenLoginAction{
                 homeserver, username, token, deviceId});
+        p1
+            .then([*this](auto stat) {
+                      if (! stat.success()) {
+                          return;
+                      }
+                      startSyncing();
+                  });
+
+        return p1;
     }
 
     auto Client::createRoom(RoomVisibility v,
@@ -129,15 +149,77 @@ namespace Kazv
             return m_ctx.createResolvedPromise(true);
         }
 
-        // filters are incomplete
-        if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
-            || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
-            return m_ctx.dispatch(PostInitialFiltersAction{});
-        } else if (+m_client[&ClientModel::crypto] // encryption is on
-                   && ! +m_client[&ClientModel::identityKeysUploaded]) { // but identity keys are not published
-            return m_ctx.dispatch(UploadIdentityKeysAction{});
-        } else { // sync is just interrupted
-            return m_ctx.dispatch(SyncAction{});
-        }
+        auto ctx = m_ctx;
+
+        auto p1 = ctx.createResolvedPromise(true)
+            .then([=](auto) {
+                      // post filters, if filters are incomplete
+                      if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
+                          || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
+                          return ctx.dispatch(PostInitialFiltersAction{});
+                      }
+                      return ctx.createResolvedPromise(true);
+                  })
+            .then([=](auto stat) {
+                      if (! stat.success()) {
+                          return ctx.createResolvedPromise(stat);
+                      }
+                      // Upload identity keys if we need to
+                      if (+m_client[&ClientModel::crypto]
+                          && ! +m_client[&ClientModel::identityKeysUploaded]) {
+                          return ctx.dispatch(UploadIdentityKeysAction{});
+                      } else {
+                          return ctx.createResolvedPromise(true);
+                      }
+                  });
+
+        p1
+            .then([*this](auto stat) {
+                      if (stat.success()) {
+                          syncForever();
+                      }
+                  });
+
+        return p1;
+    }
+
+    auto Client::syncForever() const -> void
+    {
+        using namespace CursorOp;
+
+        bool isInitialSync = ! (+m_client[&ClientModel::syncToken]).has_value();
+
+        auto syncRes = m_ctx.dispatch(SyncAction{});
+
+        auto uploadOneTimeKeysRes = syncRes
+            .then([*this](auto stat) {
+                      if (! stat.success()) {
+                          return m_ctx.createResolvedPromise(stat);
+                      }
+                      bool hasCrypto{+m_client[&ClientModel::crypto]};
+                      auto p1 = hasCrypto
+                          ? m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{})
+                          : m_ctx.createResolvedPromise(true);
+                      return p1;
+                  });
+
+        auto queryKeysRes = syncRes
+            .then([*this, isInitialSync](auto stat) {
+                      if (! stat.success()) {
+                          return m_ctx.createResolvedPromise(stat);
+                      }
+                      bool hasCrypto{+m_client[&ClientModel::crypto]};
+                      return hasCrypto
+                          ? m_ctx.dispatch(QueryKeysAction{isInitialSync})
+                          : m_ctx.createResolvedPromise(true);
+                  });
+
+        m_ctx.promiseInterface()
+            .all(std::vector<PromiseT>{uploadOneTimeKeysRes, queryKeysRes})
+            .then([*this](auto stat) {
+                      if (stat.success()) {
+                          syncForever();
+                      }
+                  });
     }
 }

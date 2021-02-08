@@ -53,7 +53,13 @@ namespace Kazv
 
         std::string filter = m.syncToken ? m.incrementalSyncFilterId : m.initialSyncFilterId;
         m.addJob(m.job<SyncJob>()
-                 .make(filter, m.syncToken)
+                 .make(filter,
+                       m.syncToken,
+                       std::nullopt, // fullState
+                       std::nullopt, // setPresence
+                       // Let initial sync return immediately
+                       isInitialSync ? 0 : m.syncTimeoutMs
+                     )
                  .withData(json{{"is", isInitialSync ? "initial" : "incremental"}}));
         return { m, lager::noop };
     }
@@ -273,7 +279,6 @@ namespace Kazv
         }
 
         m.addTrigger(SyncSuccessful{r.nextBatch()});
-        m.addTrigger(ShouldQueryKeys{isInitialSync});
 
         return { std::move(m), lager::noop };
     }

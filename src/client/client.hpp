@@ -116,6 +116,9 @@ namespace Kazv
          *
          * This will create a new session on the homeserver.
          *
+         * If the returned Promise resolves successfully, this will
+         * call `startSyncing()`.
+         *
          * @param homeserver The base url of the homeserver. E.g. `https://tusooa.xyz`.
          * @param username The username. This can be the full user id or
          * just the local part. E.g. `tusooa`, `@tusooa:tusooa.xyz`.
@@ -133,6 +136,9 @@ namespace Kazv
          *
          * This will not make a request. Library users should make sure
          * the information is correct and the token and the device id are valid.
+         *
+         * If the returned Promise resolves successfully, this will
+         * call `startSyncing()`.
          *
          * @param homeserver The base url of the homeserver. E.g. `https://tusooa.xyz`.
          * @param username The full user id. E.g. `@tusooa:tusooa.xyz`.
@@ -255,12 +261,16 @@ namespace Kazv
         /**
          * Start syncing if the Client is not syncing.
          *
+         * Syncing will continue indefinitely until there is an error.
+         *
          * @return A Promise that resolves when the Client is syncing
          * (more exactly, when syncing() contains true), or when there is an error.
          */
         PromiseT startSyncing() const;
 
     private:
+        void syncForever() const;
+
         lager::reader<SdkModel> m_sdk;
         lager::reader<ClientModel> m_client;
         Context<ClientAction> m_ctx;

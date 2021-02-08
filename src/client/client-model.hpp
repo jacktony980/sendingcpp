@@ -75,6 +75,7 @@ namespace Kazv
         Error error;
 
         bool syncing{false};
+        int syncTimeoutMs{20000};
         std::string initialSyncFilterId;
         std::string incrementalSyncFilterId;
         std::optional<std::string> syncToken;

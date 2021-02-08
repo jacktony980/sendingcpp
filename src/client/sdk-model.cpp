@@ -72,42 +72,9 @@ namespace Kazv
 
                         for (auto t : triggers) {
                             ee.emit(t);
-                            // start a sync (from posting filters) immediately after login successful
-                            // apparently, the sync is guaranteed to be processed
-                            // after this action has been processed
-                            if (std::holds_alternative<LoginSuccessful>(t)) {
-                                ctx.dispatch(PostInitialFiltersAction{});
-                            }
-                            // start a sync `syncInterval` ms after another sync
-                            // if we use encryption, also upload one-time keys needed
-                            else if (std::holds_alternative<SyncSuccessful>(t)) {
-                                auto syncSuccessful = std::get<SyncSuccessful>(t);
-                                if (hasCrypto) {
-                                    ctx.dispatch(GenerateAndUploadOneTimeKeysAction{});
-                                }
-                                jh.setTimeout(
-                                    [=]() {
-                                        ctx.dispatch(SyncAction{});
-                                    }, syncInterval);
-                            }
-                            // start a sync or publish identity keys after posting initial filters
-                            else if (std::holds_alternative<PostInitialFiltersSuccessful>(t)) {
-                                if (hasCrypto) {
-                                    ctx.dispatch(UploadIdentityKeysAction{});
-                                } else {
-                                    ctx.dispatch(SyncAction{});
-                                }
-                            }
-                            // start sync after publishing identity keys
-                            else if (std::holds_alternative<UploadIdentityKeysSuccessful>(t)) {
-                                ctx.dispatch(SyncAction{});
-                            }
-                            else if (std::holds_alternative<ClaimKeysSuccessful>(t)) {
+                            if (std::holds_alternative<ClaimKeysSuccessful>(t)) {
                                 auto [event, devicesToSend] = std::get<ClaimKeysSuccessful>(t);
                                 ctx.dispatch(SendToDeviceMessageAction{event, devicesToSend});
-                            }
-                            else if (std::holds_alternative<ShouldQueryKeys>(t) && hasCrypto) {
-                                ctx.dispatch(QueryKeysAction{std::get<ShouldQueryKeys>(t).isInitialSync});
                             }
                         }
                         return combinedPromise;
