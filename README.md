@@ -61,6 +61,13 @@ libkazv is not planning to support these functionalities:
 
 # Build and Use
 
+## For Gentoo users
+
+If you are using Gentoo, you can use [tusooa-overlay][tusooa-overlay]
+to install libkazv.
+
+[tusooa-overlay]: https://gitlab.com/tusooa/tusooa-overlay
+
 ## Dependencies
 
 libkazv depends on [lager](https://github.com/arximboldi/lager),
