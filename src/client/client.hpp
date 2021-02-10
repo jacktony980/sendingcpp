@@ -40,14 +40,37 @@ namespace Kazv
     class Client
     {
     public:
+        using ActionT = ClientAction;
+
+        using DepsT = lager::deps<JobInterface &, EventInterface &>;
+        using ContextT = Context<ActionT>;
+        using ContextWithDepsT = Context<ActionT, DepsT>;
+
         using PromiseT = SingleTypePromise<DefaultRetType>;
         /**
          * Constructor.
          *
-         * Construct the client.
+         * Construct the client. Without Deps support.
+         *
+         * @warning You should not use this directly. Use
+         * Sdk::client() instead.
          */
         Client(lager::reader<SdkModel> sdk,
-               Context<ClientAction> ctx);
+               ContextT ctx, std::nullopt_t);
+
+        /**
+         * Constructor.
+         *
+         * Construct the client, with Deps support.
+         *
+         * This enables startSyncing() to work properly.
+         *
+         * @warning You should not use this directly. Use
+         * Sdk::client() instead.
+         */
+        Client(lager::reader<SdkModel> sdk,
+               ContextWithDepsT ctx);
+
 
         /* lager::reader<immer::map<std::string, Room>> */
         inline auto rooms() const {
@@ -261,19 +284,23 @@ namespace Kazv
         /**
          * Start syncing if the Client is not syncing.
          *
-         * Syncing will continue indefinitely until there is an error.
+         * Syncing will continue indefinitely, if the preparation of
+         * the sync (posting filters and uploading identity keys,
+         * if needed) is successful.
          *
          * @return A Promise that resolves when the Client is syncing
-         * (more exactly, when syncing() contains true), or when there is an error.
+         * (more exactly, when syncing() contains true), or when there
+         * is an error in the preparation of the sync.
          */
         PromiseT startSyncing() const;
 
     private:
-        void syncForever() const;
+        void syncForever(std::optional<int> retryTime = std::nullopt) const;
 
         lager::reader<SdkModel> m_sdk;
         lager::reader<ClientModel> m_client;
-        Context<ClientAction> m_ctx;
+        ContextT m_ctx;
+        std::optional<DepsT> m_deps;
     };
 
 }

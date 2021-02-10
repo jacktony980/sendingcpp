@@ -47,7 +47,9 @@ namespace Kazv
                 std::declval<Enhancers>()...)
             );
 
-        using ContextT = Context<ActionT>;
+        using DepsT = lager::deps<JobInterface &, EventInterface &>;
+
+        using ContextT = Context<ActionT, DepsT>;
     public:
         Sdk(ModelT model,
             JobInterface &jobHandler,

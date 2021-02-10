@@ -51,6 +51,8 @@ namespace Kazv
 
         bool isInitialSync = ! m.syncToken;
 
+        m.syncing = true;
+
         std::string filter = m.syncToken ? m.incrementalSyncFilterId : m.initialSyncFilterId;
         m.addJob(m.job<SyncJob>()
                  .make(filter,
@@ -203,7 +205,6 @@ namespace Kazv
     {
         if (! r.success()) {
             m.addTrigger(SyncFailed{});
-            m.syncing = false;
             kzo.client.dbg() << "Sync failed" << std::endl;
             kzo.client.dbg() << r.statusCode << std::endl;
             if (isBodyJson(r.body)) {

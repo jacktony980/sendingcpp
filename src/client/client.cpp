@@ -26,12 +26,22 @@
 namespace Kazv
 {
     Client::Client(lager::reader<SdkModel> sdk,
-                   Context<ClientAction> ctx)
+                   ContextT ctx, std::nullopt_t)
         : m_sdk(sdk)
         , m_client(sdk.map(&SdkModel::c))
         , m_ctx(std::move(ctx))
     {
     }
+
+    Client::Client(lager::reader<SdkModel> sdk,
+                   ContextWithDepsT ctx)
+        : m_sdk(sdk)
+        , m_client(sdk.map(&SdkModel::c))
+        , m_ctx(ctx)
+        , m_deps(std::move(ctx))
+    {
+    }
+
 
     Room Client::room(std::string id) const
     {
@@ -149,27 +159,25 @@ namespace Kazv
             return m_ctx.createResolvedPromise(true);
         }
 
-        auto ctx = m_ctx;
-
-        auto p1 = ctx.createResolvedPromise(true)
-            .then([=](auto) {
+        auto p1 = m_ctx.createResolvedPromise(true)
+            .then([*this](auto) {
                       // post filters, if filters are incomplete
                       if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
                           || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
-                          return ctx.dispatch(PostInitialFiltersAction{});
+                          return m_ctx.dispatch(PostInitialFiltersAction{});
                       }
-                      return ctx.createResolvedPromise(true);
+                      return m_ctx.createResolvedPromise(true);
                   })
-            .then([=](auto stat) {
+            .then([*this](auto stat) {
                       if (! stat.success()) {
-                          return ctx.createResolvedPromise(stat);
+                          return m_ctx.createResolvedPromise(stat);
                       }
                       // Upload identity keys if we need to
                       if (+m_client[&ClientModel::crypto]
                           && ! +m_client[&ClientModel::identityKeysUploaded]) {
-                          return ctx.dispatch(UploadIdentityKeysAction{});
+                          return m_ctx.dispatch(UploadIdentityKeysAction{});
                       } else {
-                          return ctx.createResolvedPromise(true);
+                          return m_ctx.createResolvedPromise(true);
                       }
                   });
 
@@ -183,8 +191,9 @@ namespace Kazv
         return p1;
     }
 
-    auto Client::syncForever() const -> void
+    auto Client::syncForever(std::optional<int> retryTime) const -> void
     {
+        // assert (m_deps);
         using namespace CursorOp;
 
         bool isInitialSync = ! (+m_client[&ClientModel::syncToken]).has_value();
@@ -216,9 +225,21 @@ namespace Kazv
 
         m_ctx.promiseInterface()
             .all(std::vector<PromiseT>{uploadOneTimeKeysRes, queryKeysRes})
-            .then([*this](auto stat) {
+            .then([*this, retryTime](auto stat) {
                       if (stat.success()) {
-                          syncForever();
+                          syncForever(); // reset retry time
+                      } else {
+                          auto firstRetryTime = +m_client[&ClientModel::firstRetryMs];
+                          auto retryTimeFactor = +m_client[&ClientModel::retryTimeFactor];
+                          auto maxRetryTime = +m_client[&ClientModel::maxRetryMs];
+                          auto curRetryTime = retryTime ? retryTime.value() : firstRetryTime;
+                          if (curRetryTime > maxRetryTime) { curRetryTime = maxRetryTime; }
+                          auto nextRetryTime = curRetryTime * retryTimeFactor;
+
+                          kzo.client.warn() << "Sync failed, retrying in " << curRetryTime << "ms" << std::endl;
+                          auto &jh = getJobHandler(m_deps.value());
+                          jh.setTimeout([*this, nextRetryTime]() { syncForever(nextRetryTime); },
+                                        curRetryTime);
                       }
                   });
     }

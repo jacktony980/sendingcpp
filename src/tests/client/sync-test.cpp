@@ -223,7 +223,8 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 
     auto resp = createResponse("Sync", syncResponseJson, json{{"is", "initial"}});
 
-    auto client = Client(store.reader().map([](auto c) { return SdkModel{c}; }), store);
+    auto client = Client(store.reader().map([](auto c) { return SdkModel{c}; }), store,
+                         std::nullopt);
 
     store.dispatch(ProcessResponseAction{resp});
 

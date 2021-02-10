@@ -75,6 +75,9 @@ namespace Kazv
         Error error;
 
         bool syncing{false};
+        int firstRetryMs{1000};
+        int retryTimeFactor{2};
+        int maxRetryMs{30 * 1000};
         int syncTimeoutMs{20000};
         std::string initialSyncFilterId;
         std::string incrementalSyncFilterId;
