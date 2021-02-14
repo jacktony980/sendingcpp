@@ -7,7 +7,7 @@ set(kazvcrypto_SRCS
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})
 add_library(libkazv::kazvcrypto ALIAS kazvcrypto)
-set_target_properties(kazvcrypto PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION 0)
+set_target_properties(kazvcrypto PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION ${libkazv_SOVERSION})
 
 target_link_libraries(kazvcrypto PUBLIC kazvbase Olm::Olm)
 
