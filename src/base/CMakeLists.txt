@@ -5,6 +5,7 @@ set(kazvbase_SRCS
   debug.cpp
   event.cpp
   basejob.cpp
+  file-desc.cpp
   )
 
 add_library(kazvbase ${kazvbase_SRCS})
