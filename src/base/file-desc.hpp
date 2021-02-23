@@ -35,6 +35,12 @@ namespace Kazv
         Eof
     };
 
+    enum struct FileOpenMode
+    {
+        Read,
+        Write
+    };
+
     using FileContent = immer::flex_vector<char>;
 
     class FileStream
@@ -119,11 +125,16 @@ namespace Kazv
          * Construct a FileProvider using `o`.
          *
          * `o` should be of a copyable type `T` that has a method
-         * `getStream()` that returns something implicitly convertible
+         * `getStream()` that takes a FileOpenMode
+         * and returns something implicitly convertible
          * to FileStream.
          *
-         * That is, `[o]() -> FileStream { return o.getStream(); }`
+         * That is, `[o]() -> FileStream { return o.getStream(FileOpenMode::Read); }`
          * must be well-formed.
+         *
+         * In addition, if the FileOpenMode passed to getStream is FileOpenMode::Read,
+         * the returned stream must support read(); if the FileOpenMode passed to getStream
+         * is FileOpenMode::Write, the returned stream must support write().
          */
         template<class DeriveT>
         FileProvider(DeriveT &&o)
@@ -149,14 +160,16 @@ namespace Kazv
          * @return a FileStream that will contain the content
          * of the file provided by this.
          */
-        inline FileStream getStream() const { return m_d->getStream(); }
+        inline FileStream getStream(FileOpenMode mode = FileOpenMode::Read) const {
+            return m_d->getStream(mode);
+        }
 
     private:
         struct Concept
         {
             virtual ~Concept() = default;
             virtual std::unique_ptr<Concept> clone() const = 0;
-            virtual FileStream getStream() const = 0;
+            virtual FileStream getStream(FileOpenMode mode) const = 0;
         };
 
         template<class DeriveT>
@@ -168,8 +181,8 @@ namespace Kazv
             std::unique_ptr<Concept> clone() const override {
                 return std::make_unique<Model>(obj);
             }
-            FileStream getStream() const override {
-                return obj.getStream();
+            FileStream getStream(FileOpenMode mode) const override {
+                return obj.getStream(mode);
             }
 
             DeriveT obj;
@@ -212,7 +225,7 @@ namespace Kazv
             : m_content(content)
             {}
 
-        inline DumbFileStream getStream() const {
+        inline DumbFileStream getStream(FileOpenMode /* mode */) const {
             return DumbFileStream(m_content);
         }
 
@@ -276,6 +289,17 @@ namespace Kazv
     class FileInterface
     {
     public:
+        /**
+         * Constructor.
+         *
+         * Construct a FileInterface using `o`.
+         *
+         * `o` should be of a type that has the getProviderFor()
+         * const method that takes a FileDesc and returns an object
+         * implicitly convertible to FileProvider. That is,
+         * the following should be well-formed:
+         * `[&o](FileDesc d) -> FileProvider { return static_cast<std::add_const_t<decltype(o)>>(o).getProviderFor(d); }`
+         */
         template<class DeriveT>
         inline FileInterface(DeriveT &&o)
             : m_d(std::make_unique<Model<std::decay_t<DeriveT>>>(
