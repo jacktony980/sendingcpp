@@ -235,6 +235,18 @@ namespace Kazv
                                std::optional<std::string> contentType = std::nullopt) const;
 
         /**
+         * Upload content to the content repository.
+         *
+         * @param file The file to upload.
+         * @return A Promise that resolves when the upload is successful,
+         * or when there is an error. If it successfully resolves to `r`,
+         * `r.dataStr("mxcUri")` will be the MXC URI of the uploaded
+         * content.
+         */
+        PromiseT uploadContent(FileDesc file) const;
+
+
+        /**
          * Convert a MXC URI to an HTTP(s) URI.
          *
          * The converted URI will be using the homeserver of

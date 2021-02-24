@@ -137,6 +137,17 @@ namespace Kazv
                 filename, contentType, uploadId});
     }
 
+    auto Client::uploadContent(FileDesc file) const
+        -> PromiseT
+    {
+        return m_ctx.dispatch(UploadContentAction{
+                file,
+                file.name(),
+                file.contentType(),
+                // uploadId unused
+                std::string{}});
+    }
+
     auto Client::downloadContent(std::string mxcUri) const
         -> PromiseT
     {
