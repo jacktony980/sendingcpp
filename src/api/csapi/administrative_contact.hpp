@@ -620,10 +620,10 @@ public:
 /// An email was sent to the given address. Note that this may be an
 /// email containing the validation token or it may be informing the
 /// user of an error.
+    
     RequestTokenResponse data() const
     {
     return
-    
       std::move(jsonBody().get()).get<RequestTokenResponse>()
     ;
     }
@@ -705,10 +705,10 @@ public:
         
 
 /// An SMS message was sent to the given phone number.
+    
     RequestTokenResponse data() const
     {
     return
-    
       std::move(jsonBody().get()).get<RequestTokenResponse>()
     ;
     }

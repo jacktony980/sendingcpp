@@ -35,6 +35,7 @@
 
 #include <csapi/sync.hpp>
 
+#include <file-desc.hpp>
 #include <crypto.hpp>
 
 #include "clientfwd.hpp"
@@ -278,7 +279,7 @@ namespace Kazv
 
     struct UploadContentAction
     {
-        immer::box<Bytes> content;
+        FileDesc content;
         std::optional<std::string> filename;
         std::optional<std::string> contentType;
         std::string uploadId; // to be used by library users

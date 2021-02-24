@@ -36,10 +36,10 @@ public:
         
 
 /// Server discovery information.
+    
     DiscoveryInformation data() const
     {
     return
-    
       std::move(jsonBody().get()).get<DiscoveryInformation>()
     ;
     }

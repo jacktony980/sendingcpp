@@ -99,10 +99,10 @@ public:
 
 /// The specific push rule. This will also include keys specific to the
 /// rule itself such as the rule's ``actions`` and ``conditions`` if set.
+    
     PushRule data() const
     {
     return
-    
       std::move(jsonBody().get()).get<PushRule>()
     ;
     }

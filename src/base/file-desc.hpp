@@ -266,15 +266,17 @@ namespace Kazv
         /**
          * Get the name for this FileDesc.
          */
-        std::optional<std::string> name() const { return m_name; }
+        inline std::optional<std::string> name() const { return m_name; }
 
         /**
          * Get the content type for this FileDesc.
          */
-        std::optional<std::string> contentType() const { return m_contentType; }
+        inline std::optional<std::string> contentType() const { return m_contentType; }
+
+        bool operator==(const FileDesc &that) const;
 
     private:
-        const bool m_inMemory;
+        bool m_inMemory;
         FileContent m_content;
         std::optional<std::string> m_name;
         std::optional<std::string> m_contentType;

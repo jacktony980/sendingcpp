@@ -30,10 +30,10 @@ public:
         
 
 /// The full event.
+    
     JsonWrap data() const
     {
     return
-    
       std::move(jsonBody().get()).get<JsonWrap>()
     ;
     }
@@ -179,10 +179,10 @@ public:
         
 
 /// The current state of the room
+    
     EventList data() const
     {
     return
-    
       std::move(jsonBody().get()).get<EventList>()
     ;
     }

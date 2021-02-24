@@ -132,7 +132,9 @@ namespace Kazv
                               std::optional<std::string> contentType) const
         -> PromiseT
     {
-        return m_ctx.dispatch(UploadContentAction{content, filename, contentType, uploadId});
+        return m_ctx.dispatch(UploadContentAction{
+                FileDesc(FileContent{content.get().begin(), content.get().end()}),
+                filename, contentType, uploadId});
     }
 
     auto Client::downloadContent(std::string mxcUri) const

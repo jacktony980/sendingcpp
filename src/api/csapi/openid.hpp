@@ -39,10 +39,10 @@ public:
 /// response documented in the `OpenID Connect 1.0 Specification <http://openid.net/specs/openid-connect-core-1_0.html#TokenResponse>`_
 /// with the only difference being the lack of an ``id_token``. Instead,
 /// the Matrix homeserver's name is provided.
+    
     OpenidToken data() const
     {
     return
-    
       std::move(jsonBody().get()).get<OpenidToken>()
     ;
     }

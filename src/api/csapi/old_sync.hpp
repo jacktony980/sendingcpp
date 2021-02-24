@@ -355,10 +355,10 @@ public:
         
 
 /// The full event.
+    
     JsonWrap data() const
     {
     return
-    
       std::move(jsonBody().get()).get<JsonWrap>()
     ;
     }

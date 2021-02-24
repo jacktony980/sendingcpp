@@ -45,8 +45,8 @@ return _q;
       // ignore unused param
       {{#allParams}}(void)({{paramName}});{{/allParams}}
       {{#inlineBody}}{{^propertyMap}}{{^bodyParams?}}
-        return {{#consumesNonJson?}}BaseJob::BytesBody({{nameCamelCase}}){{/consumesNonJson?}}
-          {{^consumesNonJson?}}BaseJob::JsonBody({{nameCamelCase}}){{/consumesNonJson?}};
+        return {{#consumesNonJson?}}FileDesc({{nameCamelCase}}){{/consumesNonJson?}}
+          {{^consumesNonJson?}}JsonBody({{nameCamelCase}}){{/consumesNonJson?}};
           {{/bodyParams?}}{{/propertyMap}}{{/inlineBody}}
       {{#bodyParams?}}
         json _data

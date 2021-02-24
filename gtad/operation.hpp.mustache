@@ -60,17 +60,21 @@ public:
         {{#inlineResponse}}
 
     {{>docCommentShort}}
+    {{#producesNonJson?}}
+    inline Bytes {{paramName}}() const
+    {
+    return
+      std::get<Bytes>(body);
+    }
+    {{/producesNonJson?}}
+    {{^producesNonJson?}}
     {{dataType.name}} {{paramName}}() const
     {
     return
-    {{#producesNonJson?}}
-      std::get<Bytes>(body)
-    {{/producesNonJson?}}
-    {{^producesNonJson?}}
       std::move(jsonBody().get()).get<{{dataType.name}}>()
-    {{/producesNonJson?}}
     ;
     }
+    {{/producesNonJson?}}
         {{/inlineResponse}}
         {{#properties}}
 

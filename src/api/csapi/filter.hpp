@@ -104,10 +104,10 @@ public:
         
 
 /// The filter definition.
+    
     Filter data() const
     {
     return
-    
       std::move(jsonBody().get()).get<Filter>()
     ;
     }

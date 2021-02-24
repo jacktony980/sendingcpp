@@ -46,8 +46,8 @@ analyzer:
     - boolean: bool
     - string:
       - byte: &ByteStream
-          type: Bytes
-          imports: "types.hpp"
+          type: FileDesc
+          imports: "file-desc.hpp"
       - binary: *ByteStream
       - date:
           type: boost::date

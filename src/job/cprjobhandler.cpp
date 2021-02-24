@@ -25,9 +25,81 @@
 #include <zug/into_vector.hpp>
 #include <zug/transducer/map.hpp>
 
-#include <cpr/cpr.h>
+#include <cpr.h>
+#include <callback.h>
+
+#include <asio-std-file-handler.hpp>
+
 #include "cprjobhandler.hpp"
 #include "debug.hpp"
+
+namespace {
+    using namespace Kazv;
+    struct SyncFileStream
+    {
+        using DataT = FileContent;
+
+        inline SyncFileStream(std::string filename, FileOpenMode mode)
+            : m_stream(filename,
+                       (mode == FileOpenMode::Read
+                        ? std::ios_base::in
+                        : std::ios_base::out)
+                       | std::ios_base::binary)
+            {}
+
+        template<class Callback>
+        void read(int maxSize, Callback readCallback) {
+            auto buf = std::vector<char>(maxSize, '\0');
+            auto data = FileContent{};
+            auto actualSize = int{};
+
+            try {
+                m_stream.read(buf.data(), maxSize);
+
+                actualSize = m_stream.gcount();
+
+                data = FileContent(buf.begin(), buf.begin() + actualSize);
+            } catch (const std::exception &) {
+                readCallback(FileOpRetCode::Error, FileContent{});
+                return;
+            }
+
+            if (actualSize > 0) {
+                readCallback(FileOpRetCode::Success, data);
+            } else if (m_stream.eof()) {
+                readCallback(FileOpRetCode::Eof, FileContent{});
+            } else {
+                readCallback(FileOpRetCode::Error, FileContent{});
+            }
+        }
+
+        template<class Callback>
+        void write(DataT /* data */, Callback /* writeCallback */) {
+        }
+
+        std::fstream m_stream;
+    };
+
+    struct SyncFileProvider
+    {
+        using FileStreamT = SyncFileStream;
+
+        std::string filename;
+
+        FileStreamT getStream(FileOpenMode mode) const {
+            return FileStreamT(filename, mode);
+        }
+    };
+
+    struct SyncFileHandler
+    {
+        using FileProviderT = SyncFileProvider;
+        FileProviderT getProviderFor(FileDesc desc) const {
+            // assert(desc.name())
+            return FileProviderT{desc.name().value()};
+        }
+    };
+}
 
 namespace Kazv
 {
@@ -249,9 +321,48 @@ namespace Kazv
     void CprJobHandler::Private::submitImpl(BaseJob job, std::function<void(Response)> userCallback)
     {
         cpr::Url url{job.url()};
-        cpr::Body body(job.requestBody());
+        auto streamUpload = std::holds_alternative<FileDesc>(job.requestBody());
+        cpr::Body body;
         BaseJob::Header origHeader = job.requestHeader();
         cpr::Header header(origHeader.get().begin(), origHeader.get().end());
+
+        auto readCallback = std::function<bool(char *, size_t &)>{};
+        if (! std::holds_alternative<FileDesc>(job.requestBody())) {
+            body = std::get<BytesBody>(job.requestBody());
+        } else {
+            auto fileDesc = std::get<FileDesc>(job.requestBody());
+            auto typeOpt = fileDesc.contentType();
+            if (typeOpt) {
+                header.insert_or_assign("Content-Type", typeOpt.value());
+                kzo.job.dbg() << "Content-Type is " << header["Content-Type"] << std::endl;
+            }
+            auto fh = SyncFileHandler{};
+            auto provider = fileDesc.provider(fh);
+            auto stream = std::make_shared<FileStream>(provider.getStream());
+
+            readCallback =
+                [stream](char *buffer, size_t &length) -> bool {
+                    bool retval = true;
+                    kzo.job.dbg() << "A buffer of length " << length << " requested." << std::endl;
+                    stream->read(length,
+                                 [&](FileOpRetCode code, FileContent data) {
+                                     if (code == FileOpRetCode::Success) {
+                                         std::copy_n(data.begin(), data.size(), buffer);
+                                         kzo.job.dbg() << "Read file successful, read " << data.size() << " bytes." << std::endl;
+                                         length = data.size();
+                                     } else if (code == FileOpRetCode::Eof) {
+                                         kzo.job.dbg() << "Got eof." << std::endl;
+                                         length = 0;
+                                     } else {
+                                         kzo.job.dbg() << "Got error reading file." << std::endl;
+                                         length = 0;
+                                         retval = false;
+                                     }
+                                 });
+                    return retval;
+                };
+        }
+
         cpr::Parameters params;
         BaseJob::Query query = job.requestQuery();
         BaseJob::ReturnType returnType = job.returnType();
@@ -263,7 +374,7 @@ namespace Kazv
             for (const auto kv : query) {
                 std::string key = kv.first;
                 std::string value = kv.second;
-                params.AddParameter(cpr::Parameter(std::move(key), std::move(value)), holder);
+                params.Add(cpr::Parameter(std::move(key), std::move(value)));
             }
         }
 
@@ -286,18 +397,35 @@ namespace Kazv
                             };
                         };
 
+
         std::shared_future<Response> res = std::visit(lager::visitor{
                 [=](BaseJob::Get) {
-                    return cpr::GetCallback(callback, url, header, body, params);
+                    if (readCallback) {
+                        return cpr::GetCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else {
+                        return cpr::GetCallback(callback, url, header, body, params);
+                    }
                 },
                 [=](BaseJob::Post) {
-                    return cpr::PostCallback(callback, url, header, body, params);
+                    if (readCallback) {
+                        return cpr::PostCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else {
+                        return cpr::PostCallback(callback, url, header, body, params);
+                    }
                 },
                 [=](BaseJob::Put) {
-                    return cpr::PutCallback(callback, url, header, body, params);
+                    if (readCallback) {
+                        return cpr::PutCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else {
+                        return cpr::PutCallback(callback, url, header, body, params);
+                    }
                 },
                 [=](BaseJob::Delete) {
-                    return cpr::DeleteCallback(callback, url, header, body, params);
+                    if (readCallback) {
+                        return cpr::DeleteCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else {
+                        return cpr::DeleteCallback(callback, url, header, body, params);
+                    }
                 }
             }, method).share();
 

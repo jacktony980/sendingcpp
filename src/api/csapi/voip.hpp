@@ -30,10 +30,10 @@ public:
         
 
 /// The TURN server credentials.
+    
     JsonWrap data() const
     {
     return
-    
       std::move(jsonBody().get()).get<JsonWrap>()
     ;
     }

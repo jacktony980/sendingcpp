@@ -34,14 +34,17 @@
 #include "types.hpp"
 #include "descendent.hpp"
 
+#include "file-desc.hpp"
+
 namespace Kazv
 {
     using Header = immer::box<std::map<std::string, std::string>>;
 
     using BytesBody = Bytes;
     using JsonBody = JsonWrap;
+    using FileBody = FileDesc;
     struct EmptyBody {};
-    using Body = std::variant<EmptyBody, JsonBody, BytesBody>;
+    using Body = std::variant<EmptyBody, JsonBody, BytesBody, FileBody>;
     inline bool operator==(EmptyBody, EmptyBody)
     {
         return true;
@@ -133,7 +136,7 @@ namespace Kazv
 
         std::string url() const;
 
-        BytesBody requestBody() const;
+        Body requestBody() const;
 
         Header requestHeader() const;
 

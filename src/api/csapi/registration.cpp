@@ -149,7 +149,7 @@ return _q;
       // ignore unused param
       (void)(body);
         return 
-          BaseJob::JsonBody(body);
+          JsonBody(body);
       
           
 
@@ -215,7 +215,7 @@ return _q;
       // ignore unused param
       (void)(body);
         return 
-          BaseJob::JsonBody(body);
+          JsonBody(body);
       
           
 
@@ -355,7 +355,7 @@ return _q;
       // ignore unused param
       (void)(body);
         return 
-          BaseJob::JsonBody(body);
+          JsonBody(body);
       
           
 
@@ -421,7 +421,7 @@ return _q;
       // ignore unused param
       (void)(body);
         return 
-          BaseJob::JsonBody(body);
+          JsonBody(body);
       
           
 

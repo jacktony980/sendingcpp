@@ -54,4 +54,12 @@ namespace Kazv
                                    std::istreambuf_iterator<CharT>());
         return DumbFileProvider{std::move(content)};
     }
+
+    bool FileDesc::operator==(const FileDesc &that) const
+    {
+        return m_inMemory == that.m_inMemory
+            && m_content == that.m_content
+            && m_name == that.m_name
+            && m_contentType == that.m_contentType;
+    }
 }

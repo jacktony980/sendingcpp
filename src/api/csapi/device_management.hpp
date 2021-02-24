@@ -94,10 +94,10 @@ public:
         
 
 /// Device information
+    
     Device data() const
     {
     return
-    
       std::move(jsonBody().get()).get<Device>()
     ;
     }

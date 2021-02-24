@@ -21,11 +21,13 @@
 
 #include <vector>
 #include <iostream>
+#include <filesystem>
 
 #include <catch2/catch.hpp>
 #include <cprjobhandler.hpp>
 
 #include "tests.hpp"
+#include "kazvtest-respath.hpp"
 
 using namespace Kazv;
 
@@ -146,4 +148,61 @@ TEST_CASE("Job queue should behave properly", "[kazvjob]")
     REQUIRE( v[1] == false );
     REQUIRE( v[2] == false );
     REQUIRE( v[3] == false );
+}
+
+static const std::string httpbinServer = "http://www.httpbin.org";
+static const std::string httpbinEndpoint = "/post";
+
+TEST_CASE("Stream uploads should work properly", "[kazvjob]")
+{
+    auto filename = std::filesystem::path(resPath) / "kazvjob-test-res1";
+    auto desc = FileDesc(filename.native(), "text/plain");
+    BaseJob job(httpbinServer,
+                httpbinEndpoint,
+                BaseJob::POST,
+                "TestJob",
+                std::string{}, // token
+                BaseJob::ReturnType::Json,
+                desc);
+
+    boost::asio::io_context ioContext;
+    CprJobHandler h(ioContext.get_executor());
+
+    h.submit(job, [&h](Response r) {
+                      REQUIRE(isBodyJson(r.body));
+                      auto body = r.jsonBody();
+                      std::cout << "Ret= " << body.get().dump() << std::endl;
+                      REQUIRE(body.get().at("data").template get<std::string>() == "foobar");
+                      REQUIRE(body.get().at("headers").at("Content-Type").template get<std::string>() == "text/plain");
+                      h.stop();
+                  });
+
+    ioContext.run();
+}
+
+TEST_CASE("Streaming binary data should be ok", "[kazvjob]")
+{
+    auto filename = std::filesystem::path(resPath) / "kazvjob-test-res2";
+    auto desc = FileDesc(filename.native(), "application/octet-stream");
+    BaseJob job(httpbinServer,
+                httpbinEndpoint,
+                BaseJob::POST,
+                "TestJob",
+                std::string{}, // token
+                BaseJob::ReturnType::Json,
+                desc);
+
+    boost::asio::io_context ioContext;
+    CprJobHandler h(ioContext.get_executor());
+
+    h.submit(job, [&h](Response r) {
+                      REQUIRE(isBodyJson(r.body));
+                      auto body = r.jsonBody();
+                      std::cout << "Ret= " << body.get().dump() << std::endl;
+                      REQUIRE(body.get().at("data").template get<std::string>() == "\n\r\n\0\t\n"s);
+                      REQUIRE(body.get().at("headers").at("Content-Type").template get<std::string>() == "application/octet-stream");
+                      h.stop();
+                  });
+
+    ioContext.run();
 }

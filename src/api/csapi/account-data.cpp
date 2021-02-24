@@ -23,7 +23,7 @@ return _q;
       // ignore unused param
       (void)(userId);(void)(type);(void)(content);
         return 
-          BaseJob::JsonBody(content);
+          JsonBody(content);
       
           
 
@@ -154,7 +154,7 @@ return _q;
       // ignore unused param
       (void)(userId);(void)(roomId);(void)(type);(void)(content);
         return 
-          BaseJob::JsonBody(content);
+          JsonBody(content);
       
           
 

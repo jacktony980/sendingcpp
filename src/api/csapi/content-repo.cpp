@@ -28,11 +28,11 @@ BaseJob::Query _q;
 return _q;
 }
 
-    BaseJob::Body UploadContentJob::buildBody(Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType)
+    BaseJob::Body UploadContentJob::buildBody(FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType)
       {
       // ignore unused param
       (void)(content);(void)(filename);(void)(contentType);
-        return BaseJob::BytesBody(content)
+        return FileDesc(content)
           ;
       
           
@@ -45,7 +45,7 @@ UploadContentJob::UploadContentJob(
         std::string serverUrl
         , std::string _accessToken
         ,
-        Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType)
+        FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/upload",
           POST,

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "basejob.hpp"
-#include "types.hpp"
+#include "file-desc.hpp"
 
 namespace Kazv::Api {
 
@@ -55,13 +55,13 @@ std::string contentUri() const;
     explicit UploadContentJob(std::string serverUrl
     , std::string _accessToken
       ,
-        Bytes content , std::optional<std::string> filename  = std::nullopt, std::optional<std::string> contentType  = std::nullopt);
+        FileDesc content , std::optional<std::string> filename  = std::nullopt, std::optional<std::string> contentType  = std::nullopt);
     
 
     static BaseJob::Query buildQuery(
     std::optional<std::string> filename);
 
-      static BaseJob::Body buildBody(Bytes content, std::optional<std::string> filename, std::optional<std::string> contentType);
+      static BaseJob::Body buildBody(FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType);
 
           static std::map<std::string, std::string> buildHeader(std::optional<std::string> contentType);
 
@@ -122,13 +122,12 @@ std::optional<std::string> contentDisposition() const
     }
 
 /// The content that was previously uploaded.
-    Bytes data() const
+    inline Bytes data() const
     {
     return
-      std::get<Bytes>(body)
-    
-    ;
+      std::get<Bytes>(body);
     }
+    
         
 
 };
@@ -227,13 +226,12 @@ std::optional<std::string> contentDisposition() const
     }
 
 /// The content that was previously uploaded.
-    Bytes data() const
+    inline Bytes data() const
     {
     return
-      std::get<Bytes>(body)
-    
-    ;
+      std::get<Bytes>(body);
     }
+    
         
 
 };
@@ -322,13 +320,12 @@ std::optional<std::string> contentType() const
     }
 
 /// A thumbnail of the requested content.
-    Bytes data() const
+    inline Bytes data() const
     {
     return
-      std::get<Bytes>(body)
-    
-    ;
+      std::get<Bytes>(body);
     }
+    
         
 
 };

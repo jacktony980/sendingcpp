@@ -47,7 +47,7 @@ namespace Kazv
         std::string fullRequestUrl;
         Method method;
         ReturnType returnType;
-        BytesBody body;
+        Body body;
         Query query;
         Header header;
         JsonWrap data;
@@ -77,13 +77,15 @@ namespace Kazv
             header_["Authorization"] = "Bearer " + token;
         }
 
+        // convert to BytesBody, if possible
         if (isBodyJson(body)) {
             JsonBody j = std::get<JsonBody>(std::move(body));
             header_["Content-Type"] = "application/json";
             this->body = j.get().dump();
-        } else if (std::holds_alternative<BytesBody>(body)) {
-            BytesBody b = std::get<BytesBody>(std::move(body));
-            this->body = b;
+        } else if (std::holds_alternative<EmptyBody>(body)) {
+            this->body = BytesBody();
+        } else {
+            this->body = std::move(body);
         }
 
         this->header = header_;
@@ -113,7 +115,7 @@ namespace Kazv
         return m_d->fullRequestUrl;
     };
 
-    auto BaseJob::requestBody() const -> BytesBody
+    auto BaseJob::requestBody() const -> Body
     {
         return m_d->body;
     }

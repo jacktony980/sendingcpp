@@ -23,7 +23,7 @@ return _q;
       // ignore unused param
       (void)(userId);(void)(body);
         return 
-          BaseJob::JsonBody(body);
+          JsonBody(body);
       
           
 

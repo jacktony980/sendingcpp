@@ -297,7 +297,7 @@ namespace Kazv
             .make(m.userId, initialSyncFilter)
             .withData(json{{"is", "initialSyncFilter"}})
             .withQueue("post-filter", CancelFutureIfFailed);
-        kzo.client.dbg() << "First filter: " << firstJob.requestBody() << std::endl;
+
         m.addJob(firstJob);
         Filter incrementalSyncFilter;
         incrementalSyncFilter.room.timeline.limit = 20;

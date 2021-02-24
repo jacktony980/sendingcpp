@@ -23,7 +23,7 @@ return _q;
       // ignore unused param
       (void)(roomId);(void)(receiptType);(void)(eventId);(void)(receipt);
         return 
-          BaseJob::JsonBody(receipt);
+          JsonBody(receipt);
       
           
 

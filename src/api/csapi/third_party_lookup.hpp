@@ -33,10 +33,10 @@ public:
         
 
 /// The protocols supported by the homeserver.
+    
     immer::map<std::string, ThirdPartyProtocol> data() const
     {
     return
-    
       std::move(jsonBody().get()).get<immer::map<std::string, ThirdPartyProtocol>>()
     ;
     }
@@ -102,10 +102,10 @@ public:
         
 
 /// The protocol was found and metadata returned.
+    
     ThirdPartyProtocol data() const
     {
     return
-    
       std::move(jsonBody().get()).get<ThirdPartyProtocol>()
     ;
     }
@@ -182,10 +182,10 @@ public:
         
 
 /// At least one portal room was found.
+    
     immer::array<ThirdPartyLocation> data() const
     {
     return
-    
       std::move(jsonBody().get()).get<immer::array<ThirdPartyLocation>>()
     ;
     }
@@ -260,10 +260,10 @@ public:
         
 
 /// The Matrix User IDs found with the given parameters.
+    
     immer::array<ThirdPartyUser> data() const
     {
     return
-    
       std::move(jsonBody().get()).get<immer::array<ThirdPartyUser>>()
     ;
     }
@@ -337,10 +337,10 @@ public:
         
 
 /// All found third party locations.
+    
     immer::array<ThirdPartyLocation> data() const
     {
     return
-    
       std::move(jsonBody().get()).get<immer::array<ThirdPartyLocation>>()
     ;
     }
@@ -410,10 +410,10 @@ public:
         
 
 /// An array of third party users.
+    
     immer::array<ThirdPartyUser> data() const
     {
     return
-    
       std::move(jsonBody().get()).get<immer::array<ThirdPartyUser>>()
     ;
     }
