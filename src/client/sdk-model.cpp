@@ -49,7 +49,7 @@ namespace Kazv
                 auto eff =
                     [=](auto &&ctx) {
                         auto sdkEffect = SdkEffect(clientEff);
-                        sdkEffect(ctx);
+                        auto effectPromise = sdkEffect(ctx);
 
                         auto &jh = getJobHandler(ctx);
                         auto &ee = getEventEmitter(ctx);
@@ -68,7 +68,7 @@ namespace Kazv
                                              });
                                      }), jobs);
 
-                        auto combinedPromise = ph.all(promises);
+                        auto combinedPromise = promises.size() ? ph.all(promises) : effectPromise;
 
                         for (auto t : triggers) {
                             ee.emit(t);
