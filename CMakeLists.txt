@@ -46,7 +46,7 @@ if(libkazv_BUILD_KAZVJOB)
     message( STATUS "Using cpr from FetchContent")
     set(USE_SYSTEM_CURL ON)
     set(BUILD_CPR_TESTS OFF)
-    FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git GIT_TAG c8d33915dbd88ad6c92b258869b03aba06587ff9) # the commit hash for 1.5.0
+    FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git GIT_TAG c34ddb9b3de2a22fdbd5d318d8b7d1997e6ca0bf)
     FetchContent_MakeAvailable(cpr)
   endif()
 
