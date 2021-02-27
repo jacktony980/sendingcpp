@@ -19,6 +19,8 @@
 
 #include <libkazv-config.hpp>
 
+#include <filesystem>
+
 #include <lager/constant.hpp>
 
 #include "client.hpp"
@@ -140,9 +142,13 @@ namespace Kazv
     auto Client::uploadContent(FileDesc file) const
         -> PromiseT
     {
+        auto basename = file.name()
+            ? std::optional(std::filesystem::path(file.name().value()).filename().native())
+            : std::nullopt;
         return m_ctx.dispatch(UploadContentAction{
                 file,
-                file.name(),
+                // use only basename to prevent path info being leaked
+                basename,
                 file.contentType(),
                 // uploadId unused
                 std::string{}});
