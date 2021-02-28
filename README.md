@@ -1,5 +1,5 @@
 
-# libkazv
+# libkazv  {#mainpage}
 
 libkazv is a matrix client sdk built upon [lager](https://github.com/arximboldi/lager)
 and the value-oriented design it enables.

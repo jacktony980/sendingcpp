@@ -51,14 +51,14 @@ upon. `Kazv::CprJobHandler` is a class that actually performs network requests.
   We will get back to this later.
 - `zug::identity` is not yet relevant here.
 
-```c++
+```
 auto client = sdk.client();
 ```
 
 `Sdk` is a wrapper class. Most of the real operations are done via `Client`.
 We obtain an instance of it here.
 
-```c++
+```
 client.passwordLogin(homeserver, username, password, deviceName)
     .then([=](auto status) {
         if (! status.success()) {
@@ -103,7 +103,7 @@ design.
 > using lambdas that captures the current instance by reference in an async callback
 > function (like `then()`):
 >
-> ```c++
+> ```
 > SomeClass::someMethod()
 > {
 >     m_client.someOperation()
@@ -120,7 +120,7 @@ design.
 > pointer. This will give you a segmentation fault as a result. It is suggested to
 > explicitly capture `m_client` by changing `[=]` to `[m_client=m_client]`.
 
-```c++
+```
 io.run();
 ```
 
