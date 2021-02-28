@@ -76,7 +76,8 @@ entered. It returns a `Promise` that resolves when the login is successful, or w
 there is an error.
 
 A `Promise` represents a value that will be available *later*, and allow you to use
-it via the `then` chaining method. We call a `Promise` *resolved* when the value
+it via the `then` chaining method. This is achieved by a *Promise handler*, such as
+the `Kazv::AsioPromiseHandler` we used before. We call a `Promise` *resolved* when the value
 contained is available. If you have used JavaScript before, this construct
 may be familiar to you. Note that here the type of the value in the `Promise` is fixed:
 it is always an `EffectStatus`. This is due to the limit of the language. The `then`
@@ -101,7 +102,7 @@ design.
 > the current instance by reference, if you use a member in the lambda. Try to avoid
 > using lambdas that captures the current instance by reference in an async callback
 > function (like `then()`):
-
+>
 > ```c++
 > SomeClass::someMethod()
 > {
@@ -112,7 +113,7 @@ design.
 >         });
 > }
 > ```
-
+>
 > The code above is bad because, it is possible that the instance of `SomeClass` may
 > have been destroyed by the time the callback is actually run. And thus, `m_client`,
 > which is acutally `(capturedThis)->m_client`, is a dereferencing of a dangling
