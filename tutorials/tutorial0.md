@@ -1,6 +1,46 @@
 
 # Tutorial 0: Getting started with libkazv
 
+## Prerequisites
+
+We will assume all of the following:
+
+1. You know the basis about a Unix-like shell and its utilities.
+
+2. You have some knowledge about C++. You know what [`auto`][auto-cppref] means in
+   post-c++11 programs. You know the basic input/output in the standard library.
+   You know what a [namespace][ns-cppref] is.
+
+3. You have libkazv installed. If you installed libkazv from a pre-built package in
+   a binary-based distribution, you have the related development packages installed,
+   if applicable. You have CMake, G++ and other related build tools. Your G++ supports
+   the standard gnu++17. Compilers other than G++ are not tested and cannot be
+   guaranteed to work.
+
+4. You have a matrix account on a matrix homeserver that you can connect to. It is
+   not your main account for daily use (to prevent accidental mis-operations). It
+   preferrably has joined a small number of rooms.
+
+
+[auto-cppref]: https://en.cppreference.com/w/cpp/language/auto
+[ns-cppref]: https://en.cppreference.com/w/cpp/language/namespace
+
+## Goals
+
+By completing this tutorial, we would like you to:
+
+1. know how to create a basic program with libkazv.
+2. know how to login with your homeserver address, account and password.
+3. understand what a Promise is, and know how to use `then()` to do another
+   thing after a Promise resolves.
+4. understand that the dispatched actions will be run only after you start
+   the event loop.
+
+If you found you did not accomplish the above after the tutorial,
+or if you had any questions, please do not hesitate to contact us.
+
+## What you need to do
+
 We will use a minimal tutorial to tell how to use libkazv.
 
 The code is in `tutorial0.cpp` in this directory.
