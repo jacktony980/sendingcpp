@@ -108,6 +108,7 @@ libkazv offers the following CMake options:
   as a subproject.
 
 libkazv can be incorporated into your project using CMake `FetchContent()`.
+It can also be used via `find_package(libkazv)`.
 It has a few libraries you can link to:
 
 - `libkazv::kazvall` is the one that contains API call definitions
@@ -121,13 +122,38 @@ It has a few libraries you can link to:
   libraries. To switch from one job handler to another,
   you only need to change one or two lines in your program.
 
+  Note that you will need to add `COMPONENTS job` to the arguments
+  of `find_package()` to use this.
+
 # Tutorials
 
 Tutorial 0: [Getting started with libkazv][tut0]
 
 [tut0]: https://gitlab.com/kazv/libkazv/-/blob/servant/tutorials/tutorial0.md
 
+# APIs
 
+The API documentation is available at https://mxc.kazv.moe/libkazv/ .
+You can also use `doxygen Doxyfile` at the root directory of the repository
+to build docs locally. It will be generated in `doc/`.
+
+You SHOULD use only the following APIs in your program:
+
+1. `Kazv::makeSdk`, `Kazv::makeDefaultEncryptedSdk`.
+2. Default constructor of `Kazv::SdkModel`.
+3. Constructors of `Kazv::CprJobHandler`,
+   `Kazv::AsioPromiseHandler`.
+4. `Kazv::Sdk`, `Kazv::Client`, `Kazv::Room`, but not their constructors.
+5. `Kazv::LagerStoreEventEmitter`.
+6. The classes that are required to interact with (e.g. return type or argument of)
+   the classes in 4 and 5 (e.g. `Kazv::Event`).
+
+Anything in the `kazvapi` module (i.e. the namespace `Kazv::Api`) is not meant
+to be used directly.
+
+You should not rely on the return type of a function if it is declared as
+`auto` (without trailing return type notation). If it returns `auto`, you
+should also use `auto` to store that the return value.
 
 # Acknowledgement
 
