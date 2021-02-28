@@ -121,6 +121,12 @@ It has a few libraries you can link to:
   libraries. To switch from one job handler to another,
   you only need to change one or two lines in your program.
 
+# Tutorials
+
+Tutorial 0: [Getting started with libkazv][tut0]
+[tut0]: https://gitlab.com/kazv/libkazv/-/blob/servant/tutorials/tutorial0.md
+
+
 
 # Acknowledgement
 
