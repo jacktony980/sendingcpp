@@ -1,6 +1,8 @@
 
 # libkazv  {#mainpage}
 
+[![pipeline status](https://lily.kazv.moe/kazv/libkazv/badges/servant/pipeline.svg)](https://lily.kazv.moe/kazv/libkazv/-/commits/servant)
+
 libkazv is a matrix client sdk built upon [lager](https://github.com/arximboldi/lager)
 and the value-oriented design it enables.
 
