@@ -32,6 +32,7 @@
 
 #include <cursorutil.hpp>
 
+#include <status-utils.hpp>
 #include "paginate.hpp"
 
 namespace Kazv
@@ -40,14 +41,21 @@ namespace Kazv
     {
         auto roomId = a.roomId;
         auto room = m.roomList.at(roomId);
-        auto paginateBackToken = room.paginateBackToken;
+
+        if (! room.timelineGaps.find(a.fromEventId)) {
+            kzo.client.dbg() << "There is no such gap at " << a.fromEventId << std::endl;
+            return { m, simpleFail };
+        }
+
+        auto paginateBackToken = room.timelineGaps[a.fromEventId];
 
         auto job = m.job<GetRoomEventsJob>().make(
             roomId,
             paginateBackToken, // from
             "b"s, // dir
             std::nullopt, // to
-            a.limit).withData(json{{"roomId", roomId}});
+            a.limit).withData(json{{"roomId", roomId},
+                                   {"gapEventId", a.fromEventId}});
 
         m.addJob(std::move(job));
 
@@ -57,6 +65,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, GetRoomEventsResponse r)
     {
         auto roomId = r.dataStr("roomId");
+        auto gapEventId = r.dataStr("gapEventId");
 
         if (! r.success()) {
             kzo.client.dbg() << "Get room events failed" << std::endl;
@@ -64,23 +73,24 @@ namespace Kazv
             return { m, lager::noop };
         }
 
-        auto paginateBackToken = r.end().value_or(DEFVAL);
+        auto paginateBackToken = r.end();
         auto chunk = r.chunk();
 
         try {
+            // kzo.client.dbg() << "We got " << chunk.size() << " events here" << std::endl;
             auto room = m.roomList.at(roomId);
             immer::flex_vector_transient<Event> events{};
             // The timeline from paginate backwards is returned
             // in reversed order, so restore the order.
             zug::into(events, zug::reversed, chunk);
 
-            PrependTimelineAction action
-                {events.persistent(), paginateBackToken};
+            AddToTimelineAction action
+                {events.persistent(), paginateBackToken, std::nullopt, gapEventId};
 
-            auto roomList = RoomListModel::update(
+            m.roomList = RoomListModel::update(
                 std::move(m.roomList),
                 UpdateRoomAction{roomId, action});
-            m.roomList = std::move(roomList);
+
             m.addTrigger(PaginateSuccessful{roomId});
 
             return { std::move(m), lager::noop };
@@ -88,7 +98,7 @@ namespace Kazv
             // Ignore it, the client model is modified
             // such that it knows nothing about this room.
             // May happen in debugger.
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
     }
 }

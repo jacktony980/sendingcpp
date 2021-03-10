@@ -99,7 +99,11 @@ namespace Kazv
                                      return ReceivingRoomTimelineEvent{std::move(e), id};
                                  }),
                         timelineEvents).transient());
-                updateRoomImpl(id, AddToTimelineAction{timelineEvents, room.timeline.prevBatch, room.timeline.limited});
+                updateRoomImpl(id, AddToTimelineAction{timelineEvents,
+                            room.timeline.prevBatch,
+                            room.timeline.limited,
+                            std::nullopt // we do not have a gapEventId
+                            });
                 if (room.state) {
                     eventsToEmit.append(
                         intoImmer(

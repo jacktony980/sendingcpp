@@ -40,3 +40,11 @@ inline auto createTestClientStore(SingleTypePromiseInterface<DefaultRetType> ph)
         &ClientModel::update,
         std::move(ph));
 }
+
+inline auto createTestClientStoreFrom(ClientModel m, SingleTypePromiseInterface<DefaultRetType> ph)
+{
+    return makeStore<ClientAction>(
+        std::move(m),
+        &ClientModel::update,
+        std::move(ph));
+}

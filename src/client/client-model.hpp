@@ -185,6 +185,8 @@ namespace Kazv
     struct PaginateTimelineAction
     {
         std::string roomId;
+        /// Must be where the Gap is
+        std::string fromEventId;
         std::optional<int> limit;
     };
 

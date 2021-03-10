@@ -67,6 +67,7 @@ namespace Kazv
             [&](AddToTimelineAction a) {
                 auto eventIds = intoImmer(immer::flex_vector<std::string>(),
                                           zug::map(keyOfTimeline), a.events);
+
                 auto oldMessages = r.messages;
                 r.messages = merge(std::move(r.messages), a.events, keyOfTimeline);
                 auto exists =
@@ -81,12 +82,17 @@ namespace Kazv
 
                 // TODO need other way to determine whether it is limited
                 // in a pagination request (/messages does not have that field)
-                if (a.limited.has_value() && a.limited.value()
+                if ((! a.limited.has_value() || a.limited.value())
                     && a.prevBatch.has_value()) {
                     // this sync is limited, add a Gap here
                     if (!eventIds.empty()) {
                         r.timelineGaps = std::move(r.timelineGaps).set(eventIds[0], a.prevBatch.value());
                     }
+                }
+
+                // remove the original Gap, as it is resolved
+                if (a.gapEventId.has_value()) {
+                    r.timelineGaps = std::move(r.timelineGaps).erase(a.gapEventId.value());
                 }
 
                 return r;

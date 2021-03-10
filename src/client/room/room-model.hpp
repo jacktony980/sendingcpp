@@ -62,6 +62,7 @@ namespace Kazv
         immer::flex_vector<Event> events;
         std::optional<std::string> prevBatch;
         std::optional<bool> limited;
+        std::optional<std::string> gapEventId;
     };
 
     struct AddAccountDataAction
@@ -165,6 +166,7 @@ namespace Kazv
             && a.membership == b.membership
             && a.paginateBackToken == b.paginateBackToken
             && a.canPaginateBack == b.canPaginateBack
+            && a.timelineGaps == b.timelineGaps
             && a.ephemeral == b.ephemeral
             && a.localDraft == b.localDraft
             && a.encrypted == b.encrypted

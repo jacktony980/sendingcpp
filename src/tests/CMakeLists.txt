@@ -12,6 +12,7 @@ add_executable(kazvtest
   client/client-test-util.cpp
   client/sync-test.cpp
   client/content-test.cpp
+  client/paginate-test.cpp
   kazvjobtest.cpp
   event-emitter-test.cpp
   crypto-test.cpp
