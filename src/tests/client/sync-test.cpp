@@ -279,6 +279,10 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
 
         auto eventHasRoomId = ev.originalJson().get().contains("room_id"s);
         REQUIRE(eventHasRoomId);
+
+        auto gaps = +r.timelineGaps();
+        // first event in the batch, correspond to its prevBatch
+        REQUIRE(gaps.at("$143273582443PhrSn:example.org") == "t34-23535_0_0");
     }
 
     SECTION("fully read marker should be updated") {

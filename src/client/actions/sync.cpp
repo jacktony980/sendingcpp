@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -99,7 +99,7 @@ namespace Kazv
                                      return ReceivingRoomTimelineEvent{std::move(e), id};
                                  }),
                         timelineEvents).transient());
-                updateRoomImpl(id, AppendTimelineAction{timelineEvents});
+                updateRoomImpl(id, AddToTimelineAction{timelineEvents, room.timeline.prevBatch, room.timeline.limited});
                 if (room.state) {
                     eventsToEmit.append(
                         intoImmer(

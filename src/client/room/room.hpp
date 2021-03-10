@@ -375,6 +375,8 @@ namespace Kazv
          * for the pinned events change has been sent, or when there is an error.
          */
         PromiseT setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
+
+        lager::reader<immer::map<std::string /* eventId */, std::string /* prevBatch */>> timelineGaps() const;
     private:
         lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;

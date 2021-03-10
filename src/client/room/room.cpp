@@ -204,4 +204,10 @@ namespace Kazv
         return sendStateEvent(e);
     }
 
+    auto Room::timelineGaps() const
+        -> lager::reader<immer::map<std::string /* eventId */,
+                                    std::string /* prevBatch */>>
+    {
+        return m_room[&RoomModel::timelineGaps];
+    }
 }

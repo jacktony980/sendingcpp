@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -56,6 +56,14 @@ namespace Kazv
         std::string paginateBackToken;
     };
 
+    struct AddToTimelineAction
+    {
+        /// Events from oldest to latest
+        immer::flex_vector<Event> events;
+        std::optional<std::string> prevBatch;
+        std::optional<bool> limited;
+    };
+
     struct AddAccountDataAction
     {
         immer::flex_vector<Event> events;
@@ -96,6 +104,8 @@ namespace Kazv
         std::string roomId;
         immer::map<KeyOfState, Event> stateEvents;
         immer::map<KeyOfState, Event> inviteState;
+        // Smaller indices mean earlier events
+        // (oldest) 0 --------> n (latest)
         immer::flex_vector<std::string> timeline;
         immer::map<std::string, Event> messages;
         immer::map<std::string, Event> accountData;
@@ -103,6 +113,8 @@ namespace Kazv
         std::string paginateBackToken;
         /// whether this room has earlier events to be fetched
         bool canPaginateBack{true};
+
+        immer::map<std::string /* eventId */, std::string /* prevBatch */> timelineGaps;
 
         immer::map<std::string, Event> ephemeral;
 
@@ -127,6 +139,7 @@ namespace Kazv
             AddStateEventsAction,
             AppendTimelineAction,
             PrependTimelineAction,
+            AddToTimelineAction,
             AddAccountDataAction,
             ChangeMembershipAction,
             ChangeInviteStateAction,

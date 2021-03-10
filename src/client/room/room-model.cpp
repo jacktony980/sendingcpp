@@ -64,6 +64,33 @@ namespace Kazv
                 r.canPaginateBack = a.events.size() != 0;
                 return r;
             },
+            [&](AddToTimelineAction a) {
+                auto eventIds = intoImmer(immer::flex_vector<std::string>(),
+                                          zug::map(keyOfTimeline), a.events);
+                auto oldMessages = r.messages;
+                r.messages = merge(std::move(r.messages), a.events, keyOfTimeline);
+                auto exists =
+                    [=](auto eventId) -> bool {
+                        return !! oldMessages.find(eventId);
+                    };
+                auto key =
+                    [=](auto eventId) {
+                        return r.messages[eventId].originServerTs();
+                    };
+                r.timeline = sortedUniqueMerge(r.timeline, eventIds, exists, key);
+
+                // TODO need other way to determine whether it is limited
+                // in a pagination request (/messages does not have that field)
+                if (a.limited.has_value() && a.limited.value()
+                    && a.prevBatch.has_value()) {
+                    // this sync is limited, add a Gap here
+                    if (!eventIds.empty()) {
+                        r.timelineGaps = std::move(r.timelineGaps).set(eventIds[0], a.prevBatch.value());
+                    }
+                }
+
+                return r;
+            },
             [&](AddAccountDataAction a) {
                 r.accountData = merge(std::move(r.accountData), a.events, keyOfAccountData);
                 return r;
