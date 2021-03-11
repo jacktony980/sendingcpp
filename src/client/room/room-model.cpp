@@ -78,6 +78,7 @@ namespace Kazv
                     [=](auto eventId) {
                         return r.messages[eventId].originServerTs();
                     };
+
                 r.timeline = sortedUniqueMerge(r.timeline, eventIds, exists, key);
 
                 // TODO need other way to determine whether it is limited
@@ -93,6 +94,17 @@ namespace Kazv
                 // remove the original Gap, as it is resolved
                 if (a.gapEventId.has_value()) {
                     r.timelineGaps = std::move(r.timelineGaps).erase(a.gapEventId.value());
+                }
+
+                // remove all Gaps between the gapped event and the first event in this batch
+                if (!eventIds.empty() && a.gapEventId.has_value()) {
+                    auto thisBatchStart = std::find(r.timeline.begin(), r.timeline.end(), eventIds[0]);
+                    auto origBatchStart = std::find(thisBatchStart, r.timeline.end(), a.gapEventId.value());
+
+                    std::for_each(thisBatchStart + 1, origBatchStart,
+                                  [&](auto eventId) {
+                                      r.timelineGaps = std::move(r.timelineGaps).erase(eventId);
+                                  });
                 }
 
                 return r;

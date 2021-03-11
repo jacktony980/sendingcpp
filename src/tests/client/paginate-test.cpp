@@ -92,7 +92,7 @@ static json paginateResponseJson = R"({
       "event_id": "$first:example.org",
       "room_id": "!foo:example.org",
       "sender": "@example:example.org",
-      "origin_server_ts": 1432735824653,
+      "origin_server_ts": 1432735824651,
       "unsigned": {
         "age": 1234
       }
@@ -100,7 +100,38 @@ static json paginateResponseJson = R"({
   ]
 })"_json;
 
-TEST_CASE("Pagination should ", "[client][paginate]")
+static Event event1 = R"({
+        "type": "m.room.message",
+        "event_id": "$event1:example.org",
+        "room_id": "!foo:example.org",
+        "sender": "@example:example.org",
+        "origin_server_ts": 1432735824654
+    })"_json;
+
+static Event event2 = R"({
+        "type": "m.room.message",
+        "event_id": "$event2:example.org",
+        "room_id": "!foo:example.org",
+        "sender": "@example:example.org",
+        "origin_server_ts": 1432735824656
+    })"_json;
+
+static Event secEvent = R"({
+  "content": {
+    "name": "The room name"
+  },
+  "type": "m.room.name",
+  "event_id": "$second:example.org",
+  "room_id": "!foo:example.org",
+  "sender": "@example:example.org",
+  "origin_server_ts": 1432735824653,
+  "unsigned": {
+    "age": 1234
+  },
+  "state_key": ""
+})"_json;
+
+TEST_CASE("Pagination should remove the original gap and record a new one", "[client][paginate]")
 {
     using namespace Kazv::CursorOp;
 
@@ -112,21 +143,6 @@ TEST_CASE("Pagination should ", "[client][paginate]")
     auto room = RoomModel{};
     room.roomId = "!foo:example.org";
     room.timeline = immer::flex_vector<std::string>{"$event1:example.org", "$event2:example.org"};
-
-    Event event1 = R"({
-        "type": "m.room.message",
-        "event_id": "$event1:example.org",
-        "room_id": "!foo:example.org",
-        "sender": "@example:example.org",
-        "origin_server_ts": 1432735824654
-    })"_json;
-    Event event2 = R"({
-        "type": "m.room.message",
-        "event_id": "$event2:example.org",
-        "room_id": "!foo:example.org",
-        "sender": "@example:example.org",
-        "origin_server_ts": 1432735824656
-    })"_json;
 
     room.messages = std::move(room.messages)
         .set("$event1:example.org", event1)
@@ -153,5 +169,49 @@ TEST_CASE("Pagination should ", "[client][paginate]")
     auto timelineGaps = +r.timelineGaps();
 
     REQUIRE(! timelineGaps.find("$event1:example.org"));
+    REQUIRE(timelineGaps.at("$first:example.org") == "anotherPrevBatch");
+}
+
+TEST_CASE("Pagination should erase all gaps in (start-of-fetched-batch, orig-gapped-event]", "[client][paginate]")
+{
+    using namespace Kazv::CursorOp;
+
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto m = createTestClientModel();
+
+    auto room = RoomModel{};
+    room.roomId = "!foo:example.org";
+    room.timeline = immer::flex_vector<std::string>{"$second:example.org", "$event1:example.org", "$event2:example.org"};
+
+    room.messages = std::move(room.messages)
+        .set("$event1:example.org", event1)
+        .set("$event2:example.org", event2)
+        .set("$second:example.org", secEvent);
+
+    room.timelineGaps = room.timelineGaps
+        .set("$event1:example.org", "prevBatchForEvent1")
+        .set("$second:example.org", "prevBatchForSecEvent");
+
+    m.roomList.rooms = m.roomList.rooms.set(room.roomId, room);
+
+    auto store = createTestClientStoreFrom(m, ph);
+
+    auto resp = createResponse("GetRoomEvents", paginateResponseJson,
+                               json{{"roomId", "!foo:example.org"},
+                                       {"gapEventId", "$event1:example.org"}});
+
+    auto client = Client(store.reader().map([](auto c) { return SdkModel{c}; }), store,
+                         std::nullopt);
+
+    store.dispatch(ProcessResponseAction{resp});
+    io.run();
+
+    auto r = client.room("!foo:example.org");
+
+    auto timelineGaps = +r.timelineGaps();
+
+    REQUIRE(! timelineGaps.find("$second:example.org"));
     REQUIRE(timelineGaps.at("$first:example.org") == "anotherPrevBatch");
 }
