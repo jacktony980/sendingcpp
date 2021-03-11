@@ -210,4 +210,12 @@ namespace Kazv
     {
         return m_room[&RoomModel::timelineGaps];
     }
+
+    auto Room::paginateBackFromEvent(std::string eventId) const
+        -> PromiseT
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(PaginateTimelineAction{
+                +roomId(), eventId, std::nullopt});
+    }
 }

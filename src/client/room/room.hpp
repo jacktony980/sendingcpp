@@ -376,7 +376,32 @@ namespace Kazv
          */
         PromiseT setPinnedEvents(immer::flex_vector<std::string> eventIds) const;
 
+        /**
+         * Get the Gaps in the timeline for this room.
+         *
+         * Any key of the map in the returned reader can be send as
+         * an argument of paginateBackFromEvent() to try to fill the Gap
+         * at that event.
+         *
+         * @return A lager::reader that contains an evnetId-to-prevBatch map.
+         */
         lager::reader<immer::map<std::string /* eventId */, std::string /* prevBatch */>> timelineGaps() const;
+
+        /**
+         * Try to paginate back from @c eventId.
+         *
+         * @param eventId An event id that is in the key of `+timelineGaps()`.
+         *
+         * @return A Promise that resolves when the pagination is
+         * successful, or when there is an error. If it is successful,
+         * `+timelineGaps()` will no longer contain eventId as key, and
+         * `timeline()` will contain the events before eventId in the
+         * full event chain on the homeserver.
+         * If `eventId` is not in `+timelineGaps()`, it is considered
+         * to be failed.
+         */
+        PromiseT paginateBackFromEvent(std::string eventId) const;
+
     private:
         lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;
