@@ -76,7 +76,8 @@ namespace Kazv
                     };
                 auto key =
                     [=](auto eventId) {
-                        return r.messages[eventId].originServerTs();
+                        // sort first by timestamp, then by id
+                        return std::make_tuple(r.messages[eventId].originServerTs(), eventId);
                     };
 
                 r.timeline = sortedUniqueMerge(r.timeline, eventIds, exists, key);
@@ -98,8 +99,11 @@ namespace Kazv
 
                 // remove all Gaps between the gapped event and the first event in this batch
                 if (!eventIds.empty() && a.gapEventId.has_value()) {
-                    auto thisBatchStart = std::find(r.timeline.begin(), r.timeline.end(), eventIds[0]);
-                    auto origBatchStart = std::find(thisBatchStart, r.timeline.end(), a.gapEventId.value());
+                    auto cmp = [=](auto a, auto b) {
+                                   return key(a) < key(b);
+                               };
+                    auto thisBatchStart = std::equal_range(r.timeline.begin(), r.timeline.end(), eventIds[0], cmp).first;
+                    auto origBatchStart = std::equal_range(thisBatchStart, r.timeline.end(), a.gapEventId.value(), cmp).first;
 
                     std::for_each(thisBatchStart + 1, origBatchStart,
                                   [&](auto eventId) {
