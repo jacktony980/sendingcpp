@@ -114,6 +114,16 @@ namespace Kazv
                             room.state.value().events).transient());
                     updateRoomImpl(id, AddStateEventsAction{room.state.value().events});
                 }
+
+                // Process state events in timeline, which should have arrived later
+                // than those in room.state .
+                updateRoomImpl(id, AddStateEventsAction{
+                        intoImmer(EventList{},
+                                  zug::filter([=](Event e) {
+                                                  return e.isState();
+                                              }),
+                                  timelineEvents)});
+
                 if (room.accountData) {
                     eventsToEmit.append(
                         intoImmer(

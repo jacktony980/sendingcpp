@@ -212,6 +212,30 @@ static json syncResponseJson = R"({
   }
 })"_json;
 
+static json stateInTimelineResponseJson = R"({
+  "next_batch": "some-example-value",
+  "rooms": {
+    "join": {
+      "!exampleroomid:example.com": {
+        "timeline": {
+          "events": [
+            {
+              "content": { "example": "foo" },
+              "state_key": "",
+              "event_id": "$example:example.com",
+              "sender": "@example:example.org",
+              "origin_server_ts": 1432735824653,
+              "unsigned": { "age": 1234 },
+              "type": "moe.kazv.mxc.custom.state.type"
+            }
+          ],
+          "limited": false
+        }
+      }
+    }
+  }
+})"_json;
+
 TEST_CASE("use sync response to update client model", "[client][sync]")
 {
     using namespace Kazv::CursorOp;
@@ -297,4 +321,30 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
         REQUIRE(toDevice.size() == 1);
         REQUIRE(toDevice[0].sender() == "@alice:example.com");
     }
+}
+
+TEST_CASE("Sync should record state events in timeline", "[client][sync]")
+{
+    using namespace Kazv::CursorOp;
+
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto store = createTestClientStore(ph);
+
+    auto resp = createResponse("Sync", stateInTimelineResponseJson, json{{"is", "initial"}});
+
+    auto client = Client(store.reader().map([](auto c) { return SdkModel{c}; }), store,
+                         std::nullopt);
+
+    store.dispatch(ProcessResponseAction{resp});
+
+    io.run();
+
+    auto r = client.room("!exampleroomid:example.com");
+
+    auto stateOpt = +r.stateOpt(KeyOfState{"moe.kazv.mxc.custom.state.type", ""});
+
+    REQUIRE(stateOpt.has_value());
+    REQUIRE(stateOpt.value().content().get().at("example") == "foo");
 }
