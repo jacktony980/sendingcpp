@@ -87,6 +87,11 @@ namespace Kazv
             : "";
     }
 
+    bool Event::isState() const
+    {
+        return raw().get().contains("state_key");
+    }
+
     /// returns the decrypted json
     JsonWrap Event::raw() const {
         return m_encrypted ? decryptedJson() : m_json;

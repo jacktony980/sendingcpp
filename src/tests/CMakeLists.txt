@@ -8,12 +8,15 @@ configure_file(kazvtest-respath.hpp.in kazvtest-respath.hpp)
 add_executable(kazvtest
   testmain.cpp
   basejobtest.cpp
+  event-test.cpp
   cursorutiltest.cpp
+
   client/client-test-util.cpp
   client/sync-test.cpp
   client/content-test.cpp
   client/paginate-test.cpp
   client/util-test.cpp
+
   kazvjobtest.cpp
   event-emitter-test.cpp
   crypto-test.cpp

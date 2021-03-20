@@ -57,6 +57,13 @@ namespace Kazv
 
         std::string stateKey() const;
 
+        /**
+         * @return whether this event is a state event.
+         * An event is considered a state event if and only if
+         * it has a maybe empty stateKey.
+         */
+        bool isState() const;
+
         JsonWrap content() const;
 
         /// returns the decrypted json
