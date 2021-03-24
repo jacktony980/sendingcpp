@@ -33,8 +33,9 @@ return _q;
 GetRoomTagsJob::GetRoomTagsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string roomId)
+            ,
+        std::string userId, std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags",
           GET,
@@ -43,7 +44,9 @@ GetRoomTagsJob::GetRoomTagsJob(
           ReturnType::Json,
             buildBody(userId, roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -114,8 +117,9 @@ return _q;
 SetRoomTagJob::SetRoomTagJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties)
+            ,
+        std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           PUT,
@@ -124,7 +128,9 @@ SetRoomTagJob::SetRoomTagJob(
           ReturnType::Json,
             buildBody(userId, roomId, tag, order, additionalProperties)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -179,8 +185,9 @@ return _q;
 DeleteRoomTagJob::DeleteRoomTagJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string roomId, std::string tag)
+            ,
+        std::string userId, std::string roomId, std::string tag
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           DELETE,
@@ -189,7 +196,9 @@ DeleteRoomTagJob::DeleteRoomTagJob(
           ReturnType::Json,
             buildBody(userId, roomId, tag)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

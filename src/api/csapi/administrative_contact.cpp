@@ -33,6 +33,7 @@ return _q;
 GetAccount3PIDsJob::GetAccount3PIDsJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -114,8 +117,9 @@ return _q;
 Post3PIDsJob::Post3PIDsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        ThreePidCredentials threePidCreds)
+            ,
+        ThreePidCredentials threePidCreds
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid",
           POST,
@@ -124,7 +128,9 @@ Post3PIDsJob::Post3PIDsJob(
           ReturnType::Json,
             buildBody(threePidCreds)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -188,8 +194,9 @@ return _q;
 Add3PIDJob::Add3PIDJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth)
+            ,
+        std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/add",
           POST,
@@ -198,7 +205,9 @@ Add3PIDJob::Add3PIDJob(
           ReturnType::Json,
             buildBody(clientSecret, sid, auth)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -264,8 +273,9 @@ return _q;
 Bind3PIDJob::Bind3PIDJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid)
+            ,
+        std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/bind",
           POST,
@@ -274,7 +284,9 @@ Bind3PIDJob::Bind3PIDJob(
           ReturnType::Json,
             buildBody(clientSecret, idServer, idAccessToken, sid)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -338,8 +350,9 @@ return _q;
 Delete3pidFromAccountJob::Delete3pidFromAccountJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string medium, std::string address, std::optional<std::string> idServer)
+            ,
+        std::string medium, std::string address, std::optional<std::string> idServer
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/delete",
           POST,
@@ -348,7 +361,9 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
           ReturnType::Json,
             buildBody(medium, address, idServer)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -424,8 +439,9 @@ return _q;
 Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string medium, std::string address, std::optional<std::string> idServer)
+            ,
+        std::string medium, std::string address, std::optional<std::string> idServer
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/unbind",
           POST,
@@ -434,7 +450,9 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
           ReturnType::Json,
             buildBody(medium, address, idServer)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -502,8 +520,9 @@ return _q;
 RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
         std::string serverUrl
         
-        ,
-        EmailValidationData body)
+            ,
+        EmailValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/email/requestToken",
           POST,
@@ -512,7 +531,9 @@ RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -568,8 +589,9 @@ return _q;
 RequestTokenTo3PIDMSISDNJob::RequestTokenTo3PIDMSISDNJob(
         std::string serverUrl
         
-        ,
-        MsisdnValidationData body)
+            ,
+        MsisdnValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/3pid/msisdn/requestToken",
           POST,
@@ -578,7 +600,9 @@ RequestTokenTo3PIDMSISDNJob::RequestTokenTo3PIDMSISDNJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

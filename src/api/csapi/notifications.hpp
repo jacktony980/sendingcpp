@@ -88,7 +88,8 @@ immer::array<Notification> notifications() const;
     explicit GetNotificationsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> from  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> only  = std::nullopt);
+        std::optional<std::string> from  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> only  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(

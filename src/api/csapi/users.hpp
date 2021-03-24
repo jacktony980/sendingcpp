@@ -88,7 +88,8 @@ bool limited() const;
     explicit SearchUserDirectoryJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string searchTerm , std::optional<int> limit  = std::nullopt);
+        std::string searchTerm , std::optional<int> limit  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

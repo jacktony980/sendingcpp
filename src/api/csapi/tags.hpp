@@ -65,7 +65,8 @@ immer::map<std::string, Tag> tags() const;
     explicit GetRoomTagsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId );
+        std::string userId , std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -160,7 +161,8 @@ public:
     explicit SetRoomTagJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId , std::string tag , std::optional<float> order  = std::nullopt, JsonWrap additionalProperties  = {});
+        std::string userId , std::string roomId , std::string tag , std::optional<float> order  = std::nullopt, JsonWrap additionalProperties  = {}
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -227,7 +229,8 @@ public:
     explicit DeleteRoomTagJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId , std::string tag );
+        std::string userId , std::string roomId , std::string tag 
+        );
 
 
     static BaseJob::Query buildQuery(

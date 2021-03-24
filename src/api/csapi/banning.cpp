@@ -40,8 +40,9 @@ return _q;
 BanJob::BanJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string userId, std::optional<std::string> reason)
+            ,
+        std::string roomId, std::string userId, std::optional<std::string> reason
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/ban",
           POST,
@@ -50,7 +51,9 @@ BanJob::BanJob(
           ReturnType::Json,
             buildBody(roomId, userId, reason)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -110,8 +113,9 @@ return _q;
 UnbanJob::UnbanJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string userId)
+            ,
+        std::string roomId, std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/unban",
           POST,
@@ -120,7 +124,9 @@ UnbanJob::UnbanJob(
           ReturnType::Json,
             buildBody(roomId, userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

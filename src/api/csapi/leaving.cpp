@@ -33,8 +33,9 @@ return _q;
 LeaveRoomJob::LeaveRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/leave",
           POST,
@@ -43,7 +44,9 @@ LeaveRoomJob::LeaveRoomJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -98,8 +101,9 @@ return _q;
 ForgetRoomJob::ForgetRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/forget",
           POST,
@@ -108,7 +112,9 @@ ForgetRoomJob::ForgetRoomJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

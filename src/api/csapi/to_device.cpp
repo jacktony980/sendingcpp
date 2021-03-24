@@ -38,8 +38,9 @@ return _q;
 SendToDeviceJob::SendToDeviceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages)
+            ,
+        std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/sendToDevice/" + eventType + "/" + txnId,
           PUT,
@@ -48,7 +49,9 @@ SendToDeviceJob::SendToDeviceJob(
           ReturnType::Json,
             buildBody(eventType, txnId, messages)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

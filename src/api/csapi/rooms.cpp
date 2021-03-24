@@ -33,8 +33,9 @@ return _q;
 GetOneRoomEventJob::GetOneRoomEventJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventId)
+            ,
+        std::string roomId, std::string eventId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/event/" + eventId,
           GET,
@@ -43,7 +44,9 @@ GetOneRoomEventJob::GetOneRoomEventJob(
           ReturnType::Json,
             buildBody(roomId, eventId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -98,8 +101,9 @@ return _q;
 GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventType, std::string stateKey)
+            ,
+        std::string roomId, std::string eventType, std::string stateKey
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
           GET,
@@ -108,7 +112,9 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -163,8 +169,9 @@ return _q;
 GetRoomStateJob::GetRoomStateJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state",
           GET,
@@ -173,7 +180,9 @@ GetRoomStateJob::GetRoomStateJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -233,8 +242,9 @@ return _q;
 GetMembersByRoomJob::GetMembersByRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership)
+            ,
+        std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/members",
           GET,
@@ -243,7 +253,9 @@ GetMembersByRoomJob::GetMembersByRoomJob(
           ReturnType::Json,
             buildBody(roomId, at, membership, notMembership)
               , buildQuery(at, membership, notMembership)
-                )
+                , {}
+
+)
         {
         }
 
@@ -309,8 +321,9 @@ return _q;
 GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/joined_members",
           GET,
@@ -319,7 +332,9 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

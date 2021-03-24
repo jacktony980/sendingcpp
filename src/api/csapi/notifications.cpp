@@ -38,8 +38,9 @@ return _q;
 GetNotificationsJob::GetNotificationsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only)
+            ,
+        std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/notifications",
           GET,
@@ -48,7 +49,9 @@ GetNotificationsJob::GetNotificationsJob(
           ReturnType::Json,
             buildBody(from, limit, only)
               , buildQuery(from, limit, only)
-                )
+                , {}
+
+)
         {
         }
 

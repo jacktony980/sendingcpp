@@ -34,8 +34,9 @@ return _q;
 SendMessageJob::SendMessageJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventType, std::string txnId, JsonWrap body)
+            ,
+        std::string roomId, std::string eventType, std::string txnId, JsonWrap body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/send/" + eventType + "/" + txnId,
           PUT,
@@ -44,7 +45,9 @@ SendMessageJob::SendMessageJob(
           ReturnType::Json,
             buildBody(roomId, eventType, txnId, body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

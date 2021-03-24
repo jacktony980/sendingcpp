@@ -39,8 +39,9 @@ return _q;
 SearchJob::SearchJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        Categories searchCategories, std::optional<std::string> nextBatch)
+            ,
+        Categories searchCategories, std::optional<std::string> nextBatch
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/search",
           POST,
@@ -49,7 +50,9 @@ SearchJob::SearchJob(
           ReturnType::Json,
             buildBody(searchCategories, nextBatch)
               , buildQuery(nextBatch)
-                )
+                , {}
+
+)
         {
         }
 

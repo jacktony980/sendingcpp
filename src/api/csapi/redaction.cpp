@@ -38,8 +38,9 @@ return _q;
 RedactEventJob::RedactEventJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason)
+            ,
+        std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/redact/" + eventId + "/" + txnId,
           PUT,
@@ -48,7 +49,9 @@ RedactEventJob::RedactEventJob(
           ReturnType::Json,
             buildBody(roomId, eventId, txnId, reason)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

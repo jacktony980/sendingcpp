@@ -7,8 +7,8 @@
 #include "basejob.hpp"
 #include "csapi/definitions/request_msisdn_validation.hpp"
 #include "csapi/definitions/request_token_response.hpp"
-#include "csapi/definitions/auth_data.hpp"
 #include "csapi/definitions/request_email_validation.hpp"
+#include "csapi/definitions/auth_data.hpp"
 
 namespace Kazv::Api {
 
@@ -143,7 +143,8 @@ std::optional<std::string> deviceId() const;
     explicit RegisterJob(std::string serverUrl
     
       ,
-        std::string kind  = std::string("user"), std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> username  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt, std::optional<bool> inhibitLogin  = std::nullopt);
+        std::string kind  = std::string("user"), std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> username  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt, std::optional<bool> inhibitLogin  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -224,7 +225,8 @@ public:
     explicit RequestTokenToRegisterEmailJob(std::string serverUrl
     
       ,
-        EmailValidationData body );
+        EmailValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -305,7 +307,8 @@ public:
     explicit RequestTokenToRegisterMSISDNJob(std::string serverUrl
     
       ,
-        MsisdnValidationData body );
+        MsisdnValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -387,7 +390,8 @@ public:
     explicit ChangePasswordJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string newPassword , std::optional<bool> logoutDevices  = std::nullopt, std::optional<AuthenticationData> auth  = std::nullopt);
+        std::string newPassword , std::optional<bool> logoutDevices  = std::nullopt, std::optional<AuthenticationData> auth  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -496,7 +500,8 @@ public:
     explicit RequestTokenToResetPasswordEmailJob(std::string serverUrl
     
       ,
-        EmailValidationData body );
+        EmailValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -603,7 +608,8 @@ public:
     explicit RequestTokenToResetPasswordMSISDNJob(std::string serverUrl
     
       ,
-        MsisdnValidationData body );
+        MsisdnValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -699,7 +705,8 @@ std::string idServerUnbindResult() const;
     explicit DeactivateAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> idServer  = std::nullopt);
+        std::optional<AuthenticationData> auth  = std::nullopt, std::optional<std::string> idServer  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -779,7 +786,8 @@ std::optional<bool> available() const;
     explicit CheckUsernameAvailabilityJob(std::string serverUrl
     
       ,
-        std::string username );
+        std::string username 
+        );
 
 
     static BaseJob::Query buildQuery(

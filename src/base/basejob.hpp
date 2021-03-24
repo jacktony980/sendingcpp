@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -119,7 +119,7 @@ namespace Kazv
 
         enum ReturnType {
             Json,
-            Byte,
+            File,
         };
 
         BaseJob(std::string serverUrl,
@@ -130,7 +130,8 @@ namespace Kazv
                 ReturnType returnType = ReturnType::Json,
                 Body body = EmptyBody{},
                 Query query = {},
-                Header header = {});
+                Header header = {},
+                std::optional<FileDesc> responseFile = std::nullopt);
 
         bool shouldReturnJson() const;
 
@@ -162,6 +163,8 @@ namespace Kazv
         std::string jobId() const;
         std::optional<std::string> queueId() const;
         JobQueuePolicy queuePolicy() const;
+
+        std::optional<FileDesc> responseFile() const;
 
     protected:
         void attachData(JsonWrap data);

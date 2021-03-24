@@ -33,6 +33,7 @@ return _q;
 GetProtocolsJob::GetProtocolsJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetProtocolsJob::GetProtocolsJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -98,8 +101,9 @@ return _q;
 GetProtocolMetadataJob::GetProtocolMetadataJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string protocol)
+            ,
+        std::string protocol
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/protocol/" + protocol,
           GET,
@@ -108,7 +112,9 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
           ReturnType::Json,
             buildBody(protocol)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -164,8 +170,9 @@ return _q;
 QueryLocationByProtocolJob::QueryLocationByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string protocol, std::optional<std::string> searchFields)
+            ,
+        std::string protocol, std::optional<std::string> searchFields
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/location/" + protocol,
           GET,
@@ -174,7 +181,9 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
           ReturnType::Json,
             buildBody(protocol, searchFields)
               , buildQuery(searchFields)
-                )
+                , {}
+
+)
         {
         }
 
@@ -230,8 +239,9 @@ return _q;
 QueryUserByProtocolJob::QueryUserByProtocolJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string protocol, std::optional<std::string> fields)
+            ,
+        std::string protocol, std::optional<std::string> fields
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/user/" + protocol,
           GET,
@@ -240,7 +250,9 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
           ReturnType::Json,
             buildBody(protocol, fields)
               , buildQuery(fields)
-                )
+                , {}
+
+)
         {
         }
 
@@ -296,8 +308,9 @@ return _q;
 QueryLocationByAliasJob::QueryLocationByAliasJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string alias)
+            ,
+        std::string alias
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/location",
           GET,
@@ -306,7 +319,9 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
           ReturnType::Json,
             buildBody(alias)
               , buildQuery(alias)
-                )
+                , {}
+
+)
         {
         }
 
@@ -362,8 +377,9 @@ return _q;
 QueryUserByIDJob::QueryUserByIDJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userid)
+            ,
+        std::string userid
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/thirdparty/user",
           GET,
@@ -372,7 +388,9 @@ QueryUserByIDJob::QueryUserByIDJob(
           ReturnType::Json,
             buildBody(userid)
               , buildQuery(userid)
-                )
+                , {}
+
+)
         {
         }
 

@@ -59,7 +59,8 @@ public:
     explicit GetOneRoomEventJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId );
+        std::string roomId , std::string eventId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -132,7 +133,8 @@ public:
     explicit GetRoomStateWithKeyJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventType , std::string stateKey );
+        std::string roomId , std::string eventType , std::string stateKey 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -205,7 +207,8 @@ public:
     explicit GetRoomStateJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -289,7 +292,8 @@ EventList chunk() const;
     explicit GetMembersByRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::optional<std::string> at  = std::nullopt, std::optional<std::string> membership  = std::nullopt, std::optional<std::string> notMembership  = std::nullopt);
+        std::string roomId , std::optional<std::string> at  = std::nullopt, std::optional<std::string> membership  = std::nullopt, std::optional<std::string> notMembership  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -368,7 +372,8 @@ immer::map<std::string, RoomMember> joined() const;
     explicit GetJoinedMembersByRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(

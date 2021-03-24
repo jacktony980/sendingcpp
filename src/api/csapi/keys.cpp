@@ -40,8 +40,9 @@ return _q;
 UploadKeysJob::UploadKeysJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys)
+            ,
+        std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/upload",
           POST,
@@ -50,7 +51,9 @@ UploadKeysJob::UploadKeysJob(
           ReturnType::Json,
             buildBody(deviceKeys, oneTimeKeys)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -126,8 +129,9 @@ return _q;
 QueryKeysJob::QueryKeysJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token)
+            ,
+        immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/query",
           POST,
@@ -136,7 +140,9 @@ QueryKeysJob::QueryKeysJob(
           ReturnType::Json,
             buildBody(deviceKeys, timeout, token)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -220,8 +226,9 @@ return _q;
 ClaimKeysJob::ClaimKeysJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout)
+            ,
+        immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/claim",
           POST,
@@ -230,7 +237,9 @@ ClaimKeysJob::ClaimKeysJob(
           ReturnType::Json,
             buildBody(oneTimeKeys, timeout)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -311,8 +320,9 @@ return _q;
 GetKeysChangesJob::GetKeysChangesJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string from, std::string to)
+            ,
+        std::string from, std::string to
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/keys/changes",
           GET,
@@ -321,7 +331,9 @@ GetKeysChangesJob::GetKeysChangesJob(
           ReturnType::Json,
             buildBody(from, to)
               , buildQuery(from, to)
-                )
+                , {}
+
+)
         {
         }
 

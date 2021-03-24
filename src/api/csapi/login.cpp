@@ -33,6 +33,7 @@ return _q;
 GetLoginFlowsJob::GetLoginFlowsJob(
         std::string serverUrl
         
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetLoginFlowsJob::GetLoginFlowsJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -124,8 +127,9 @@ return _q;
 LoginJob::LoginJob(
         std::string serverUrl
         
-        ,
-        std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName)
+            ,
+        std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login",
           POST,
@@ -134,7 +138,9 @@ LoginJob::LoginJob(
           ReturnType::Json,
             buildBody(type, identifier, password, token, deviceId, initialDeviceDisplayName)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

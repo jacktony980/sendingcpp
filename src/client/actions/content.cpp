@@ -91,7 +91,7 @@ namespace Kazv
             return { std::move(m), lager::noop };
         }
 
-        m.addTrigger(DownloadContentSuccessful{mxcUri, r.data(), r.contentDisposition(), r.contentType()});
+        m.addTrigger(DownloadContentSuccessful{mxcUri, std::get<Bytes>(r.data()), r.contentDisposition(), r.contentType()});
         return { std::move(m), lager::noop };
     }
 
@@ -118,7 +118,7 @@ namespace Kazv
             return { std::move(m), lager::noop };
         }
 
-        m.addTrigger(DownloadThumbnailSuccessful{mxcUri, r.data(), r.contentType()});
+        m.addTrigger(DownloadThumbnailSuccessful{mxcUri, std::get<Bytes>(r.data()), r.contentType()});
         return { std::move(m), lager::noop };
     }
 

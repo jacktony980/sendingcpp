@@ -33,8 +33,9 @@ return _q;
 GetWhoIsJob::GetWhoIsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId)
+            ,
+        std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/admin/whois/" + userId,
           GET,
@@ -43,7 +44,9 @@ GetWhoIsJob::GetWhoIsJob(
           ReturnType::Json,
             buildBody(userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

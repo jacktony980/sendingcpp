@@ -53,7 +53,8 @@ public:
     explicit ReportContentJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId , int score , std::string reason );
+        std::string roomId , std::string eventId , int score , std::string reason 
+        );
     
 
     static BaseJob::Query buildQuery(

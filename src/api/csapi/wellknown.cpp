@@ -33,6 +33,7 @@ return _q;
 GetWellknownJob::GetWellknownJob(
         std::string serverUrl
         
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetWellknownJob::GetWellknownJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

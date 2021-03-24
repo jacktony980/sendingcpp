@@ -50,7 +50,8 @@ std::optional<std::string> visibility() const;
     explicit GetRoomVisibilityOnDirectoryJob(std::string serverUrl
     
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -119,7 +120,8 @@ public:
     explicit SetRoomVisibilityOnDirectoryJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::optional<std::string> visibility  = std::nullopt);
+        std::string roomId , std::optional<std::string> visibility  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -217,7 +219,8 @@ std::optional<int> totalRoomCountEstimate() const;
     explicit GetPublicRoomsJob(std::string serverUrl
     
       ,
-        std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<std::string> server  = std::nullopt);
+        std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<std::string> server  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -336,7 +339,8 @@ std::optional<int> totalRoomCountEstimate() const;
     explicit QueryPublicRoomsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> server  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<Filter> filter  = std::nullopt, std::optional<bool> includeAllNetworks  = std::nullopt, std::optional<std::string> thirdPartyInstanceId  = std::nullopt);
+        std::optional<std::string> server  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<Filter> filter  = std::nullopt, std::optional<bool> includeAllNetworks  = std::nullopt, std::optional<std::string> thirdPartyInstanceId  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

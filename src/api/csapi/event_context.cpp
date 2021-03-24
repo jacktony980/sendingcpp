@@ -36,8 +36,9 @@ return _q;
 GetEventContextJob::GetEventContextJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter)
+            ,
+        std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/context/" + eventId,
           GET,
@@ -46,7 +47,9 @@ GetEventContextJob::GetEventContextJob(
           ReturnType::Json,
             buildBody(roomId, eventId, limit, filter)
               , buildQuery(limit, filter)
-                )
+                , {}
+
+)
         {
         }
 

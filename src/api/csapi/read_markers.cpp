@@ -40,8 +40,9 @@ return _q;
 SetReadMarkerJob::SetReadMarkerJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string mFullyRead, std::optional<std::string> mRead)
+            ,
+        std::string roomId, std::string mFullyRead, std::optional<std::string> mRead
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/read_markers",
           POST,
@@ -50,7 +51,9 @@ SetReadMarkerJob::SetReadMarkerJob(
           ReturnType::Json,
             buildBody(roomId, mFullyRead, mRead)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

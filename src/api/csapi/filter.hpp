@@ -58,7 +58,8 @@ std::string filterId() const;
     explicit DefineFilterJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , Filter filter );
+        std::string userId , Filter filter 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -133,7 +134,8 @@ public:
     explicit GetFilterJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string filterId );
+        std::string userId , std::string filterId 
+        );
 
 
     static BaseJob::Query buildQuery(

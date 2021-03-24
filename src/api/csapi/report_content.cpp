@@ -40,8 +40,9 @@ return _q;
 ReportContentJob::ReportContentJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventId, int score, std::string reason)
+            ,
+        std::string roomId, std::string eventId, int score, std::string reason
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/report/" + eventId,
           POST,
@@ -50,7 +51,9 @@ ReportContentJob::ReportContentJob(
           ReturnType::Json,
             buildBody(roomId, eventId, score, reason)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

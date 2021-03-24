@@ -49,8 +49,9 @@ return _q;
 RegisterJob::RegisterJob(
         std::string serverUrl
         
-        ,
-        std::string kind, std::optional<AuthenticationData> auth, std::optional<std::string> username, std::optional<std::string> password, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName, std::optional<bool> inhibitLogin)
+            ,
+        std::string kind, std::optional<AuthenticationData> auth, std::optional<std::string> username, std::optional<std::string> password, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName, std::optional<bool> inhibitLogin
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register",
           POST,
@@ -59,7 +60,9 @@ RegisterJob::RegisterJob(
           ReturnType::Json,
             buildBody(kind, auth, username, password, deviceId, initialDeviceDisplayName, inhibitLogin)
               , buildQuery(kind)
-                )
+                , {}
+
+)
         {
         }
 
@@ -160,8 +163,9 @@ return _q;
 RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
         std::string serverUrl
         
-        ,
-        EmailValidationData body)
+            ,
+        EmailValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/email/requestToken",
           POST,
@@ -170,7 +174,9 @@ RequestTokenToRegisterEmailJob::RequestTokenToRegisterEmailJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -226,8 +232,9 @@ return _q;
 RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
         std::string serverUrl
         
-        ,
-        MsisdnValidationData body)
+            ,
+        MsisdnValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/msisdn/requestToken",
           POST,
@@ -236,7 +243,9 @@ RequestTokenToRegisterMSISDNJob::RequestTokenToRegisterMSISDNJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -300,8 +309,9 @@ return _q;
 ChangePasswordJob::ChangePasswordJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth)
+            ,
+        std::string newPassword, std::optional<bool> logoutDevices, std::optional<AuthenticationData> auth
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password",
           POST,
@@ -310,7 +320,9 @@ ChangePasswordJob::ChangePasswordJob(
           ReturnType::Json,
             buildBody(newPassword, logoutDevices, auth)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -366,8 +378,9 @@ return _q;
 RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
         std::string serverUrl
         
-        ,
-        EmailValidationData body)
+            ,
+        EmailValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password/email/requestToken",
           POST,
@@ -376,7 +389,9 @@ RequestTokenToResetPasswordEmailJob::RequestTokenToResetPasswordEmailJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -432,8 +447,9 @@ return _q;
 RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
         std::string serverUrl
         
-        ,
-        MsisdnValidationData body)
+            ,
+        MsisdnValidationData body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/password/msisdn/requestToken",
           POST,
@@ -442,7 +458,9 @@ RequestTokenToResetPasswordMSISDNJob::RequestTokenToResetPasswordMSISDNJob(
           ReturnType::Json,
             buildBody(body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -504,8 +522,9 @@ return _q;
 DeactivateAccountJob::DeactivateAccountJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<AuthenticationData> auth, std::optional<std::string> idServer)
+            ,
+        std::optional<AuthenticationData> auth, std::optional<std::string> idServer
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/account/deactivate",
           POST,
@@ -514,7 +533,9 @@ DeactivateAccountJob::DeactivateAccountJob(
           ReturnType::Json,
             buildBody(auth, idServer)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -582,8 +603,9 @@ return _q;
 CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
         std::string serverUrl
         
-        ,
-        std::string username)
+            ,
+        std::string username
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/register/available",
           GET,
@@ -592,7 +614,9 @@ CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
           ReturnType::Json,
             buildBody(username)
               , buildQuery(username)
-                )
+                , {}
+
+)
         {
         }
 

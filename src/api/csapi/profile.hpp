@@ -46,7 +46,8 @@ public:
     explicit SetDisplayNameJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::optional<std::string> displayname  = std::nullopt);
+        std::string userId , std::optional<std::string> displayname  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -116,7 +117,8 @@ std::optional<std::string> displayname() const;
     explicit GetDisplayNameJob(std::string serverUrl
     
       ,
-        std::string userId );
+        std::string userId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -180,7 +182,8 @@ public:
     explicit SetAvatarUrlJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::optional<std::string> avatarUrl  = std::nullopt);
+        std::string userId , std::optional<std::string> avatarUrl  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -250,7 +253,8 @@ std::optional<std::string> avatarUrl() const;
     explicit GetAvatarUrlJob(std::string serverUrl
     
       ,
-        std::string userId );
+        std::string userId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -325,7 +329,8 @@ std::optional<std::string> displayname() const;
     explicit GetUserProfileJob(std::string serverUrl
     
       ,
-        std::string userId );
+        std::string userId 
+        );
 
 
     static BaseJob::Query buildQuery(

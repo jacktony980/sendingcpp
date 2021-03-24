@@ -33,6 +33,7 @@ return _q;
 GetCapabilitiesJob::GetCapabilitiesJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetCapabilitiesJob::GetCapabilitiesJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

@@ -98,7 +98,8 @@ EventList accountData() const;
     explicit RoomInitialSyncJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(

@@ -92,7 +92,8 @@ EventList state() const;
     explicit GetEventContextJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId , std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt);
+        std::string roomId , std::string eventId , std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(

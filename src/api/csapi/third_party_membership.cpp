@@ -44,8 +44,9 @@ return _q;
 InviteBy3PIDJob::InviteBy3PIDJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address)
+            ,
+        std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
@@ -54,7 +55,9 @@ InviteBy3PIDJob::InviteBy3PIDJob(
           ReturnType::Json,
             buildBody(roomId, idServer, idAccessToken, medium, address)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

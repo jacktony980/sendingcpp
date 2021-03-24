@@ -42,8 +42,9 @@ return _q;
 GetRoomEventsJob::GetRoomEventsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter)
+            ,
+        std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/messages",
           GET,
@@ -52,7 +53,9 @@ GetRoomEventsJob::GetRoomEventsJob(
           ReturnType::Json,
             buildBody(roomId, from, dir, to, limit, filter)
               , buildQuery(from, to, dir, limit, filter)
-                )
+                , {}
+
+)
         {
         }
 

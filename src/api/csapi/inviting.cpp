@@ -38,8 +38,9 @@ return _q;
 InviteUserJob::InviteUserJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string userId)
+            ,
+        std::string roomId, std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
@@ -48,7 +49,9 @@ InviteUserJob::InviteUserJob(
           ReturnType::Json,
             buildBody(roomId, userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

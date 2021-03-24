@@ -60,7 +60,8 @@ immer::map<std::string, int> oneTimeKeyCounts() const;
     explicit UploadKeysJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<DeviceKeys> deviceKeys  = std::nullopt, immer::map<std::string, Variant> oneTimeKeys  = {});
+        std::optional<DeviceKeys> deviceKeys  = std::nullopt, immer::map<std::string, Variant> oneTimeKeys  = {}
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -176,7 +177,8 @@ immer::map<std::string, immer::map<std::string, DeviceInformation>> deviceKeys()
     explicit QueryKeysJob(std::string serverUrl
     , std::string _accessToken
       ,
-        immer::map<std::string, immer::array<std::string>> deviceKeys , std::optional<int> timeout  = std::nullopt, std::optional<std::string> token  = std::nullopt);
+        immer::map<std::string, immer::array<std::string>> deviceKeys , std::optional<int> timeout  = std::nullopt, std::optional<std::string> token  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -308,7 +310,8 @@ immer::map<std::string, immer::map<std::string, Variant>> oneTimeKeys() const;
     explicit ClaimKeysJob(std::string serverUrl
     , std::string _accessToken
       ,
-        immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys , std::optional<int> timeout  = std::nullopt);
+        immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys , std::optional<int> timeout  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -401,7 +404,8 @@ immer::array<std::string> left() const;
     explicit GetKeysChangesJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string from , std::string to );
+        std::string from , std::string to 
+        );
 
 
     static BaseJob::Query buildQuery(

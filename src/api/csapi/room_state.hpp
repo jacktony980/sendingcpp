@@ -98,7 +98,8 @@ std::string eventId() const;
     explicit SetRoomStateWithKeyJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventType , std::string stateKey , JsonWrap body  = {});
+        std::string roomId , std::string eventType , std::string stateKey , JsonWrap body  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

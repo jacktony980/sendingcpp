@@ -33,6 +33,7 @@ return _q;
 GetVersionsJob::GetVersionsJob(
         std::string serverUrl
         
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetVersionsJob::GetVersionsJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

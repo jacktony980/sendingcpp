@@ -99,7 +99,8 @@ public:
     explicit InviteBy3PIDJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string idServer , std::string idAccessToken , std::string medium , std::string address );
+        std::string roomId , std::string idServer , std::string idAccessToken , std::string medium , std::string address 
+        );
     
 
     static BaseJob::Query buildQuery(

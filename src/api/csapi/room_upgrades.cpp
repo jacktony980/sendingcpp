@@ -38,8 +38,9 @@ return _q;
 UpgradeRoomJob::UpgradeRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string newVersion)
+            ,
+        std::string roomId, std::string newVersion
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/upgrade",
           POST,
@@ -48,7 +49,9 @@ UpgradeRoomJob::UpgradeRoomJob(
           ReturnType::Json,
             buildBody(roomId, newVersion)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

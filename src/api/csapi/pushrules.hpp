@@ -6,8 +6,8 @@
 
 #include "basejob.hpp"
 #include "csapi/definitions/push_condition.hpp"
-#include "csapi/definitions/push_ruleset.hpp"
 #include "csapi/definitions/push_rule.hpp"
+#include "csapi/definitions/push_ruleset.hpp"
 
 namespace Kazv::Api {
 
@@ -51,6 +51,7 @@ PushRuleset global() const;
     explicit GetPushRulesJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -131,7 +132,8 @@ public:
     explicit GetPushRuleJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId );
+        std::string scope , std::string kind , std::string ruleId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -197,7 +199,8 @@ public:
     explicit DeletePushRuleJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId );
+        std::string scope , std::string kind , std::string ruleId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -288,7 +291,8 @@ public:
     explicit SetPushRuleJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions , std::optional<std::string> before  = std::nullopt, std::optional<std::string> after  = std::nullopt, immer::array<PushCondition> conditions  = {}, std::optional<std::string> pattern  = std::nullopt);
+        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions , std::optional<std::string> before  = std::nullopt, std::optional<std::string> after  = std::nullopt, immer::array<PushCondition> conditions  = {}, std::optional<std::string> pattern  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -363,7 +367,8 @@ bool enabled() const;
     explicit IsPushRuleEnabledJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId );
+        std::string scope , std::string kind , std::string ruleId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -432,7 +437,8 @@ public:
     explicit SetPushRuleEnabledJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId , bool enabled );
+        std::string scope , std::string kind , std::string ruleId , bool enabled 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -507,7 +513,8 @@ immer::array<Variant> actions() const;
     explicit GetPushRuleActionsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId );
+        std::string scope , std::string kind , std::string ruleId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -577,7 +584,8 @@ public:
     explicit SetPushRuleActionsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions );
+        std::string scope , std::string kind , std::string ruleId , immer::array<Variant> actions 
+        );
     
 
     static BaseJob::Query buildQuery(

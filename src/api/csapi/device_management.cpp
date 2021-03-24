@@ -33,6 +33,7 @@ return _q;
 GetDevicesJob::GetDevicesJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetDevicesJob::GetDevicesJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -109,8 +112,9 @@ return _q;
 GetDeviceJob::GetDeviceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string deviceId)
+            ,
+        std::string deviceId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           GET,
@@ -119,7 +123,9 @@ GetDeviceJob::GetDeviceJob(
           ReturnType::Json,
             buildBody(deviceId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -179,8 +185,9 @@ return _q;
 UpdateDeviceJob::UpdateDeviceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string deviceId, std::optional<std::string> displayName)
+            ,
+        std::string deviceId, std::optional<std::string> displayName
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           PUT,
@@ -189,7 +196,9 @@ UpdateDeviceJob::UpdateDeviceJob(
           ReturnType::Json,
             buildBody(deviceId, displayName)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -249,8 +258,9 @@ return _q;
 DeleteDeviceJob::DeleteDeviceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string deviceId, std::optional<AuthenticationData> auth)
+            ,
+        std::string deviceId, std::optional<AuthenticationData> auth
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/devices/" + deviceId,
           DELETE,
@@ -259,7 +269,9 @@ DeleteDeviceJob::DeleteDeviceJob(
           ReturnType::Json,
             buildBody(deviceId, auth)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -321,8 +333,9 @@ return _q;
 DeleteDevicesJob::DeleteDevicesJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        immer::array<std::string> devices, std::optional<AuthenticationData> auth)
+            ,
+        immer::array<std::string> devices, std::optional<AuthenticationData> auth
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/delete_devices",
           POST,
@@ -331,7 +344,9 @@ DeleteDevicesJob::DeleteDevicesJob(
           ReturnType::Json,
             buildBody(devices, auth)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

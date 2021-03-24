@@ -7,8 +7,8 @@
 #include "basejob.hpp"
 #include "csapi/definitions/request_msisdn_validation.hpp"
 #include "csapi/definitions/request_token_response.hpp"
-#include "csapi/definitions/auth_data.hpp"
 #include "csapi/definitions/request_email_validation.hpp"
+#include "csapi/definitions/auth_data.hpp"
 
 namespace Kazv::Api {
 
@@ -86,6 +86,7 @@ immer::array<ThirdPartyIdentifier> threepids() const;
     explicit GetAccount3PIDsJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -208,7 +209,8 @@ public:
     explicit Post3PIDsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        ThreePidCredentials threePidCreds );
+        ThreePidCredentials threePidCreds 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -317,7 +319,8 @@ public:
     explicit Add3PIDJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string clientSecret , std::string sid , std::optional<AuthenticationData> auth  = std::nullopt);
+        std::string clientSecret , std::string sid , std::optional<AuthenticationData> auth  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -392,7 +395,8 @@ public:
     explicit Bind3PIDJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string clientSecret , std::string idServer , std::string idAccessToken , std::string sid );
+        std::string clientSecret , std::string idServer , std::string idAccessToken , std::string sid 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -479,7 +483,8 @@ std::string idServerUnbindResult() const;
     explicit Delete3pidFromAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt);
+        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -565,7 +570,8 @@ std::string idServerUnbindResult() const;
     explicit Unbind3pidFromAccountJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt);
+        std::string medium , std::string address , std::optional<std::string> idServer  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -652,7 +658,8 @@ public:
     explicit RequestTokenTo3PIDEmailJob(std::string serverUrl
     
       ,
-        EmailValidationData body );
+        EmailValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -737,7 +744,8 @@ public:
     explicit RequestTokenTo3PIDMSISDNJob(std::string serverUrl
     
       ,
-        MsisdnValidationData body );
+        MsisdnValidationData body 
+        );
     
 
     static BaseJob::Query buildQuery(

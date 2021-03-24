@@ -53,7 +53,8 @@ public:
     explicit SendToDeviceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string eventType , std::string txnId , immer::map<std::string, immer::map<std::string, JsonWrap>> messages  = {});
+        std::string eventType , std::string txnId , immer::map<std::string, immer::map<std::string, JsonWrap>> messages  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

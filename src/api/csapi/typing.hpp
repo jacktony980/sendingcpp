@@ -55,7 +55,8 @@ public:
     explicit SetTypingJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId , bool typing , std::optional<int> timeout  = std::nullopt);
+        std::string userId , std::string roomId , bool typing , std::optional<int> timeout  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

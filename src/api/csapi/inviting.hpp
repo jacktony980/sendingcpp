@@ -62,7 +62,8 @@ public:
     explicit InviteUserJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string userId );
+        std::string roomId , std::string userId 
+        );
     
 
     static BaseJob::Query buildQuery(

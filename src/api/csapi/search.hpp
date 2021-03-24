@@ -219,7 +219,8 @@ ResultCategories searchCategories() const;
     explicit SearchJob(std::string serverUrl
     , std::string _accessToken
       ,
-        Categories searchCategories , std::optional<std::string> nextBatch  = std::nullopt);
+        Categories searchCategories , std::optional<std::string> nextBatch  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

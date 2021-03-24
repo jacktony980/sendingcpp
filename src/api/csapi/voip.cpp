@@ -33,6 +33,7 @@ return _q;
 GetTurnServerJob::GetTurnServerJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetTurnServerJob::GetTurnServerJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

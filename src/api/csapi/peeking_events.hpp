@@ -76,7 +76,8 @@ EventList chunk() const;
     explicit PeekEventsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> from  = std::nullopt, std::optional<int> timeout  = std::nullopt, std::optional<std::string> roomId  = std::nullopt);
+        std::optional<std::string> from  = std::nullopt, std::optional<int> timeout  = std::nullopt, std::optional<std::string> roomId  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(

@@ -38,8 +38,9 @@ return _q;
 SetDisplayNameJob::SetDisplayNameJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::optional<std::string> displayname)
+            ,
+        std::string userId, std::optional<std::string> displayname
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
           PUT,
@@ -48,7 +49,9 @@ SetDisplayNameJob::SetDisplayNameJob(
           ReturnType::Json,
             buildBody(userId, displayname)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -103,8 +106,9 @@ return _q;
 GetDisplayNameJob::GetDisplayNameJob(
         std::string serverUrl
         
-        ,
-        std::string userId)
+            ,
+        std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
           GET,
@@ -113,7 +117,9 @@ GetDisplayNameJob::GetDisplayNameJob(
           ReturnType::Json,
             buildBody(userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -184,8 +190,9 @@ return _q;
 SetAvatarUrlJob::SetAvatarUrlJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::optional<std::string> avatarUrl)
+            ,
+        std::string userId, std::optional<std::string> avatarUrl
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
           PUT,
@@ -194,7 +201,9 @@ SetAvatarUrlJob::SetAvatarUrlJob(
           ReturnType::Json,
             buildBody(userId, avatarUrl)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -249,8 +258,9 @@ return _q;
 GetAvatarUrlJob::GetAvatarUrlJob(
         std::string serverUrl
         
-        ,
-        std::string userId)
+            ,
+        std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
           GET,
@@ -259,7 +269,9 @@ GetAvatarUrlJob::GetAvatarUrlJob(
           ReturnType::Json,
             buildBody(userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -325,8 +337,9 @@ return _q;
 GetUserProfileJob::GetUserProfileJob(
         std::string serverUrl
         
-        ,
-        std::string userId)
+            ,
+        std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/profile/" + userId,
           GET,
@@ -335,7 +348,9 @@ GetUserProfileJob::GetUserProfileJob(
           ReturnType::Json,
             buildBody(userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

@@ -52,7 +52,8 @@ public:
     explicit LeaveRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -120,7 +121,8 @@ public:
     explicit ForgetRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(

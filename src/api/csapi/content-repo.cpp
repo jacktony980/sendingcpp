@@ -44,8 +44,9 @@ return _q;
 UploadContentJob::UploadContentJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType)
+            ,
+        FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/upload",
           POST,
@@ -57,6 +58,7 @@ UploadContentJob::UploadContentJob(
                 , buildHeader(
                   contentType
                 )
+
 )
         {
         }
@@ -125,17 +127,20 @@ return _q;
 GetContentJob::GetContentJob(
         std::string serverUrl
         
-        ,
-        std::string serverName, std::string mediaId, bool allowRemote)
+            ,
+        std::string serverName, std::string mediaId, bool allowRemote
+        , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId,
           GET,
           std::string("GetContent"),
            {} ,
-          ReturnType::Byte,
+          ReturnType::File,
             buildBody(serverName, mediaId, allowRemote)
               , buildQuery(allowRemote)
-                )
+                , {}
+, downloadTo
+)
         {
         }
 
@@ -191,17 +196,20 @@ return _q;
 GetContentOverrideNameJob::GetContentOverrideNameJob(
         std::string serverUrl
         
-        ,
-        std::string serverName, std::string mediaId, std::string fileName, bool allowRemote)
+            ,
+        std::string serverName, std::string mediaId, std::string fileName, bool allowRemote
+        , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId + "/" + fileName,
           GET,
           std::string("GetContentOverrideName"),
            {} ,
-          ReturnType::Byte,
+          ReturnType::File,
             buildBody(serverName, mediaId, fileName, allowRemote)
               , buildQuery(allowRemote)
-                )
+                , {}
+, downloadTo
+)
         {
         }
 
@@ -263,17 +271,20 @@ return _q;
 GetContentThumbnailJob::GetContentThumbnailJob(
         std::string serverUrl
         
-        ,
-        std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote)
+            ,
+        std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote
+        , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/thumbnail/" + serverName + "/" + mediaId,
           GET,
           std::string("GetContentThumbnail"),
            {} ,
-          ReturnType::Byte,
+          ReturnType::File,
             buildBody(serverName, mediaId, width, height, method, allowRemote)
               , buildQuery(width, height, method, allowRemote)
-                )
+                , {}
+, downloadTo
+)
         {
         }
 
@@ -331,8 +342,9 @@ return _q;
 GetUrlPreviewJob::GetUrlPreviewJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string url, std::optional<std::int_fast64_t> ts)
+            ,
+        std::string url, std::optional<std::int_fast64_t> ts
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/media/r0") + "/preview_url",
           GET,
@@ -341,7 +353,9 @@ GetUrlPreviewJob::GetUrlPreviewJob(
           ReturnType::Json,
             buildBody(url, ts)
               , buildQuery(url, ts)
-                )
+                , {}
+
+)
         {
         }
 
@@ -418,6 +432,7 @@ return _q;
 GetConfigJob::GetConfigJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -428,7 +443,9 @@ GetConfigJob::GetConfigJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

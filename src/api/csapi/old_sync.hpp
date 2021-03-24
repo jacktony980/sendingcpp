@@ -70,7 +70,8 @@ EventList chunk() const;
     explicit GetEventsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> from  = std::nullopt, std::optional<int> timeout  = std::nullopt);
+        std::optional<std::string> from  = std::nullopt, std::optional<int> timeout  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -220,7 +221,8 @@ EventList accountData() const;
     explicit InitialSyncJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<int> limit  = std::nullopt, std::optional<bool> archived  = std::nullopt);
+        std::optional<int> limit  = std::nullopt, std::optional<bool> archived  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -381,7 +383,8 @@ public:
     explicit GetOneEventJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string eventId );
+        std::string eventId 
+        );
 
 
     static BaseJob::Query buildQuery(

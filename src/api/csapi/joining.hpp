@@ -64,7 +64,8 @@ std::string roomId() const;
     explicit JoinRoomByIdJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt);
+        std::string roomId , std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -149,7 +150,8 @@ std::string roomId() const;
     explicit JoinRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomIdOrAlias , immer::array<std::string> serverName  = {}, std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt);
+        std::string roomIdOrAlias , immer::array<std::string> serverName  = {}, std::optional<ThirdPartySigned> thirdPartySigned  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

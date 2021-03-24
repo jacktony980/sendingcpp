@@ -33,6 +33,7 @@ return _q;
 LogoutJob::LogoutJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ LogoutJob::LogoutJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -98,6 +101,7 @@ return _q;
 LogoutAllJob::LogoutAllJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -108,7 +112,9 @@ LogoutAllJob::LogoutAllJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

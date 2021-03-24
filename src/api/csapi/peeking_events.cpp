@@ -38,8 +38,9 @@ return _q;
 PeekEventsJob::PeekEventsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId)
+            ,
+        std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
@@ -48,7 +49,9 @@ PeekEventsJob::PeekEventsJob(
           ReturnType::Json,
             buildBody(from, timeout, roomId)
               , buildQuery(from, timeout, roomId)
-                )
+                , {}
+
+)
         {
         }
 

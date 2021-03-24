@@ -40,6 +40,7 @@ public:
     explicit LogoutJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -106,6 +107,7 @@ public:
     explicit LogoutAllJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 

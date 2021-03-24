@@ -99,7 +99,8 @@ EventList state() const;
     explicit GetRoomEventsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string from , std::string dir , std::optional<std::string> to  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt);
+        std::string roomId , std::string from , std::string dir , std::optional<std::string> to  = std::nullopt, std::optional<int> limit  = std::nullopt, std::optional<std::string> filter  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(

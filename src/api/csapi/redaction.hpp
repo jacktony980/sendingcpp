@@ -67,7 +67,8 @@ std::optional<std::string> eventId() const;
     explicit RedactEventJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventId , std::string txnId , std::optional<std::string> reason  = std::nullopt);
+        std::string roomId , std::string eventId , std::string txnId , std::optional<std::string> reason  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

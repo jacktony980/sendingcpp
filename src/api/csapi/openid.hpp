@@ -69,7 +69,8 @@ public:
     explicit RequestOpenIdTokenJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , JsonWrap body  = {});
+        std::string userId , JsonWrap body  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

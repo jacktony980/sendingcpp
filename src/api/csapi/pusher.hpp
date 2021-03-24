@@ -91,6 +91,7 @@ immer::array<Pusher> pushers() const;
     explicit GetPushersJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -304,7 +305,8 @@ public:
     explicit PostPusherJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string pushkey , std::string kind , std::string appId , std::string appDisplayName , std::string deviceDisplayName , std::string lang , PusherData data , std::optional<std::string> profileTag  = std::nullopt, std::optional<bool> append  = std::nullopt);
+        std::string pushkey , std::string kind , std::string appId , std::string appDisplayName , std::string deviceDisplayName , std::string lang , PusherData data , std::optional<std::string> profileTag  = std::nullopt, std::optional<bool> append  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

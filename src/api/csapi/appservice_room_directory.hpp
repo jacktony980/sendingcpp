@@ -59,7 +59,8 @@ public:
     explicit UpdateAppserviceRoomDirectoryVsibilityJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string networkId , std::string roomId , std::string visibility );
+        std::string networkId , std::string roomId , std::string visibility 
+        );
     
 
     static BaseJob::Query buildQuery(

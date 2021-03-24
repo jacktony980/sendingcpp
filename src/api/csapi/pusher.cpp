@@ -33,6 +33,7 @@ return _q;
 GetPushersJob::GetPushersJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetPushersJob::GetPushersJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -130,8 +133,9 @@ return _q;
 PostPusherJob::PostPusherJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append)
+            ,
+        std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushers/set",
           POST,
@@ -140,7 +144,9 @@ PostPusherJob::PostPusherJob(
           ReturnType::Json,
             buildBody(pushkey, kind, appId, appDisplayName, deviceDisplayName, lang, data, profileTag, append)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

@@ -99,7 +99,8 @@ immer::map<std::string, DeviceInfo> devices() const;
     explicit GetWhoIsJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId );
+        std::string userId 
+        );
 
 
     static BaseJob::Query buildQuery(

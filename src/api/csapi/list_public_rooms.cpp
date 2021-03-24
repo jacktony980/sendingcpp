@@ -33,8 +33,9 @@ return _q;
 GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
         std::string serverUrl
         
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
           GET,
@@ -43,7 +44,9 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -114,8 +117,9 @@ return _q;
 SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::optional<std::string> visibility)
+            ,
+        std::string roomId, std::optional<std::string> visibility
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
           PUT,
@@ -124,7 +128,9 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
           ReturnType::Json,
             buildBody(roomId, visibility)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -184,8 +190,9 @@ return _q;
 GetPublicRoomsJob::GetPublicRoomsJob(
         std::string serverUrl
         
-        ,
-        std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server)
+            ,
+        std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           GET,
@@ -194,7 +201,9 @@ GetPublicRoomsJob::GetPublicRoomsJob(
           ReturnType::Json,
             buildBody(limit, since, server)
               , buildQuery(limit, since, server)
-                )
+                , {}
+
+)
         {
         }
 
@@ -308,8 +317,9 @@ return _q;
 QueryPublicRoomsJob::QueryPublicRoomsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId)
+            ,
+        std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/publicRooms",
           POST,
@@ -318,7 +328,9 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
           ReturnType::Json,
             buildBody(server, limit, since, filter, includeAllNetworks, thirdPartyInstanceId)
               , buildQuery(server)
-                )
+                , {}
+
+)
         {
         }
 

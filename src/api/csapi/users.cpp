@@ -40,8 +40,9 @@ return _q;
 SearchUserDirectoryJob::SearchUserDirectoryJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string searchTerm, std::optional<int> limit)
+            ,
+        std::string searchTerm, std::optional<int> limit
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user_directory/search",
           POST,
@@ -50,7 +51,9 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
           ReturnType::Json,
             buildBody(searchTerm, limit)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

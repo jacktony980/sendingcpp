@@ -40,8 +40,9 @@ return _q;
 SetTypingJob::SetTypingJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string roomId, bool typing, std::optional<int> timeout)
+            ,
+        std::string userId, std::string roomId, bool typing, std::optional<int> timeout
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/typing/" + userId,
           PUT,
@@ -50,7 +51,9 @@ SetTypingJob::SetTypingJob(
           ReturnType::Json,
             buildBody(userId, roomId, typing, timeout)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

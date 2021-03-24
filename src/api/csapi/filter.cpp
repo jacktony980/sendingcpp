@@ -34,8 +34,9 @@ return _q;
 DefineFilterJob::DefineFilterJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, Filter filter)
+            ,
+        std::string userId, Filter filter
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/filter",
           POST,
@@ -44,7 +45,9 @@ DefineFilterJob::DefineFilterJob(
           ReturnType::Json,
             buildBody(userId, filter)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -111,8 +114,9 @@ return _q;
 GetFilterJob::GetFilterJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string filterId)
+            ,
+        std::string userId, std::string filterId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/user/" + userId + "/filter/" + filterId,
           GET,
@@ -121,7 +125,9 @@ GetFilterJob::GetFilterJob(
           ReturnType::Json,
             buildBody(userId, filterId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

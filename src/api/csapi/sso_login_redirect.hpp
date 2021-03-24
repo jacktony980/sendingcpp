@@ -38,7 +38,8 @@ public:
     explicit RedirectToSSOJob(std::string serverUrl
     
       ,
-        std::string redirectUrl );
+        std::string redirectUrl 
+        );
 
 
     static BaseJob::Query buildQuery(

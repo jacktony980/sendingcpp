@@ -40,8 +40,9 @@ return _q;
 KickJob::KickJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string userId, std::optional<std::string> reason)
+            ,
+        std::string roomId, std::string userId, std::optional<std::string> reason
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/kick",
           POST,
@@ -50,7 +51,9 @@ KickJob::KickJob(
           ReturnType::Json,
             buildBody(roomId, userId, reason)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

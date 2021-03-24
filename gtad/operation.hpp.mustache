@@ -61,10 +61,9 @@ public:
 
     {{>docCommentShort}}
     {{#producesNonJson?}}
-    inline Bytes {{paramName}}() const
+    inline Body {{paramName}}() const
     {
-    return
-      std::get<Bytes>(body);
+    return body;
     }
     {{/producesNonJson?}}
     {{^producesNonJson?}}
@@ -109,7 +108,8 @@ public:
     explicit {{camelCaseOperationId}}Job(std::string serverUrl
     {{^skipAuth}}, std::string _accessToken{{/skipAuth}}
       {{#allParams?}},{{/allParams?}}
-        {{#allParams}}{{>joinedParamDecl}}{{/allParams}});
+        {{#allParams}}{{>joinedParamDecl}}{{/allParams}}
+        {{#producesNonJson?}}, std::optional<FileDesc> downloadTo = std::nullopt{{/producesNonJson?}});
     {{^hasBody?}}
 
     {{/hasBody?}}

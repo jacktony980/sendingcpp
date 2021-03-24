@@ -73,7 +73,8 @@ std::string eventId() const;
     explicit SendMessageJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string eventType , std::string txnId , JsonWrap body  = {});
+        std::string roomId , std::string eventType , std::string txnId , JsonWrap body  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

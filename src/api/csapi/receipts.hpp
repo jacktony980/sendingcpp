@@ -53,7 +53,8 @@ public:
     explicit PostReceiptJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string receiptType , std::string eventId , JsonWrap receipt  = {});
+        std::string roomId , std::string receiptType , std::string eventId , JsonWrap receipt  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

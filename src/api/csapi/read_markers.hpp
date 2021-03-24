@@ -52,7 +52,8 @@ public:
     explicit SetReadMarkerJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string mFullyRead , std::optional<std::string> mRead  = std::nullopt);
+        std::string roomId , std::string mFullyRead , std::optional<std::string> mRead  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

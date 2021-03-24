@@ -33,6 +33,7 @@ return _q;
 GetJoinedRoomsJob::GetJoinedRoomsJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetJoinedRoomsJob::GetJoinedRoomsJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

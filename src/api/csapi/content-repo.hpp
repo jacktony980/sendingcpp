@@ -55,7 +55,8 @@ std::string contentUri() const;
     explicit UploadContentJob(std::string serverUrl
     , std::string _accessToken
       ,
-        FileDesc content , std::optional<std::string> filename  = std::nullopt, std::optional<std::string> contentType  = std::nullopt);
+        FileDesc content , std::optional<std::string> filename  = std::nullopt, std::optional<std::string> contentType  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -122,10 +123,9 @@ std::optional<std::string> contentDisposition() const
     }
 
 /// The content that was previously uploaded.
-    inline Bytes data() const
+    inline Body data() const
     {
-    return
-      std::get<Bytes>(body);
+    return body;
     }
     
         
@@ -155,7 +155,8 @@ std::optional<std::string> contentDisposition() const
     explicit GetContentJob(std::string serverUrl
     
       ,
-        std::string serverName , std::string mediaId , bool allowRemote  = true);
+        std::string serverName , std::string mediaId , bool allowRemote  = true
+        , std::optional<FileDesc> downloadTo = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
@@ -226,10 +227,9 @@ std::optional<std::string> contentDisposition() const
     }
 
 /// The content that was previously uploaded.
-    inline Bytes data() const
+    inline Body data() const
     {
-    return
-      std::get<Bytes>(body);
+    return body;
     }
     
         
@@ -262,7 +262,8 @@ std::optional<std::string> contentDisposition() const
     explicit GetContentOverrideNameJob(std::string serverUrl
     
       ,
-        std::string serverName , std::string mediaId , std::string fileName , bool allowRemote  = true);
+        std::string serverName , std::string mediaId , std::string fileName , bool allowRemote  = true
+        , std::optional<FileDesc> downloadTo = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
@@ -320,10 +321,9 @@ std::optional<std::string> contentType() const
     }
 
 /// A thumbnail of the requested content.
-    inline Bytes data() const
+    inline Body data() const
     {
-    return
-      std::get<Bytes>(body);
+    return body;
     }
     
         
@@ -365,7 +365,8 @@ std::optional<std::string> contentType() const
     explicit GetContentThumbnailJob(std::string serverUrl
     
       ,
-        std::string serverName , std::string mediaId , int width , int height , std::optional<std::string> method  = std::nullopt, bool allowRemote  = true);
+        std::string serverName , std::string mediaId , int width , int height , std::optional<std::string> method  = std::nullopt, bool allowRemote  = true
+        , std::optional<FileDesc> downloadTo = std::nullopt);
 
 
     static BaseJob::Query buildQuery(
@@ -449,7 +450,8 @@ std::optional<std::string> ogImage() const;
     explicit GetUrlPreviewJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string url , std::optional<std::int_fast64_t> ts  = std::nullopt);
+        std::string url , std::optional<std::int_fast64_t> ts  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -524,6 +526,7 @@ std::optional<std::int_fast64_t> uploadSize() const;
     explicit GetConfigJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 

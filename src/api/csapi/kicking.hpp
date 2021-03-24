@@ -55,7 +55,8 @@ public:
     explicit KickJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string userId , std::optional<std::string> reason  = std::nullopt);
+        std::string roomId , std::string userId , std::optional<std::string> reason  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

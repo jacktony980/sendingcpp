@@ -38,8 +38,9 @@ return _q;
 SetRoomAliasJob::SetRoomAliasJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomAlias, std::string roomId)
+            ,
+        std::string roomAlias, std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           PUT,
@@ -48,7 +49,9 @@ SetRoomAliasJob::SetRoomAliasJob(
           ReturnType::Json,
             buildBody(roomAlias, roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -103,8 +106,9 @@ return _q;
 GetRoomIdByAliasJob::GetRoomIdByAliasJob(
         std::string serverUrl
         
-        ,
-        std::string roomAlias)
+            ,
+        std::string roomAlias
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           GET,
@@ -113,7 +117,9 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
           ReturnType::Json,
             buildBody(roomAlias)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -190,8 +196,9 @@ return _q;
 DeleteRoomAliasJob::DeleteRoomAliasJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomAlias)
+            ,
+        std::string roomAlias
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
           DELETE,
@@ -200,7 +207,9 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
           ReturnType::Json,
             buildBody(roomAlias)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -255,8 +264,9 @@ return _q;
 GetLocalAliasesJob::GetLocalAliasesJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/aliases",
           GET,
@@ -265,7 +275,9 @@ GetLocalAliasesJob::GetLocalAliasesJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

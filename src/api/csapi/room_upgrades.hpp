@@ -53,7 +53,8 @@ std::string replacementRoom() const;
     explicit UpgradeRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string newVersion );
+        std::string roomId , std::string newVersion 
+        );
     
 
     static BaseJob::Query buildQuery(

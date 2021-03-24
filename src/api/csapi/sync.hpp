@@ -7,8 +7,8 @@
 #include "basejob.hpp"
 #include "event.hpp"
 #include "csapi/definitions/event_batch.hpp"
-#include "csapi/definitions/state_event_batch.hpp"
 #include "csapi/definitions/timeline_batch.hpp"
+#include "csapi/definitions/state_event_batch.hpp"
 
 namespace Kazv::Api {
 
@@ -354,7 +354,8 @@ immer::map<std::string, int> deviceOneTimeKeysCount() const;
     explicit SyncJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> filter  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<bool> fullState  = std::nullopt, std::optional<std::string> setPresence  = std::nullopt, std::optional<int> timeout  = std::nullopt);
+        std::optional<std::string> filter  = std::nullopt, std::optional<std::string> since  = std::nullopt, std::optional<bool> fullState  = std::nullopt, std::optional<std::string> setPresence  = std::nullopt, std::optional<int> timeout  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(

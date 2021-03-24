@@ -33,6 +33,7 @@ return _q;
 GetPushRulesJob::GetPushRulesJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetPushRulesJob::GetPushRulesJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -110,8 +113,9 @@ return _q;
 GetPushRuleJob::GetPushRuleJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId)
+            ,
+        std::string scope, std::string kind, std::string ruleId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           GET,
@@ -120,7 +124,9 @@ GetPushRuleJob::GetPushRuleJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -175,8 +181,9 @@ return _q;
 DeletePushRuleJob::DeletePushRuleJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId)
+            ,
+        std::string scope, std::string kind, std::string ruleId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           DELETE,
@@ -185,7 +192,9 @@ DeletePushRuleJob::DeletePushRuleJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -252,8 +261,9 @@ return _q;
 SetPushRuleJob::SetPushRuleJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern)
+            ,
+        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           PUT,
@@ -262,7 +272,9 @@ SetPushRuleJob::SetPushRuleJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions, before, after, conditions, pattern)
               , buildQuery(before, after)
-                )
+                , {}
+
+)
         {
         }
 
@@ -317,8 +329,9 @@ return _q;
 IsPushRuleEnabledJob::IsPushRuleEnabledJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId)
+            ,
+        std::string scope, std::string kind, std::string ruleId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           GET,
@@ -327,7 +340,9 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -399,8 +414,9 @@ return _q;
 SetPushRuleEnabledJob::SetPushRuleEnabledJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId, bool enabled)
+            ,
+        std::string scope, std::string kind, std::string ruleId, bool enabled
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           PUT,
@@ -409,7 +425,9 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId, enabled)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -464,8 +482,9 @@ return _q;
 GetPushRuleActionsJob::GetPushRuleActionsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId)
+            ,
+        std::string scope, std::string kind, std::string ruleId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           GET,
@@ -474,7 +493,9 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -546,8 +567,9 @@ return _q;
 SetPushRuleActionsJob::SetPushRuleActionsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions)
+            ,
+        std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           PUT,
@@ -556,7 +578,9 @@ SetPushRuleActionsJob::SetPushRuleActionsJob(
           ReturnType::Json,
             buildBody(scope, kind, ruleId, actions)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

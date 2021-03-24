@@ -52,7 +52,8 @@ public:
     explicit SetAccountDataJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string type , JsonWrap content  = {});
+        std::string userId , std::string type , JsonWrap content  = {}
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -118,7 +119,8 @@ public:
     explicit GetAccountDataJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string type );
+        std::string userId , std::string type 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -191,7 +193,8 @@ public:
     explicit SetAccountDataPerRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId , std::string type , JsonWrap content  = {});
+        std::string userId , std::string roomId , std::string type , JsonWrap content  = {}
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -260,7 +263,8 @@ public:
     explicit GetAccountDataPerRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userId , std::string roomId , std::string type );
+        std::string userId , std::string roomId , std::string type 
+        );
 
 
     static BaseJob::Query buildQuery(

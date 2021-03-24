@@ -33,8 +33,9 @@ return _q;
 RoomInitialSyncJob::RoomInitialSyncJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId)
+            ,
+        std::string roomId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/initialSync",
           GET,
@@ -43,7 +44,9 @@ RoomInitialSyncJob::RoomInitialSyncJob(
           ReturnType::Json,
             buildBody(roomId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

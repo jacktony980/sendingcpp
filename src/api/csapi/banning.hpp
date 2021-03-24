@@ -52,7 +52,8 @@ public:
     explicit BanJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string userId , std::optional<std::string> reason  = std::nullopt);
+        std::string roomId , std::string userId , std::optional<std::string> reason  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -118,7 +119,8 @@ public:
     explicit UnbanJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId , std::string userId );
+        std::string roomId , std::string userId 
+        );
     
 
     static BaseJob::Query buildQuery(

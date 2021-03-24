@@ -40,8 +40,9 @@ return _q;
 SetPresenceJob::SetPresenceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId, std::string presence, std::optional<std::string> statusMsg)
+            ,
+        std::string userId, std::string presence, std::optional<std::string> statusMsg
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
           PUT,
@@ -50,7 +51,9 @@ SetPresenceJob::SetPresenceJob(
           ReturnType::Json,
             buildBody(userId, presence, statusMsg)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -105,8 +108,9 @@ return _q;
 GetPresenceJob::GetPresenceJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string userId)
+            ,
+        std::string userId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
           GET,
@@ -115,7 +119,9 @@ GetPresenceJob::GetPresenceJob(
           ReturnType::Json,
             buildBody(userId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

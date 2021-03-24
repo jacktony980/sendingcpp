@@ -33,6 +33,7 @@ return _q;
 GetTokenOwnerJob::GetTokenOwnerJob(
         std::string serverUrl
         , std::string _accessToken
+            
         
         )
       : BaseJob(std::move(serverUrl),
@@ -43,7 +44,9 @@ GetTokenOwnerJob::GetTokenOwnerJob(
           ReturnType::Json,
             buildBody()
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

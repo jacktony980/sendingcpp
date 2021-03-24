@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -43,7 +43,8 @@ namespace Kazv
                 Body body,
                 Query query,
                 Header header,
-                std::string jobId);
+                std::string jobId,
+                std::optional<FileDesc> responseFile);
         std::string fullRequestUrl;
         Method method;
         ReturnType returnType;
@@ -54,6 +55,7 @@ namespace Kazv
         std::string jobId;
         std::optional<std::string> queueId;
         JobQueuePolicy queuePolicy;
+        std::optional<FileDesc> responseFile;
     };
 
     BaseJob::Private::Private(std::string serverUrl,
@@ -64,13 +66,15 @@ namespace Kazv
                               Body body,
                               Query query,
                               Header header,
-                              std::string jobId)
+                              std::string jobId,
+                              std::optional<FileDesc> responseFile)
         : fullRequestUrl(serverUrl + requestUrl)
         , method(std::move(method))
         , returnType(returnType)
         , body()
         , query(std::move(query))
         , jobId(std::move(jobId))
+        , responseFile(std::move(responseFile))
     {
         auto header_ = header.get();
         if (token.size()) {
@@ -99,9 +103,10 @@ namespace Kazv
                      ReturnType returnType,
                      Body body,
                      Query query,
-                     Header header)
+                     Header header,
+                     std::optional<FileDesc> responseFile)
         : m_d(std::move(Private(serverUrl, requestUrl, method, token,
-                                returnType, body, query, header, jobId)))
+                                returnType, body, query, header, jobId, responseFile)))
     {
     }
 
@@ -247,6 +252,11 @@ namespace Kazv
     JobQueuePolicy BaseJob::queuePolicy() const
     {
         return m_d->queuePolicy;
+    }
+
+    std::optional<FileDesc> BaseJob::responseFile() const
+    {
+        return m_d->responseFile;
     }
 
     std::string Response::errorCode() const

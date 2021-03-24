@@ -274,7 +274,8 @@ std::string roomId() const;
     explicit CreateRoomJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::optional<std::string> visibility  = std::nullopt, std::optional<std::string> roomAliasName  = std::nullopt, std::optional<std::string> name  = std::nullopt, std::optional<std::string> topic  = std::nullopt, immer::array<std::string> invite  = {}, immer::array<Invite3pid> invite3pid  = {}, std::optional<std::string> roomVersion  = std::nullopt, JsonWrap creationContent  = {}, immer::array<StateEvent> initialState  = {}, std::optional<std::string> preset  = std::nullopt, std::optional<bool> isDirect  = std::nullopt, JsonWrap powerLevelContentOverride  = {});
+        std::optional<std::string> visibility  = std::nullopt, std::optional<std::string> roomAliasName  = std::nullopt, std::optional<std::string> name  = std::nullopt, std::optional<std::string> topic  = std::nullopt, immer::array<std::string> invite  = {}, immer::array<Invite3pid> invite3pid  = {}, std::optional<std::string> roomVersion  = std::nullopt, JsonWrap creationContent  = {}, immer::array<StateEvent> initialState  = {}, std::optional<std::string> preset  = std::nullopt, std::optional<bool> isDirect  = std::nullopt, JsonWrap powerLevelContentOverride  = {}
+        );
     
 
     static BaseJob::Query buildQuery(

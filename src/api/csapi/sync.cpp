@@ -42,8 +42,9 @@ return _q;
 SyncJob::SyncJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout)
+            ,
+        std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/sync",
           GET,
@@ -52,7 +53,9 @@ SyncJob::SyncJob(
           ReturnType::Json,
             buildBody(filter, since, fullState, setPresence, timeout)
               , buildQuery(filter, since, fullState, setPresence, timeout)
-                )
+                , {}
+
+)
         {
         }
 

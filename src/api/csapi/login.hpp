@@ -59,6 +59,7 @@ immer::array<LoginFlow> flows() const;
     explicit GetLoginFlowsJob(std::string serverUrl
     
       
+        
         );
 
 
@@ -211,7 +212,8 @@ std::optional<DiscoveryInformation> wellKnown() const;
     explicit LoginJob(std::string serverUrl
     
       ,
-        std::string type , std::optional<UserIdentifier> identifier  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> token  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt);
+        std::string type , std::optional<UserIdentifier> identifier  = std::nullopt, std::optional<std::string> password  = std::nullopt, std::optional<std::string> token  = std::nullopt, std::optional<std::string> deviceId  = std::nullopt, std::optional<std::string> initialDeviceDisplayName  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

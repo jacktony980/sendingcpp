@@ -47,6 +47,7 @@ immer::array<Device> devices() const;
     explicit GetDevicesJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -120,7 +121,8 @@ public:
     explicit GetDeviceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string deviceId );
+        std::string deviceId 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -184,7 +186,8 @@ public:
     explicit UpdateDeviceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string deviceId , std::optional<std::string> displayName  = std::nullopt);
+        std::string deviceId , std::optional<std::string> displayName  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -250,7 +253,8 @@ public:
     explicit DeleteDeviceJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string deviceId , std::optional<AuthenticationData> auth  = std::nullopt);
+        std::string deviceId , std::optional<AuthenticationData> auth  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -316,7 +320,8 @@ public:
     explicit DeleteDevicesJob(std::string serverUrl
     , std::string _accessToken
       ,
-        immer::array<std::string> devices , std::optional<AuthenticationData> auth  = std::nullopt);
+        immer::array<std::string> devices , std::optional<AuthenticationData> auth  = std::nullopt
+        );
     
 
     static BaseJob::Query buildQuery(

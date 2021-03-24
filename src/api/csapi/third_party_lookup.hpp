@@ -6,8 +6,8 @@
 
 #include "basejob.hpp"
 #include "csapi/../application-service/definitions/user.hpp"
-#include "csapi/../application-service/definitions/protocol.hpp"
 #include "csapi/../application-service/definitions/location.hpp"
+#include "csapi/../application-service/definitions/protocol.hpp"
 
 namespace Kazv::Api {
 
@@ -55,6 +55,7 @@ public:
     explicit GetProtocolsJob(std::string serverUrl
     , std::string _accessToken
       
+        
         );
 
 
@@ -128,7 +129,8 @@ public:
     explicit GetProtocolMetadataJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string protocol );
+        std::string protocol 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -212,7 +214,8 @@ public:
     explicit QueryLocationByProtocolJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string protocol , std::optional<std::string> searchFields  = std::nullopt);
+        std::string protocol , std::optional<std::string> searchFields  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -289,7 +292,8 @@ public:
     explicit QueryUserByProtocolJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string protocol , std::optional<std::string> fields  = std::nullopt);
+        std::string protocol , std::optional<std::string> fields  = std::nullopt
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -363,7 +367,8 @@ public:
     explicit QueryLocationByAliasJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string alias );
+        std::string alias 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -436,7 +441,8 @@ public:
     explicit QueryUserByIDJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string userid );
+        std::string userid 
+        );
 
 
     static BaseJob::Query buildQuery(

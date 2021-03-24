@@ -34,8 +34,9 @@ return _q;
 PostReceiptJob::PostReceiptJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt)
+            ,
+        std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/receipt/" + receiptType + "/" + eventId,
           POST,
@@ -44,7 +45,9 @@ PostReceiptJob::PostReceiptJob(
           ReturnType::Json,
             buildBody(roomId, receiptType, eventId, receipt)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

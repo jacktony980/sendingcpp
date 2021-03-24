@@ -38,8 +38,9 @@ return _q;
 UpdateAppserviceRoomDirectoryVsibilityJob::UpdateAppserviceRoomDirectoryVsibilityJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string networkId, std::string roomId, std::string visibility)
+            ,
+        std::string networkId, std::string roomId, std::string visibility
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/directory/list/appservice/" + networkId + "/" + roomId,
           PUT,
@@ -48,7 +49,9 @@ UpdateAppserviceRoomDirectoryVsibilityJob::UpdateAppserviceRoomDirectoryVsibilit
           ReturnType::Json,
             buildBody(networkId, roomId, visibility)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

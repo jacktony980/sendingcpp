@@ -34,8 +34,9 @@ return _q;
 RedirectToSSOJob::RedirectToSSOJob(
         std::string serverUrl
         
-        ,
-        std::string redirectUrl)
+            ,
+        std::string redirectUrl
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/login/sso/redirect",
           GET,
@@ -44,7 +45,9 @@ RedirectToSSOJob::RedirectToSSOJob(
           ReturnType::Json,
             buildBody(redirectUrl)
               , buildQuery(redirectUrl)
-                )
+                , {}
+
+)
         {
         }
 

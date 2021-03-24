@@ -36,8 +36,9 @@ return _q;
 GetEventsJob::GetEventsJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<std::string> from, std::optional<int> timeout)
+            ,
+        std::optional<std::string> from, std::optional<int> timeout
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events",
           GET,
@@ -46,7 +47,9 @@ GetEventsJob::GetEventsJob(
           ReturnType::Json,
             buildBody(from, timeout)
               , buildQuery(from, timeout)
-                )
+                , {}
+
+)
         {
         }
 
@@ -137,8 +140,9 @@ return _q;
 InitialSyncJob::InitialSyncJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::optional<int> limit, std::optional<bool> archived)
+            ,
+        std::optional<int> limit, std::optional<bool> archived
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/initialSync",
           GET,
@@ -147,7 +151,9 @@ InitialSyncJob::InitialSyncJob(
           ReturnType::Json,
             buildBody(limit, archived)
               , buildQuery(limit, archived)
-                )
+                , {}
+
+)
         {
         }
 
@@ -249,8 +255,9 @@ return _q;
 GetOneEventJob::GetOneEventJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string eventId)
+            ,
+        std::string eventId
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/events/" + eventId,
           GET,
@@ -259,7 +266,9 @@ GetOneEventJob::GetOneEventJob(
           ReturnType::Json,
             buildBody(eventId)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

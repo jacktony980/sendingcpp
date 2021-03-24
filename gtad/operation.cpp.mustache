@@ -83,20 +83,23 @@ return _q;
 {{camelCaseOperationId}}Job::{{camelCaseOperationId}}Job(
         std::string serverUrl
         {{^skipAuth}}, std::string _accessToken{{/skipAuth}}
-        {{#allParams?}},{{/allParams?}}
-        {{#allParams}}{{>joinedParamDef}}{{/allParams}})
+            {{#allParams?}},{{/allParams?}}
+        {{#allParams}}{{>joinedParamDef}}{{/allParams}}
+        {{#producesNonJson?}}, std::optional<FileDesc> downloadTo{{/producesNonJson?}})
       : BaseJob(std::move(serverUrl),
           std::string("{{basePathWithoutHost}}"){{#pathParts}} + {{_}}{{/pathParts}},
           {{#_toupper}}{{httpMethod}}{{/_toupper}},
           std::string("{{camelCaseOperationId}}"),
           {{^skipAuth}}_accessToken{{/skipAuth}}{{#skipAuth}} {} {{/skipAuth}},
-          ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}Byte{{/producesNonJson?}},
+          ReturnType::{{^producesNonJson?}}Json{{/producesNonJson?}}{{#producesNonJson?}}File{{/producesNonJson?}},
             buildBody({{#allParams}}{{paramName}}{{>cjoin}}{{/allParams}})
               , buildQuery({{#queryParams}}{{paramName}}{{>cjoin}}{{/queryParams}})
                 {{#headerParams?}}, buildHeader({{#headerParams}}
                   {{paramName}}{{>cjoin}}
                 {{/headerParams}})
-{{/headerParams?}})
+{{/headerParams?}}{{^headerParams?}}, {}{{/headerParams?}}
+{{#producesNonJson?}}, downloadTo{{/producesNonJson?}}
+)
         {
         }
 

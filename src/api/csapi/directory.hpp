@@ -44,7 +44,8 @@ public:
     explicit SetRoomAliasJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomAlias , std::string roomId );
+        std::string roomAlias , std::string roomId 
+        );
     
 
     static BaseJob::Query buildQuery(
@@ -120,7 +121,8 @@ immer::array<std::string> servers() const;
     explicit GetRoomIdByAliasJob(std::string serverUrl
     
       ,
-        std::string roomAlias );
+        std::string roomAlias 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -190,7 +192,8 @@ public:
     explicit DeleteRoomAliasJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomAlias );
+        std::string roomAlias 
+        );
 
 
     static BaseJob::Query buildQuery(
@@ -273,7 +276,8 @@ immer::array<std::string> aliases() const;
     explicit GetLocalAliasesJob(std::string serverUrl
     , std::string _accessToken
       ,
-        std::string roomId );
+        std::string roomId 
+        );
 
 
     static BaseJob::Query buildQuery(

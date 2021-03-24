@@ -34,8 +34,9 @@ return _q;
 SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::string eventType, std::string stateKey, JsonWrap body)
+            ,
+        std::string roomId, std::string eventType, std::string stateKey, JsonWrap body
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
           PUT,
@@ -44,7 +45,9 @@ SetRoomStateWithKeyJob::SetRoomStateWithKeyJob(
           ReturnType::Json,
             buildBody(roomId, eventType, stateKey, body)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 

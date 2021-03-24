@@ -38,8 +38,9 @@ return _q;
 JoinRoomByIdJob::JoinRoomByIdJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned)
+            ,
+        std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/join",
           POST,
@@ -48,7 +49,9 @@ JoinRoomByIdJob::JoinRoomByIdJob(
           ReturnType::Json,
             buildBody(roomId, thirdPartySigned)
               , buildQuery()
-                )
+                , {}
+
+)
         {
         }
 
@@ -121,8 +124,9 @@ return _q;
 JoinRoomJob::JoinRoomJob(
         std::string serverUrl
         , std::string _accessToken
-        ,
-        std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned)
+            ,
+        std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned
+        )
       : BaseJob(std::move(serverUrl),
           std::string("/_matrix/client/r0") + "/join/" + roomIdOrAlias,
           POST,
@@ -131,7 +135,9 @@ JoinRoomJob::JoinRoomJob(
           ReturnType::Json,
             buildBody(roomIdOrAlias, serverName, thirdPartySigned)
               , buildQuery(serverName)
-                )
+                , {}
+
+)
         {
         }
 
