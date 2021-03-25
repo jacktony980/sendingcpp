@@ -27,6 +27,7 @@
 #include <filesystem>
 
 #include "kazvtest-respath.hpp"
+#include "file-guard.hpp"
 
 #include <file-desc.hpp>
 #include <asio-std-file-handler.hpp>
@@ -126,14 +127,6 @@ TEST_CASE("AsioStdFileHandler should work properly with reads", "[base][file-des
 
     io.run();
 }
-
-struct FileGuard
-{
-    ~FileGuard() {
-        std::filesystem::remove(m_filename);
-    }
-    std::filesystem::path m_filename;
-};
 
 TEST_CASE("AsioStdFileHandler should work properly with writes", "[base][file-desc]")
 {

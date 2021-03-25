@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -28,6 +28,7 @@
 
 #include "tests.hpp"
 #include "kazvtest-respath.hpp"
+#include "file-guard.hpp"
 
 using namespace Kazv;
 
@@ -201,6 +202,53 @@ TEST_CASE("Streaming binary data should be ok", "[kazvjob]")
                       std::cout << "Ret= " << body.get().dump() << std::endl;
                       REQUIRE(body.get().at("data").template get<std::string>() == "\n\r\n\0\t\n"s);
                       REQUIRE(body.get().at("headers").at("Content-Type").template get<std::string>() == "application/octet-stream");
+                      h.stop();
+                  });
+
+    ioContext.run();
+}
+
+TEST_CASE("Stream downloads should work properly", "[kazvjob]")
+{
+    auto filename = std::filesystem::path(resPath) / "kazvjob-test-tmp1";
+    auto desc = FileDesc(filename.native());
+
+    auto guard = FileGuard{filename};
+
+    BaseJob job(httpbinServer,
+                httpbinEndpoint,
+                BaseJob::POST,
+                "TestJob",
+                std::string{}, // token
+                BaseJob::ReturnType::File,
+                "foobar"s,
+                {}, // query
+                Header(Header::value_type{{"Content-Type", "text/plain"}}), // header
+                desc);
+
+    boost::asio::io_context ioContext;
+    CprJobHandler h(ioContext.get_executor());
+
+    h.submit(job, [&h, filename](Response r) {
+                      REQUIRE(std::holds_alternative<FileDesc>(r.body));
+                      auto body = std::get<FileDesc>(r.body);
+
+                      REQUIRE(body.name().has_value());
+                      REQUIRE(body.name().value() == filename);
+
+                      auto fh = DumbFileInterface{};
+
+                      auto stream = body.provider(fh).getStream();
+
+                      stream.read(1024, [](auto retCode, auto data) {
+                                            REQUIRE(retCode == FileOpRetCode::Success);
+                                            auto j = json::parse(data.begin(), data.end());
+
+                                            std::cout << j.dump() << std::endl;
+
+                                            REQUIRE(j.at("data") == "foobar");
+                                            REQUIRE(j.at("headers").at("Content-Type") == "text/plain");
+                                        });
                       h.stop();
                   });
 

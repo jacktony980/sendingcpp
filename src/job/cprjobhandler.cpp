@@ -74,7 +74,16 @@ namespace {
         }
 
         template<class Callback>
-        void write(DataT /* data */, Callback /* writeCallback */) {
+        void write(DataT data, Callback writeCallback) {
+            for (auto c : data) {
+                m_stream.put(c);
+                if (m_stream.bad()) {
+                    writeCallback(FileOpRetCode::Error, 0);
+                    return;
+                }
+            }
+
+            writeCallback(FileOpRetCode::Success, data.size());
         }
 
         std::fstream m_stream;
@@ -327,6 +336,8 @@ namespace Kazv
         cpr::Header header(origHeader.get().begin(), origHeader.get().end());
 
         auto readCallback = std::function<bool(char *, size_t &)>{};
+        auto writeCallback = std::function<bool(std::string)>{};
+
         if (! std::holds_alternative<FileDesc>(job.requestBody())) {
             body = std::get<BytesBody>(job.requestBody());
         } else {
@@ -363,6 +374,31 @@ namespace Kazv
                 };
         }
 
+        if (job.responseFile()) {
+            auto fileDesc = job.responseFile().value();
+
+            auto fh = SyncFileHandler{};
+            auto provider = fileDesc.provider(fh);
+            auto stream = std::make_shared<FileStream>(provider.getStream(FileOpenMode::Write));
+
+            writeCallback =
+                [stream](std::string buffer) -> bool {
+                    bool retval = true;
+                    kzo.job.dbg() << "A buffer of length " << buffer.size() << " responded." << std::endl;
+                    FileContent data(buffer.begin(), buffer.end());
+                    stream->write(data,
+                                 [&](FileOpRetCode code, int num) {
+                                     if (code == FileOpRetCode::Success) {
+                                         kzo.job.dbg() << "Write file successful, wrote " << num << " bytes." << std::endl;
+                                     } else {
+                                         kzo.job.dbg() << "Got error writing file." << std::endl;
+                                         retval = false;
+                                     }
+                                 });
+                    return retval;
+                };
+        }
+
         cpr::Parameters params;
         BaseJob::Query query = job.requestQuery();
         BaseJob::ReturnType returnType = job.returnType();
@@ -378,16 +414,21 @@ namespace Kazv
             }
         }
 
-        auto callback = [returnType](cpr::Response r) -> Response {
-                            Body body = r.text;
+        auto callback = [returnType, responseFile=job.responseFile()](cpr::Response r) -> Response {
+                            Body body;
 
-                            if (returnType == BaseJob::ReturnType::Json) {
+                            if (responseFile) {
+                                body = responseFile.value();
+                            } else if (returnType == BaseJob::ReturnType::Json) {
                                 try {
                                     body = BaseJob::JsonBody(std::move(json::parse(r.text)));
                                 } catch (const json::exception &e) {
                                     // the response is not valid json
+                                    body = r.text;
                                     kzo.job.dbg() << "body is not correct json: " << e.what() << std::endl;
                                 }
+                            } else {
+                                body = r.text;
                             }
 
                             return { r.status_code,
@@ -402,6 +443,8 @@ namespace Kazv
                 [=](BaseJob::Get) {
                     if (readCallback) {
                         return cpr::GetCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else if (writeCallback) {
+                        return cpr::GetCallback(callback, url, cpr::WriteCallback(writeCallback), header, body, params);
                     } else {
                         return cpr::GetCallback(callback, url, header, body, params);
                     }
@@ -409,6 +452,8 @@ namespace Kazv
                 [=](BaseJob::Post) {
                     if (readCallback) {
                         return cpr::PostCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else if (writeCallback) {
+                        return cpr::PostCallback(callback, url, cpr::WriteCallback(writeCallback), header, body, params);
                     } else {
                         return cpr::PostCallback(callback, url, header, body, params);
                     }
@@ -416,6 +461,8 @@ namespace Kazv
                 [=](BaseJob::Put) {
                     if (readCallback) {
                         return cpr::PutCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else if (writeCallback) {
+                        return cpr::PutCallback(callback, url, cpr::WriteCallback(writeCallback), header, body, params);
                     } else {
                         return cpr::PutCallback(callback, url, header, body, params);
                     }
@@ -423,6 +470,8 @@ namespace Kazv
                 [=](BaseJob::Delete) {
                     if (readCallback) {
                         return cpr::DeleteCallback(callback, url, cpr::ReadCallback(readCallback), header, params);
+                    } else if (writeCallback) {
+                        return cpr::DeleteCallback(callback, url, cpr::WriteCallback(writeCallback), header, body, params);
                     } else {
                         return cpr::DeleteCallback(callback, url, header, body, params);
                     }
