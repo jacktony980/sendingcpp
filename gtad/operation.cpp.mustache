@@ -125,6 +125,7 @@ return _q;
           {
             return Response::success()
             {{#producesNonJson?}}
+              && header.get().find("Content-Type") != header.get().end()
               && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             {{/producesNonJson?}}
             {{^producesNonJson?}}

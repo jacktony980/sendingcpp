@@ -164,6 +164,7 @@ GetContentJob::GetContentJob(
           bool GetContentResponse::success() const
           {
             return Response::success()
+              && header.get().find("Content-Type") != header.get().end()
               && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;
@@ -233,6 +234,7 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
           bool GetContentOverrideNameResponse::success() const
           {
             return Response::success()
+              && header.get().find("Content-Type") != header.get().end()
               && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;
@@ -308,6 +310,7 @@ GetContentThumbnailJob::GetContentThumbnailJob(
           bool GetContentThumbnailResponse::success() const
           {
             return Response::success()
+              && header.get().find("Content-Type") != header.get().end()
               && contentTypeMatches(expectedContentTypes, header.get().at("Content-Type"))
             
           ;

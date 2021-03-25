@@ -101,3 +101,23 @@ TEST_CASE("Download content with streaming should not give out data", "[client][
 
     io.run();
 }
+
+TEST_CASE("A response for download content without content type should fail without exception", "[client][content]")
+{
+    using namespace Kazv::CursorOp;
+
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto store = createTestClientStore(ph);
+
+    auto resp = createResponse("GetContent", FileDesc{"examplefile"},
+                               json{{"mxcUri", "mxc://example.org/whatever"}, {"streaming", true}});
+
+    store.dispatch(ProcessResponseAction{resp})
+        .then([](auto stat) {
+                  REQUIRE(!stat.success());
+              });
+
+    io.run();
+}
