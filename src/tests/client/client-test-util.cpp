@@ -31,14 +31,3 @@ ClientModel createTestClientModel()
     m.loggedIn = true;
     return m;
 }
-
-Response createResponse(std::string jobId, JsonWrap j, JsonWrap data)
-{
-    Response r;
-    r.statusCode = 200;
-    r.body = j;
-    json origData = data.get();
-    origData["-job-id"] = jobId;
-    r.extraData = origData;
-    return r;
-}

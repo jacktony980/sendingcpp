@@ -31,7 +31,23 @@ using namespace Kazv;
 
 ClientModel createTestClientModel();
 
-Response createResponse(std::string jobId, JsonWrap j, JsonWrap data = {});
+template<class DataT>
+inline Response createResponse(std::string jobId, DataT body, JsonWrap data = {})
+{
+    Response r;
+    r.statusCode = 200;
+    r.body = body;
+    json origData = data.get();
+    origData["-job-id"] = jobId;
+    r.extraData = origData;
+    return r;
+}
+
+template<>
+inline Response createResponse(std::string jobId, json j, JsonWrap data)
+{
+    return createResponse(jobId, JsonWrap(j), data);
+}
 
 inline auto createTestClientStore(SingleTypePromiseInterface<DefaultRetType> ph)
 {

@@ -75,9 +75,16 @@ namespace Kazv
     ClientResult updateClient(ClientModel m, DownloadContentAction a)
     {
         auto [serverName, mediaId] = mxcUriToMediaDesc(a.mxcUri);
+        auto data = json{
+            {"mxcUri", a.mxcUri},
+            {"streaming", false},
+        };
+        if (a.downloadTo.has_value() && a.downloadTo.value().name().has_value()) {
+            data["streaming"] = true;
+        }
         auto job = m.job<GetContentJob>()
-            .make(serverName, mediaId)
-            .withData(json{ {"mxcUri", a.mxcUri} });
+            .make(serverName, mediaId, /* allowRemote = */ true, a.downloadTo)
+            .withData(std::move(data));
         m.addJob(std::move(job));
 
         return { std::move(m), lager::noop };
@@ -87,12 +94,20 @@ namespace Kazv
     {
         auto mxcUri = r.dataStr("mxcUri");
         if (! r.success()) {
-            m.addTrigger(DownloadContentFailed{mxcUri, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
+        auto isStreaming = r.dataJson("streaming").template get<bool>();
 
-        m.addTrigger(DownloadContentSuccessful{mxcUri, std::get<Bytes>(r.data()), r.contentDisposition(), r.contentType()});
-        return { std::move(m), lager::noop };
+        return {
+            std::move(m),
+            [=](auto &&) {
+                auto data = json::object();
+                if (! isStreaming) {
+                    data["content"] = std::get<Bytes>(std::move(r).data());
+                }
+                return EffectStatus{/* succ = */ true, data};
+            }
+        };
     }
 
     ClientResult updateClient(ClientModel m, DownloadThumbnailAction a)
@@ -103,8 +118,9 @@ namespace Kazv
             method = a.method.value() == Crop ? "crop" : "scale";
         }
         auto job = m.job<GetContentThumbnailJob>()
-            .make(serverName, mediaId, a.width, a.height, method)
-            .withData(json{ {"mxcUri", a.mxcUri} });
+            .make(serverName, mediaId, a.width, a.height, method, /* allowRemote = */ true, a.downloadTo)
+            .withData(json{ {"mxcUri", a.mxcUri},
+                            {"streaming", a.downloadTo.has_value() && a.downloadTo.value().name().has_value()} });
         m.addJob(std::move(job));
 
         return { std::move(m), lager::noop };
@@ -114,12 +130,20 @@ namespace Kazv
     {
         auto mxcUri = r.dataStr("mxcUri");
         if (! r.success()) {
-            m.addTrigger(DownloadThumbnailFailed{mxcUri, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
+        auto isStreaming = r.dataJson("streaming").template get<bool>();
 
-        m.addTrigger(DownloadThumbnailSuccessful{mxcUri, std::get<Bytes>(r.data()), r.contentType()});
-        return { std::move(m), lager::noop };
+        return {
+            std::move(m),
+            [=](auto &&) {
+                auto data = json::object();
+                if (! isStreaming) {
+                    data["content"] = std::get<Bytes>(std::move(r).data());
+                }
+                return EffectStatus{/* succ = */ true, data};
+            }
+        };
     }
 
 }

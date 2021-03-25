@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -267,26 +267,42 @@ namespace Kazv
         /**
          * Download content from the content repository
          *
+         * After the returned Promise resolves successfully,
+         * if @c downloadTo is provided, the content will be available
+         * in that file; if it is not provided, `r.dataStr("content")`
+         * will contain the content of the downloaded file.
+         *
          * @param mxcUri The MXC URI of the content.
+         * @param downloadTo The file to write the content to. Must not be
+         * an in-memory file.
          * @return A Promise that is resolved after the content
          * is downloaded, or when there is an error.
          */
-        PromiseT downloadContent(std::string mxcUri) const;
+        PromiseT downloadContent(std::string mxcUri,
+                                 std::optional<FileDesc> downloadTo = std::nullopt) const;
 
         /**
          * Download a thumbnail from the content repository
+         *
+         * After the returned Promise resolves successfully,
+         * if @c downloadTo is provided, the content will be available
+         * in that file; if it is not provided, `r.dataStr("content")`
+         * will contain the content of the downloaded file.
          *
          * @param mxcUri The MXC URI of the content.
          * @param width,height The dimension wanted for the thumbnail
          * @param method The method to generate the thumbnail. Either `Crop`
          * or `Scale`.
+         * @param downloadTo The file to write the content to. Must not be
+         * an in-memory file.
          * @return A Promise that is resolved after the thumbnail
          * is downloaded, or when there is an error.
          */
         PromiseT downloadThumbnail(std::string mxcUri,
                                    int width,
                                    int height,
-                                   std::optional<ThumbnailResizingMethod> method = std::nullopt) const;
+                                   std::optional<ThumbnailResizingMethod> method = std::nullopt,
+                                   std::optional<FileDesc> downloadTo = std::nullopt) const;
 
         // lager::reader<bool>
         inline auto syncing() const {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -154,20 +154,21 @@ namespace Kazv
                 std::string{}});
     }
 
-    auto Client::downloadContent(std::string mxcUri) const
+    auto Client::downloadContent(std::string mxcUri, std::optional<FileDesc> downloadTo) const
         -> PromiseT
     {
-        return m_ctx.dispatch(DownloadContentAction{mxcUri});
+        return m_ctx.dispatch(DownloadContentAction{mxcUri, downloadTo});
     }
 
     auto Client::downloadThumbnail(
         std::string mxcUri,
         int width,
         int height,
-        std::optional<ThumbnailResizingMethod> method) const
+        std::optional<ThumbnailResizingMethod> method,
+        std::optional<FileDesc> downloadTo) const
         -> PromiseT
     {
-        return m_ctx.dispatch(DownloadThumbnailAction{mxcUri, width, height, method, std::nullopt});
+        return m_ctx.dispatch(DownloadThumbnailAction{mxcUri, width, height, method, std::nullopt, downloadTo});
     }
 
     auto Client::startSyncing() const -> PromiseT

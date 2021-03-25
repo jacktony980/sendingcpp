@@ -290,6 +290,7 @@ namespace Kazv
     struct DownloadContentAction
     {
         std::string mxcUri;
+        std::optional<FileDesc> downloadTo;
     };
 
     struct DownloadThumbnailAction
@@ -299,6 +300,7 @@ namespace Kazv
         int height;
         std::optional<ThumbnailResizingMethod> method;
         std::optional<bool> allowRemote;
+        std::optional<FileDesc> downloadTo;
     };
 
     struct ResubmitJobAction
