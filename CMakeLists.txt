@@ -25,6 +25,11 @@ option(libkazv_BUILD_TESTS "Build tests" ON)
 option(libkazv_BUILD_EXAMPLES "Build examples" ON)
 option(libkazv_BUILD_KAZVJOB "Build libkazvjob the async and networking library" ON)
 option(libkazv_OUTPUT_LEVEL "Output level: Debug>=90, Info>=70, Quiet>=20, no output=1" 0)
+option(libkazv_ENABLE_COVERAGE "Enable code coverage information" OFF)
+
+if(libkazv_ENABLE_COVERAGE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fPIC -O0")
+endif()
 
 if((libkazv_BUILD_TESTS OR libkazv_BUILD_EXAMPLES) AND NOT libkazv_BUILD_KAZVJOB)
   message(FATAL_ERROR

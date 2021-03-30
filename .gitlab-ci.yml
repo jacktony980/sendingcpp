@@ -23,3 +23,12 @@ build-code:
     /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --build-arg JOBS=1 --destination $CI_REGISTRY_IMAGE/libkazv:$tag
   dependencies:
     - prepare-env
+
+build-code-with-coverage:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script: |
+    mkdir -p /kaniko/.docker
+    /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.cov --build-arg JOBS=1
