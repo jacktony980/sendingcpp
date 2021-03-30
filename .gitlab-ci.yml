@@ -31,4 +31,4 @@ build-code-with-coverage:
     entrypoint: [""]
   script: |
     mkdir -p /kaniko/.docker
-    /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.cov --build-arg JOBS=1
+    /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.cov --build-arg JOBS=1 --no-push
