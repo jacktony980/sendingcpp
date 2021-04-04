@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -81,14 +81,9 @@ namespace Kazv
         /// internal. only to be called from inside the client.
         Event setDecryptedJson(JsonWrap decryptedJson, DecryptionStatus decrypted) const;
 
-        template <class Archive>
-        void save(Archive & ar, std::uint32_t const /*version*/ ) const {
-            ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
-        }
-
-        template <class Archive>
-        void load( Archive & ar, std::uint32_t const /*version*/ ) {
-            ar( m_json, m_decryptedJson, m_decrypted, m_encrypted );
+        template<class Archive>
+        void serialize(Archive &ar, std::uint32_t const /*version*/ ) {
+            ar & m_json & m_decryptedJson & m_decrypted & m_encrypted;
         }
 
     private:
@@ -103,7 +98,7 @@ namespace Kazv
 
 }
 
-CEREAL_CLASS_VERSION(Kazv::Event, 0);
+BOOST_CLASS_VERSION(Kazv::Event, 0)
 
 namespace nlohmann
 {

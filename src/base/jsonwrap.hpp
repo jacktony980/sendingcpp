@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -21,7 +21,9 @@
 #pragma once
 #include "libkazv-config.hpp"
 
-#include <lager/debug/cereal/struct.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/split_member.hpp>
 
 #include <nlohmann/json.hpp>
 #include <immer/box.hpp>
@@ -50,21 +52,21 @@ namespace Kazv
         operator json() const { return m_d.get().j; }
 
         template <class Archive>
-        void save(Archive & ar, std::uint32_t const /*version*/) const {
-            ar( get().dump() );
+        void save(Archive &ar, std::uint32_t const /*version*/) const {
+            ar << get().dump();
         }
 
         template <class Archive>
-        void load(Archive & ar, std::uint32_t const /*version*/) {
+        void load(Archive &ar, std::uint32_t const /*version*/) {
             std::string j;
-            ar( j );
+            ar >> j;
             m_d = immer::box<Private>(Private{json::parse(std::move(j))});
         }
-
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
     };
 }
 
-CEREAL_CLASS_VERSION(Kazv::JsonWrap, 0);
+BOOST_CLASS_VERSION(Kazv::JsonWrap, 0)
 
 namespace nlohmann
 {

@@ -22,7 +22,6 @@
 
 #include <regex>
 #include <tuple>
-#include <cereal/archives/json.hpp>
 #include <lager/lenses/optional.hpp>
 
 #include <zug/into.hpp>
@@ -70,10 +69,7 @@ void parse(std::string l, Kazv::Client c)
                       << msg.sender() << " at "
                       << msg.originServerTs() << " typed "
                       << msg.type() << "\n";
-            {
-                cereal::JSONOutputArchive archive( std::cout );
-                archive(msg.content());
-            }
+            std::cout << msg.content().get().dump();
             std::cout << std::endl;
         }
 
@@ -98,11 +94,7 @@ void parse(std::string l, Kazv::Client c)
             std::cout << "State typed "
                       << type << " with stateKey "
                       << stateKey << "\n";
-            {
-                cereal::JSONOutputArchive archive( std::cout );
-                archive(st);
-            }
-            std::cout << std::endl;
+            std::cout << st.raw().get().dump() << std::endl;
         }
     } else if (std::regex_match(l, m, roomSendRegex)) {
         auto roomId = m[1].str();
