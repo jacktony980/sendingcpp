@@ -17,7 +17,8 @@ target_link_libraries_system(kazvbase
   immer
   zug
   lager
-  cereal)
+  cereal
+  Boost::serialization)
 target_include_directories(kazvbase
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

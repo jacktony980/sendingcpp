@@ -41,7 +41,7 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   set(BUILD_SHARED_LIBS ON)
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS serialization)
 
 
 include(FetchContent)
