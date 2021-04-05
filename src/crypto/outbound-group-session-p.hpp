@@ -47,8 +47,8 @@ namespace Kazv
         std::size_t checkError(std::size_t code) const;
         std::string error() const;
 
-        ByteArray pickle() const;
-        bool unpickle(ByteArray pickleData);
+        std::string pickle() const;
+        bool unpickle(std::string pickleData);
 
         std::string sessionKey();
     };

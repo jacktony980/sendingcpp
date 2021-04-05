@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -54,6 +54,8 @@ namespace Kazv
 
         Timestamp creationTimeMs() const;
     private:
+        friend void to_json(nlohmann::json &j, const OutboundGroupSession &s);
+        friend void from_json(const nlohmann::json &j, OutboundGroupSession &s);
         std::unique_ptr<OutboundGroupSessionPrivate> m_d;
     };
 }

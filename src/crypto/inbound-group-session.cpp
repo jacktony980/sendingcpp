@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -21,6 +21,8 @@
 
 
 #include "inbound-group-session-p.hpp"
+
+#include <types.hpp>
 
 #include <debug.hpp>
 
@@ -65,11 +67,12 @@ namespace Kazv
     {
         ed25519Key = that.ed25519Key;
         valid = unpickle(that.pickle());
+        decryptedEvents = that.decryptedEvents;
     }
 
-    ByteArray InboundGroupSessionPrivate::pickle() const
+    std::string InboundGroupSessionPrivate::pickle() const
     {
-        auto pickleData = ByteArray(olm_pickle_inbound_group_session_length(session), '\0');
+        auto pickleData = std::string(olm_pickle_inbound_group_session_length(session), '\0');
         auto key = ByteArray(3, 'x');
         checkError(olm_pickle_inbound_group_session(session,
                                       key.data(), key.size(),
@@ -77,7 +80,7 @@ namespace Kazv
         return pickleData;
     }
 
-    bool InboundGroupSessionPrivate::unpickle(ByteArray pickleData)
+    bool InboundGroupSessionPrivate::unpickle(std::string pickleData)
     {
         auto key = ByteArray(3, 'x');
         auto res = checkError(olm_unpickle_inbound_group_session(
@@ -172,5 +175,26 @@ namespace Kazv
     std::string InboundGroupSession::ed25519Key() const
     {
         return m_d->ed25519Key;
+    }
+
+    void to_json(nlohmann::json &j, const InboundGroupSession &s)
+    {
+        j = nlohmann::json::object();
+        j["ed25519Key"] = s.m_d->ed25519Key;
+        j["valid"] = s.m_d->valid;
+        j["decryptedEvents"] = s.m_d->decryptedEvents;
+        if (s.m_d->valid) {
+            j["session"] = s.m_d->pickle();
+        }
+    }
+
+    void from_json(const nlohmann::json &j, InboundGroupSession &s)
+    {
+        s.m_d->ed25519Key = j.at("ed25519Key");
+        s.m_d->valid = j.at("valid");
+        s.m_d->decryptedEvents = j.at("decryptedEvents");
+        if (s.m_d->valid) {
+            s.m_d->valid = s.m_d->unpickle(j.at("session"));
+        }
     }
 }

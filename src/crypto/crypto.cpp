@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -30,6 +30,7 @@
 #include <debug.hpp>
 #include <event.hpp>
 #include <cursorutil.hpp>
+#include <types.hpp>
 
 #include "crypto-p.hpp"
 #include "session-p.hpp"
@@ -71,16 +72,16 @@ namespace Kazv
         unpickle(that.pickle());
     }
 
-    ByteArray CryptoPrivate::pickle() const
+    std::string CryptoPrivate::pickle() const
     {
         auto key = ByteArray(3, 'x');
-        auto pickleData = ByteArray(olm_pickle_account_length(account), '\0');
+        auto pickleData = std::string(olm_pickle_account_length(account), '\0');
         checkError(olm_pickle_account(account, key.data(), key.size(),
                                       pickleData.data(), pickleData.size()));
         return pickleData;
     }
 
-    void CryptoPrivate::unpickle(ByteArray pickleData)
+    void CryptoPrivate::unpickle(std::string pickleData)
     {
         auto key = ByteArray(3, 'x');
         checkError(olm_unpickle_account(account, key.data(), key.size(),
@@ -521,5 +522,31 @@ namespace Kazv
             m_d->knownSessions.insert_or_assign(theirIdentityKey,
                                                 std::move(session));
         }
+    }
+
+    nlohmann::json Crypto::toJson() const
+    {
+        std::string pickledData = m_d->pickle();
+        auto j =  nlohmann::json::object({
+                {"account", std::move(pickledData)},
+                {"uploadedOneTimeKeysCount", m_d->uploadedOneTimeKeysCount},
+                {"numUnpublishedKeys", m_d->numUnpublishedKeys},
+                {"knownSessions", nlohmann::json(m_d->knownSessions)},
+                {"inboundGroupSessions", nlohmann::json(m_d->inboundGroupSessions)},
+                {"outboundGroupSessions", nlohmann::json(m_d->outboundGroupSessions)},
+            });
+
+        return j;
+    }
+
+    void Crypto::loadJson(const nlohmann::json &j)
+    {
+        const auto &pickledData = j.at("account").template get<std::string>();
+        m_d->unpickle(pickledData);
+        m_d->uploadedOneTimeKeysCount = j.at("uploadedOneTimeKeysCount");
+        m_d->numUnpublishedKeys = j.at("numUnpublishedKeys");
+        m_d->knownSessions = j.at("knownSessions").template get<decltype(m_d->knownSessions)>();
+        m_d->inboundGroupSessions = j.at("inboundGroupSessions").template get<decltype(m_d->inboundGroupSessions)>();
+        m_d->outboundGroupSessions = j.at("outboundGroupSessions").template get<decltype(m_d->outboundGroupSessions)>();
     }
 }

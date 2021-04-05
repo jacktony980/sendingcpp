@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -66,9 +66,9 @@ namespace Kazv
         valid = unpickle(that.pickle());
     }
 
-    ByteArray OutboundGroupSessionPrivate::pickle() const
+    std::string OutboundGroupSessionPrivate::pickle() const
     {
-        auto pickleData = ByteArray(olm_pickle_outbound_group_session_length(session), '\0');
+        auto pickleData = std::string(olm_pickle_outbound_group_session_length(session), '\0');
         auto key = ByteArray(3, 'x');
         checkError(olm_pickle_outbound_group_session(session,
                                       key.data(), key.size(),
@@ -76,7 +76,7 @@ namespace Kazv
         return pickleData;
     }
 
-    bool OutboundGroupSessionPrivate::unpickle(ByteArray pickleData)
+    bool OutboundGroupSessionPrivate::unpickle(std::string pickleData)
     {
         auto key = ByteArray(3, 'x');
         auto res = checkError(olm_unpickle_outbound_group_session(
@@ -176,4 +176,26 @@ namespace Kazv
     {
         return m_d->creationTime;
     }
+
+    void to_json(nlohmann::json &j, const OutboundGroupSession &s)
+    {
+        j = nlohmann::json::object();
+        j["valid"] = s.m_d->valid;
+        j["creationTime"] = s.m_d->creationTime;
+        j["initialSessionKey"] = s.m_d->initialSessionKey;
+        if (s.m_d->valid) {
+            j["session"] = s.m_d->pickle();
+        }
+    }
+
+    void from_json(const nlohmann::json &j, OutboundGroupSession &s)
+    {
+        s.m_d->valid = j.at("valid");
+        s.m_d->creationTime = j.at("creationTime");
+        s.m_d->initialSessionKey = j.at("initialSessionKey");
+        if (s.m_d->valid) {
+            s.m_d->valid = s.m_d->unpickle(j.at("session"));
+        }
+    }
+
 }

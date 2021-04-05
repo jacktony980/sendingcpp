@@ -10,13 +10,14 @@ add_executable(kazvtest
   basejobtest.cpp
   event-test.cpp
   cursorutiltest.cpp
+  base/serialization-test.cpp
+  base/types-test.cpp
 
   client/client-test-util.cpp
   client/sync-test.cpp
   client/content-test.cpp
   client/paginate-test.cpp
   client/util-test.cpp
-  base/serialization-test.cpp
 
   kazvjobtest.cpp
   event-emitter-test.cpp

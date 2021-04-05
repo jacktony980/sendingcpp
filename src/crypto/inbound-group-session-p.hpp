@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -34,6 +34,19 @@ namespace Kazv
         Timestamp originServerTs;
     };
 
+    inline void to_json(nlohmann::json &j, const KeyOfDecryptedEvent &k)
+    {
+        j = nlohmann::json::object();
+        j["eventId"] = k.eventId;
+        j["originServerTs"] = k.originServerTs;
+    }
+
+    inline void from_json(const nlohmann::json &j, KeyOfDecryptedEvent &k)
+    {
+        k.eventId = j.at("eventId");
+        k.originServerTs = j.at("originServerTs");
+    }
+
     inline bool operator==(KeyOfDecryptedEvent a, KeyOfDecryptedEvent b)
     {
         return a.eventId == b.eventId
@@ -64,8 +77,8 @@ namespace Kazv
         std::size_t checkError(std::size_t code) const;
         std::string error() const;
 
-        ByteArray pickle() const;
-        bool unpickle(ByteArray pickleData);
+        std::string pickle() const;
+        bool unpickle(std::string pickleData);
     };
 
 }

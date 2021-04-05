@@ -86,9 +86,9 @@ namespace Kazv
         valid = unpickle(that.pickle());
     }
 
-    ByteArray SessionPrivate::pickle() const
+    std::string SessionPrivate::pickle() const
     {
-        auto pickleData = ByteArray(olm_pickle_session_length(session), '\0');
+        auto pickleData = std::string(olm_pickle_session_length(session), '\0');
         auto key = ByteArray(3, 'x');
         checkError(olm_pickle_session(session,
                                       key.data(), key.size(),
@@ -96,7 +96,7 @@ namespace Kazv
         return pickleData;
     }
 
-    bool SessionPrivate::unpickle(ByteArray pickleData)
+    bool SessionPrivate::unpickle(std::string pickleData)
     {
         auto key = ByteArray(3, 'x');
         auto res = checkError(olm_unpickle_session(
@@ -222,4 +222,20 @@ namespace Kazv
 
         return { -1, "" };
     }
+
+    void to_json(nlohmann::json &j, const Session &s)
+    {
+        j = nlohmann::json::object({
+                {"valid", s.m_d->valid},
+                {"data", s.m_d->valid ? s.m_d->pickle() : std::string()}
+            });
+    }
+
+    void from_json(const nlohmann::json &j, Session &s)
+    {
+        if (j.at("valid").template get<bool>()) {
+            s.m_d->valid = s.m_d->unpickle(j.at("data"));
+        }
+    }
+
 }

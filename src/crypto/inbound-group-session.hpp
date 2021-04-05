@@ -49,6 +49,8 @@ namespace Kazv
 
         std::string ed25519Key() const;
     private:
+        friend void to_json(nlohmann::json &j, const InboundGroupSession &s);
+        friend void from_json(const nlohmann::json &j, InboundGroupSession &s);
         std::unique_ptr<InboundGroupSessionPrivate> m_d;
     };
 }

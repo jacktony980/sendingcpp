@@ -142,16 +142,29 @@ namespace nlohmann {
     template <class T, class V>
     struct adl_serializer<immer::map<T, V>> {
         static void to_json(json& j, immer::map<T, V> map) {
-            for (auto [k, v] : map) {
-                j[k] = v;
+            if constexpr (std::is_same_v<T, std::string>) {
+                j = json::object();
+                for (auto [k, v] : map) {
+                    j[k] = v;
+                }
+            } else {
+                j = json::array();
+                for (auto [k, v] : map) {
+                    j.push_back(k);
+                    j.push_back(v);
+                }
             }
         }
 
         static void from_json(const json& j, immer::map<T, V> &m) {
             immer::map<T, V> ret;
-            if (j.is_object()) {
+            if constexpr (std::is_same_v<T, std::string>) {
                 for (const auto &[k, v] : j.items()) {
                     ret = std::move(ret).set(k, v);
+                }
+            } else {
+                for (std::size_t i = 0; i < j.size(); i += 2) {
+                    ret = std::move(ret).set(j[i], j[i+1]);
                 }
             }
             m = ret;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -22,10 +22,35 @@
 
 #include <catch2/catch.hpp>
 
+#include <sstream>
+
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include <crypto/crypto.hpp>
+
 
 using namespace Kazv;
 using namespace Kazv::CryptoConstants;
+
+using IAr = boost::archive::text_iarchive;
+using OAr = boost::archive::text_oarchive;
+
+template<class T>
+static void serializeDup(const T &in, T &out)
+{
+    std::stringstream stream;
+
+    {
+        auto ar = OAr(stream);
+        ar << in;
+    }
+
+    {
+        auto ar = IAr(stream);
+        ar >> out;
+    }
+}
 
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
@@ -41,6 +66,41 @@ TEST_CASE("Crypto should be copyable", "[crypto]")
 
     REQUIRE(oneTimeKeys == oneTimeKeys2);
     REQUIRE(crypto.numUnpublishedOneTimeKeys() == cryptoClone.numUnpublishedOneTimeKeys());
+}
+
+TEST_CASE("Crypto should be serializable", "[crypto]")
+{
+    Crypto crypto;
+    crypto.genOneTimeKeys(1);
+    auto oneTimeKeys = crypto.unpublishedOneTimeKeys();
+
+    Crypto cryptoClone;
+
+    serializeDup(crypto, cryptoClone);
+
+    REQUIRE(crypto.ed25519IdentityKey() == cryptoClone.ed25519IdentityKey());
+    REQUIRE(crypto.curve25519IdentityKey() == cryptoClone.curve25519IdentityKey());
+
+    auto oneTimeKeys2 = cryptoClone.unpublishedOneTimeKeys();
+
+    REQUIRE(oneTimeKeys == oneTimeKeys2);
+    REQUIRE(crypto.numUnpublishedOneTimeKeys() == cryptoClone.numUnpublishedOneTimeKeys());
+}
+
+TEST_CASE("Serialize Crypto with an OutboundGroupSession", "[crypto]")
+{
+    Crypto crypto;
+
+    std::string roomId = "!example:example.org";
+    auto desc = MegOlmSessionRotateDesc{500000 /* ms */, 100 /* messages */};
+
+    crypto.rotateMegOlmSession(roomId);
+
+    Crypto cryptoClone;
+
+    serializeDup(crypto, cryptoClone);
+
+    REQUIRE(! cryptoClone.rotateMegOlmSessionIfNeeded(roomId, desc).has_value());
 }
 
 TEST_CASE("Generating and publishing keys should work", "[crypto]")
@@ -100,11 +160,15 @@ TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
     auto devMap = immer::map<std::string, StrMap>()
         .set("b", StrMap().set("dev", b.curve25519IdentityKey()));
 
+    Crypto aClone{a};
+
     auto devices = a.devicesMissingOutboundSessionKey(devMap);
+    auto devicesAClone = aClone.devicesMissingOutboundSessionKey(devMap);
 
     // No device should be missing an olm session, as A has received an
     // inbound olm session before.
     auto expected = immer::map<std::string, immer::flex_vector<std::string>>();
 
     REQUIRE(devices == expected);
+    REQUIRE(devicesAClone == expected);
 }

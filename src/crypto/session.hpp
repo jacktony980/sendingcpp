@@ -70,6 +70,9 @@ namespace Kazv
     private:
         friend class Crypto;
         friend class CryptoPrivate;
+
+        friend void to_json(nlohmann::json &j, const Session &s);
+        friend void from_json(const nlohmann::json &j, Session &s);
         std::unique_ptr<SessionPrivate> m_d;
     };
 }

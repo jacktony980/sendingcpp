@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -25,6 +25,8 @@
 #include <algorithm>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 #include <boost/container_hash/hash.hpp>
 
 namespace Kazv
@@ -37,6 +39,22 @@ namespace Kazv
         std::string senderKey;
         std::string sessionId;
     };
+
+    inline void from_json(const nlohmann::json &j, KeyOfGroupSession &k)
+    {
+        k.roomId = j.at("roomId");
+        k.senderKey = j.at("senderKey");
+        k.sessionId = j.at("sessionId");
+    }
+
+    inline void to_json(nlohmann::json &j, const KeyOfGroupSession &k)
+    {
+        j = nlohmann::json::object({
+                {"roomId", k.roomId},
+                {"senderKey", k.senderKey},
+                {"sessionId", k.sessionId},
+            });
+    }
 
     inline bool operator==(KeyOfGroupSession a, KeyOfGroupSession b)
     {

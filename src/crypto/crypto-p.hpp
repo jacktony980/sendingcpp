@@ -54,8 +54,8 @@ namespace Kazv
 
         std::size_t checkUtilError(std::size_t code) const;
 
-        ByteArray pickle() const;
-        void unpickle(ByteArray data);
+        std::string pickle() const;
+        void unpickle(std::string data);
 
         ByteArray identityKeys();
         std::string ed25519IdentityKey();

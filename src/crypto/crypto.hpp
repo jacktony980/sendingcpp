@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -126,9 +126,28 @@ namespace Kazv
         void createOutboundSession(std::string theirIdentityKey,
                                    std::string theirOneTimeKey);
 
+        template<class Archive>
+        void save(Archive & ar, const unsigned int /* version */) const {
+            ar << toJson().dump();
+        }
+
+        template<class Archive>
+        void load(Archive &ar, const unsigned int /* version */) {
+            std::string j;
+            ar >> j;
+            loadJson(nlohmann::json::parse(std::move(j)));
+        }
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
+
     private:
+        nlohmann::json toJson() const;
+        void loadJson(const nlohmann::json &j);
+
         friend class Session;
         friend class SessionPrivate;
         std::unique_ptr<CryptoPrivate> m_d;
     };
 }
+
+BOOST_CLASS_VERSION(Kazv::Crypto, 0)
