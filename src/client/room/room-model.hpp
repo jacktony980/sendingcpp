@@ -22,12 +22,16 @@
 #include <libkazv-config.hpp>
 
 #include <lager/debug/cereal/struct.hpp>
-#include <lager/debug/cereal/immer_flex_vector.hpp>
 
 #include <string>
 #include <variant>
 #include <immer/flex_vector.hpp>
 #include <immer/map.hpp>
+
+#include <serialization/immer-flex-vector.hpp>
+#include <serialization/immer-box.hpp>
+#include <serialization/immer-map.hpp>
+#include <serialization/immer-array.hpp>
 
 #include <csapi/sync.hpp>
 #include <event.hpp>
@@ -215,23 +219,36 @@ namespace Kazv
     template<class Archive>
     void serialize(Archive &ar, RoomModel &r, std::uint32_t const /*version*/)
     {
-        ar(r.roomId,
-           r.stateEvents,
-           r.inviteState,
-           r.timeline,
-           r.messages,
-           r.accountData,
-           r.membership,
-           r.paginateBackToken,
-           r.canPaginateBack);
+        ar
+            & r.roomId
+            & r.stateEvents
+            & r.inviteState
+
+            & r.timeline
+            & r.messages
+            & r.accountData
+            & r.membership
+            & r.paginateBackToken
+            & r.canPaginateBack
+
+            & r.timelineGaps
+            & r.ephemeral
+
+            & r.localDraft
+
+            & r.encrypted
+            & r.shouldRotateSessionKey
+
+            & r.membersFullyLoaded
+            ;
     }
 
     template<class Archive>
     void serialize(Archive &ar, RoomListModel &l, std::uint32_t const /*version*/)
     {
-        ar(l.rooms);
+        ar & l.rooms;
     }
 }
 
-CEREAL_CLASS_VERSION(Kazv::RoomModel, 0);
-CEREAL_CLASS_VERSION(Kazv::RoomListModel, 0);
+BOOST_CLASS_VERSION(Kazv::RoomModel, 0)
+BOOST_CLASS_VERSION(Kazv::RoomListModel, 0)

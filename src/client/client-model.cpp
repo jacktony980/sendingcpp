@@ -50,11 +50,6 @@ namespace Kazv
         auto oldDeviceLists = m.deviceLists;
 
         auto [newClient, effect] = lager::match(std::move(a))(
-            [&](Error::Action a) -> Result {
-                m.error = Error::update(m.error, a);
-                return {std::move(m), lager::noop};
-            },
-
             [&](RoomListAction a) -> Result {
                 m.roomList = RoomListModel::update(std::move(m.roomList), a);
                 return {std::move(m), lager::noop};

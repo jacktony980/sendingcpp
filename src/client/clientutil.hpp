@@ -28,6 +28,7 @@
 #include <zug/transducer/eager.hpp>
 #include <lager/deps.hpp>
 #include <boost/container_hash/hash.hpp>
+#include <boost/serialization/string.hpp>
 
 #include <cursorutil.hpp>
 #include <jobinterface.hpp>
@@ -67,9 +68,9 @@ namespace Kazv
         std::string stateKey;
     };
     template<class Archive>
-    void serialize(Archive &ar, KeyOfState &m)
+    void serialize(Archive &ar, KeyOfState &m, std::uint32_t const /* version */)
     {
-        ar(m.type, m.stateKey);
+        ar & m.type & m.stateKey;
     }
 
     inline bool operator==(KeyOfState a, KeyOfState b)
@@ -230,3 +231,5 @@ namespace std
         }
     };
 }
+
+BOOST_CLASS_VERSION(Kazv::KeyOfState, 0)

@@ -26,7 +26,6 @@
 #include <lager/context.hpp>
 #include <context.hpp>
 
-#include "error.hpp"
 #include "room/room-model.hpp"
 
 namespace Kazv
@@ -75,7 +74,6 @@ namespace Kazv
 
     using ClientAction = std::variant<
         RoomListAction,
-        Error::Action,
 
         LoginAction,
         TokenLoginAction,

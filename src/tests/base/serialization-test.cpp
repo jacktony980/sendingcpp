@@ -29,6 +29,7 @@
 #include <serialization/immer-map.hpp>
 #include <serialization/immer-box.hpp>
 #include <serialization/immer-array.hpp>
+#include <serialization/std-optional.hpp>
 
 #include <event.hpp>
 
@@ -112,4 +113,20 @@ TEST_CASE("Serialize Event", "[base][serialization]")
 })"_json};
     auto v2 = Event{};
     serializeTest(v, v2);
+}
+
+TEST_CASE("Serialize std::optional", "[base][serialization]")
+{
+    std::optional<int> o{20};
+    std::optional<int> o2{1};
+
+    serializeTest(o, o2);
+
+    o2.reset();
+
+    serializeTest(o, o2);
+
+    o.reset();
+
+    serializeTest(o, o2);
 }

@@ -52,8 +52,8 @@ namespace Kazv
     template<class Archive>
     void serialize(Archive &ar, SdkModel &s, std::uint32_t const /*version*/)
     {
-        ar(s.client);
+        ar & s.client;
     }
 }
 
-CEREAL_CLASS_VERSION(Kazv::SdkModel, 0);
+BOOST_CLASS_VERSION(Kazv::SdkModel, 0)

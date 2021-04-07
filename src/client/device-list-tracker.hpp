@@ -20,8 +20,14 @@
 #pragma once
 #include <libkazv-config.hpp>
 #include <string>
+
 #include <immer/map.hpp>
 #include <immer/flex_vector.hpp>
+
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/optional.hpp>
+
+#include <serialization/immer-map.hpp>
 
 #include <crypto.hpp>
 #include <csapi/keys.hpp>
@@ -48,6 +54,18 @@ namespace Kazv
     };
 
     bool operator==(DeviceKeyInfo a, DeviceKeyInfo b);
+
+    template<class Archive>
+    void serialize(Archive &ar, DeviceKeyInfo &i, std::uint32_t const /*version*/)
+    {
+        ar
+            & i.deviceId
+            & i.ed25519Key
+            & i.curve25519Key
+            & i.displayName
+            & i.trustLevel
+            ;
+    }
 
     struct DeviceListTracker
     {
@@ -86,4 +104,16 @@ namespace Kazv
         /// returns a list of users whose device list has changed
         immer::flex_vector<std::string> diff(DeviceListTracker that) const;
     };
+
+    template<class Archive>
+    void serialize(Archive &ar, DeviceListTracker &t, std::uint32_t const /*version*/)
+    {
+        ar
+            & t.usersToTrackDeviceLists
+            & t.deviceLists
+            ;
+    }
 }
+
+BOOST_CLASS_VERSION(Kazv::DeviceKeyInfo, 0)
+BOOST_CLASS_VERSION(Kazv::DeviceListTracker, 0)

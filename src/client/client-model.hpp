@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -28,6 +28,8 @@
 
 #include <lager/context.hpp>
 #include <boost/hana.hpp>
+#include <serialization/std-optional.hpp>
+
 
 #ifndef NDEBUG
 #include <lager/debug/cereal/struct.hpp>
@@ -38,9 +40,13 @@
 #include <file-desc.hpp>
 #include <crypto.hpp>
 
+#include <serialization/immer-flex-vector.hpp>
+#include <serialization/immer-box.hpp>
+#include <serialization/immer-map.hpp>
+#include <serialization/immer-array.hpp>
+
 #include "clientfwd.hpp"
 #include "device-list-tracker.hpp"
-#include "error.hpp"
 #include "room/room-model.hpp"
 
 namespace Kazv
@@ -73,7 +79,6 @@ namespace Kazv
         std::string token;
         std::string deviceId;
         bool loggedIn{false};
-        Error error;
 
         bool syncing{false};
         int firstRetryMs{1000};
@@ -378,16 +383,35 @@ namespace Kazv
     template<class Archive>
     void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)
     {
-        ar(m.serverUrl, m.userId, m.token, m.deviceId, m.loggedIn,
-           m.error,
-           m.initialSyncFilterId,
-           m.incrementalSyncFilterId,
-           m.syncToken,
-           m.roomList,
-           m.presence,
-           m.accountData,
-           m.nextTxnId,
-           m.toDevice);
+        ar
+            & m.serverUrl
+            & m.userId
+            & m.token
+            & m.deviceId
+            & m.loggedIn
+
+            & m.syncing
+            & m.firstRetryMs
+            & m.retryTimeFactor
+            & m.maxRetryMs
+            & m.syncTimeoutMs
+            & m.initialSyncFilterId
+            & m.incrementalSyncFilterId
+            & m.syncToken
+
+            & m.roomList
+            & m.presence
+            & m.accountData
+
+            & m.nextTxnId
+
+            & m.toDevice
+            & m.crypto
+            & m.identityKeysUploaded
+
+            & m.deviceLists
+            ;
     }
 }
-CEREAL_CLASS_VERSION(Kazv::ClientModel, 0);
+
+BOOST_CLASS_VERSION(Kazv::ClientModel, 0)
