@@ -22,6 +22,7 @@
 #include <libkazv-config.hpp>
 
 #include <boost/serialization/nvp.hpp>
+#include <boost/serialization/split_free.hpp>
 
 #include <immer/array.hpp>
 #include <immer/array_transient.hpp>
