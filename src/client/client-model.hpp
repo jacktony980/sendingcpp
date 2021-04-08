@@ -31,10 +31,6 @@
 #include <serialization/std-optional.hpp>
 
 
-#ifndef NDEBUG
-#include <lager/debug/cereal/struct.hpp>
-#endif
-
 #include <csapi/sync.hpp>
 
 #include <file-desc.hpp>
@@ -348,37 +344,6 @@ namespace Kazv
         std::string sessionKey;
         immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
     };
-
-#ifndef NDEBUG
-    LAGER_CEREAL_STRUCT(LoginAction);
-    LAGER_CEREAL_STRUCT(TokenLoginAction);
-    LAGER_CEREAL_STRUCT(LogoutAction);
-    LAGER_CEREAL_STRUCT(SyncAction);
-    LAGER_CEREAL_STRUCT(PostInitialFiltersAction);
-
-    LAGER_CEREAL_STRUCT(PaginateTimelineAction);
-    LAGER_CEREAL_STRUCT(SendMessageAction);
-    LAGER_CEREAL_STRUCT(SendStateEventAction);
-    LAGER_CEREAL_STRUCT(SendToDeviceMessageAction);
-    LAGER_CEREAL_STRUCT(CreateRoomAction);
-    LAGER_CEREAL_STRUCT(GetRoomStatesAction);
-    LAGER_CEREAL_STRUCT(GetStateEventAction);
-    LAGER_CEREAL_STRUCT(InviteToRoomAction);
-    LAGER_CEREAL_STRUCT(JoinRoomByIdAction);
-    LAGER_CEREAL_STRUCT(JoinRoomAction);
-    LAGER_CEREAL_STRUCT(LeaveRoomAction);
-    LAGER_CEREAL_STRUCT(ForgetRoomAction);
-    LAGER_CEREAL_STRUCT(SetTypingAction);
-    LAGER_CEREAL_STRUCT(PostReceiptAction);
-    LAGER_CEREAL_STRUCT(ProcessResponseAction);
-    LAGER_CEREAL_STRUCT(SetReadMarkerAction);
-
-    LAGER_CEREAL_STRUCT(UploadContentAction);
-    LAGER_CEREAL_STRUCT(DownloadContentAction);
-    LAGER_CEREAL_STRUCT(DownloadThumbnailAction);
-
-    LAGER_CEREAL_STRUCT(ResubmitJobAction);
-#endif
 
     template<class Archive>
     void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)

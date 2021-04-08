@@ -21,8 +21,6 @@
 #pragma once
 #include <libkazv-config.hpp>
 
-#include <lager/debug/cereal/struct.hpp>
-
 #include <string>
 #include <variant>
 #include <immer/flex_vector.hpp>
@@ -37,8 +35,6 @@
 #include <event.hpp>
 
 #include <crypto.hpp>
-
-#include "data/cereal_map.hpp"
 
 #include "clientutil.hpp"
 
@@ -204,17 +200,6 @@ namespace Kazv
     {
         return a.rooms == b.rooms;
     }
-
-#ifndef NDEBUG
-    LAGER_CEREAL_STRUCT(AddStateEventsAction);
-    LAGER_CEREAL_STRUCT(AppendTimelineAction);
-    LAGER_CEREAL_STRUCT(PrependTimelineAction);
-    LAGER_CEREAL_STRUCT(AddAccountDataAction);
-    LAGER_CEREAL_STRUCT(ChangeMembershipAction);
-    LAGER_CEREAL_STRUCT(SetLocalDraftAction);
-    LAGER_CEREAL_STRUCT(ChangeInviteStateAction);
-    LAGER_CEREAL_STRUCT(UpdateRoomAction);
-#endif
 
     template<class Archive>
     void serialize(Archive &ar, RoomModel &r, std::uint32_t const /*version*/)

@@ -29,7 +29,6 @@
 #include <boost/asio.hpp>
 
 #ifndef NDEBUG
-#include <lager/debug/debugger.hpp>
 #include <lager/debug/http_server.hpp>
 #endif
 
@@ -68,24 +67,11 @@ int main(int argc, char *argv[])
 
     Kazv::CprJobHandler jobHandler{ioContext.get_executor()};
 
-// #ifndef NDEBUG
-//     auto debugger = lager::http_debug_server{argc, (const char **)argv, 8080,
-//                                              lager::resources_path()
-// //"./_deps/lager-src/resources"
-//     };
-// #endif
     auto sdk = Kazv::makeDefaultEncryptedSdk(
         static_cast<Kazv::CprJobHandler &>(jobHandler),
         static_cast<Kazv::EventInterface &>(eventEmitter),
         Kazv::AsioPromiseHandler{ioContext.get_executor()},
-// #ifndef NDEBUG
-//         zug::map([](auto &&m) -> Kazv::SdkModel {
-//                      return std::forward<decltype(m)>(m);
-//                  }),
-//         lager::with_debugger(debugger)
-// #else
         zug::identity
-// #endif
         );
 
     auto store = sdk.context();

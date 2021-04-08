@@ -111,13 +111,6 @@ if(NOT Lager_FOUND)
   FetchContent_MakeAvailable(lager)
 endif()
 
-find_package(cereal)
-if(NOT cereal_FOUND)
-  set(JUST_INSTALL_CEREAL ON)
-  FetchContent_Declare(cereal GIT_REPOSITORY https://github.com/USCiLab/cereal GIT_TAG v1.3.0)
-  FetchContent_MakeAvailable(cereal)
-endif()
-
 find_package(Olm REQUIRED)
 
 if(libkazv_BUILD_EXAMPLES)

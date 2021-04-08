@@ -17,7 +17,6 @@ target_link_libraries_system(kazvbase
   immer
   zug
   lager
-  cereal
   Boost::serialization)
 target_include_directories(kazvbase
   INTERFACE
