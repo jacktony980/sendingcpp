@@ -9,3 +9,4 @@
 - Deal with timeline gaps properly. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/1
 - Record state events in timeline. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/2
 - Add support for streaming download. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/3
+- Add support for Boost.Serialization. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/4
