@@ -6,6 +6,7 @@ find_dependency(Zug)
 find_dependency(Lager)
 find_dependency(cereal)
 find_dependency(Olm)
+find_dependency(cryptopp)
 
 set(_oldCmakeModulePath ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}" ${CMAKE_MODULE_PATH})

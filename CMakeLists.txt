@@ -111,6 +111,8 @@ if(NOT Lager_FOUND)
   FetchContent_MakeAvailable(lager)
 endif()
 
+find_package(cryptopp REQUIRED)
+
 find_package(Olm REQUIRED)
 
 if(libkazv_BUILD_EXAMPLES)
@@ -141,4 +143,5 @@ install(
 # We use the find module instead.
 install(
   FILES cmake/Findcpr.cmake
+  cmake/Findcryptopp.cmake
   DESTINATION ${ConfigPackageLocation})
