@@ -3,13 +3,15 @@ set(kazvcrypto_SRCS
   session.cpp
   inbound-group-session.cpp
   outbound-group-session.cpp
+
+  aes-256-ctr.cpp
   )
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})
 add_library(libkazv::kazvcrypto ALIAS kazvcrypto)
 set_target_properties(kazvcrypto PROPERTIES VERSION ${libkazv_VERSION_STRING} SOVERSION ${libkazv_SOVERSION})
 
-target_link_libraries(kazvcrypto PUBLIC kazvbase Olm::Olm)
+target_link_libraries(kazvcrypto PUBLIC kazvbase Olm::Olm cryptopp)
 
 target_include_directories(kazvcrypto PRIVATE .)
 

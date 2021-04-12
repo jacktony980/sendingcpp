@@ -27,7 +27,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+
 #include <crypto/crypto.hpp>
+#include <aes-256-ctr.hpp>
 
 
 using namespace Kazv;
@@ -171,4 +173,78 @@ TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
 
     REQUIRE(devices == expected);
     REQUIRE(devicesAClone == expected);
+}
+
+TEST_CASE("Encrypt and decrypt AES-256-CTR", "[crypto][aes256ctr]")
+{
+    auto key = genRandom(AES256CTRDesc::keySize);
+    auto iv = genRandom(AES256CTRDesc::ivSize);
+
+    auto desc = AES256CTRDesc(key, iv);
+    auto desc2 = desc;
+
+    std::string original = "test for aes-256-ctr";
+
+    auto encrypted = desc.processInPlace(original);
+
+    auto decrypted = desc2.processInPlace(encrypted);
+
+    REQUIRE(original == decrypted);
+}
+
+TEST_CASE("Encrypt and decrypt AES-256-CTR with any sequence type", "[crypto][aes256ctr]")
+{
+    auto key = genRandom(AES256CTRDesc::keySize);
+    auto iv = genRandom(AES256CTRDesc::ivSize);
+
+    auto desc = AES256CTRDesc(key, iv);
+    auto desc2 = desc;
+
+    std::string oStr = "test for aes-256-ctr";
+    std::vector<unsigned char> original(oStr.begin(), oStr.end());
+
+    auto encrypted = desc.processInPlace(original);
+
+    auto decrypted = desc2.processInPlace(encrypted);
+
+    REQUIRE(original == decrypted);
+}
+
+TEST_CASE("Encrypt and decrypt AES-256-CTR in a non-destructive way", "[crypto][aes256ctr]")
+{
+    auto key = genRandom(AES256CTRDesc::keySize);
+    auto iv = genRandom(AES256CTRDesc::ivSize);
+
+    auto desc = AES256CTRDesc(key, iv);
+
+    std::string original = "test for aes-256-ctr";
+
+    auto [next, encrypted] = desc.process(original);
+
+    auto [next2, encrypted2] = desc.process(original);
+
+    REQUIRE(encrypted == encrypted2);
+
+    auto [next3, decrypted] = desc.process(encrypted);
+
+    REQUIRE(original == decrypted);
+}
+
+TEST_CASE("Encrypt and decrypt AES-256-CTR in batches", "[crypto][aes256ctr]")
+{
+    auto key = genRandom(AES256CTRDesc::keySize);
+    auto iv = genRandom(AES256CTRDesc::ivSize);
+
+    auto desc = AES256CTRDesc(key, iv);
+
+    std::string original = "test for aes-256-ctr";
+
+    std::string orig2 = "another test string...";
+
+    auto [next, encrypted] = desc.process(original);
+    auto [next2, encrypted2] = next.process(orig2);
+
+    auto [next3, decrypted] = desc.process(encrypted + encrypted2);
+
+    REQUIRE(original + orig2 == decrypted);
 }
