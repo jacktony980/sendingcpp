@@ -43,7 +43,9 @@
     }                                                                   \
     typeName &typeName::operator=(typeName &&that)                      \
     {                                                                   \
-        privateName.reset();                                            \
-        privateName = std::move(that.privateName);                      \
+        if (m_d != that.m_d) {                                          \
+            privateName.reset();                                        \
+            privateName = std::move(that.privateName);                  \
+        }                                                               \
         return *this;                                                   \
     }

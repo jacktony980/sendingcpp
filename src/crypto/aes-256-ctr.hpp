@@ -81,7 +81,7 @@ namespace Kazv
          * @return whether this cipher is valid. If the cipher is invalid, you
          * must not use any method except destructor or operator=().
          */
-        bool valid();
+        bool valid() const;
 
         template<class RangeT>
         using ResultBase = std::pair<AES256CTRDesc, RangeT>;

@@ -51,6 +51,11 @@ namespace Kazv
 
     AES256CTRDesc::~AES256CTRDesc() = default;
 
+    bool AES256CTRDesc::valid() const
+    {
+        return m_d && m_d->valid;
+    }
+
     auto AES256CTRDesc::process(DataT data) const & -> Result
     {
         auto next = *this;

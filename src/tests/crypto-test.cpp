@@ -248,3 +248,57 @@ TEST_CASE("Encrypt and decrypt AES-256-CTR in batches", "[crypto][aes256ctr]")
 
     REQUIRE(original + orig2 == decrypted);
 }
+
+TEST_CASE("AES-256-CTR should be movable", "[crypto][aes256ctr]")
+{
+    auto key = genRandom(AES256CTRDesc::keySize);
+    auto iv = genRandom(AES256CTRDesc::ivSize);
+
+    auto desc = AES256CTRDesc(key, iv);
+
+    auto desc2 = std::move(desc);
+
+    REQUIRE(desc2.valid());
+    REQUIRE(! desc.valid());
+
+    std::string original = "test for aes-256-ctr";
+
+    std::string encrypted;
+
+    // Can be moved from itself
+    desc2 = std::move(desc2);
+    REQUIRE(desc2.valid());
+
+    std::tie(desc2, encrypted) = std::move(desc2).process(original);
+
+    REQUIRE(desc2.valid());
+}
+
+TEST_CASE("AES-256-CTR validity check", "[crypto][aes256ctr]")
+{
+    ByteArray key, iv;
+
+    SECTION("key not long enough") {
+        key = genRandom(AES256CTRDesc::keySize - 1);
+        iv = genRandom(AES256CTRDesc::ivSize);
+    }
+
+    SECTION("iv not long enough") {
+        key = genRandom(AES256CTRDesc::keySize);
+        iv = genRandom(AES256CTRDesc::ivSize - 1);
+    }
+
+    SECTION("key too long") {
+        key = genRandom(AES256CTRDesc::keySize + 1);
+        iv = genRandom(AES256CTRDesc::ivSize);
+    }
+
+    SECTION("iv too long") {
+        key = genRandom(AES256CTRDesc::keySize);
+        iv = genRandom(AES256CTRDesc::ivSize + 1);
+    }
+
+    auto desc = AES256CTRDesc(key, iv);
+
+    REQUIRE(! desc.valid());
+}
