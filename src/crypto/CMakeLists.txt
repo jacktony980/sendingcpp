@@ -6,6 +6,7 @@ set(kazvcrypto_SRCS
 
   aes-256-ctr.cpp
   base64.cpp
+  sha256.cpp
   )
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})

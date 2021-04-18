@@ -31,6 +31,7 @@
 #include <crypto/crypto.hpp>
 #include <aes-256-ctr.hpp>
 #include <base64.hpp>
+#include <sha256.hpp>
 
 using namespace Kazv;
 using namespace Kazv::CryptoConstants;
@@ -343,4 +344,100 @@ TEST_CASE("Urlsafe base64 encoder and decoder, example from Matrix specs", "[cry
     std::string decoded = decodeBase64(orig, Base64Opts::urlSafe);
     std::string encoded = encodeBase64(decoded, Base64Opts::urlSafe);
     REQUIRE(encoded == orig);
+}
+
+TEST_CASE("SHA256 hashing support", "[crypto][sha256]")
+{
+    auto hash = SHA256Desc{};
+
+    auto message1 = std::string("12345678910");
+    hash.processInPlace(message1);
+
+    auto res = hash.get();
+    auto expected = std::string("Y2QCZISah8kDVhKdmeoWXjeqX6vB/qRpBt8afKUNtJI");
+
+    REQUIRE(res == expected);
+}
+
+TEST_CASE("SHA256 hashing streaming", "[crypto][sha256]")
+{
+    auto hash = SHA256Desc{};
+
+    auto message1 = std::string("12345678910");
+    auto message2 = std::string("abcdefghijklmn");
+    hash.processInPlace(message1);
+    hash.processInPlace(message2);
+
+    auto res = hash.get();
+
+    auto hash2 = SHA256Desc{};
+
+    hash2.processInPlace(message1 + message2);
+    auto expected = hash2.get();
+
+    REQUIRE(res == expected);
+}
+
+TEST_CASE("SHA256Desc should be copyable", "[crypto][sha256]")
+{
+    auto hash = SHA256Desc{};
+
+    auto message1 = std::string("12345678910");
+    auto message2 = std::string("abcdefghijklmn");
+    hash.processInPlace(message1);
+
+    auto hash2 = hash;
+
+    hash.processInPlace(message2);
+    hash2.processInPlace(message2);
+
+    auto res = hash.get();
+    auto res2 = hash2.get();
+
+    REQUIRE(res == res2);
+}
+
+TEST_CASE("SHA256Desc should be self-copyable and -movable", "[crypto][sha256]")
+{
+    auto hash = SHA256Desc{};
+
+    auto message1 = std::string("12345678910");
+    hash = hash.process(message1);
+
+    auto message2 = std::string("abcdefghijklmn");
+    hash = std::move(hash).process(message2);
+
+    auto hash2 = SHA256Desc{};
+
+    hash2.processInPlace(message1 + message2);
+
+    auto res = hash.get();
+    auto res2 = hash2.get();
+
+    REQUIRE(res == res2);
+}
+
+TEST_CASE("SHA256 should accept any range type", "[crypto][sha256]")
+{
+    std::string msg = "12345678910";
+    std::vector<char> arr(msg.begin(), msg.end());
+
+    auto hash = SHA256Desc{};
+
+    auto res1 = hash.process(arr).get();
+
+    auto res2 = std::move(hash).process(arr).get();
+
+    // after moving, hash is no longer valid, reset it here
+    hash = SHA256Desc{};
+
+    hash.processInPlace(arr);
+    auto res3 = hash.get();
+
+    hash = SHA256Desc{};
+    auto reference = hash.process(msg).get();
+
+    REQUIRE(res1 == res2);
+    REQUIRE(res1 == res3);
+    REQUIRE(res1 == reference);
 }
