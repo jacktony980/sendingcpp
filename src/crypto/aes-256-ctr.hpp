@@ -39,39 +39,62 @@ namespace Kazv
     class AES256CTRDesc
     {
     public:
-        using SecureData = std::string;
-
-        /// The optimal block size for this cipher
+        /// The optimal block size for this cipher.
         inline static const int optimalBlockSize{16};
-        /// The key size for this cipher
+        /// The key size for this cipher.
         inline static const int keySize{32};
-        /// The iv size for this cipher
+        /// The iv size for this cipher.
         inline static const int ivSize{16}; // AES block size
+        /// Random size to generate a new cipher, provided in fromRandom().
+        inline static const int randomSize{keySize + ivSize};
         using DataT = std::string;
+
+    private:
+        struct RawTag {};
 
         /**
          * Constructs an AES-256-CTR cipher using `key` and `iv`.
          *
+         * `key` and `iv` are provided as-is.
+         *
          * `key` must be of size `keySize` and `iv` must be of size `ivSize`.
          * Otherwise, the constructed cipher is invalid.
          */
-        AES256CTRDesc(SecureData key, DataT iv);
+        AES256CTRDesc(RawTag, DataT key, DataT iv);
+
+    public:
+        /**
+         * Constructs an AES-256-CTR cipher using `key` and `iv`.
+         *
+         * `key` is provided as urlsafe unpadded base64.
+         * `iv` is provided as unpadded base64.
+         *
+         * One must check with `valid()` before actual processing with
+         * the object if the key and iv comes from a remote Matrix event.
+         */
+        AES256CTRDesc(std::string key, std::string iv);
 
         /**
-         * Constructs an AES-256-CTR cipher using `key` and `iv` of any range type.
+         * Generate a new AES-256-CTR cipher from random data.
          *
-         * `key` must be of size `keySize` and `iv` must be of size `ivSize`.
-         * Otherwise, the constructed cipher is invalid.
+         * @param random The random data provided as-is. `random.size()`
+         * must be at least `randomSize`.
          *
-         * This overload does not participate in resolution if Key is SecureData
-         * and Iv is DataT.
+         * The first keySize bytes will be used as the key, and the
+         * next ivSize bytes will be used as the iv.
+         *
+         * @return An AES-256-CTR cipher generated with the random data.
          */
-        template<class Key, class Iv,
-                 class = std::enable_if_t<!(std::is_same_v<std::decay_t<Key>, SecureData>
-                                            && std::is_same_v<std::decay_t<Iv>, DataT>), int>>
-        AES256CTRDesc(Key key, Iv iv)
-            : AES256CTRDesc(SecureData(begin(key), end(key)), DataT(begin(iv), end(iv))) {}
-
+        template<class RangeT>
+        static AES256CTRDesc fromRandom(RangeT random) {
+            if (random.size() < randomSize) {
+                // Not enough random, return an invalid one
+                return AES256CTRDesc(RawTag{}, DataT(), DataT());
+            }
+            return AES256CTRDesc(RawTag{},
+                                 DataT(random.begin(), random.begin() + keySize),
+                                 DataT(random.begin() + keySize, random.begin() + keySize + ivSize));
+        }
 
         KAZV_DECLARE_COPYABLE(AES256CTRDesc)
 
@@ -82,6 +105,12 @@ namespace Kazv
          * must not use any method except destructor or operator=().
          */
         bool valid() const;
+
+        /// @return The key encoded as urlsafe unpadded base64.
+        std::string key() const;
+
+        /// @return The iv encoded as unpadded base64.
+        std::string iv() const;
 
         template<class RangeT>
         using ResultBase = std::pair<AES256CTRDesc, RangeT>;

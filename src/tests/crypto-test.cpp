@@ -177,10 +177,9 @@ TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
 
 TEST_CASE("Encrypt and decrypt AES-256-CTR", "[crypto][aes256ctr]")
 {
-    auto key = genRandom(AES256CTRDesc::keySize);
-    auto iv = genRandom(AES256CTRDesc::ivSize);
+    auto r = genRandom(AES256CTRDesc::randomSize);
 
-    auto desc = AES256CTRDesc(key, iv);
+    auto desc = AES256CTRDesc::fromRandom(r);
     auto desc2 = desc;
 
     std::string original = "test for aes-256-ctr";
@@ -194,10 +193,9 @@ TEST_CASE("Encrypt and decrypt AES-256-CTR", "[crypto][aes256ctr]")
 
 TEST_CASE("Encrypt and decrypt AES-256-CTR with any sequence type", "[crypto][aes256ctr]")
 {
-    auto key = genRandom(AES256CTRDesc::keySize);
-    auto iv = genRandom(AES256CTRDesc::ivSize);
+    auto r = genRandom(AES256CTRDesc::randomSize);
 
-    auto desc = AES256CTRDesc(key, iv);
+    auto desc = AES256CTRDesc::fromRandom(r);
     auto desc2 = desc;
 
     std::string oStr = "test for aes-256-ctr";
@@ -212,10 +210,9 @@ TEST_CASE("Encrypt and decrypt AES-256-CTR with any sequence type", "[crypto][ae
 
 TEST_CASE("Encrypt and decrypt AES-256-CTR in a non-destructive way", "[crypto][aes256ctr]")
 {
-    auto key = genRandom(AES256CTRDesc::keySize);
-    auto iv = genRandom(AES256CTRDesc::ivSize);
+    auto r = genRandom(AES256CTRDesc::randomSize);
 
-    auto desc = AES256CTRDesc(key, iv);
+    auto desc = AES256CTRDesc::fromRandom(r);
 
     std::string original = "test for aes-256-ctr";
 
@@ -232,10 +229,9 @@ TEST_CASE("Encrypt and decrypt AES-256-CTR in a non-destructive way", "[crypto][
 
 TEST_CASE("Encrypt and decrypt AES-256-CTR in batches", "[crypto][aes256ctr]")
 {
-    auto key = genRandom(AES256CTRDesc::keySize);
-    auto iv = genRandom(AES256CTRDesc::ivSize);
+    auto r = genRandom(AES256CTRDesc::randomSize);
 
-    auto desc = AES256CTRDesc(key, iv);
+    auto desc = AES256CTRDesc::fromRandom(r);
 
     std::string original = "test for aes-256-ctr";
 
@@ -251,10 +247,9 @@ TEST_CASE("Encrypt and decrypt AES-256-CTR in batches", "[crypto][aes256ctr]")
 
 TEST_CASE("AES-256-CTR should be movable", "[crypto][aes256ctr]")
 {
-    auto key = genRandom(AES256CTRDesc::keySize);
-    auto iv = genRandom(AES256CTRDesc::ivSize);
+    auto r = genRandom(AES256CTRDesc::randomSize);
 
-    auto desc = AES256CTRDesc(key, iv);
+    auto desc = AES256CTRDesc::fromRandom(r);
 
     auto desc2 = std::move(desc);
 
@@ -274,33 +269,37 @@ TEST_CASE("AES-256-CTR should be movable", "[crypto][aes256ctr]")
     REQUIRE(desc2.valid());
 }
 
+TEST_CASE("Construct AES-256-CTR from known key and iv", "[crypto][aes256ctr]")
+{
+    auto r = genRandom(AES256CTRDesc::randomSize);
+
+    auto desc = AES256CTRDesc::fromRandom(r);
+
+    auto desc2 = AES256CTRDesc(desc.key(), desc.iv());
+
+    REQUIRE(desc2.valid());
+    REQUIRE(desc.key() == desc2.key());
+    REQUIRE(desc.iv() == desc2.iv());
+}
+
 TEST_CASE("AES-256-CTR validity check", "[crypto][aes256ctr]")
 {
-    ByteArray key, iv;
+    SECTION("Not enough random, should reject") {
+        ByteArray random = genRandom(AES256CTRDesc::randomSize - 1);
 
-    SECTION("key not long enough") {
-        key = genRandom(AES256CTRDesc::keySize - 1);
-        iv = genRandom(AES256CTRDesc::ivSize);
+        auto desc = AES256CTRDesc::fromRandom(random);
+
+        REQUIRE(! desc.valid());
     }
 
-    SECTION("iv not long enough") {
-        key = genRandom(AES256CTRDesc::keySize);
-        iv = genRandom(AES256CTRDesc::ivSize - 1);
+    SECTION("More than enough random, should accept") {
+        ByteArray random = genRandom(AES256CTRDesc::randomSize + 1);
+
+        auto desc = AES256CTRDesc::fromRandom(random);
+
+        REQUIRE(desc.valid());
     }
 
-    SECTION("key too long") {
-        key = genRandom(AES256CTRDesc::keySize + 1);
-        iv = genRandom(AES256CTRDesc::ivSize);
-    }
-
-    SECTION("iv too long") {
-        key = genRandom(AES256CTRDesc::keySize);
-        iv = genRandom(AES256CTRDesc::ivSize + 1);
-    }
-
-    auto desc = AES256CTRDesc(key, iv);
-
-    REQUIRE(! desc.valid());
 }
 
 
