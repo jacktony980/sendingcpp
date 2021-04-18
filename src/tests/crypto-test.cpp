@@ -30,7 +30,7 @@
 
 #include <crypto/crypto.hpp>
 #include <aes-256-ctr.hpp>
-
+#include <base64.hpp>
 
 using namespace Kazv;
 using namespace Kazv::CryptoConstants;
@@ -301,4 +301,47 @@ TEST_CASE("AES-256-CTR validity check", "[crypto][aes256ctr]")
     auto desc = AES256CTRDesc(key, iv);
 
     REQUIRE(! desc.valid());
+}
+
+
+TEST_CASE("Base64 encoder and decoder", "[crypto][base64]")
+{
+    std::string orig = "The Quick Brown Fox Jumps Over the Lazy Dog";
+    // no padding
+    std::string expected = "VGhlIFF1aWNrIEJyb3duIEZveCBKdW1wcyBPdmVyIHRoZSBMYXp5IERvZw";
+    std::string encoded = encodeBase64(orig);
+    REQUIRE(encoded == expected);
+
+    std::string decoded = decodeBase64(encoded);
+    REQUIRE(decoded == orig);
+}
+
+TEST_CASE("Urlsafe base64 encoder and decoder", "[crypto][base64]")
+{
+    std::string orig = "The Quick Brown Fox Jumps Over the Lazy Dog";
+    // no padding
+    std::string expected = "VGhlIFF1aWNrIEJyb3duIEZveCBKdW1wcyBPdmVyIHRoZSBMYXp5IERvZw";
+    std::string encoded = encodeBase64(orig, Base64Opts::urlSafe);
+    REQUIRE(encoded == expected);
+
+    std::string decoded = decodeBase64(encoded, Base64Opts::urlSafe);
+    REQUIRE(decoded == orig);
+}
+
+TEST_CASE("Base64 encoder and decoder, example from Matrix specs", "[crypto][base64]")
+{
+    std::string orig = "JGLn/yafz74HB2AbPLYJWIVGnKAtqECOBf11yyXac2Y";
+
+    std::string decoded = decodeBase64(orig);
+    std::string encoded = encodeBase64(decoded);
+    REQUIRE(encoded == orig);
+}
+
+TEST_CASE("Urlsafe base64 encoder and decoder, example from Matrix specs", "[crypto][base64]")
+{
+    std::string orig = "JGLn_yafz74HB2AbPLYJWIVGnKAtqECOBf11yyXac2Y";
+
+    std::string decoded = decodeBase64(orig, Base64Opts::urlSafe);
+    std::string encoded = encodeBase64(decoded, Base64Opts::urlSafe);
+    REQUIRE(encoded == orig);
 }

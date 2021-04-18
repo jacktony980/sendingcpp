@@ -5,6 +5,7 @@ set(kazvcrypto_SRCS
   outbound-group-session.cpp
 
   aes-256-ctr.cpp
+  base64.cpp
   )
 
 add_library(kazvcrypto ${kazvcrypto_SRCS})
