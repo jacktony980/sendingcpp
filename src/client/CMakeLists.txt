@@ -12,6 +12,7 @@ set(kazvclient_SRCS
   actions/content.cpp
   actions/encryption.cpp
   device-list-tracker.cpp
+  encrypted-file.cpp
 
   room/room-model.cpp
   room/room.cpp

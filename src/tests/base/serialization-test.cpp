@@ -38,7 +38,7 @@ using IAr = boost::archive::text_iarchive;
 using OAr = boost::archive::text_oarchive;
 
 template<class T>
-void serializeTest(const T &in, T &out)
+static void serializeTest(const T &in, T &out)
 {
     std::stringstream stream;
 
