@@ -26,11 +26,10 @@ libkazv support the following functionalities:
 - Leaving and forgetting rooms
 - Content repository
 - Send-to-device messages
-- E2EE (send and receive events only)
+- E2EE (send and receive events only and attachments)
 
 These functionalities are currently not supported:
 
-- E2EE (for attachments)
 - Banning and kicking
 - Setting presence
 - Device management
@@ -77,8 +76,7 @@ libkazv depends on [lager](https://github.com/arximboldi/lager),
 [immer](https://github.com/arximboldi/immer),
 [zug](https://github.com/arximboldi/zug),
 [boost](https://boost.org),
-[nlohmann_json](https://github.com/nlohmann/json),
-[cereal](https://github.com/USCiLab/cereal).
+[nlohmann_json](https://github.com/nlohmann/json).
 
 kazvjob also depends on [cpr](https://github.com/whoshuu/cpr).
 
@@ -157,6 +155,41 @@ to be used directly.
 You should not rely on the return type of a function if it is declared as
 `auto` (without trailing return type notation). If it returns `auto`, you
 should also use `auto` to store that the return value.
+
+If the documented return type is a `using` declaration in that class, you
+should either use `auto` or the exact alias (not the aliased type) for that.
+For example, in `Client`, a lot of functions return `Client::PromiseT`, so
+you should use `auto` or `Client::PromiseT` to refer to the return type.
+
+# Versioning
+
+The following versioning strategies are used:
+
+1. There are two versions in this library:
+   - Package version, specified by `libkazv_VERSION_STRING` in CMakeLists.txt ,
+     in the format of `X.Y.Z`. `X`, `Y`, `Z` are called Major, Minor, and Patch
+     Versions respectively.
+   - so version, specified by `libkazv_SOVERSION` in CMakeLists.txt .
+
+2. When there is a new release, the versions are determined by the following rules:
+   1. If there are no changes to any of the public headers (headers containing public
+      APIs) existing in the last release,
+      keep Major and Minor Versions as the same, increase Patch Version by 1,
+      and keep so version as the same.
+   2. If 2.1 does not hold, and all possible source code invoking only public APIs in
+      the last release according to the guidelines (e.g. always use `auto` when specified)
+      that compiles under a certain GCC version will still compile under that GCC version,
+      keep Major Version
+      as the same, increase Minor Version by 1, let Patch Version be 0, and increase
+      so version by 1.
+   3. Otherwise, increase Major Version by 1, let Minor and Patch Versions be 0, and
+      increase so version by 1.
+
+   A tldr but inaccurate version of the rules: If the new release is binary-compatible
+   with the last one, bump Patch Version; if the new release is not binary-compatible but
+   source-compatible with the last one, bump Minor Version and so version,
+   reset Patch Version; otherwise, bump Major Version and so version, reset Minor and Patch
+   Versions.
 
 # Acknowledgement
 
