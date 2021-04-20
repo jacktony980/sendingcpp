@@ -10,3 +10,4 @@
 - Record state events in timeline. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/2
 - Add support for streaming download. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/3
 - Add support for Boost.Serialization. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/4
+- Support encrypted attachments. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/5
