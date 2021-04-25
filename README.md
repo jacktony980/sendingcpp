@@ -76,7 +76,9 @@ libkazv depends on [lager](https://github.com/arximboldi/lager),
 [immer](https://github.com/arximboldi/immer),
 [zug](https://github.com/arximboldi/zug),
 [boost](https://boost.org),
-[nlohmann_json](https://github.com/nlohmann/json).
+[nlohmann_json](https://github.com/nlohmann/json),
+[olm](https://gitlab.matrix.org/matrix-org/olm),
+[libcrypto++](https://cryptopp.com/).
 
 kazvjob also depends on [cpr](https://github.com/whoshuu/cpr).
 
