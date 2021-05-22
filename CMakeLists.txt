@@ -124,7 +124,9 @@ if(libkazv_OUTPUT_LEVEL)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBKAZV_OUTPUT_LEVEL=${libkazv_OUTPUT_LEVEL}")
 endif()
 
-set(ConfigPackageLocation lib/cmake/libkazv)
+include(GNUInstallDirs)
+
+set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake/libkazv)
 
 add_subdirectory(src)
 
