@@ -322,6 +322,27 @@ namespace Kazv
          */
         PromiseT startSyncing() const;
 
+        /**
+         * Serialize the model to a Boost.Serialization archive.
+         *
+         * @param ar A Boost.Serialization output archive.
+         *
+         * This function can be used to save the model. For loading,
+         * you should use the makeSdk function. For example:
+         *
+         * ```c++
+         * client.serializeTo(outputAr);
+         *
+         * SdkModel m;
+         * inputAr >> m;
+         * auto newSdk = makeSdk(m, ...);
+         * ```
+         */
+        template<class Archive>
+        void serializeTo(Archive &ar) const {
+            ar << m_sdk.get();
+        }
+
     private:
         void syncForever(std::optional<int> retryTime = std::nullopt) const;
 
