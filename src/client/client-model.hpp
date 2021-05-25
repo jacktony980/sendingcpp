@@ -348,6 +348,7 @@ namespace Kazv
     template<class Archive>
     void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)
     {
+        bool dummySyncing{false};
         ar
             & m.serverUrl
             & m.userId
@@ -355,7 +356,7 @@ namespace Kazv
             & m.deviceId
             & m.loggedIn
 
-            & m.syncing
+            & dummySyncing
             & m.firstRetryMs
             & m.retryTimeFactor
             & m.maxRetryMs
