@@ -30,6 +30,8 @@ namespace Kazv
     ClientResult updateClient(ClientModel m, SyncAction a);
     ClientResult processResponse(ClientModel m, SyncResponse r);
 
+    ClientResult updateClient(ClientModel m, SetShouldSyncAction a);
+
     ClientResult updateClient(ClientModel m, PostInitialFiltersAction a);
     ClientResult processResponse(ClientModel m, DefineFilterResponse r);
 }

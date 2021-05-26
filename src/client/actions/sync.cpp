@@ -298,6 +298,12 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
+    ClientResult updateClient(ClientModel m, SetShouldSyncAction a)
+    {
+        m.shouldSync = a.shouldSync;
+        return { std::move(m), lager::noop };
+    }
+
     ClientResult updateClient(ClientModel m, PostInitialFiltersAction)
     {
         if (m.syncing) {

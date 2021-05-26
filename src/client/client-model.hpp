@@ -77,6 +77,7 @@ namespace Kazv
         bool loggedIn{false};
 
         bool syncing{false};
+        bool shouldSync{true};
         int firstRetryMs{1000};
         int retryTimeFactor{2};
         int maxRetryMs{30 * 1000};
@@ -182,6 +183,11 @@ namespace Kazv
     struct LogoutAction {};
 
     struct SyncAction {};
+
+    struct SetShouldSyncAction
+    {
+        bool shouldSync;
+    };
 
     struct PaginateTimelineAction
     {

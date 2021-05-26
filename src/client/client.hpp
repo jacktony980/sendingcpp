@@ -314,13 +314,20 @@ namespace Kazv
          *
          * Syncing will continue indefinitely, if the preparation of
          * the sync (posting filters and uploading identity keys,
-         * if needed) is successful.
+         * if needed) is successful, or until stopSyncing() is called.
          *
          * @return A Promise that resolves when the Client is syncing
          * (more exactly, when syncing() contains true), or when there
          * is an error in the preparation of the sync.
          */
         PromiseT startSyncing() const;
+
+        /**
+         * Stop the indefinite syncing.
+         *
+         * After this, no more syncing actions will be dispatched.
+         */
+        void stopSyncing() const;
 
         /**
          * Serialize the model to a Boost.Serialization archive.

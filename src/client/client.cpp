@@ -203,6 +203,10 @@ namespace Kazv
 
         p1
             .then([*this](auto stat) {
+                      m_ctx.dispatch(SetShouldSyncAction{true});
+                      return stat;
+                  })
+            .then([*this](auto stat) {
                       if (stat.success()) {
                           syncForever();
                       }
@@ -217,6 +221,13 @@ namespace Kazv
         using namespace CursorOp;
 
         bool isInitialSync = ! (+m_client[&ClientModel::syncToken]).has_value();
+
+        bool shouldSync = +m_client[&ClientModel::shouldSync];
+
+        if (! shouldSync) {
+            return;
+        }
+        //
 
         auto syncRes = m_ctx.dispatch(SyncAction{});
 
@@ -262,5 +273,10 @@ namespace Kazv
                                         curRetryTime);
                       }
                   });
+    }
+
+    void Client::stopSyncing() const
+    {
+        m_ctx.dispatch(SetShouldSyncAction{false});
     }
 }

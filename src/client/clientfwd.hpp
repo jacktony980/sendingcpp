@@ -38,6 +38,7 @@ namespace Kazv
     struct TokenLoginAction;
     struct LogoutAction;
     struct SyncAction;
+    struct SetShouldSyncAction;
     struct PostInitialFiltersAction;
     struct PaginateTimelineAction;
     struct SendMessageAction;
@@ -80,6 +81,7 @@ namespace Kazv
         LogoutAction,
 
         SyncAction,
+        SetShouldSyncAction,
         PostInitialFiltersAction,
 
         PaginateTimelineAction,
