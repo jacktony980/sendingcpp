@@ -29,7 +29,7 @@
 #include <boost/asio.hpp>
 
 #ifndef NDEBUG
-#include <lager/debug/http_server.hpp>
+//#include <lager/debug/http_server.hpp>
 #endif
 
 #include <asio-promise-handler.hpp>
