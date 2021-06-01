@@ -4,7 +4,6 @@ find_dependency(nlohmann_json)
 find_dependency(Immer)
 find_dependency(Zug)
 find_dependency(Lager)
-find_dependency(cereal)
 find_dependency(Olm)
 
 set(_oldCmakeModulePath ${CMAKE_MODULE_PATH})
