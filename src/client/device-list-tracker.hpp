@@ -25,7 +25,7 @@
 #include <immer/flex_vector.hpp>
 
 #include <boost/serialization/string.hpp>
-#include <boost/serialization/optional.hpp>
+#include <serialization/std-optional.hpp>
 
 #include <serialization/immer-map.hpp>
 
