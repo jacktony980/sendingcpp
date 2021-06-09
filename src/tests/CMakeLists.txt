@@ -23,6 +23,7 @@ add_executable(kazvtest
   client/sdk-test.cpp
   client/thread-safety-test.cpp
   client/room-test.cpp
+  client/random-generator-test.cpp
 
   kazvjobtest.cpp
   event-emitter-test.cpp
