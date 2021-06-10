@@ -60,7 +60,8 @@ TEST_CASE("RandomInterface with a non-const generator", "[client][random]")
 
 TEST_CASE("RandomInterface generating ranges with element type narrower than unsigned int", "[client][random]")
 {
-    auto generator = [] { return (static_cast<unsigned char>(-1) + 1) + 1; };
+    auto ucharMax = static_cast<unsigned int>(static_cast<unsigned char>(-1));
+    auto generator = [=] { return (ucharMax + 1) + 1; };
     auto iface = RandomInterface{generator};
 
     auto range = iface.generateRange<std::string>(5);
