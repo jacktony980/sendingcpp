@@ -226,4 +226,9 @@ namespace Kazv
                        std::forward<Xform>(xform),
                        std::forward<Enhancers>(enhancers)...);
     }
+
+    auto withRandomGenerator(RandomInterface &random)
+    {
+        return lager::with_deps(std::ref(random));
+    }
 }
