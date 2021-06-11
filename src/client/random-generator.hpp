@@ -24,26 +24,35 @@
 
 namespace Kazv
 {
-    class RandomInterface : public std::function<unsigned int()>
+    class RandomInterface
     {
-    private:
-        using BaseT = std::function<unsigned int()>;
-
     public:
+        using DataT = unsigned int;
+
         /**
          * Construct a RandomInterface using an implementation.
          *
          * @param obj The random generator implementation.
          *
-         * The implementation obj should be such that the following
-         * call is valid, and after that v contains a random number:
+         * The implementation obj must be of a movable type and
+         * must be such that the following
+         * call is valid, and after that v should contain a random number:
          *
          * `unsigned int v = obj();`
          */
         template<class DeriveT>
         RandomInterface(DeriveT obj)
-            : BaseT(std::move(obj))
+            : m_d(std::make_unique<Model<DeriveT>>(std::move(obj)))
             {}
+
+        /**
+         * Generate a random number of type DataT.
+         *
+         * @return A randomly generated DataT.
+         */
+        DataT operator()() {
+            return (*m_d)();
+        }
 
         /**
          * Generate a range containing `size` random elements.
@@ -74,8 +83,42 @@ namespace Kazv
          */
         template<class RangeT>
         RangeT fillRange(RangeT range) {
-            std::generate(range.begin(), range.end(), *this);
+            std::generate(range.begin(), range.end(), [this] { return (*this)(); });
             return range;
         }
+
+    private:
+        struct Concept
+        {
+            virtual ~Concept() = default;
+            virtual DataT operator()() = 0;
+        };
+
+        template<class DeriveT>
+        struct Model : public Concept
+        {
+            Model(DeriveT obj) : instance(std::move(obj)) {}
+            ~Model() override = default;
+            DataT operator()() override {
+                return instance();
+            }
+            DeriveT instance;
+        };
+
+        std::unique_ptr<Concept> m_d;
+    };
+
+    /**
+     * A movable wrapper around std::random_device.
+     */
+    class RandomDeviceGenerator
+    {
+    public:
+        RandomDeviceGenerator() : m_d(std::make_unique<std::random_device>()) {}
+
+        auto operator()() { return (*m_d)(); }
+
+    private:
+        std::unique_ptr<std::random_device> m_d;
     };
 }

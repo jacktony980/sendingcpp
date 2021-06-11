@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -21,12 +21,17 @@
 #include <libkazv-config.hpp>
 #include <lager/store.hpp>
 
+#include <random>
+
 #include <store.hpp>
 
 #include "sdk-model.hpp"
 #include "sdk-model-cursor-tag.hpp"
 #include "client.hpp"
 #include "thread-safety-helper.hpp"
+
+#include "random-generator.hpp"
+
 
 namespace Kazv
 {
@@ -50,7 +55,8 @@ namespace Kazv
                 lager::with_deps(
                     std::ref(detail::declref<JobInterface>()),
                     std::ref(detail::declref<EventInterface>()),
-                    lager::dep::as<SdkModelCursorKey>(std::declval<std::function<CursorTSP()>>())
+                    lager::dep::as<SdkModelCursorKey>(std::declval<std::function<CursorTSP()>>()),
+                    std::ref(detail::declref<RandomInterface>())
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
                     , std::ref(detail::declref<EventLoopThreadIdKeeper>())
 #endif
@@ -58,7 +64,7 @@ namespace Kazv
                 std::declval<Enhancers>()...)
             );
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey, RandomInterface &
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
                                   , EventLoopThreadIdKeeper &
 #endif
@@ -148,7 +154,8 @@ namespace Kazv
                     EventLoop &&eventLoop,
                     Xform &&xform,
                     Enhancers &&...enhancers)
-                : store(makeStore<ActionT>(
+                : rg(RandomInterface{RandomDeviceGenerator{}})
+                , store(makeStore<ActionT>(
                             std::move(model),
                             &ModelT::update,
                             std::forward<EventLoop>(eventLoop),
@@ -156,7 +163,8 @@ namespace Kazv
                                 std::ref(jobHandler),
                                 std::ref(eventEmitter),
                                 lager::dep::as<SdkModelCursorKey>(
-                                    std::function<CursorTSP()>([this] { return sdk; }))
+                                    std::function<CursorTSP()>([this] { return sdk; })),
+                                std::ref(rg.value())
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
                                 , std::ref(keeper)
 #endif
@@ -174,6 +182,7 @@ namespace Kazv
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
             EventLoopThreadIdKeeper keeper;
 #endif
+            std::optional<RandomInterface> rg;
             StoreT store;
             CursorTSP sdk;
         };
