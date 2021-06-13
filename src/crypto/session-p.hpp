@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -31,6 +31,14 @@ namespace Kazv
                        OlmAccount *acc,
                        std::string theirIdentityKey,
                        std::string theirOneTimeKey);
+
+        SessionPrivate(OutboundSessionTag,
+                       RandomTag,
+                       RandomData data,
+                       OlmAccount *acc,
+                       std::string theirIdentityKey,
+                       std::string theirOneTimeKey);
+
         SessionPrivate(InboundSessionTag,
                        OlmAccount *acc,
                        std::string theirIdentityKey,

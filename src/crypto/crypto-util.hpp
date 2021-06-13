@@ -40,6 +40,13 @@ namespace Kazv
         std::string sessionId;
     };
 
+    /**
+     * The tag to indicate that a constructor should use user-provided random data.
+     */
+    struct RandomTag {};
+
+    using RandomData = std::string;
+
     inline void from_json(const nlohmann::json &j, KeyOfGroupSession &k)
     {
         k.roomId = j.at("roomId");

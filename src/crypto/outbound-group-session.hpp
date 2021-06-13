@@ -34,7 +34,21 @@ namespace Kazv
     class OutboundGroupSession
     {
     public:
+        /**
+         * @return The size of random data needed to construct an OutboundGroupSession.
+         */
+        static std::size_t constructRandomSize();
+
         explicit OutboundGroupSession();
+
+        /**
+         * Constructs an OutboundGroupSession from custom random data.
+         *
+         * @param random The random data to use. Must be of at least size
+         * `constructRandomSize()`.
+         * @param creationTime The creation time of this OutboundGroupSession.
+         */
+        OutboundGroupSession(RandomTag, RandomData random, Timestamp creationTime);
 
         OutboundGroupSession(const OutboundGroupSession &that);
         OutboundGroupSession(OutboundGroupSession &&that);

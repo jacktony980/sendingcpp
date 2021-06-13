@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -49,7 +49,29 @@ namespace Kazv
                                    std::string theirOneTimeKey)
         : SessionPrivate()
     {
-        auto random = genRandom(olm_create_outbound_session_random_length(session));
+        auto random = genRandom(Session::constructOutboundRandomSize());
+
+        auto res = checkError(olm_create_outbound_session(
+                                  session,
+                                  acc,
+                                  theirIdentityKey.c_str(), theirIdentityKey.size(),
+                                  theirOneTimeKey.c_str(), theirOneTimeKey.size(),
+                                  random.data(), random.size()));
+
+        if (res != olm_error()) {
+            valid = true;
+        }
+    }
+
+    SessionPrivate::SessionPrivate(OutboundSessionTag,
+                                   RandomTag,
+                                   RandomData random,
+                                   OlmAccount *acc,
+                                   std::string theirIdentityKey,
+                                   std::string theirOneTimeKey)
+        : SessionPrivate()
+    {
+        assert(random.size() >= Session::constructOutboundRandomSize());
 
         auto res = checkError(olm_create_outbound_session(
                                   session,
@@ -107,6 +129,18 @@ namespace Kazv
         return res != olm_error();
     }
 
+
+    std::size_t Session::constructOutboundRandomSize()
+    {
+        static size_t s =
+            [] {
+                ByteArray sessionData(olm_session_size(), '\0');
+                OlmSession *session(olm_session(sessionData.data()));
+                return olm_create_outbound_session_random_length(session);
+            }();
+        return s;
+    }
+
     Session::Session()
         : m_d(new SessionPrivate)
     {
@@ -118,6 +152,22 @@ namespace Kazv
                      std::string theirOneTimeKey)
         : m_d(new SessionPrivate{
                 OutboundSessionTag{},
+                acc,
+                theirIdentityKey,
+                theirOneTimeKey})
+    {
+    }
+
+    Session::Session(OutboundSessionTag,
+                     RandomTag,
+                     RandomData data,
+                     OlmAccount *acc,
+                     std::string theirIdentityKey,
+                     std::string theirOneTimeKey)
+        : m_d(new SessionPrivate{
+                OutboundSessionTag{},
+                RandomTag{},
+                std::move(data),
                 acc,
                 theirIdentityKey,
                 theirOneTimeKey})

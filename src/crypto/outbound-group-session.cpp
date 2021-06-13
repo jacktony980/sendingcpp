@@ -57,6 +57,22 @@ namespace Kazv
         creationTime = currentTimeMs();
     }
 
+    OutboundGroupSessionPrivate::OutboundGroupSessionPrivate(RandomTag,
+                                                             RandomData random,
+                                                             Timestamp creationTime)
+        : sessionData(olm_outbound_group_session_size(), '\0')
+        , session(olm_outbound_group_session(sessionData.data()))
+        , creationTime(creationTime)
+    {
+        assert(random.size() >= OutboundGroupSession::constructRandomSize());
+        auto res = checkError(olm_init_outbound_group_session(session, reinterpret_cast<std::uint8_t *>(random.data()), random.size()));
+
+        if (res != olm_error()) {
+            valid = true;
+            initialSessionKey = sessionKey();
+        }
+    }
+
     OutboundGroupSessionPrivate::OutboundGroupSessionPrivate(const OutboundGroupSessionPrivate &that)
         : sessionData(olm_outbound_group_session_size(), '\0')
         , session(olm_outbound_group_session(sessionData.data()))
@@ -87,11 +103,28 @@ namespace Kazv
         return res != olm_error();
     }
 
+    std::size_t OutboundGroupSession::constructRandomSize()
+    {
+        static std::size_t s =
+            []() {
+                ByteArray sessionData(olm_outbound_group_session_size(), '\0');
+                OlmOutboundGroupSession *session(olm_outbound_group_session(sessionData.data()));
+                return olm_init_outbound_group_session_random_length(session);
+            }();
+
+        return s;
+    }
 
     OutboundGroupSession::OutboundGroupSession()
         : m_d(new OutboundGroupSessionPrivate)
     {
     }
+
+    OutboundGroupSession::OutboundGroupSession(RandomTag, RandomData random, Timestamp creationTime)
+        : m_d(new OutboundGroupSessionPrivate(RandomTag{}, std::move(random), std::move(creationTime)))
+    {
+    }
+
 
     OutboundGroupSession::~OutboundGroupSession() = default;
 

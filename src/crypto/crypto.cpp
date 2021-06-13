@@ -48,10 +48,21 @@ namespace Kazv
         , utilityData(olm_utility_size(), '\0')
         , utility(olm_utility(utilityData.data()))
     {
-        auto randLen = olm_create_account_random_length(account);
+        auto randLen = Crypto::constructRandomSize();
         auto randomData = genRandom(randLen);
         checkError(olm_create_account(account, randomData.data(), randLen));
     }
+
+    CryptoPrivate::CryptoPrivate(RandomTag, RandomData data)
+        : accountData(olm_account_size(), 0)
+        , account(olm_account(accountData.data()))
+        , utilityData(olm_utility_size(), '\0')
+        , utility(olm_utility(utilityData.data()))
+    {
+        auto randLenNeeded = Crypto::constructRandomSize();
+        checkError(olm_create_account(account, data.data(), randLenNeeded));
+    }
+
 
     CryptoPrivate::~CryptoPrivate()
     {
@@ -215,8 +226,24 @@ namespace Kazv
     }
 
 
+    std::size_t Crypto::constructRandomSize()
+    {
+        static std::size_t s =
+            [] {
+                std::vector<char> acc(olm_account_size(), 0);
+                OlmAccount *account = olm_account(acc.data());
+                return olm_create_account_random_length(account);
+            }();
+        return s;
+    }
+
     Crypto::Crypto()
         : m_d(new CryptoPrivate{})
+    {
+    }
+
+    Crypto::Crypto(RandomTag, RandomData data)
+        : m_d(new CryptoPrivate(RandomTag{}, std::move(data)))
     {
     }
 

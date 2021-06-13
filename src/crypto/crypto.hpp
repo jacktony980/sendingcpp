@@ -47,6 +47,19 @@ namespace Kazv
     {
     public:
         explicit Crypto();
+
+        /**
+         * @return The size of random data needed to construct a Crypto.
+         */
+        static std::size_t constructRandomSize();
+
+        /**
+         * Constructs a Crypto using user-provided random data.
+         *
+         * @param data Random data of size at least `constructRandomSize()`.
+         */
+        Crypto(RandomTag, RandomData data);
+
         Crypto(const Crypto &that);
         Crypto(Crypto &&that);
         Crypto &operator=(const Crypto &that);
@@ -140,9 +153,10 @@ namespace Kazv
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
-    private:
         nlohmann::json toJson() const;
         void loadJson(const nlohmann::json &j);
+
+    private:
 
         friend class Session;
         friend class SessionPrivate;

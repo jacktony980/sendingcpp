@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -30,7 +30,11 @@ namespace Kazv
 {
     struct OutboundGroupSessionPrivate
     {
+        /// to be deprecated
         OutboundGroupSessionPrivate();
+        OutboundGroupSessionPrivate(RandomTag,
+                                    RandomData random,
+                                    Timestamp creationTime);
         OutboundGroupSessionPrivate(const OutboundGroupSessionPrivate &that);
         ~OutboundGroupSessionPrivate() = default;
 

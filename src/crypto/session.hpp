@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -39,11 +39,30 @@ namespace Kazv
     struct SessionPrivate;
     class Session
     {
+        /**
+         * @return The size of random data needed to construct an outbound session.
+         */
+        static std::size_t constructOutboundRandomSize();
+
         // Creates an outbound session
         explicit Session(OutboundSessionTag,
                          OlmAccount *acc,
                          std::string theirIdentityKey,
                          std::string theirOneTimeKey);
+
+        /**
+         * Construct an outbound session with custom random data.
+         *
+         * @param data The custom random data. Must be of at least
+         * size `constructOutboundRandomSize()`.
+         */
+        explicit Session(OutboundSessionTag,
+                         RandomTag,
+                         RandomData data,
+                         OlmAccount *acc,
+                         std::string theirIdentityKey,
+                         std::string theirOneTimeKey);
+
         // Creates an inbound session
         explicit Session(InboundSessionTag,
                          OlmAccount *acc,
@@ -70,6 +89,7 @@ namespace Kazv
     private:
         friend class Crypto;
         friend class CryptoPrivate;
+        friend class SessionPrivate;
 
         friend void to_json(nlohmann::json &j, const Session &s);
         friend void from_json(const nlohmann::json &j, Session &s);
