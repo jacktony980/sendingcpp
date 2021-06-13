@@ -190,6 +190,24 @@ namespace Kazv
         std::unique_ptr<Private> m_d;
     };
 
+    /**
+     * Create an sdk with the provided model.
+     *
+     * @param sdk The initial SdkModel.
+     * @param jobHandler The job handler for the sdk.
+     * @param eventEmitter The event emitter for the sdk.
+     * @param ph The Promise handler for the sdk.
+     * @param xform A function to extract the SdkModel from
+     * the model type of the created Store. This is to take into
+     * account any enhancer that changes the model type. If you
+     * do not use any enhancer that changes the model type, put
+     * an identity function (e.g. `zug::identity`) here.
+     * @param enhancers The enhancers to pass to `makeStore()`.
+     *
+     * @return An Sdk created with these parameters.
+     *
+     * @sa JobInterface, EventInterface, PromiseInterface
+     */
     template<class EventLoop, class Xform, class ...Enhancers>
     inline auto makeSdk(SdkModel sdk,
                         JobInterface &jobHandler,
@@ -207,7 +225,16 @@ namespace Kazv
                  std::forward<Enhancers>(enhancers)... };
     }
 
+    /**
+     * @return The size of random data needed for makeDefaultSdkWithCryptoRandom
+     */
+    inline std::size_t makeDefaultSdkWithCryptoRandomSize()
+    {
+        return Crypto::constructRandomSize();
+    }
+
     template<class EventLoop, class Xform, class ...Enhancers>
+    [[deprecated("Use deterministic makeDefaultSdkWithCryptoRandom instead. In the future, this will be removed.")]]
     inline auto makeDefaultEncryptedSdk(
         JobInterface &jobHandler,
         EventInterface &eventEmitter,
@@ -217,7 +244,7 @@ namespace Kazv
         -> Sdk<EventLoop, Xform, Enhancers...>
     {
         auto m = SdkModel{};
-        m.client.crypto = Crypto();
+        m.client.crypto = Crypto(RandomTag{}, genRandomData(makeDefaultSdkWithCryptoRandomSize()));
 
         return makeSdk(std::move(m),
                        jobHandler,
@@ -227,7 +254,56 @@ namespace Kazv
                        std::forward<Enhancers>(enhancers)...);
     }
 
-    auto withRandomGenerator(RandomInterface &random)
+    /**
+     * Create an sdk with a default-constructed model, and
+     * a Crypto constructed with user-provided random data.
+     *
+     * @param random The random data to construct Crypto.
+     * Must be of at least size `makeDefaultSdkWithCryptoRandomSize()`.
+     * @param jobHandler The job handler for the sdk.
+     * @param eventEmitter The event emitter for the sdk.
+     * @param ph The Promise handler for the sdk.
+     * @param xform A function to extract the SdkModel from
+     * the model type of the created Store. This is to take into
+     * account any enhancer that changes the model type. If you
+     * do not use any enhancer that changes the model type, put
+     * an identity function (e.g. `zug::identity`) here.
+     * @param enhancers The enhancers to pass to `makeStore()`.
+     *
+     * @return An Sdk created with these parameters.
+     *
+     * @sa JobInterface, EventInterface, PromiseInterface
+     */
+    template<class PH, class Xform, class ...Enhancers>
+    inline auto makeDefaultSdkWithCryptoRandom(
+        RandomData random,
+        JobInterface &jobHandler,
+        EventInterface &eventEmitter,
+        PH &&ph,
+        Xform &&xform,
+        Enhancers &&...enhancers)
+        -> Sdk<PH, Xform, Enhancers...>
+    {
+        auto m = SdkModel{};
+        m.client.crypto = Crypto(RandomTag{}, std::move(random));
+
+        return makeSdk(std::move(m),
+                       jobHandler,
+                       eventEmitter,
+                       std::forward<PH>(ph),
+                       std::forward<Xform>(xform),
+                       std::forward<Enhancers>(enhancers)...);
+    }
+
+
+    /**
+     * An enhancer to use a custom random generator.
+     *
+     * This is to be used with `makeSdk()`-series functions.
+     *
+     * @param random The random generator to use.
+     */
+    inline auto withRandomGenerator(RandomInterface &random)
     {
         return lager::with_deps(std::ref(random));
     }

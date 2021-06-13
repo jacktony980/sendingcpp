@@ -142,7 +142,7 @@ to build docs locally. It will be generated in `doc/`.
 
 You SHOULD use only the following APIs in your program:
 
-1. `Kazv::makeSdk`, `Kazv::makeDefaultEncryptedSdk`.
+1. `Kazv::makeSdk`, `Kazv::makeDefaultEncryptedSdk`, `Kazv::makeDefaultSdkWithCryptoRandom`.
 2. Default constructor of `Kazv::SdkModel`.
 3. Constructors of `Kazv::CprJobHandler`,
    `Kazv::AsioPromiseHandler`.
