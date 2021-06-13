@@ -74,7 +74,8 @@ namespace Kazv
 
         bool createInboundGroupSession(KeyOfGroupSession k, std::string sessionKey, std::string ed25519Key);
 
-        bool reuseOrCreateOutboundGroupSession(std::string roomId, MegOlmSessionRotateDesc desc);
+        bool reuseOrCreateOutboundGroupSession(RandomData random, Timestamp timeMs,
+                                               std::string roomId, std::optional<MegOlmSessionRotateDesc> desc);
     };
 
 }

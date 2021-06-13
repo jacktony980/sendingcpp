@@ -38,7 +38,9 @@ namespace Kazv
 
     struct MegOlmSessionRotateDesc
     {
+        /// The time limit of the megolm session, in milliseconds.
         Timestamp ms{};
+        /// The message limit of the megolm session.
         int messages{};
     };
 
@@ -46,6 +48,7 @@ namespace Kazv
     class Crypto
     {
     public:
+        [[deprecated("Use deterministic variant instead. In the future, this will construct an invalid Crypto.")]]
         explicit Crypto();
 
         /**
@@ -125,19 +128,85 @@ namespace Kazv
 
         MaybeString getInboundGroupSessionEd25519KeyFromEvent(const nlohmann::json &eventJson) const;
 
+        /**
+         * @return The size of random data needed for `rotateMegOlmSessionWithRandom()`
+         * and `rotateMegOlmSessionWithRandomIfNeeded()`.
+         */
+        static std::size_t rotateMegOlmSessionRandomSize();
+
         /// Returns the new session key
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         std::string rotateMegOlmSession(std::string roomId);
 
+        /**
+         * Rotate the megolm session using user-provided random data.
+         *
+         * @param random The random data. Must be of at least size
+         * `rotateMegOlmSessionRandomSize()`.
+         * @param timeMs The creation time of the new megolm session.
+         * @param roomId The room id of the megolm session to rotate.
+         *
+         * @return The new session key.
+         */
+        std::string rotateMegOlmSessionWithRandom(RandomData random, Timestamp timeMs, std::string roomId);
+
         /// Returns the new session key only if it is rotated
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         std::optional<std::string> rotateMegOlmSessionIfNeeded(std::string roomId, MegOlmSessionRotateDesc desc);
+
+        /**
+         * Rotate the megolm session using user-provided random data,
+         * if we need to rotate it.
+         *
+         * The session will be rotated if and only if
+         * - The difference between `timeMs` and the creation time of
+         *   the megolm session has reached the time limit in `desc`, OR;
+         * - The number of messages this megolm session has encrypted has
+         *   reached the message limit in `desc`.
+         *
+         * @param random The random data. Must be of at least size
+         * `rotateMegOlmSessionRandomSize()`.
+         * @param timeMs The timestamp to judge whether the session
+         * has reached its time limit. If the megolm session is rotated,
+         * this will also be the creation time of the new megolm session.
+         * @param roomId The room id of the megolm session to rotate.
+         * @param desc The rotation specification of this room.
+         *
+         * @return The session key if the session is rotated,
+         * `std::nullopt` otherwise.
+         */
+        std::optional<std::string> rotateMegOlmSessionWithRandomIfNeeded(
+            RandomData random,
+            Timestamp timeMs,
+            std::string roomId,
+            MegOlmSessionRotateDesc desc);
 
         using UserIdToDeviceIdMap = immer::map<std::string, immer::flex_vector<std::string>>;
         UserIdToDeviceIdMap devicesMissingOutboundSessionKey(
             immer::map<std::string, immer::map<std::string /* deviceId */,
             std::string /* curve25519IdentityKey */>> keyMap) const;
 
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         void createOutboundSession(std::string theirIdentityKey,
                                    std::string theirOneTimeKey);
+
+        /**
+         * @return The size of random data needed for `createOutboundSessionWithRandom()`.
+         */
+        static std::size_t createOutboundSessionRandomSize();
+
+        /**
+         * Create an outbound session using user-provided random data.
+         *
+         * @param random The random data to use. It must be at least of
+         * size `createOutboundSessionRandomSize()`.
+         * @param theirIdeneityKey The identity key of the recipient.
+         * @param theirOneTimeKey The one-time key of the recipient.
+         */
+        void createOutboundSessionWithRandom(
+            RandomData random,
+            std::string theirIdentityKey,
+            std::string theirOneTimeKey);
 
         template<class Archive>
         void save(Archive & ar, const unsigned int /* version */) const {

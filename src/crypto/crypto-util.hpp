@@ -90,6 +90,15 @@ namespace Kazv
         return ret;
     }
 
+    [[nodiscard]] inline RandomData genRandomData(int len)
+    {
+        auto rd = std::random_device{};
+        auto ret = RandomData(len, '\0');
+        std::generate(ret.begin(), ret.end(), [&] { return rd(); });
+        return ret;
+    }
+
+
     namespace CryptoConstants
     {
         inline const std::string ed25519{"ed25519"};

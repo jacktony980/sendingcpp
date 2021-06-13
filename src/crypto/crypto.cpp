@@ -195,22 +195,29 @@ namespace Kazv
         return false;
     }
 
-    bool CryptoPrivate::reuseOrCreateOutboundGroupSession(std::string roomId, MegOlmSessionRotateDesc desc)
+    bool CryptoPrivate::reuseOrCreateOutboundGroupSession(
+        RandomData random, Timestamp timeMs,
+        std::string roomId, std::optional<MegOlmSessionRotateDesc> desc)
     {
-        auto it = outboundGroupSessions.find(roomId);
         bool valid = true;
-        if (it == outboundGroupSessions.end()) {
+        if (! desc.has_value()) { // force rotate
             valid = false;
         } else {
-            auto &session = it->second;
-            if (currentTimeMs() - session.creationTimeMs() >= desc.ms) {
+            auto it = outboundGroupSessions.find(roomId);
+            if (it == outboundGroupSessions.end()) {
                 valid = false;
-            } else if (session.messageIndex() >= desc.messages) {
-                valid = false;
+            } else {
+                auto &session = it->second;
+                if (timeMs - session.creationTimeMs() >= desc.value().ms) {
+                    valid = false;
+                } else if (session.messageIndex() >= desc.value().messages) {
+                    valid = false;
+                }
             }
         }
+
         if (! valid) {
-            outboundGroupSessions.insert_or_assign(roomId, OutboundGroupSession());
+            outboundGroupSessions.insert_or_assign(roomId, OutboundGroupSession(RandomTag{}, random, timeMs));
             auto &session = outboundGroupSessions.at(roomId);
             auto sessionId = session.sessionId();
             auto sessionKey = session.sessionKey();
@@ -486,17 +493,36 @@ namespace Kazv
             };
     }
 
+    std::size_t Crypto::rotateMegOlmSessionRandomSize()
+    {
+        return OutboundGroupSession::constructRandomSize();
+    }
+
     std::string Crypto::rotateMegOlmSession(std::string roomId)
     {
-        // just let the session expire 0ms after creation and
-        // we will have a new one
-        m_d->reuseOrCreateOutboundGroupSession(roomId, MegOlmSessionRotateDesc());
+        return rotateMegOlmSessionWithRandom(genRandomData(rotateMegOlmSessionRandomSize()), currentTimeMs(), roomId);
+    }
+
+    std::string Crypto::rotateMegOlmSessionWithRandom(RandomData random, Timestamp timeMs, std::string roomId)
+    {
+        m_d->reuseOrCreateOutboundGroupSession(
+            random, timeMs,
+            roomId, std::nullopt);
         return outboundGroupSessionCurrentKey(roomId);
     }
 
     std::optional<std::string> Crypto::rotateMegOlmSessionIfNeeded(std::string roomId, MegOlmSessionRotateDesc desc)
     {
-        auto oldSessionValid = m_d->reuseOrCreateOutboundGroupSession(roomId, std::move(desc));
+        return rotateMegOlmSessionWithRandomIfNeeded(
+            genRandomData(rotateMegOlmSessionRandomSize()), currentTimeMs(),
+            roomId, desc);
+    }
+
+    std::optional<std::string> Crypto::rotateMegOlmSessionWithRandomIfNeeded(
+        RandomData random, Timestamp timeMs,
+        std::string roomId, MegOlmSessionRotateDesc desc)
+    {
+        auto oldSessionValid = m_d->reuseOrCreateOutboundGroupSession(random, timeMs, roomId, std::move(desc));
         return oldSessionValid ? std::nullopt : std::optional(outboundGroupSessionCurrentKey(roomId));
     }
 
@@ -537,10 +563,29 @@ namespace Kazv
         return ret;
     }
 
+    std::size_t Crypto::createOutboundSessionRandomSize()
+    {
+        return Session::constructOutboundRandomSize();
+    }
+
+    // TODO remove this
     void Crypto::createOutboundSession(std::string theirIdentityKey,
                                        std::string theirOneTimeKey)
     {
+        createOutboundSessionWithRandom(
+            genRandomData(createOutboundSessionRandomSize()),
+            theirIdentityKey, theirOneTimeKey);
+    }
+
+    void Crypto::createOutboundSessionWithRandom(
+        RandomData random,
+        std::string theirIdentityKey,
+        std::string theirOneTimeKey)
+    {
+        assert(random.size() >= createOutboundSessionRandomSize());
         auto session = Session(OutboundSessionTag{},
+                               RandomTag{},
+                               random,
                                m_d->account,
                                theirIdentityKey,
                                theirOneTimeKey);

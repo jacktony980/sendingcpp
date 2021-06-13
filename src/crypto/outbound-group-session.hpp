@@ -39,6 +39,7 @@ namespace Kazv
          */
         static std::size_t constructRandomSize();
 
+        [[deprecated("Use deterministic variant instead. In the future, this will construct an invalid OutboundGroupSession.")]]
         explicit OutboundGroupSession();
 
         /**

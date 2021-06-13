@@ -45,6 +45,7 @@ namespace Kazv
         static std::size_t constructOutboundRandomSize();
 
         // Creates an outbound session
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         explicit Session(OutboundSessionTag,
                          OlmAccount *acc,
                          std::string theirIdentityKey,
