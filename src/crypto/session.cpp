@@ -251,9 +251,19 @@ namespace Kazv
         return std::string(plainTextBuffer.begin(), plainTextBuffer.begin() + actualSize);
     }
 
+    std::size_t Session::encryptRandomSize() const
+    {
+        return olm_encrypt_random_length(m_d->session);
+    }
+
     std::pair<int, std::string> Session::encrypt(std::string plainText)
     {
-        auto randomData = genRandom(olm_encrypt_random_length(m_d->session));
+        return encryptWithRandom(genRandomData(encryptRandomSize()), std::move(plainText));
+    }
+
+    std::pair<int, std::string> Session::encryptWithRandom(RandomData random, std::string plainText)
+    {
+        assert(random.size() >= encryptRandomSize());
 
         auto type = m_d->checkError(olm_encrypt_message_type(m_d->session));
 
@@ -263,7 +273,7 @@ namespace Kazv
 
         auto actualSize = m_d->checkError(
             olm_encrypt(m_d->session, plainText.c_str(), plainText.size(),
-                        randomData.data(), randomData.size(),
+                        random.data(), random.size(),
                         buf.data(), buf.size()));
 
         if (actualSize != olm_error()) {

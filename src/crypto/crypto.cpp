@@ -469,11 +469,42 @@ namespace Kazv
         }
     }
 
+    std::size_t Crypto::encryptOlmRandomSize(std::string /* theirCurve25519IdentityKey */) const
+    {
+        // HACK: To prevent a possible race condition where we call
+        // encryptedOlmRandomSize() -> randomGenerator.generateRange() ~> [encryptOlm()]
+        //
+        // Here, encryptOlm() must be called in the reducer,
+        // as it changes the status of
+        // Crypto (so we should not risk any infomation lose in Crypto).
+        // Also, for the reducer to be pure, we may not call generateRange() in the reducer,
+        // as *that* is not a pure function. This means it can only be called in an effect,
+        // or .then() continuation. This means, the sequence from encryptedOlmRandomSize()
+        // to encryptOlm() can never be atomic. That is, there may be other encryptOlm()
+        // calls within, and that may increase the random data needed, and as a result,
+        // we will not have enough random data.
+        //
+        // According to the olm headers:
+        // https://gitlab.matrix.org/matrix-org/olm/-/blob/master/include/olm/ratchet.hh
+        // The maximum random size needed to encrypt is 32. We use this to ensure we
+        // will always have enough random data fot the encryption.
+        static std::size_t maxRandomSizeNeeded = 32;
+        return maxRandomSizeNeeded;
+    }
+
     nlohmann::json Crypto::encryptOlm(nlohmann::json eventJson, std::string theirCurve25519IdentityKey)
     {
+        auto random = genRandomData(encryptOlmRandomSize(theirCurve25519IdentityKey));
+        return encryptOlmWithRandom(random, std::move(eventJson), std::move(theirCurve25519IdentityKey));
+    }
+
+    nlohmann::json Crypto::encryptOlmWithRandom(
+        RandomData random, nlohmann::json eventJson, std::string theirCurve25519IdentityKey)
+    {
+        assert(random.size() >= encryptOlmRandomSize(theirCurve25519IdentityKey));
         try {
             auto &session = m_d->knownSessions.at(theirCurve25519IdentityKey);
-            auto [type, body] = session.encrypt(eventJson.dump());
+            auto [type, body] = session.encryptWithRandom(random, eventJson.dump());
             return nlohmann::json{
                 {
                     theirCurve25519IdentityKey, {

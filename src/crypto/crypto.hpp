@@ -123,6 +123,11 @@ namespace Kazv
         /// otherwise returns the error
         MaybeString decrypt(nlohmann::json eventJson);
 
+        /**
+         * @return The size of random data needed to encrypt a message
+         * for the session identified with `theirCurve25519IdentityKey`.
+         */
+        std::size_t encryptOlmRandomSize(std::string theirCurve25519IdentityKey) const;
 
         /** returns a json object that looks like
          * {
@@ -132,7 +137,29 @@ namespace Kazv
          *   }
          * }
          */
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         nlohmann::json encryptOlm(nlohmann::json eventJson, std::string theirCurve25519IdentityKey);
+
+        /**
+         * Encrypt `eventJson` with olm, for the recipient identified with `theirCurve25519IdentityKey`.
+         *
+         * @param random The random data to use for encryption. Must be of
+         * at least size `encryptOlmRandomSize(theirCurve25519IdentityKey)`.
+         * @param eventJson The event json to encrypt.
+         * @param theirCurve25519IdentityKey The curve25519 identity key of the recipient.
+         *
+         * @return A json object that looks like
+         * ```
+         * {
+         *   "<their identity key>": {
+         *     "type": <number>,
+         *     "body": "<body>"
+         *   }
+         * }
+         * ```
+         */
+        nlohmann::json encryptOlmWithRandom(
+            RandomData random, nlohmann::json eventJson, std::string theirCurve25519IdentityKey);
 
         /// returns the content template with everything but deviceId
         /// eventJson should contain type, room_id and content

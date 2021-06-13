@@ -85,7 +85,25 @@ namespace Kazv
 
         MaybeString decrypt(int type, std::string message);
 
+        /**
+         * @return The size of random data needed for the next encryption.
+         */
+        std::size_t encryptRandomSize() const;
+
+        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
         std::pair<int /* type */, std::string /* message */> encrypt(std::string plainText);
+
+        /**
+         * Encrypt plainText.
+         *
+         * @param random The random data needed for the encryption. Must be
+         * of at least size `encryptRandomSize()`.
+         * @param plainText The plain text to encrypt.
+         *
+         * @return A pair containing the type and encrypted message string.
+         */
+        std::pair<int /* type */, std::string /* message */> encryptWithRandom(
+            RandomData random, std::string plainText);
 
     private:
         friend class Crypto;
