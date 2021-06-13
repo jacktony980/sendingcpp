@@ -45,3 +45,18 @@ TEST_CASE("Deterministic constructors of Crypto and OutboundGroupSession", "[cry
 
     REQUIRE(nlohmann::json(ogs1) == nlohmann::json(ogs2));
 }
+
+TEST_CASE("Deterministic generating of one-time keys", "[crypto][deterministic]")
+{
+    auto rg = RandomInterface{RandomDeviceGenerator{}};
+    auto random = rg.generateRange<RandomData>(Crypto::constructRandomSize());
+    Crypto crypto1(RandomTag{}, random);
+    Crypto crypto2(crypto1);
+
+    auto numKeysToGen = 2;
+    random = rg.generateRange<RandomData>(Crypto::genOneTimeKeysRandomSize(numKeysToGen));
+    crypto1.genOneTimeKeysWithRandom(random, numKeysToGen);
+    crypto2.genOneTimeKeysWithRandom(random, numKeysToGen);
+
+    REQUIRE(crypto1.toJson() == crypto2.toJson());
+}

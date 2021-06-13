@@ -339,9 +339,28 @@ namespace Kazv
         return olm_account_max_number_of_one_time_keys(m_d->account);
     }
 
+    std::size_t Crypto::genOneTimeKeysRandomSize(int num)
+    {
+        static std::size_t oneKeyRandomSize =
+            [] {
+                std::vector<char> acc(olm_account_size(), 0);
+                OlmAccount *account = olm_account(acc.data());
+                return olm_account_generate_one_time_keys_random_length(account, 1);
+            }();
+
+        return oneKeyRandomSize * num;
+    }
+
     void Crypto::genOneTimeKeys(int num)
     {
-        auto random = genRandom(olm_account_generate_one_time_keys_random_length(m_d->account, num));
+        auto random = genRandomData(genOneTimeKeysRandomSize(num));
+        genOneTimeKeysWithRandom(std::move(random), num);
+    }
+
+    void Crypto::genOneTimeKeysWithRandom(RandomData random, int num)
+    {
+        assert(random.size() >= genOneTimeKeysRandomSize(num));
+
         auto res = m_d->checkError(
             olm_account_generate_one_time_keys(
                 m_d->account,
@@ -352,6 +371,7 @@ namespace Kazv
             m_d->numUnpublishedKeys += num;
         }
     }
+
 
     nlohmann::json Crypto::unpublishedOneTimeKeys()
     {

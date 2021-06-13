@@ -80,7 +80,28 @@ namespace Kazv
 
         int maxNumberOfOneTimeKeys();
 
+        /**
+         * Get the size of random data needed to generate `num`
+         * one-time keys.
+         *
+         * @param num The number of one-time keys to generate.
+         *
+         * @return The size of random data needed to generate
+         * `num` one-time keys.
+         */
+        static std::size_t genOneTimeKeysRandomSize(int num);
+
+        [[deprecated("Use the deterministic variant. In the future, this will be removed.")]]
         void genOneTimeKeys(int num);
+
+        /**
+         * Generate `num` one-time keys with user-provided random data.
+         *
+         * @param random The random data. Must be of at least size
+         * `genOneTimeKeysRandomSize(num)`.
+         * @param num The number of one-time keys to generate.
+         */
+        void genOneTimeKeysWithRandom(RandomData random, int num);
 
         /**
          * According to olm.h, this returns an object like
