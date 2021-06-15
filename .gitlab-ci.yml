@@ -37,7 +37,7 @@ build-production:
     - prepare-env
   rules:
     - if: |
-      $CI_COMMIT_BRANCH == "servant"
+        $CI_COMMIT_BRANCH == "servant"
 
 build-code-with-coverage:
   stage: build
