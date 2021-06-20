@@ -249,7 +249,8 @@ namespace Kazv
         {
             template<class U>
             static void call(BaseJob::Query &q, std::string name, U &&arg) {
-                if constexpr (detail::hasEmptyMethod(arg)) {
+                using ArgT = std::decay_t<U>;
+                if constexpr (detail::hasEmptyMethod(boost::hana::type_c<ArgT>)) {
                     if (! arg.empty()) {
                         addToQuery(q, name, std::forward<U>(arg));
                     }

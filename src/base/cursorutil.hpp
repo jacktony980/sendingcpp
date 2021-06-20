@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -36,25 +36,26 @@ namespace Kazv
 {
     namespace detail
     {
-        inline auto hasPushBack = boost::hana::is_valid(
+        constexpr auto hasPushBack = boost::hana::is_valid(
             [](auto t) -> decltype(
                 (void)
-                t.push_back(std::declval<typename decltype(t)::value_type>())) { });
+                std::declval<typename decltype(t)::type>().push_back(std::declval<typename decltype(t)::type::value_type>())) { });
 
-        inline auto hasInsert = boost::hana::is_valid(
+        constexpr auto hasInsert = boost::hana::is_valid(
             [](auto t) -> decltype(
                 (void)
-                t.insert(std::declval<typename decltype(t)::value_type>())) { });
+                std::declval<typename decltype(t)::type>().insert(std::declval<typename decltype(t)::type::value_type>())) { });
 
         struct ImmerPushBackOrInsertT
         {
             template<class Container, class ...InputRanges>
             auto operator()(Container container, InputRanges &&...ins) {
-                if constexpr (hasPushBack(container)) {
+                using ContT = std::decay_t<Container>;
+                if constexpr (hasPushBack(boost::hana::type_c<ContT>)) {
                     return std::move(container)
                         .push_back(zug::tuplify(std::forward<InputRanges>(ins)...));
                 } else {
-                    static_assert(hasInsert(container),
+                    static_assert(hasInsert(boost::hana::type_c<ContT>),
                                   "Container must have either push_back() or insert() method");
                     return std::move(container)
                         .insert(zug::tuplify(std::forward<InputRanges>(ins)...));
@@ -69,13 +70,13 @@ namespace Kazv
             // We check for both transient_type and persistent_type
             // because for some containers, transient_type is not
             // implemented.
-            inline static auto hasTransientType = boost::hana::is_valid(
-                [](auto t) -> boost::hana::type<typename decltype(t)::transient_type::persistent_type> {});
+            constexpr static auto hasTransientType = boost::hana::is_valid(
+                [](auto t) -> boost::hana::type<typename decltype(t)::type::transient_type::persistent_type> {});
 
             template<class Container, class Func, class ...InputRanges>
             auto operator()(Container &&m, Func &&transducer, InputRanges &&...ins) const {
                 using ContainerT = std::decay_t<Container>;
-                if constexpr (hasTransientType(m)) {
+                if constexpr (hasTransientType(boost::hana::type_c<ContainerT>)) {
                     using TransientT = typename ContainerT::transient_type;
                     return zug::into(
                         std::forward<TransientT>(m.transient()),
@@ -102,14 +103,15 @@ namespace Kazv
     namespace detail
     {
         inline auto looksLikeImmer = boost::hana::is_valid(
-            [](auto t) -> boost::hana::type<typename decltype(t)::transient_type> { });
+            [](auto t) -> boost::hana::type<typename decltype(t)::type::transient_type> { });
         struct ContainerMapT
         {
             template<class ResultContainer, class Func>
             auto operator()(ResultContainer c, Func transducer) {
                 return zug::map(
                     [=](auto m) {
-                        if constexpr (looksLikeImmer(c)) {
+                        using ContT = std::decay_t<ResultContainer>;
+                        if constexpr (looksLikeImmer(boost::hana::type_c<ContT>)) {
                             return intoImmer(c, transducer, m);
                         } else {
                             return zug::into(c, transducer, m);
@@ -143,24 +145,25 @@ namespace Kazv
 
     namespace detail
     {
-        inline auto isJsonWrap = boost::hana::is_valid(
-            [](auto t) -> decltype((void)t.get()) { });
+        constexpr auto isJsonWrap = boost::hana::is_valid(
+            [](auto t) -> decltype((void) std::declval<typename decltype(t)::type>().get()) { });
     }
 
     template<class T, class V>
     constexpr auto jsonAtOr(T &&key, V &&defaultValue)
     {
         return
-            zug::map([key=std::forward<T>(key), def=std::forward<V>(defaultValue)](auto &&j) -> V {
+            zug::map([key=std::forward<T>(key), def=std::forward<V>(defaultValue)](auto &&j) -> std::decay_t<V> {
                          using JsonT = decltype(j);
+                         using ValueT = std::decay_t<V>;
                          try {
-                             if constexpr (detail::isJsonWrap(j)) {
+                             if constexpr (detail::isJsonWrap(boost::hana::type_c<std::decay_t<JsonT>>)) {
                                  return j.get().contains(key)
-                                     ? V(std::forward<JsonT>(j).get().at(key))
+                                     ? std::forward<JsonT>(j).get().at(key).template get<ValueT>()
                                      : def;
                              } else {
                                  return j.contains(key)
-                                     ? V(std::forward<JsonT>(j).at(key))
+                                     ? std::forward<JsonT>(j).at(key).template get<ValueT>()
                                      : def;
                              }
                          } catch (const std::exception &) {

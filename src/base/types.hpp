@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -47,14 +47,15 @@ namespace Kazv
 
     namespace detail
     {
-        auto hasEmptyMethod = boost::hana::is_valid(
-            [](auto &&x) -> decltype((void)x.empty()) {});
+        constexpr auto hasEmptyMethod = boost::hana::is_valid(
+            [](auto t) -> decltype((void)std::declval<typename decltype(t)::type>().empty()) {});
         template<class U>
         struct AddToJsonIfNeededT
         {
             template<class T>
             static void call(json &j, std::string name, T &&arg) {
-                if constexpr (detail::hasEmptyMethod(arg)) {
+                using Type = std::decay_t<T>;
+                if constexpr (detail::hasEmptyMethod(boost::hana::type_c<Type>)) {
                     if (! arg.empty()) {
                         j[name] = std::forward<T>(arg);
                     }
