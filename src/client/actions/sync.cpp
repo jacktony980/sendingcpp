@@ -33,6 +33,7 @@
 #include "sync.hpp"
 
 #include "encryption.hpp"
+#include "status-utils.hpp"
 
 namespace Kazv
 {
@@ -228,7 +229,7 @@ namespace Kazv
                 kzo.client.dbg() << "Response body: "
                           << std::get<BaseJob::BytesBody>(r.body) << std::endl;
             }
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         kzo.client.dbg() << "Sync successful" << std::endl;
