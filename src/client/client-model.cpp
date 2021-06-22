@@ -113,7 +113,8 @@ namespace Kazv
         // Rotate megolm keys for rooms whose users' device list has changed
         auto changedUsers = newClient.deviceLists.diff(oldDeviceLists);
         if (! changedUsers.empty()) {
-            for (auto [roomId, room] : newClient.roomList.rooms) {
+            auto rooms = newClient.roomList.rooms;
+            for (auto [roomId, room] : rooms) {
                 auto it = std::find_if(changedUsers.begin(), changedUsers.end(),
                                        [=](auto userId) { return room.hasUser(userId); });
                 if (it != changedUsers.end()) {
