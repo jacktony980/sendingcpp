@@ -24,7 +24,7 @@
 #include <eventinterface.hpp>
 
 #include "auth.hpp"
-
+#include "status-utils.hpp"
 
 namespace Kazv
 {
@@ -47,7 +47,7 @@ namespace Kazv
     {
         if (! r.success()) {
             m.addTrigger(LoginFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         kzo.client.dbg() << "Job success" << std::endl;
