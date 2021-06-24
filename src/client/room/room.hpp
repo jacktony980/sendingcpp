@@ -406,5 +406,7 @@ namespace Kazv
         lager::reader<SdkModel> m_sdk;
         lager::reader<RoomModel> m_room;
         Context<ClientAction> m_ctx;
+        KAZV_DECLARE_THREAD_ID();
+        KAZV_DECLARE_EVENT_LOOP_THREAD_ID_KEEPER(0); // FIXME
     };
 }

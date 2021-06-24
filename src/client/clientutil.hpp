@@ -33,6 +33,7 @@
 #include <cursorutil.hpp>
 #include <jobinterface.hpp>
 #include <eventinterface.hpp>
+#include "thread-safety-helper.hpp"
 
 namespace Kazv
 {
@@ -231,5 +232,11 @@ namespace std
         }
     };
 }
+
+#define KAZV_WRAP_ATTR(_type, _d, _attr)          \
+    inline auto _attr() const {                   \
+        KAZV_VERIFY_THREAD_ID();                  \
+        return (_d)[&_type::_attr];               \
+    }
 
 BOOST_CLASS_VERSION(Kazv::KeyOfState, 0)

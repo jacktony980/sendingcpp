@@ -26,6 +26,7 @@
 #include "sdk-model.hpp"
 #include "sdk-model-cursor-tag.hpp"
 #include "client.hpp"
+#include "thread-safety-helper.hpp"
 
 namespace Kazv
 {
@@ -50,11 +51,18 @@ namespace Kazv
                     std::ref(detail::declref<JobInterface>()),
                     std::ref(detail::declref<EventInterface>()),
                     lager::dep::as<SdkModelCursorKey>(std::declval<std::function<CursorTSP()>>())
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                    , std::ref(detail::declref<EventLoopThreadIdKeeper>())
+#endif
                     ),
                 std::declval<Enhancers>()...)
             );
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey>;
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                                  , EventLoopThreadIdKeeper &
+#endif
+                                  >;
 
         using ContextT = Context<ActionT, DepsT>;
     public:
@@ -106,10 +114,24 @@ namespace Kazv
                                 std::ref(jobHandler),
                                 std::ref(eventEmitter),
                                 lager::dep::as<SdkModelCursorKey>(
-                                    std::function<CursorTSP()>([this] { return sdk; })),
-                                std::forward<Enhancers>(enhancers)...)))
+                                    std::function<CursorTSP()>([this] { return sdk; }))
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                                , std::ref(keeper)
+#endif
+                                ),
+                            std::forward<Enhancers>(enhancers)...))
                 , sdk(std::make_shared<lager::reader<ModelT>>(store.reader().xform(std::forward<Xform>(xform))))
-                {}
+                {
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                    store.context().createResolvedPromise(EffectStatus{})
+                        .then([this](auto &&) {
+                                  keeper.set(std::this_thread::get_id());
+                              });
+#endif
+                }
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+            EventLoopThreadIdKeeper keeper;
+#endif
             StoreT store;
             std::shared_ptr<const lager::reader<ModelT>> sdk;
         };

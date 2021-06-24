@@ -59,7 +59,12 @@ namespace Kazv
     public:
         using ActionT = ClientAction;
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey>;
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                                  , EventLoopThreadIdKeeper &
+#endif
+
+                                  >;
         using ContextT = Context<ActionT>;
         using ContextWithDepsT = Context<ActionT, DepsT>;
 
@@ -374,6 +379,8 @@ namespace Kazv
         lager::reader<ClientModel> m_client;
         ContextT m_ctx;
         std::optional<DepsT> m_deps;
+        KAZV_DECLARE_THREAD_ID();
+        KAZV_DECLARE_EVENT_LOOP_THREAD_ID_KEEPER(m_deps.has_value() ? &lager::get<EventLoopThreadIdKeeper &>(m_deps.value()) : 0);
     };
 
 }
