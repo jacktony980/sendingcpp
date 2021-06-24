@@ -24,16 +24,22 @@
 #include <store.hpp>
 
 #include "sdk-model.hpp"
+#include "sdk-model-cursor-tag.hpp"
 #include "client.hpp"
 
 namespace Kazv
 {
+    /**
+     * Contain the single source of truth of a matrix sdk.
+     */
     template<class EventLoop, class Xform, class ...Enhancers>
     class Sdk
     {
         using ModelT = ::Kazv::SdkModel;
         using ClientT = ::Kazv::ClientModel;
         using ActionT = typename ModelT::Action;
+        using CursorT = lager::reader<ModelT>;
+        using CursorTSP = std::shared_ptr<const CursorT>;
 
         using StoreT = decltype(
             makeStore<ActionT>(
@@ -42,12 +48,13 @@ namespace Kazv
                 std::declval<EventLoop>(),
                 lager::with_deps(
                     std::ref(detail::declref<JobInterface>()),
-                    std::ref(detail::declref<EventInterface>())
+                    std::ref(detail::declref<EventInterface>()),
+                    lager::dep::as<SdkModelCursorKey>(std::declval<std::function<CursorTSP()>>())
                     ),
                 std::declval<Enhancers>()...)
             );
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &>;
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey>;
 
         using ContextT = Context<ActionT, DepsT>;
     public:
@@ -57,29 +64,57 @@ namespace Kazv
             EventLoop &&eventLoop,
             Xform &&xform,
             Enhancers &&...enhancers)
-            : m_store(makeStore<ActionT>(
-                          std::move(model),
-                          &ModelT::update,
-                          std::forward<EventLoop>(eventLoop),
-                          lager::with_deps(
-                              std::ref(jobHandler),
-                              std::ref(eventEmitter)),
-                          std::forward<Enhancers>(enhancers)...))
-            , m_sdk(m_store.reader().xform(std::forward<Xform>(xform)))
-            , m_client(m_sdk[&ModelT::client]) {}
+            : m_d(std::make_unique<Private>(
+                      std::move(model), jobHandler, eventEmitter,
+                      std::forward<EventLoop>(eventLoop), std::forward<Xform>(xform),
+                      std::forward<Enhancers>(enhancers)...)) {}
 
+        /**
+         * Get the context associated with this.
+         *
+         * The returned context is thread-safe if every thread calls with
+         * different instances.
+         */
         ContextT context() const {
-            return m_store;
+            return m_d->store;
         }
 
+        /**
+         * Get a Client representing this.
+         *
+         * The returned Client can only be used in the thread where
+         * the promise handler runs.
+         */
         Client client() const {
-            return {m_sdk, ContextT(m_store)};
+            return {*m_d->sdk, ContextT(m_d->store)};
         }
 
     private:
-        StoreT m_store;
-        lager::reader<ModelT> m_sdk;
-        lager::reader<ClientT> m_client;
+        struct Private
+        {
+            Private(ModelT model,
+                    JobInterface &jobHandler,
+                    EventInterface &eventEmitter,
+                    EventLoop &&eventLoop,
+                    Xform &&xform,
+                    Enhancers &&...enhancers)
+                : store(makeStore<ActionT>(
+                            std::move(model),
+                            &ModelT::update,
+                            std::forward<EventLoop>(eventLoop),
+                            lager::with_deps(
+                                std::ref(jobHandler),
+                                std::ref(eventEmitter),
+                                lager::dep::as<SdkModelCursorKey>(
+                                    std::function<CursorTSP()>([this] { return sdk; })),
+                                std::forward<Enhancers>(enhancers)...)))
+                , sdk(std::make_shared<lager::reader<ModelT>>(store.reader().xform(std::forward<Xform>(xform))))
+                {}
+            StoreT store;
+            std::shared_ptr<const lager::reader<ModelT>> sdk;
+        };
+
+        std::unique_ptr<Private> m_d;
     };
 
     template<class EventLoop, class Xform, class ...Enhancers>

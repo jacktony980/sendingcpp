@@ -29,6 +29,7 @@
 #include "sdk-model.hpp"
 #include "client/client-model.hpp"
 #include "client/actions/content.hpp"
+#include "sdk-model-cursor-tag.hpp"
 
 #include "room/room.hpp"
 
@@ -36,13 +37,29 @@ namespace Kazv
 {
     /**
      * Represent a Matrix client.
+     *
+     * If the Client is constructed from a cursor originated from
+     * a root whose event loop is on thread A, then we say that
+     * the Client belongs to thread A. If the Client is not constructed
+     * from a cursor, then we say that the Client belongs to the thread
+     * where the event loop of the context runs.
+     *
+     * All methods in this class that take a cursor only take a cursor
+     * on the same thread as the Client. All methods in this class that
+     * return a cursor will return a cursor on the same thread as the Client.
+     *
+     * All methods in this class must be run on the same thread as the
+     * the Client. If the Client is not constructed from a cursor,
+     * copy-constructing another Client from this is safe from any thread.
+     * If the Client is constructed from a cursor, copy-constructing another
+     * Client is safe only from the same thread as this Client.
      */
     class Client
     {
     public:
         using ActionT = ClientAction;
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &>;
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey>;
         using ContextT = Context<ActionT>;
         using ContextWithDepsT = Context<ActionT, DepsT>;
 

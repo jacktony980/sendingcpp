@@ -20,6 +20,7 @@ add_executable(kazvtest
   client/util-test.cpp
   client/serialization-test.cpp
   client/encrypted-file-test.cpp
+  client/sdk-test.cpp
 
   kazvjobtest.cpp
   event-emitter-test.cpp
