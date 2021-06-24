@@ -56,6 +56,24 @@ namespace Kazv
     {
     }
 
+    Client::Client(InEventLoopTag,
+                   ContextT ctx, DepsT deps)
+        : m_sdk(std::nullopt)
+        , m_client(std::nullopt)
+        , m_ctx(std::move(ctx))
+        , m_deps(std::move(deps))
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+        , KAZV_ON_EVENT_LOOP_VAR(true)
+#endif
+    {
+    }
+
+
+    Client Client::toEventLoop() const
+    {
+        return Client(InEventLoopTag{}, m_ctx, m_deps.value());
+    }
+
 
     Room Client::room(std::string id) const
     {

@@ -40,7 +40,7 @@ namespace Kazv
         using ClientT = ::Kazv::ClientModel;
         using ActionT = typename ModelT::Action;
         using CursorT = lager::reader<ModelT>;
-        using CursorTSP = std::shared_ptr<const CursorT>;
+        using CursorTSP = std::shared_ptr<CursorT>;
 
         using StoreT = decltype(
             makeStore<ActionT>(
@@ -96,6 +96,33 @@ namespace Kazv
             return {Client::InEventLoopTag{}, ContextT(m_d->store)};
         }
 
+        /**
+         * Create a secondary root for this Sdk.
+         *
+         * @param eventLoop An event loop passed to `lager::make_store`.
+         * The resulting secondary root will belong to the thread of this event loop.
+         *
+         * @return A lager::store that belongs to the thread of `eventLoop`. The
+         * store will be kept update
+         */
+        template<class EL>
+        auto createSecondaryRoot(EL &&eventLoop) const {
+            auto secondaryStore = lager::make_store<ModelT>(
+                ModelT{},
+                std::forward<EL>(eventLoop),
+                lager::with_reducer([](auto &&, auto next) { return next; }));
+
+            lager::context<ModelT> secondaryCtx = secondaryStore;
+
+            context().createResolvedPromise({})
+                .then([secondaryCtx, d=m_d.get()](auto &&) {
+                          lager::watch(*(d->sdk),
+                                       [secondaryCtx](auto next) { secondaryCtx.dispatch(std::move(next)); });
+                      });
+
+            return std::move(secondaryStore);
+        }
+
     private:
         struct Private
         {
@@ -132,7 +159,7 @@ namespace Kazv
             EventLoopThreadIdKeeper keeper;
 #endif
             StoreT store;
-            std::shared_ptr<const lager::reader<ModelT>> sdk;
+            CursorTSP sdk;
         };
 
         std::unique_ptr<Private> m_d;

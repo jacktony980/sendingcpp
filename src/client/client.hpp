@@ -100,7 +100,7 @@ namespace Kazv
          *
          * Construct the client, with Deps support.
          *
-         * This enables startSyncing() to work properly.
+         * The constructed Client belongs to the thread of event loop.
          *
          * @warning You should not use this directly. Use
          * Sdk::client() instead.
@@ -108,7 +108,30 @@ namespace Kazv
         Client(InEventLoopTag,
                ContextWithDepsT ctx);
 
+        /**
+         * Constructor.
+         *
+         * Construct the client, with Deps support.
+         *
+         * The constructed Client belongs to the thread of event loop.
+         *
+         * @warning You should not use this directly. Use
+         * Sdk::client() instead.
+         */
+        Client(InEventLoopTag, ContextT ctx, DepsT deps);
 
+
+        /**
+         * Create a Client that is not constructed from a cursor.
+         *
+         * The returned Client belongs to the thread of event loop.
+         *
+         * This function is thread-safe if every thread calls it
+         * using different objects.
+         *
+         * @return A Client not constructed from a cursor.
+         */
+        Client toEventLoop() const;
 
         /* lager::reader<immer::map<std::string, Room>> */
         inline auto rooms() const {

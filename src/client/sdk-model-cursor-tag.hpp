@@ -20,5 +20,5 @@ namespace Kazv
     struct SdkModelCursorTag {};
     using SdkModelCursorKey =
         lager::dep::key<SdkModelCursorTag,
-                        lager::dep::fn<std::shared_ptr<const lager::reader<SdkModel>>>>;
+                        lager::dep::fn<std::shared_ptr<lager::reader<SdkModel>>>>;
 }
