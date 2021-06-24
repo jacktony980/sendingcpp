@@ -90,11 +90,10 @@ namespace Kazv
         /**
          * Get a Client representing this.
          *
-         * The returned Client can only be used in the thread where
-         * the promise handler runs.
+         * The returned Client belongs to the thread where the promise handler runs.
          */
         Client client() const {
-            return {*m_d->sdk, ContextT(m_d->store)};
+            return {Client::InEventLoopTag{}, ContextT(m_d->store)};
         }
 
     private:

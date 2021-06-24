@@ -69,6 +69,8 @@ namespace Kazv
         using ContextWithDepsT = Context<ActionT, DepsT>;
 
         using PromiseT = SingleTypePromise<DefaultRetType>;
+
+        struct InEventLoopTag {};
         /**
          * Constructor.
          *
@@ -93,10 +95,24 @@ namespace Kazv
         Client(lager::reader<SdkModel> sdk,
                ContextWithDepsT ctx);
 
+        /**
+         * Constructor.
+         *
+         * Construct the client, with Deps support.
+         *
+         * This enables startSyncing() to work properly.
+         *
+         * @warning You should not use this directly. Use
+         * Sdk::client() instead.
+         */
+        Client(InEventLoopTag,
+               ContextWithDepsT ctx);
+
+
 
         /* lager::reader<immer::map<std::string, Room>> */
         inline auto rooms() const {
-            return m_client
+            return clientCursor()
                 [&ClientModel::roomList]
                 [&RoomListModel::rooms];
         }
@@ -112,12 +128,12 @@ namespace Kazv
                          }));
         }
 
-        KAZV_WRAP_ATTR(ClientModel, m_client, serverUrl)
-        KAZV_WRAP_ATTR(ClientModel, m_client, loggedIn)
-        KAZV_WRAP_ATTR(ClientModel, m_client, userId)
-        KAZV_WRAP_ATTR(ClientModel, m_client, token)
-        KAZV_WRAP_ATTR(ClientModel, m_client, deviceId)
-        KAZV_WRAP_ATTR(ClientModel, m_client, toDevice)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), serverUrl)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), loggedIn)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), userId)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), token)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), deviceId)
+        KAZV_WRAP_ATTR(ClientModel, clientCursor(), toDevice)
 
         /**
          * Get the room with @c id .
@@ -281,7 +297,7 @@ namespace Kazv
         inline std::string mxcUriToHttp(std::string mxcUri) const {
             using namespace CursorOp;
             auto [serverName, mediaId] = mxcUriToMediaDesc(mxcUri);
-            return (+m_client)
+            return (+clientCursor())
                 .job<GetContentJob>()
                 .make(serverName, mediaId).url();
         }
@@ -328,7 +344,7 @@ namespace Kazv
 
         // lager::reader<bool>
         inline auto syncing() const {
-            return m_client[&ClientModel::syncing];
+            return clientCursor()[&ClientModel::syncing];
         }
 
         /**
@@ -369,14 +385,17 @@ namespace Kazv
          */
         template<class Archive>
         void serializeTo(Archive &ar) const {
-            ar << m_sdk.get();
+            ar << sdkCursor().get();
         }
 
     private:
         void syncForever(std::optional<int> retryTime = std::nullopt) const;
 
-        lager::reader<SdkModel> m_sdk;
-        lager::reader<ClientModel> m_client;
+        const lager::reader<SdkModel> &sdkCursor() const;
+        lager::reader<ClientModel> clientCursor() const;
+
+        std::optional<lager::reader<SdkModel>> m_sdk;
+        std::optional<lager::reader<ClientModel>> m_client;
         ContextT m_ctx;
         std::optional<DepsT> m_deps;
         KAZV_DECLARE_THREAD_ID();

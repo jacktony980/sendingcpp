@@ -44,15 +44,27 @@ namespace Kazv
     {
     }
 
+    Client::Client(InEventLoopTag,
+                   ContextWithDepsT ctx)
+        : m_sdk(std::nullopt)
+        , m_client(std::nullopt)
+        , m_ctx(ctx)
+        , m_deps(std::move(ctx))
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+        , KAZV_ON_EVENT_LOOP_VAR(true)
+#endif
+    {
+    }
+
 
     Room Client::room(std::string id) const
     {
-        return Room(m_sdk, lager::make_constant(id), m_ctx);
+        return Room(sdkCursor(), lager::make_constant(id), m_ctx);
     }
 
     Room Client::roomByCursor(lager::reader<std::string> id) const
     {
-        return Room(m_sdk, id, m_ctx);
+        return Room(sdkCursor(), id, m_ctx);
     }
 
     auto Client::passwordLogin(std::string homeserver, std::string username,
@@ -173,6 +185,7 @@ namespace Kazv
 
     auto Client::startSyncing() const -> PromiseT
     {
+        KAZV_VERIFY_THREAD_ID();
         using namespace Kazv::CursorOp;
 
         if (+syncing()) {
@@ -182,8 +195,8 @@ namespace Kazv
         auto p1 = m_ctx.createResolvedPromise(true)
             .then([*this](auto) {
                       // post filters, if filters are incomplete
-                      if ((+m_client[&ClientModel::initialSyncFilterId]).empty()
-                          || (+m_client[&ClientModel::incrementalSyncFilterId]).empty()) {
+                      if ((+clientCursor()[&ClientModel::initialSyncFilterId]).empty()
+                          || (+clientCursor()[&ClientModel::incrementalSyncFilterId]).empty()) {
                           return m_ctx.dispatch(PostInitialFiltersAction{});
                       }
                       return m_ctx.createResolvedPromise(true);
@@ -193,8 +206,8 @@ namespace Kazv
                           return m_ctx.createResolvedPromise(stat);
                       }
                       // Upload identity keys if we need to
-                      if (+m_client[&ClientModel::crypto]
-                          && ! +m_client[&ClientModel::identityKeysUploaded]) {
+                      if (+clientCursor()[&ClientModel::crypto]
+                          && ! +clientCursor()[&ClientModel::identityKeysUploaded]) {
                           return m_ctx.dispatch(UploadIdentityKeysAction{});
                       } else {
                           return m_ctx.createResolvedPromise(true);
@@ -202,7 +215,7 @@ namespace Kazv
                   });
 
         p1
-            .then([*this](auto stat) {
+            .then([m_ctx=m_ctx](auto stat) {
                       m_ctx.dispatch(SetShouldSyncAction{true});
                       return stat;
                   })
@@ -217,12 +230,14 @@ namespace Kazv
 
     auto Client::syncForever(std::optional<int> retryTime) const -> void
     {
+        KAZV_VERIFY_THREAD_ID();
+
         // assert (m_deps);
         using namespace CursorOp;
 
-        bool isInitialSync = ! (+m_client[&ClientModel::syncToken]).has_value();
+        bool isInitialSync = ! (+clientCursor()[&ClientModel::syncToken]).has_value();
 
-        bool shouldSync = +m_client[&ClientModel::shouldSync];
+        bool shouldSync = +clientCursor()[&ClientModel::shouldSync];
 
         if (! shouldSync) {
             return;
@@ -236,7 +251,7 @@ namespace Kazv
                       if (! stat.success()) {
                           return m_ctx.createResolvedPromise(stat);
                       }
-                      bool hasCrypto{+m_client[&ClientModel::crypto]};
+                      bool hasCrypto{+clientCursor()[&ClientModel::crypto]};
                       auto p1 = hasCrypto
                           ? m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{})
                           : m_ctx.createResolvedPromise(true);
@@ -248,7 +263,7 @@ namespace Kazv
                       if (! stat.success()) {
                           return m_ctx.createResolvedPromise(stat);
                       }
-                      bool hasCrypto{+m_client[&ClientModel::crypto]};
+                      bool hasCrypto{+clientCursor()[&ClientModel::crypto]};
                       return hasCrypto
                           ? m_ctx.dispatch(QueryKeysAction{isInitialSync})
                           : m_ctx.createResolvedPromise(true);
@@ -260,9 +275,9 @@ namespace Kazv
                       if (stat.success()) {
                           syncForever(); // reset retry time
                       } else {
-                          auto firstRetryTime = +m_client[&ClientModel::firstRetryMs];
-                          auto retryTimeFactor = +m_client[&ClientModel::retryTimeFactor];
-                          auto maxRetryTime = +m_client[&ClientModel::maxRetryMs];
+                          auto firstRetryTime = +clientCursor()[&ClientModel::firstRetryMs];
+                          auto retryTimeFactor = +clientCursor()[&ClientModel::retryTimeFactor];
+                          auto maxRetryTime = +clientCursor()[&ClientModel::maxRetryMs];
                           auto curRetryTime = retryTime ? retryTime.value() : firstRetryTime;
                           if (curRetryTime > maxRetryTime) { curRetryTime = maxRetryTime; }
                           auto nextRetryTime = curRetryTime * retryTimeFactor;
@@ -279,4 +294,29 @@ namespace Kazv
     {
         m_ctx.dispatch(SetShouldSyncAction{false});
     }
+
+    lager::reader<ClientModel> Client::clientCursor() const
+    {
+        KAZV_VERIFY_THREAD_ID();
+
+        if (m_client.has_value()) {
+            return m_client.value();
+        } else {
+            assert(m_deps.has_value());
+            return lager::get<SdkModelCursorKey>(m_deps.value())->map(&SdkModel::c);
+        }
+    }
+
+    const lager::reader<SdkModel> &Client::sdkCursor() const
+    {
+        KAZV_VERIFY_THREAD_ID();
+
+        if (m_sdk.has_value()) {
+            return m_sdk.value();
+        } else {
+            assert(m_deps.has_value());
+            return *(lager::get<SdkModelCursorKey>(m_deps.value()));
+        }
+    }
+
 }

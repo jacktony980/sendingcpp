@@ -72,4 +72,5 @@ struct EventLoopThreadIdKeeper
 #else
 #define KAZV_DECLARE_THREAD_ID()
 #define KAZV_VERIFY_THREAD_ID()
+#define KAZV_DECLARE_EVENT_LOOP_THREAD_ID_KEEPER(_initializer)
 #endif

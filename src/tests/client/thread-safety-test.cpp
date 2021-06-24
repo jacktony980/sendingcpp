@@ -33,11 +33,28 @@ TEST_CASE("Thread-safety verification should work", "[client][thread-safety]")
         zug::identity
         );
 
-    REQUIRE(sdk.context().has<EventLoopThreadIdKeeper>());
+    auto ctx = sdk.context();
+
+    REQUIRE(ctx.has<EventLoopThreadIdKeeper>());
 
     auto client = sdk.client();
 
     bool thrown = false;
+    try {
+        client.userId();
+    } catch (const ThreadNotMatchException &) {
+        thrown = true;
+    }
+    REQUIRE(! thrown); // event loop has not started yet, so do not throw
+
+    boost::asio::executor_work_guard g(io.get_executor());
+
+    std::thread([&io] { io.run(); }).detach();
+
+    // wait till the event loop thread is logged
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    thrown = false;
     std::thread([=, &thrown] {
                     try {
                         client.userId();
@@ -45,7 +62,22 @@ TEST_CASE("Thread-safety verification should work", "[client][thread-safety]")
                         thrown = true;
                     }
                 }).join();
+    REQUIRE(thrown);
 
+    ctx.createResolvedPromise({})
+        .then([](auto &&) {})
+        .then([&client](auto &&) {
+                  client.userId();
+              });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    thrown = false;
+    try {
+        client.userId();
+    } catch (const ThreadNotMatchException &) {
+        thrown = true;
+    }
     REQUIRE(thrown);
 }
 
