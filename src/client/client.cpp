@@ -92,13 +92,13 @@ namespace Kazv
         auto p1 = m_ctx.dispatch(LoginAction{
                 homeserver, username, password, deviceName});
         p1
-            .then([*this](auto stat) {
+            .then([that=toEventLoop()](auto stat) {
                       if (! stat.success()) {
                           return;
                       }
                       // It is meaningless to wait for it in a Promise
                       // that is never exposed to the user.
-                      startSyncing();
+                      that.startSyncing();
                   });
 
         return p1;
@@ -111,11 +111,11 @@ namespace Kazv
         auto p1 = m_ctx.dispatch(TokenLoginAction{
                 homeserver, username, token, deviceId});
         p1
-            .then([*this](auto stat) {
+            .then([that=toEventLoop()](auto stat) {
                       if (! stat.success()) {
                           return;
                       }
-                      startSyncing();
+                      that.startSyncing();
                   });
 
         return p1;
@@ -211,24 +211,24 @@ namespace Kazv
         }
 
         auto p1 = m_ctx.createResolvedPromise(true)
-            .then([*this](auto) {
+            .then([that=toEventLoop()](auto) {
                       // post filters, if filters are incomplete
-                      if ((+clientCursor()[&ClientModel::initialSyncFilterId]).empty()
-                          || (+clientCursor()[&ClientModel::incrementalSyncFilterId]).empty()) {
-                          return m_ctx.dispatch(PostInitialFiltersAction{});
+                      if ((+that.clientCursor()[&ClientModel::initialSyncFilterId]).empty()
+                          || (+that.clientCursor()[&ClientModel::incrementalSyncFilterId]).empty()) {
+                          return that.m_ctx.dispatch(PostInitialFiltersAction{});
                       }
-                      return m_ctx.createResolvedPromise(true);
+                      return that.m_ctx.createResolvedPromise(true);
                   })
-            .then([*this](auto stat) {
+            .then([that=toEventLoop()](auto stat) {
                       if (! stat.success()) {
-                          return m_ctx.createResolvedPromise(stat);
+                          return that.m_ctx.createResolvedPromise(stat);
                       }
                       // Upload identity keys if we need to
-                      if (+clientCursor()[&ClientModel::crypto]
-                          && ! +clientCursor()[&ClientModel::identityKeysUploaded]) {
-                          return m_ctx.dispatch(UploadIdentityKeysAction{});
+                      if (+that.clientCursor()[&ClientModel::crypto]
+                          && ! +that.clientCursor()[&ClientModel::identityKeysUploaded]) {
+                          return that.m_ctx.dispatch(UploadIdentityKeysAction{});
                       } else {
-                          return m_ctx.createResolvedPromise(true);
+                          return that.m_ctx.createResolvedPromise(true);
                       }
                   });
 
@@ -237,9 +237,9 @@ namespace Kazv
                       m_ctx.dispatch(SetShouldSyncAction{true});
                       return stat;
                   })
-            .then([*this](auto stat) {
+            .then([that=toEventLoop()](auto stat) {
                       if (stat.success()) {
-                          syncForever();
+                          that.syncForever();
                       }
                   });
 
@@ -265,44 +265,44 @@ namespace Kazv
         auto syncRes = m_ctx.dispatch(SyncAction{});
 
         auto uploadOneTimeKeysRes = syncRes
-            .then([*this](auto stat) {
+            .then([that=toEventLoop()](auto stat) {
                       if (! stat.success()) {
-                          return m_ctx.createResolvedPromise(stat);
+                          return that.m_ctx.createResolvedPromise(stat);
                       }
-                      bool hasCrypto{+clientCursor()[&ClientModel::crypto]};
+                      bool hasCrypto{+that.clientCursor()[&ClientModel::crypto]};
                       auto p1 = hasCrypto
-                          ? m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{})
-                          : m_ctx.createResolvedPromise(true);
+                          ? that.m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{})
+                          : that.m_ctx.createResolvedPromise(true);
                       return p1;
                   });
 
         auto queryKeysRes = syncRes
-            .then([*this, isInitialSync](auto stat) {
+            .then([that=toEventLoop(), isInitialSync](auto stat) {
                       if (! stat.success()) {
-                          return m_ctx.createResolvedPromise(stat);
+                          return that.m_ctx.createResolvedPromise(stat);
                       }
-                      bool hasCrypto{+clientCursor()[&ClientModel::crypto]};
+                      bool hasCrypto{+that.clientCursor()[&ClientModel::crypto]};
                       return hasCrypto
-                          ? m_ctx.dispatch(QueryKeysAction{isInitialSync})
-                          : m_ctx.createResolvedPromise(true);
+                          ? that.m_ctx.dispatch(QueryKeysAction{isInitialSync})
+                          : that.m_ctx.createResolvedPromise(true);
                   });
 
         m_ctx.promiseInterface()
             .all(std::vector<PromiseT>{uploadOneTimeKeysRes, queryKeysRes})
-            .then([*this, retryTime](auto stat) {
+            .then([that=toEventLoop(), retryTime](auto stat) {
                       if (stat.success()) {
-                          syncForever(); // reset retry time
+                          that.syncForever(); // reset retry time
                       } else {
-                          auto firstRetryTime = +clientCursor()[&ClientModel::firstRetryMs];
-                          auto retryTimeFactor = +clientCursor()[&ClientModel::retryTimeFactor];
-                          auto maxRetryTime = +clientCursor()[&ClientModel::maxRetryMs];
+                          auto firstRetryTime = +that.clientCursor()[&ClientModel::firstRetryMs];
+                          auto retryTimeFactor = +that.clientCursor()[&ClientModel::retryTimeFactor];
+                          auto maxRetryTime = +that.clientCursor()[&ClientModel::maxRetryMs];
                           auto curRetryTime = retryTime ? retryTime.value() : firstRetryTime;
                           if (curRetryTime > maxRetryTime) { curRetryTime = maxRetryTime; }
                           auto nextRetryTime = curRetryTime * retryTimeFactor;
 
                           kzo.client.warn() << "Sync failed, retrying in " << curRetryTime << "ms" << std::endl;
-                          auto &jh = getJobHandler(m_deps.value());
-                          jh.setTimeout([*this, nextRetryTime]() { syncForever(nextRetryTime); },
+                          auto &jh = getJobHandler(that.m_deps.value());
+                          jh.setTimeout([that=that.toEventLoop(), nextRetryTime]() { that.syncForever(nextRetryTime); },
                                         curRetryTime);
                       }
                   });

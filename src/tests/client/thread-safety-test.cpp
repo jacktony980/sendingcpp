@@ -132,4 +132,57 @@ TEST_CASE("Thread-safety verification from secondary root should work", "[client
     io2.run();
 }
 
+TEST_CASE("Thread-safety verification should properly verify toEventLoop calls", "[client][thread-safety]")
+{
+    auto io = boost::asio::io_context{};
+    auto jh = Kazv::CprJobHandler{io.get_executor()};
+    auto ee = Kazv::LagerStoreEventEmitter(lager::with_boost_asio_event_loop{io.get_executor()});
+
+    auto sdk = Kazv::makeSdk(
+        Kazv::SdkModel{},
+        jh,
+        ee,
+        Kazv::AsioPromiseHandler{io.get_executor()},
+        zug::identity
+        );
+
+    auto ctx = sdk.context();
+
+    auto io2 = boost::asio::io_context{};
+
+    auto sr = sdk.createSecondaryRoot(lager::with_boost_asio_event_loop{io2.get_executor()});
+
+    auto client2 = sdk.clientFromSecondaryRoot(sr);
+
+    ctx.createResolvedPromise({})
+        .then([client2, guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+                  bool thrown = false;
+
+                  try {
+                      client2.userId();
+                  } catch (const ThreadNotMatchException &) {
+                      thrown = true;
+                  }
+                  REQUIRE(thrown);
+              });
+
+    ctx.createResolvedPromise({})
+        .then([client2=client2.toEventLoop(), guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+                  bool thrown2 = false;
+
+                  try {
+                      client2.userId();
+                  } catch (const ThreadNotMatchException &) {
+                      thrown2 = true;
+                  }
+                  REQUIRE(!thrown2);
+              });
+
+    std::thread([&io] { io.run(); }).detach();
+
+    io2.run();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}
+
 #endif
