@@ -103,7 +103,7 @@ namespace Kazv
          * The resulting secondary root will belong to the thread of this event loop.
          *
          * @return A lager::store that belongs to the thread of `eventLoop`. The
-         * store will be kept update
+         * store will be kept update with this sdk.
          */
         template<class EL>
         auto createSecondaryRoot(EL &&eventLoop) const {
@@ -120,7 +120,23 @@ namespace Kazv
                                        [secondaryCtx](auto next) { secondaryCtx.dispatch(std::move(next)); });
                       });
 
-            return std::move(secondaryStore);
+            return secondaryStore;
+        }
+
+        /**
+         * Get a Client representing this.
+         *
+         * The returned Client belongs to the same thread as `sr`.
+         *
+         * This function is thread-safe, but it must be called from the thread
+         * where `sr` belongs.
+         *
+         * @param sr The secondary root cursor that represents this sdk.
+         *
+         * @return A Client representing this in the same thread as `sr`.
+         */
+        Client clientFromSecondaryRoot(lager::reader<ModelT> sr) const {
+            return Client(sr, ContextT(m_d->store));
         }
 
     private:
