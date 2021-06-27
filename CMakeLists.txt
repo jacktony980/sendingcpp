@@ -41,6 +41,13 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   set(BUILD_SHARED_LIBS ON)
 endif()
 
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  set(LIBKAZV_BUILT_WITH_DEBUG 1)
+else()
+  set(LIBKAZV_BUILT_WITH_DEBUG 0)
+endif()
+
+
 find_package(Boost REQUIRED COMPONENTS serialization)
 
 

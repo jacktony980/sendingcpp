@@ -29,11 +29,12 @@ target_include_directories(kazvall
 install(TARGETS kazvall EXPORT libkazvTargets)
 
 if(libkazv_INSTALL_HEADERS)
+  set(libkazv_HEADER_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/kazv)
   install(
     DIRECTORY
     ${CMAKE_CURRENT_SOURCE_DIR}/
 
-    DESTINATION include/kazv
+    DESTINATION ${libkazv_HEADER_INSTALL_DIR}
 
     FILES_MATCHING PATTERN "*.hpp"
 

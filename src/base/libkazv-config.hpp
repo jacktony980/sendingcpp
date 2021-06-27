@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "libkazv-defs.hpp"
+
 // https://github.com/arximboldi/zug/issues/24
 #ifndef ZUG_VARIANT_BOOST
 #define ZUG_VARIANT_BOOST 1

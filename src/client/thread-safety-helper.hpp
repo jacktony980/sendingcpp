@@ -8,7 +8,7 @@
 
 #include <libkazv-config.hpp>
 
-#ifndef NDEBUG
+#if LIBKAZV_BUILT_WITH_DEBUG
 #ifndef KAZV_USE_THREAD_SAFETY_HELPER
 #define KAZV_USE_THREAD_SAFETY_HELPER
 #endif
