@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-#ifndef NDEBUG
 #include <libkazv-config.hpp>
 
 #include <catch2/catch.hpp>
@@ -17,6 +16,7 @@
 #include <lagerstoreeventemitter.hpp>
 #include <asio-promise-handler.hpp>
 
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
 using namespace Kazv;
 
 TEST_CASE("Thread-safety verification should work", "[client][thread-safety]")
