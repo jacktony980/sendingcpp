@@ -17,6 +17,6 @@ RUN mkdir build && cd build && \
         -Dlibkazv_BUILD_EXAMPLES=ON -Dlibkazv_BUILD_KAZVJOB=ON -Dlibkazv_ENABLE_COVERAGE=ON && \
     make -j$JOBS && \
     ./src/tests/kazvtest && \
-    gcovr -r ../src --object-directory src && \
+    gcovr -r ../src --object-directory src -e '.*/api/.*' && \
     cd ../.. && \
     rm -rf /build/libkazv
