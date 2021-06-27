@@ -1,6 +1,8 @@
 
 include(linklibsys)
 
+set(libkazv_HEADER_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/kazv)
+
 add_subdirectory(base)
 add_subdirectory(store)
 add_subdirectory(api)
@@ -29,7 +31,6 @@ target_include_directories(kazvall
 install(TARGETS kazvall EXPORT libkazvTargets)
 
 if(libkazv_INSTALL_HEADERS)
-  set(libkazv_HEADER_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/kazv)
   install(
     DIRECTORY
     ${CMAKE_CURRENT_SOURCE_DIR}/
