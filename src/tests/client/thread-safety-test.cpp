@@ -154,8 +154,10 @@ TEST_CASE("Thread-safety verification should properly verify toEventLoop calls",
 
     auto client2 = sdk.clientFromSecondaryRoot(sr);
 
+    auto room2 = client2.room("!foo:example.org");
+
     ctx.createResolvedPromise({})
-        .then([client2, guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+        .then([client2, room2, guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
                   bool thrown = false;
 
                   try {
@@ -164,14 +166,32 @@ TEST_CASE("Thread-safety verification should properly verify toEventLoop calls",
                       thrown = true;
                   }
                   REQUIRE(thrown);
+
+                  thrown = false;
+                  try {
+                      room2.roomId();
+                  } catch (const ThreadNotMatchException &) {
+                      thrown = true;
+                  }
+                  REQUIRE(thrown);
               });
 
     ctx.createResolvedPromise({})
-        .then([client2=client2.toEventLoop(), guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+        .then([client2=client2.toEventLoop(), room2=room2.toEventLoop(),
+               guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
                   bool thrown2 = false;
 
                   try {
                       client2.userId();
+                  } catch (const ThreadNotMatchException &) {
+                      thrown2 = true;
+                  }
+                  REQUIRE(!thrown2);
+
+                  thrown2 = false;
+
+                  try {
+                      room2.roomId();
                   } catch (const ThreadNotMatchException &) {
                       thrown2 = true;
                   }

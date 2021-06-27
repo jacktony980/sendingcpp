@@ -77,12 +77,20 @@ namespace Kazv
 
     Room Client::room(std::string id) const
     {
-        return Room(sdkCursor(), lager::make_constant(id), m_ctx);
+        if (m_deps.has_value()) {
+            return Room(sdkCursor(), lager::make_constant(id), m_ctx, m_deps.value());
+        } else {
+            return Room(sdkCursor(), lager::make_constant(id), m_ctx);
+        }
     }
 
     Room Client::roomByCursor(lager::reader<std::string> id) const
     {
-        return Room(sdkCursor(), id, m_ctx);
+        if (m_deps.has_value()) {
+            return Room(sdkCursor(), id, m_ctx, m_deps.value());
+        } else {
+            return Room(sdkCursor(), id, m_ctx);
+        }
     }
 
     auto Client::passwordLogin(std::string homeserver, std::string username,

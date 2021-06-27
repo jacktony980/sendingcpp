@@ -36,29 +36,103 @@
 #include "client-model.hpp"
 #include "room-model.hpp"
 #include <cursorutil.hpp>
+#include "sdk-model-cursor-tag.hpp"
 
 namespace Kazv
 {
     /**
      * Represent a Matrix room.
+     *
+     * This class has the same constraints as Client.
      */
     class Room
     {
     public:
         using PromiseT = SingleTypePromise<DefaultRetType>;
+        using DepsT = lager::deps<SdkModelCursorKey
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+                                  , EventLoopThreadIdKeeper &
+#endif
+                                  >;
+        using ContextT = Context<ClientAction>;
+
+        struct InEventLoopTag {};
+
         /**
          * Constructor.
          *
          * Construct the room with @c roomId .
          *
+         * `sdk` and `roomId` must be cursors in the same thread.
+         *
+         * The constructed room will be in the same thread as `sdk` and `roomId`.
+         *
+         * @warning Do not use this directly. Use `Client::room()` and
+         * `Client::roomBycursor()` instead.
          */
         Room(lager::reader<SdkModel> sdk,
              lager::reader<std::string> roomId,
-             Context<ClientAction> ctx);
+             ContextT ctx);
+
+        /**
+         * Constructor.
+         *
+         * Construct the room with @c roomId and with Deps support.
+         *
+         * `sdk` and `roomId` must be cursors in the same thread.
+         *
+         * The constructed room will be in the same thread as `sdk` and `roomId`.
+         *
+         * @warning Do not use this directly. Use `Client::room()` and
+         * `Client::roomBycursor()` instead.
+         */
+        Room(lager::reader<SdkModel> sdk,
+             lager::reader<std::string> roomId,
+             ContextT ctx, DepsT deps);
+
+        /**
+         * Construct a Room in the same thread as the event loop.
+         *
+         * The constructed Room is not constructed from a cursor,
+         * and thus copying-constructing from that is thread-safe as long as each thread
+         * calls with different objects.
+         *
+         * this must have Deps support.
+         *
+         * @warning Do not use this directly. Use `Client::room()` and
+         * `Client::roomBycursor()` instead.
+         */
+        Room(InEventLoopTag, std::string roomId, ContextT ctx, DepsT deps);
+
+        /**
+         * Return a Room that represents the room *currently represented* by this,
+         * but suitable for use in the event loop of the context.
+         *
+         * This function can only be called from the thread where this belongs.
+         *
+         * Example:
+         *
+         * ```
+         * auto ctx = sdk.context();
+         * auto client = sdk.clientFromSecondaryRoot(sr);
+         * auto room = client.room("!room-id:domain.name");
+         * room.sendTextMessage("test")
+         *     .then([r=room.toEventLoop(), ctx](auto &&st) {
+         *         if (!st) {
+         *             std::cerr << "Cannot send message" << std::endl;
+         *             return ctx.createResolvedPromise(st);
+         *         }
+         *         return r.sendTextMessage("follow-up");
+         *     });
+         * ```
+         *
+         * @sa Sdk::clientFromSecondaryRoot , Client::room
+         */
+        Room toEventLoop() const;
 
         /* lager::reader<MapT<KeyOfState, Event>> */
         inline auto stateEvents() const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::stateEvents];
         }
 
@@ -76,7 +150,7 @@ namespace Kazv
 
         /* lager::reader<RangeT<Event>> */
         inline auto timelineEvents() const {
-            return m_room
+            return roomCursor()
                 .xform(zug::map([](auto r) {
                                     auto messages = r.messages;
                                     auto timeline = r.timeline;
@@ -122,13 +196,13 @@ namespace Kazv
 
         /* lager::reader<RangeT<std::string>> */
         inline auto members() const {
-            return m_room.xform(zug::map([=](auto room) {
-                                             return room.joinedMemberIds();
-                                         }));
+            return roomCursor().xform(zug::map([=](auto room) {
+                                                   return room.joinedMemberIds();
+                                               }));
         }
 
         inline auto memberEventByCursor(lager::reader<std::string> userId) const {
-            return lager::with(m_room[&RoomModel::stateEvents], userId)
+            return lager::with(roomCursor()[&RoomModel::stateEvents], userId)
                 .xform(zug::map([](auto events, auto userId) {
                                     auto k = KeyOfState{"m.room.member", userId};
                                     return events[k];
@@ -154,13 +228,13 @@ namespace Kazv
         lager::reader<bool> encrypted() const;
 
         /*lager::reader<std::string>*/
-        KAZV_WRAP_ATTR(RoomModel, m_room, roomId);
+        KAZV_WRAP_ATTR(RoomModel, roomCursor(), roomId);
         /*lager::reader<RoomMembership>*/
-        KAZV_WRAP_ATTR(RoomModel, m_room, membership);
+        KAZV_WRAP_ATTR(RoomModel, roomCursor(), membership);
         /*lager::reader<std::string>*/
-        KAZV_WRAP_ATTR(RoomModel, m_room, localDraft);
+        KAZV_WRAP_ATTR(RoomModel, roomCursor(), localDraft);
         /* lager::reader<bool> */
-        KAZV_WRAP_ATTR(RoomModel, m_room, membersFullyLoaded);
+        KAZV_WRAP_ATTR(RoomModel, roomCursor(), membersFullyLoaded);
 
         /**
          * Set local draft for this room.
@@ -267,20 +341,20 @@ namespace Kazv
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto ephemeralEvents() const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::ephemeral];
         }
 
         /* lager::reader<std::optional<Event>> */
         inline auto ephemeralOpt(std::string type) const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::ephemeral]
                 [type];
         }
 
         /* lager::reader<Event> */
         inline auto ephemeral(std::string type) const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::ephemeral]
                 [type]
                 [lager::lenses::or_default];
@@ -308,20 +382,20 @@ namespace Kazv
 
         /* lager::reader<MapT<std::string, Event>> */
         inline auto accountDataEvents() const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::accountData];
         }
 
         /* lager::reader<std::optional<Event>> */
         inline auto accountDataOpt(std::string type) const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::accountData]
                 [type];
         }
 
         /* lager::reader<Event> */
         inline auto accountData(std::string type) const {
-            return m_room
+            return roomCursor()
                 [&RoomModel::accountData]
                 [type]
                 [lager::lenses::or_default];
@@ -403,10 +477,16 @@ namespace Kazv
         PromiseT paginateBackFromEvent(std::string eventId) const;
 
     private:
-        lager::reader<SdkModel> m_sdk;
-        lager::reader<RoomModel> m_room;
-        Context<ClientAction> m_ctx;
+        const lager::reader<SdkModel> &sdkCursor() const;
+        lager::reader<RoomModel> roomCursor() const;
+        std::string currentRoomId() const;
+
+        std::optional<lager::reader<SdkModel>> m_sdk;
+        std::variant<lager::reader<std::string>, std::string> m_roomId;
+
+        ContextT m_ctx;
+        std::optional<DepsT> m_deps;
         KAZV_DECLARE_THREAD_ID();
-        KAZV_DECLARE_EVENT_LOOP_THREAD_ID_KEEPER(0); // FIXME
+        KAZV_DECLARE_EVENT_LOOP_THREAD_ID_KEEPER(m_deps.has_value() ? &lager::get<EventLoopThreadIdKeeper &>(m_deps.value()) : 0);
     };
 }

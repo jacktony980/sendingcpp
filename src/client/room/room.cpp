@@ -27,14 +27,74 @@ namespace Kazv
 {
     Room::Room(lager::reader<SdkModel> sdk,
                lager::reader<std::string> roomId,
+               Context<ClientAction> ctx,
+               DepsT deps)
+        : m_sdk(sdk)
+        , m_roomId(roomId)
+        , m_ctx(ctx)
+        , m_deps(deps)
+    {
+    }
+
+    Room::Room(lager::reader<SdkModel> sdk,
+               lager::reader<std::string> roomId,
                Context<ClientAction> ctx)
         : m_sdk(sdk)
-        , m_room(lager::with(m_sdk.map(&SdkModel::c)[&ClientModel::roomList], roomId)
-                 .map([](auto rooms, auto id) {
-                          return rooms[id];
-                      }).make())
+        , m_roomId(roomId)
         , m_ctx(ctx)
+        , m_deps(std::nullopt)
     {
+    }
+
+    Room::Room(InEventLoopTag, std::string roomId, ContextT ctx, DepsT deps)
+        : m_sdk(std::nullopt)
+        , m_roomId(roomId)
+        , m_ctx(ctx)
+        , m_deps(deps)
+#ifdef KAZV_USE_THREAD_SAFETY_HELPER
+        , KAZV_ON_EVENT_LOOP_VAR(true)
+#endif
+    {
+    }
+
+    Room Room::toEventLoop() const
+    {
+        assert(m_deps.has_value());
+        return Room(InEventLoopTag{}, currentRoomId(), m_ctx, m_deps.value());
+    }
+
+    const lager::reader<SdkModel> &Room::sdkCursor() const
+    {
+        if (m_sdk.has_value()) { return m_sdk.value(); }
+
+        assert(m_deps.has_value());
+
+        return *lager::get<SdkModelCursorKey>(m_deps.value());
+    }
+
+    lager::reader<RoomModel> Room::roomCursor() const
+    {
+        return lager::match(m_roomId)(
+            [&](const lager::reader<std::string> &roomId) -> lager::reader<RoomModel> {
+                return lager::with(sdkCursor().map(&SdkModel::c)[&ClientModel::roomList], roomId)
+                    .map([](auto rooms, auto id) {
+                             return rooms[id];
+                         }).make();
+            },
+            [&](const std::string &roomId) -> lager::reader<RoomModel> {
+                return sdkCursor().map(&SdkModel::c)[&ClientModel::roomList].map([roomId](auto rooms) { return rooms[roomId]; }).make();
+            });
+    }
+
+    std::string Room::currentRoomId() const
+    {
+        return lager::match(m_roomId)(
+            [&](const lager::reader<std::string> &roomId) {
+                return roomId.get();
+            },
+            [&](const std::string &roomId) {
+                return roomId;
+            });
     }
 
     auto Room::setLocalDraft(std::string localDraft) const
@@ -48,11 +108,11 @@ namespace Kazv
         -> PromiseT
     {
         using namespace CursorOp;
-        auto hasCrypto = ~m_sdk.map([](const auto &sdk) -> bool {
+        auto hasCrypto = ~sdkCursor().map([](const auto &sdk) -> bool {
                                         return sdk.c().crypto.has_value();
                                     });
-        auto roomEncrypted = ~m_room[&RoomModel::encrypted];
-        auto noFullMembers = ~m_room[&RoomModel::membersFullyLoaded]
+        auto roomEncrypted = ~roomCursor()[&RoomModel::encrypted];
+        auto noFullMembers = ~roomCursor()[&RoomModel::membersFullyLoaded]
             .map([](auto b) { return !b; });
 
         auto rid = +roomId();
@@ -68,10 +128,10 @@ namespace Kazv
                              << " are not fully loaded." << std::endl;
 
             promise = promise
-                .then([=](auto) {
+                .then([ctx, rid](auto) {
                           return ctx.dispatch(GetRoomStatesAction{rid});
                       })
-                .then([=](auto succ) {
+                .then([ctx, rid](auto succ) {
                           if (! succ) {
                               kzo.client.warn() << "Loading members of " << rid
                                                 << " failed." << std::endl;
@@ -90,7 +150,7 @@ namespace Kazv
         }
 
         return promise
-            .then([=](auto succ) {
+            .then([ctx, rid, msg](auto succ) {
                       if (! succ) {
                           return ctx.createResolvedPromise(false);
                       }
@@ -208,7 +268,7 @@ namespace Kazv
         -> lager::reader<immer::map<std::string /* eventId */,
                                     std::string /* prevBatch */>>
     {
-        return m_room[&RoomModel::timelineGaps];
+        return roomCursor()[&RoomModel::timelineGaps];
     }
 
     auto Room::paginateBackFromEvent(std::string eventId) const
