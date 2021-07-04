@@ -488,6 +488,11 @@ namespace Kazv
         // https://gitlab.matrix.org/matrix-org/olm/-/blob/master/include/olm/ratchet.hh
         // The maximum random size needed to encrypt is 32. We use this to ensure we
         // will always have enough random data fot the encryption.
+        return encryptOlmMaxRandomSize();
+    }
+
+    std::size_t Crypto::encryptOlmMaxRandomSize()
+    {
         static std::size_t maxRandomSizeNeeded = 32;
         return maxRandomSizeNeeded;
     }

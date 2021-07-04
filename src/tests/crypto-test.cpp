@@ -57,8 +57,9 @@ static void serializeDup(const T &in, T &out)
 
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
-    Crypto crypto;
-    crypto.genOneTimeKeys(1);
+    Crypto crypto(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
+
+    crypto.genOneTimeKeysWithRandom(genRandomData(Crypto::genOneTimeKeysRandomSize(1)), 1);
     auto oneTimeKeys = crypto.unpublishedOneTimeKeys();
     Crypto cryptoClone(crypto);
 
@@ -73,8 +74,9 @@ TEST_CASE("Crypto should be copyable", "[crypto]")
 
 TEST_CASE("Crypto should be serializable", "[crypto]")
 {
-    Crypto crypto;
-    crypto.genOneTimeKeys(1);
+    Crypto crypto(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
+
+    crypto.genOneTimeKeysWithRandom(genRandomData(Crypto::genOneTimeKeysRandomSize(1)), 1);
     auto oneTimeKeys = crypto.unpublishedOneTimeKeys();
 
     Crypto cryptoClone;
@@ -92,27 +94,31 @@ TEST_CASE("Crypto should be serializable", "[crypto]")
 
 TEST_CASE("Serialize Crypto with an OutboundGroupSession", "[crypto]")
 {
-    Crypto crypto;
+    Crypto crypto(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
 
     std::string roomId = "!example:example.org";
     auto desc = MegOlmSessionRotateDesc{500000 /* ms */, 100 /* messages */};
 
-    crypto.rotateMegOlmSession(roomId);
+    crypto.rotateMegOlmSessionWithRandom(genRandomData(Crypto::rotateMegOlmSessionRandomSize()), currentTimeMs(), roomId);
 
     Crypto cryptoClone;
 
     serializeDup(crypto, cryptoClone);
 
-    REQUIRE(! cryptoClone.rotateMegOlmSessionIfNeeded(roomId, desc).has_value());
+    REQUIRE(! cryptoClone.rotateMegOlmSessionWithRandomIfNeeded(
+                genRandomData(Crypto::rotateMegOlmSessionRandomSize()), currentTimeMs(),
+                roomId, desc).has_value());
 }
 
 TEST_CASE("Generating and publishing keys should work", "[crypto]")
 {
-    Crypto crypto;
-    crypto.genOneTimeKeys(1);
+    Crypto crypto(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
+
+    crypto.genOneTimeKeysWithRandom(genRandomData(Crypto::genOneTimeKeysRandomSize(1)), 1);
+
     REQUIRE(crypto.numUnpublishedOneTimeKeys() == 1);
 
-    crypto.genOneTimeKeys(1);
+    crypto.genOneTimeKeysWithRandom(genRandomData(Crypto::genOneTimeKeysRandomSize(1)), 1);
     REQUIRE(crypto.numUnpublishedOneTimeKeys() == 2);
 
     crypto.markOneTimeKeysAsPublished();
@@ -121,11 +127,10 @@ TEST_CASE("Generating and publishing keys should work", "[crypto]")
 
 TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
 {
-    Crypto a;
-    Crypto b;
+    Crypto a(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
+    Crypto b(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
 
-    a.genOneTimeKeys(1);
-
+    a.genOneTimeKeysWithRandom(genRandomData(Crypto::genOneTimeKeysRandomSize(1)), 1);
     // Get A publish the key and send to B
     auto k = a.unpublishedOneTimeKeys();
     a.markOneTimeKeysAsPublished();
@@ -137,10 +142,10 @@ TEST_CASE("Should reuse existing inbound session to encrypt", "[crypto]")
     }
 
     auto aIdKey = a.curve25519IdentityKey();
-    b.createOutboundSession(aIdKey, oneTimeKey);
+    b.createOutboundSessionWithRandom(genRandomData(Crypto::createOutboundSessionRandomSize()), aIdKey, oneTimeKey);
 
     auto origJson = json{{"test", "mew"}};
-    auto encryptedMsg = b.encryptOlm(origJson, aIdKey);
+    auto encryptedMsg = b.encryptOlmWithRandom(genRandomData(Crypto::encryptOlmMaxRandomSize()), origJson, aIdKey);
     auto encJson = json{
         {"content",
          {

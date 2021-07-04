@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -558,6 +558,29 @@ namespace Kazv
 
         m.addTrigger(ClaimKeysSuccessful{event, devicesToSend});
 
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, EncryptMegOlmEventAction a)
+    {
+        auto [encryptedEvent, maybeKey] = m.megOlmEncrypt(a.e, a.roomId, a.timeMs, a.random);
+
+        return {
+            std::move(m),
+            [=](auto && /* ctx */) {
+                auto retJson = json::object({
+                        {"encrypted", encryptedEvent.originalJson()},
+                    });
+                if (maybeKey.has_value()) {
+                    retJson["key"] = maybeKey.value();
+                }
+                return EffectStatus(/* succ = */ true, retJson);
+            }
+        };
+    }
+
+    ClientResult updateClient(ClientModel m, EncryptOlmEventAction a)
+    {
         return { std::move(m), lager::noop };
     }
 }

@@ -129,6 +129,12 @@ namespace Kazv
          */
         std::size_t encryptOlmRandomSize(std::string theirCurve25519IdentityKey) const;
 
+        /**
+         * @return The maximum size of random data needed to encrypt a message
+         * for the session identified with `theirCurve25519IdentityKey`.
+         */
+        static std::size_t encryptOlmMaxRandomSize();
+
         /** returns a json object that looks like
          * {
          *   "<their identity key>": {

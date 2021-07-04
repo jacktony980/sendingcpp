@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -38,4 +38,8 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, ClaimKeysAndSendSessionKeyAction a);
     ClientResult processResponse(ClientModel m, ClaimKeysResponse r);
+
+    ClientResult updateClient(ClientModel m, EncryptMegOlmEventAction a);
+
+    ClientResult updateClient(ClientModel m, EncryptOlmEventAction a);
 }

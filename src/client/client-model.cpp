@@ -19,7 +19,7 @@
 
 #include <libkazv-config.hpp>
 
-
+#include <immer/algorithm.hpp>
 #include <lager/util.hpp>
 #include <lager/context.hpp>
 #include <functional>
@@ -131,7 +131,8 @@ namespace Kazv
         return { std::move(newClient), std::move(effect) };
     }
 
-    std::pair<Event, std::optional<std::string>> ClientModel::megOlmEncrypt(Event e, std::string roomId)
+    std::pair<Event, std::optional<std::string>> ClientModel::megOlmEncrypt(
+        Event e, std::string roomId, Timestamp timeMs, RandomData random)
     {
         if (!crypto) {
             kzo.client.dbg() << "We do not have e2ee, so do not encrypt events" << std::endl;
@@ -159,9 +160,9 @@ namespace Kazv
         auto keyOpt = std::optional<std::string>{};
         if (r.shouldRotateSessionKey) {
             kzo.client.dbg() << "We should rotate this session." << std::endl;
-            keyOpt = c.rotateMegOlmSession(roomId);
+            keyOpt = c.rotateMegOlmSessionWithRandom(random, timeMs, roomId);
         } else {
-            keyOpt = c.rotateMegOlmSessionIfNeeded(roomId, desc);
+            keyOpt = c.rotateMegOlmSessionWithRandomIfNeeded(random, timeMs, roomId, desc);
         }
 
         // we no longer need to rotate session
@@ -254,5 +255,24 @@ namespace Kazv
                            return n.first;
                        }),
             devices);
+    }
+
+
+    std::size_t EncryptMegOlmEventAction::maxRandomSize()
+    {
+        return Crypto::rotateMegOlmSessionRandomSize();
+    }
+
+    std::size_t EncryptMegOlmEventAction::minRandomSize()
+    {
+        return 0;
+    }
+
+    std::size_t EncryptOlmEventAction::randomSize(EncryptOlmEventAction::UserIdToDeviceIdMap devices)
+    {
+        auto singleRandomSize = Crypto::encryptOlmMaxRandomSize();
+        auto deviceNum = accumulate(devices, std::size_t{},
+                                    [](auto counter, auto pair) { return counter + pair.second.size(); });
+        return deviceNum * singleRandomSize;
     }
 }

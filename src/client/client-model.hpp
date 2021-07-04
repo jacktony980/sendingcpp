@@ -102,7 +102,8 @@ namespace Kazv
 
         immer::flex_vector<std::string /* deviceId */> devicesToSendKeys(std::string userId) const;
 
-        std::pair<Event, std::optional<std::string> /* sessionKey */> megOlmEncrypt(Event e, std::string roomId);
+        std::pair<Event, std::optional<std::string> /* sessionKey */>
+        megOlmEncrypt(Event e, std::string roomId, Timestamp timeMs, RandomData random);
         /// precondition: the one-time keys for those devices must already be claimed
         Event olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap);
 
@@ -350,6 +351,63 @@ namespace Kazv
         std::string sessionKey;
         immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
     };
+
+    /**
+     * The action to encrypt an megolm event for a room.
+     *
+     * If the action is successful, the result `r` will
+     * be such that `r.dataJson("encrypted")` contains the encrypted event *json*.
+     *
+     * If the megolm session is rotated, `r.dataStr("key")` will contain the key
+     * of the megolm session. Otherwise, `r.data().contains("key")` will be false.
+     *
+     * The Action may fail due to insufficient random data,
+     * when the megolm session needs to be rotated.
+     * In this case, the reducer for the Action will fail,
+     * and its result `r` will be such that
+     * `r.dataStr("reason") == "NotEnoughRandom"`.
+     * The user needs to provide random data of
+     * at least size `maxRandomSize()`.
+     *
+     */
+    struct EncryptMegOlmEventAction
+    {
+        static std::size_t maxRandomSize();
+        static std::size_t minRandomSize();
+
+        /// The id of the room to encrypt for.
+        std::string roomId;
+        /// The event to encrypt.
+        Event e;
+        /// The timestamp, to determine whether the session should expire.
+        Timestamp timeMs;
+        /// Random data for the operation. Must be of at least size
+        /// `minRandomSize()`. If this is a retry of the previous operation
+        /// due to NotEnoughRandom, it must be of at least size `maxRandomSize()`.
+        RandomData random;
+    };
+
+    /**
+     * The action to encrypt events with olm for multiple devices.
+     *
+     * If the action is successful,
+     * The result `r` will be such that `r.dataJson("encrypted")`
+     * contains the json of the encrypted event.
+     */
+    struct EncryptOlmEventAction
+    {
+        using UserIdToDeviceIdMap = immer::map<std::string, immer::flex_vector<std::string>>;
+        static std::size_t randomSize(UserIdToDeviceIdMap devices);
+
+        /// Devices to encrypt for.
+        UserIdToDeviceIdMap devices;
+        /// The event to encrypt.
+        Event e;
+        /// The random data for the encryption. Must be of at least
+        /// size `randomSize(devices)`.
+        RandomData random;
+    };
+
 
     template<class Archive>
     void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)

@@ -48,7 +48,9 @@ namespace Kazv
         std::string sessionKey;
         if (m.crypto) {
             if (m.roomList[roomId].encrypted && ! event.encrypted()) {
-                auto res = m.megOlmEncrypt(std::move(event), roomId);
+                // XXX Use deterministic version
+                auto res = m.megOlmEncrypt(std::move(event), roomId, currentTimeMs(),
+                                           genRandomData(EncryptMegOlmEventAction::maxRandomSize()));
                 event = res.first;
                 shouldSendKey = !! res.second;
                 if (shouldSendKey) {
