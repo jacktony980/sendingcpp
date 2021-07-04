@@ -184,7 +184,8 @@ namespace Kazv
         return { Event(JsonWrap(j)), keyOpt };
     }
 
-    Event ClientModel::olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap)
+    Event ClientModel::olmEncrypt(Event e,
+                                  immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap, RandomData random)
     {
         if (!crypto) {
             kzo.client.dbg() << "We do not have e2ee, so do not encrypt events" << std::endl;
@@ -226,7 +227,8 @@ namespace Kazv
                     {CryptoConstants::ed25519, c.ed25519IdentityKey()}
                 };
                 encJson["content"]["ciphertext"]
-                    .merge_patch(c.encryptOlm(jsonForThisDevice, devInfo.curve25519Key));
+                    .merge_patch(c.encryptOlmWithRandom(random, jsonForThisDevice, devInfo.curve25519Key));
+                random.erase(0, Crypto::encryptOlmMaxRandomSize());
             }
         }
 

@@ -105,7 +105,7 @@ namespace Kazv
         std::pair<Event, std::optional<std::string> /* sessionKey */>
         megOlmEncrypt(Event e, std::string roomId, Timestamp timeMs, RandomData random);
         /// precondition: the one-time keys for those devices must already be claimed
-        Event olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap);
+        Event olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap, RandomData random);
 
         // helpers
         template<class Job>

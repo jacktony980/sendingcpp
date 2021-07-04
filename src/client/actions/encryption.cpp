@@ -26,6 +26,7 @@
 
 #include <debug.hpp>
 #include "cursorutil.hpp"
+#include "status-utils.hpp"
 
 namespace Kazv
 {
@@ -551,12 +552,7 @@ namespace Kazv
             {"type", "m.room_key"}
         };
 
-        kzo.client.dbg() << "the original key event: " << eventJson.dump() << std::endl;
-        // send the actual key, encrypted
-        auto event = m.olmEncrypt(Event(JsonWrap(eventJson)), devicesToSend);
-        kzo.client.dbg() << "encrypted key event: " << event.originalJson().get().dump() << std::endl;
-
-        m.addTrigger(ClaimKeysSuccessful{event, devicesToSend});
+        auto event = Event(JsonWrap(eventJson));
 
         return {
             std::move(m),
@@ -584,6 +580,17 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, EncryptOlmEventAction a)
     {
-        return { std::move(m), lager::noop };
+        auto encryptedEvent = m.olmEncrypt(a.e, a.devices, a.random);
+
+        return {
+            std::move(m),
+            [=](auto && /* ctx */) {
+                auto retJson = json::object({
+                        {"encrypted", encryptedEvent.originalJson()},
+                    });
+
+                return EffectStatus(/* succ = */ true, retJson);
+            }
+        };
     }
 }
