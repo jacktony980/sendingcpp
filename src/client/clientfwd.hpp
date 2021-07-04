@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2021 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -67,7 +67,7 @@ namespace Kazv
     struct UploadIdentityKeysAction;
     struct GenerateAndUploadOneTimeKeysAction;
     struct QueryKeysAction;
-    struct ClaimKeysAndSendSessionKeyAction;
+    struct ClaimKeysAction;
     struct EncryptMegOlmEventAction;
     struct EncryptOlmEventAction;
 
@@ -114,7 +114,7 @@ namespace Kazv
         UploadIdentityKeysAction,
         GenerateAndUploadOneTimeKeysAction,
         QueryKeysAction,
-        ClaimKeysAndSendSessionKeyAction,
+        ClaimKeysAction,
         EncryptMegOlmEventAction,
         EncryptOlmEventAction,
 

@@ -36,7 +36,7 @@ namespace Kazv
     ClientResult updateClient(ClientModel m, QueryKeysAction a);
     ClientResult processResponse(ClientModel m, QueryKeysResponse r);
 
-    ClientResult updateClient(ClientModel m, ClaimKeysAndSendSessionKeyAction a);
+    ClientResult updateClient(ClientModel m, ClaimKeysAction a);
     ClientResult processResponse(ClientModel m, ClaimKeysResponse r);
 
     ClientResult updateClient(ClientModel m, EncryptMegOlmEventAction a);

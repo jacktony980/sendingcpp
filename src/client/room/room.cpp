@@ -19,6 +19,7 @@
 
 #include <libkazv-config.hpp>
 
+#include <immer/algorithm.hpp>
 #include <debug.hpp>
 
 #include "room.hpp"
@@ -123,6 +124,25 @@ namespace Kazv
         auto ctx = m_ctx;
 
         auto promise = ctx.createResolvedPromise(true);
+
+        // If we do not need encryption just send it as-is
+        if (! +allCursors(hasCrypto, roomEncrypted)) {
+            return promise
+                .then([ctx, rid, msg](auto succ) {
+                          if (! succ) {
+                              return ctx.createResolvedPromise(false);
+                          }
+                          return ctx.dispatch(SendMessageAction{rid, msg});
+                      });
+        }
+
+        if (! m_deps) {
+            return ctx.createResolvedPromise({false, json{{"error", "missing-deps"}}});
+        }
+
+        auto deps = m_deps.value();
+
+        // If the room member list is not complete, load it fully first.
         if (+allCursors(hasCrypto, roomEncrypted, noFullMembers)) {
             kzo.client.dbg() << "The members of " << rid
                              << " are not fully loaded." << std::endl;
@@ -150,11 +170,85 @@ namespace Kazv
         }
 
         return promise
-            .then([ctx, rid, msg](auto succ) {
-                      if (! succ) {
-                          return ctx.createResolvedPromise(false);
+            // Encrypt the event and see whether the session was rotated.
+            .then([ctx, rid, msg, deps](auto &&status) {
+                      if (! status) { return ctx.createResolvedPromise(status); }
+
+                      kzo.client.dbg() << "encrypting megolm" << std::endl;
+
+                      auto &rg = lager::get<RandomInterface &>(deps);
+
+                      return ctx.dispatch(EncryptMegOlmEventAction{
+                              rid,
+                              msg,
+                              currentTimeMs(),
+                              rg.generateRange<RandomData>(EncryptMegOlmEventAction::maxRandomSize())
+                          });
+                  })
+            // If the session was rotated, send the corresponding session key to other devices
+            .then([ctx, rid, r=toEventLoop(), deps](auto status) {
+                      if (! status) { return ctx.createResolvedPromise(status); }
+
+                      auto encryptedEvent = status.dataJson("encrypted");
+                      auto content = encryptedEvent.at("content");
+
+                      auto ret = ctx.createResolvedPromise({});
+                      if (status.data().get().contains("key")) {
+                          kzo.client.dbg() << "megolm session rotated, sending session key" << std::endl;
+
+                          auto key = status.dataStr("key");
+                          ret = ret
+                              .then([rid, r, key, ctx, deps, sessionId=content.at("session_id")](auto &&) {
+                                        auto members = (+r.roomCursor()).joinedMemberIds();
+                                        auto client = (+r.sdkCursor()).c();
+                                        using DeviceMapT = immer::map<std::string, immer::flex_vector<std::string>>;
+
+                                        auto devicesToSend = accumulate(
+                                            members, DeviceMapT{}, [client](auto map, auto uid) {
+                                                                       return std::move(map)
+                                                                           .set(uid, client.devicesToSendKeys(uid));
+                                                                   });
+                                        return ctx.dispatch(ClaimKeysAction{
+                                                rid, sessionId, key, devicesToSend
+                                            })
+                                            .then([ctx, deps, devicesToSend](auto status) {
+                                                      if (! status) { return ctx.createResolvedPromise({}); }
+
+                                                      kzo.client.dbg() << "olm-encrypting key event" << std::endl;
+
+                                                      auto keyEv = status.dataJson("keyEvent");
+                                                      auto &rg = lager::get<RandomInterface &>(deps);
+
+                                                      return ctx.dispatch(EncryptOlmEventAction{
+                                                              devicesToSend, keyEv,
+                                                              rg.generateRange<RandomData>(EncryptOlmEventAction::randomSize(devicesToSend))
+                                                          });
+                                                  })
+                                            .then([ctx, devicesToSend](auto status) {
+                                                      if (! status) { return ctx.createResolvedPromise({}); }
+
+                                                      kzo.client.dbg() << "sending key event as to-device message" << std::endl;
+
+                                                      auto event = Event(status.dataJson("encrypted"));
+                                                      return ctx.dispatch(SendToDeviceMessageAction{event, devicesToSend});
+                                                  });
+                                    });
                       }
-                      return ctx.dispatch(SendMessageAction{rid, msg});
+                      return ret
+                          .then([ctx, prevStatus=status](auto status) {
+                                    if (! status) { return status; }
+                                    return prevStatus;
+                                });
+                  })
+            // Send the just encrypted event
+            .then([ctx, rid](auto status) {
+                      if (! status) { return ctx.createResolvedPromise(status); }
+
+                      kzo.client.dbg() << "sending encrypted message" << std::endl;
+
+                      auto ev = Event(status.dataJson("encrypted"));
+
+                      return ctx.dispatch(SendMessageAction{rid, ev});
                   });
     }
 

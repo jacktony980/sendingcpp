@@ -430,7 +430,7 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
-    ClientResult updateClient(ClientModel m, ClaimKeysAndSendSessionKeyAction a)
+    ClientResult updateClient(ClientModel m, ClaimKeysAction a)
     {
         if (! m.crypto) {
             kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
@@ -492,13 +492,13 @@ namespace Kazv
     {
         if (! m.crypto) {
             kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         if (! r.success()) {
             kzo.client.dbg() << "claim keys failed" << std::endl;
             m.addTrigger(ClaimKeysFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         kzo.client.dbg() << "claim keys successful" << std::endl;
@@ -558,7 +558,10 @@ namespace Kazv
 
         m.addTrigger(ClaimKeysSuccessful{event, devicesToSend});
 
-        return { std::move(m), lager::noop };
+        return {
+            std::move(m),
+            [event](auto &&) { return EffectStatus{ /* success = */ true, json{{ "keyEvent", event.originalJson() }} }; }
+        };
     }
 
     ClientResult updateClient(ClientModel m, EncryptMegOlmEventAction a)

@@ -37,6 +37,7 @@
 #include "room-model.hpp"
 #include <cursorutil.hpp>
 #include "sdk-model-cursor-tag.hpp"
+#include "random-generator.hpp"
 
 namespace Kazv
 {
@@ -49,7 +50,7 @@ namespace Kazv
     {
     public:
         using PromiseT = SingleTypePromise<DefaultRetType>;
-        using DepsT = lager::deps<SdkModelCursorKey
+        using DepsT = lager::deps<SdkModelCursorKey, RandomInterface &
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
                                   , EventLoopThreadIdKeeper &
 #endif

@@ -72,10 +72,6 @@ namespace Kazv
 
                         for (auto t : triggers) {
                             ee.emit(t);
-                            if (std::holds_alternative<ClaimKeysSuccessful>(t)) {
-                                auto [event, devicesToSend] = std::get<ClaimKeysSuccessful>(t);
-                                ctx.dispatch(SendToDeviceMessageAction{event, devicesToSend});
-                            }
                         }
                         return combinedPromise;
                     };

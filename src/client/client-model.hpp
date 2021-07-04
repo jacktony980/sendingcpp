@@ -344,7 +344,7 @@ namespace Kazv
         bool isInitialSync;
     };
 
-    struct ClaimKeysAndSendSessionKeyAction
+    struct ClaimKeysAction
     {
         std::string roomId;
         std::string sessionId;

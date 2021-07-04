@@ -24,7 +24,7 @@
 #include <types.hpp>
 
 #include "send.hpp"
-
+#include "status-utils.hpp"
 
 namespace Kazv
 {
@@ -38,28 +38,8 @@ namespace Kazv
         auto event = std::move(a.event);
         auto roomId = a.roomId;
 
-        auto beforeEncryption = event.originalJson().get();
-        if (!beforeEncryption.contains("type") || !beforeEncryption.contains("content")) {
-            m.addTrigger(InvalidMessageFormat{});
-            return { std::move(m), lager::noop };
-        }
-
-        auto shouldSendKey = false;
-        std::string sessionKey;
-        if (m.crypto) {
-            if (m.roomList[roomId].encrypted && ! event.encrypted()) {
-                // XXX Use deterministic version
-                auto res = m.megOlmEncrypt(std::move(event), roomId, currentTimeMs(),
-                                           genRandomData(EncryptMegOlmEventAction::maxRandomSize()));
-                event = res.first;
-                shouldSendKey = !! res.second;
-                if (shouldSendKey) {
-                    sessionKey = res.second.value();
-                }
-            }
-        }
-
         auto origJson = event.originalJson().get();
+
         if (!origJson.contains("type") || !origJson.contains("content")) {
             m.addTrigger(InvalidMessageFormat{});
             return { std::move(m), lager::noop };
@@ -90,32 +70,7 @@ namespace Kazv
 
         m.addJob(std::move(job));
 
-        auto devicesToSend = immer::map<std::string, immer::flex_vector<std::string>>{};
-        if (shouldSendKey) {
-            kzo.client.dbg() << "We should also send the session key." << std::endl;
-
-            auto roomMembers = m.roomList[roomId].joinedMemberIds();
-            kzo.client.dbg() << "room members" << std::endl;
-
-            for (auto userId : roomMembers) {
-                devicesToSend = std::move(devicesToSend)
-                    .set(userId, m.devicesToSendKeys(userId));
-            }
-        }
-
-        return { std::move(m),
-                 shouldSendKey
-                 ? ClientEffect([=, sessionId=content.at("session_id")](auto &&ctx) {
-                                    kzo.client.dbg() << "dispatching cliamkeys action" << std::endl;
-                                    ctx.dispatch(ClaimKeysAndSendSessionKeyAction{
-                                            roomId,
-                                            sessionId,
-                                            sessionKey,
-                                            devicesToSend
-                                        });
-                                })
-                 : ClientEffect(lager::noop)
-        };
+        return { std::move(m), lager::noop };
     }
 
     ClientResult processResponse(ClientModel m, SendMessageResponse r)
@@ -135,8 +90,7 @@ namespace Kazv
     {
         auto origJson = a.event.originalJson().get();
         if (!origJson.contains("type") || !origJson.contains("content")) {
-            m.addTrigger(InvalidMessageFormat{});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         // We do not use event.type() etc. because we want
@@ -179,12 +133,11 @@ namespace Kazv
 
         if (! r.success()) {
             m.addTrigger(SendToDeviceMessageFailed{devicesToSend, txnId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         m.addTrigger(SendToDeviceMessageSuccessful{devicesToSend, txnId});
         return { std::move(m), lager::noop };
-
     }
 
 }

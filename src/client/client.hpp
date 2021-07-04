@@ -59,7 +59,7 @@ namespace Kazv
     public:
         using ActionT = ClientAction;
 
-        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey
+        using DepsT = lager::deps<JobInterface &, EventInterface &, SdkModelCursorKey, RandomInterface &
 #ifdef KAZV_USE_THREAD_SAFETY_HELPER
                                   , EventLoopThreadIdKeeper &
 #endif
