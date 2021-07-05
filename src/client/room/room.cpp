@@ -208,8 +208,11 @@ namespace Kazv
                                                                        return std::move(map)
                                                                            .set(uid, client.devicesToSendKeys(uid));
                                                                    });
+                                        auto &rg = lager::get<RandomInterface &>(deps);
+
                                         return ctx.dispatch(ClaimKeysAction{
-                                                rid, sessionId, key, devicesToSend
+                                                rid, sessionId, key, devicesToSend,
+                                                rg.generateRange<RandomData>(ClaimKeysAction::randomSize(devicesToSend))
                                             })
                                             .then([ctx, deps, devicesToSend](auto status) {
                                                       if (! status) { return ctx.createResolvedPromise({}); }

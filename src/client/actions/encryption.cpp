@@ -482,7 +482,8 @@ namespace Kazv
                     {"roomId", a.roomId},
                     {"sessionId", a.sessionId},
                     {"sessionKey", a.sessionKey},
-                    {"devicesToSend", a.devicesToSend}
+                    {"devicesToSend", a.devicesToSend},
+                    {"random", a.random}
                 });
         m.addJob(std::move(job));
 
@@ -513,6 +514,7 @@ namespace Kazv
         auto sessionId = r.dataStr("sessionId");
         auto devicesToSend =
             immer::map<std::string, immer::flex_vector<std::string>>(r.dataJson("devicesToSend"));
+        auto random = r.dataJson("random").template get<RandomData>();
 
         // create outbound sessions for those devices
         auto oneTimeKeys = r.oneTimeKeys();
@@ -535,7 +537,8 @@ namespace Kazv
                             if (verified && key.contains("key")) {
                                 auto theirOneTimeKey = key.at("key");
                                 kzo.client.dbg() << "creating outbound session for it" << std::endl;
-                                c.createOutboundSession(deviceInfo.curve25519Key, theirOneTimeKey);
+                                c.createOutboundSessionWithRandom(random, deviceInfo.curve25519Key, theirOneTimeKey);
+                                random.erase(0, Crypto::createOutboundSessionRandomSize());
                                 kzo.client.dbg() << "done" << std::endl;
                             }
                         }

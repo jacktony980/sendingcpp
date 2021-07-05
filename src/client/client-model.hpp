@@ -363,10 +363,12 @@ namespace Kazv
 
     struct ClaimKeysAction
     {
+        static std::size_t randomSize(immer::map<std::string, immer::flex_vector<std::string>> devicesToSend);
         std::string roomId;
         std::string sessionId;
         std::string sessionKey;
         immer::map<std::string, immer::flex_vector<std::string>> devicesToSend;
+        RandomData random;
     };
 
     /**

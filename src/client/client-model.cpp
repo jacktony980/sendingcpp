@@ -297,4 +297,12 @@ namespace Kazv
     {
         return Crypto::genOneTimeKeysRandomSize(numToGen);
     }
+
+    std::size_t ClaimKeysAction::randomSize(immer::map<std::string, immer::flex_vector<std::string>> devicesToSend)
+    {
+        auto singleRandomSize = Crypto::createOutboundSessionRandomSize();
+        auto deviceNum = accumulate(devicesToSend, std::size_t{},
+                                    [](auto counter, auto pair) { return counter + pair.second.size(); });
+        return deviceNum * singleRandomSize;
+    }
 }
