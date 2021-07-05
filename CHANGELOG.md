@@ -12,3 +12,7 @@
 - Add support for Boost.Serialization. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/4
 - Support encrypted attachments. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/5
 - Allow custom random generator with crypto. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/6
+
+### Deprecated
+
+- `makeDefaultEncryptedSdk()` is now deprecated. Use `makeDefaultSdkWithCryptoRandom()` instead.
