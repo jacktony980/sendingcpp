@@ -67,7 +67,8 @@ int main(int argc, char *argv[])
 
     Kazv::CprJobHandler jobHandler{ioContext.get_executor()};
 
-    auto sdk = Kazv::makeDefaultEncryptedSdk(
+    auto sdk = Kazv::makeDefaultSdkWithCryptoRandom(
+        Kazv::genRandomData(Kazv::makeDefaultSdkWithCryptoRandomSize()),
         static_cast<Kazv::CprJobHandler &>(jobHandler),
         static_cast<Kazv::EventInterface &>(eventEmitter),
         Kazv::AsioPromiseHandler{ioContext.get_executor()},
