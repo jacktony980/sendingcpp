@@ -47,10 +47,8 @@ namespace Kazv
         , account(olm_account(accountData.data()))
         , utilityData(olm_utility_size(), '\0')
         , utility(olm_utility(utilityData.data()))
+        , valid(false)
     {
-        auto randLen = Crypto::constructRandomSize();
-        auto randomData = genRandom(randLen);
-        checkError(olm_create_account(account, randomData.data(), randLen));
     }
 
     CryptoPrivate::CryptoPrivate(RandomTag, RandomData data)
@@ -278,6 +276,11 @@ namespace Kazv
         return *this;
     }
 
+    bool Crypto::valid() const
+    {
+        return m_d->valid;
+    }
+
     ByteArray CryptoPrivate::identityKeys()
     {
         auto ret = ByteArray(olm_account_identity_keys_length(account), '\0');
@@ -349,12 +352,6 @@ namespace Kazv
             }();
 
         return oneKeyRandomSize * num;
-    }
-
-    void Crypto::genOneTimeKeys(int num)
-    {
-        auto random = genRandomData(genOneTimeKeysRandomSize(num));
-        genOneTimeKeysWithRandom(std::move(random), num);
     }
 
     void Crypto::genOneTimeKeysWithRandom(RandomData random, int num)
@@ -497,12 +494,6 @@ namespace Kazv
         return maxRandomSizeNeeded;
     }
 
-    nlohmann::json Crypto::encryptOlm(nlohmann::json eventJson, std::string theirCurve25519IdentityKey)
-    {
-        auto random = genRandomData(encryptOlmRandomSize(theirCurve25519IdentityKey));
-        return encryptOlmWithRandom(random, std::move(eventJson), std::move(theirCurve25519IdentityKey));
-    }
-
     nlohmann::json Crypto::encryptOlmWithRandom(
         RandomData random, nlohmann::json eventJson, std::string theirCurve25519IdentityKey)
     {
@@ -554,24 +545,12 @@ namespace Kazv
         return OutboundGroupSession::constructRandomSize();
     }
 
-    std::string Crypto::rotateMegOlmSession(std::string roomId)
-    {
-        return rotateMegOlmSessionWithRandom(genRandomData(rotateMegOlmSessionRandomSize()), currentTimeMs(), roomId);
-    }
-
     std::string Crypto::rotateMegOlmSessionWithRandom(RandomData random, Timestamp timeMs, std::string roomId)
     {
         m_d->reuseOrCreateOutboundGroupSession(
             random, timeMs,
             roomId, std::nullopt);
         return outboundGroupSessionCurrentKey(roomId);
-    }
-
-    std::optional<std::string> Crypto::rotateMegOlmSessionIfNeeded(std::string roomId, MegOlmSessionRotateDesc desc)
-    {
-        return rotateMegOlmSessionWithRandomIfNeeded(
-            genRandomData(rotateMegOlmSessionRandomSize()), currentTimeMs(),
-            roomId, desc);
     }
 
     std::optional<std::string> Crypto::rotateMegOlmSessionWithRandomIfNeeded(
@@ -624,15 +603,6 @@ namespace Kazv
         return Session::constructOutboundRandomSize();
     }
 
-    // TODO remove this
-    void Crypto::createOutboundSession(std::string theirIdentityKey,
-                                       std::string theirOneTimeKey)
-    {
-        createOutboundSessionWithRandom(
-            genRandomData(createOutboundSessionRandomSize()),
-            theirIdentityKey, theirOneTimeKey);
-    }
-
     void Crypto::createOutboundSessionWithRandom(
         RandomData random,
         std::string theirIdentityKey,
@@ -654,8 +624,9 @@ namespace Kazv
 
     nlohmann::json Crypto::toJson() const
     {
-        std::string pickledData = m_d->pickle();
+        std::string pickledData = m_d->valid ? m_d->pickle() : std::string();
         auto j =  nlohmann::json::object({
+                {"valid", m_d->valid},
                 {"account", std::move(pickledData)},
                 {"uploadedOneTimeKeysCount", m_d->uploadedOneTimeKeysCount},
                 {"numUnpublishedKeys", m_d->numUnpublishedKeys},
@@ -669,8 +640,10 @@ namespace Kazv
 
     void Crypto::loadJson(const nlohmann::json &j)
     {
+        m_d->valid = j.contains("valid") ? j["valid"].template get<bool>() : true;
         const auto &pickledData = j.at("account").template get<std::string>();
-        m_d->unpickle(pickledData);
+        if (m_d->valid) { m_d->unpickle(pickledData); }
+
         m_d->uploadedOneTimeKeysCount = j.at("uploadedOneTimeKeysCount");
         m_d->numUnpublishedKeys = j.at("numUnpublishedKeys");
         m_d->knownSessions = j.at("knownSessions").template get<decltype(m_d->knownSessions)>();

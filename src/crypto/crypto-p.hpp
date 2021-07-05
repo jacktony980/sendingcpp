@@ -52,6 +52,7 @@ namespace Kazv
 
         ByteArray utilityData;
         OlmUtility *utility;
+        bool valid{true};
 
         std::size_t checkUtilError(std::size_t code) const;
 

@@ -55,6 +55,15 @@ static void serializeDup(const T &in, T &out)
     }
 }
 
+TEST_CASE("Crypto constructors", "[crypto]")
+{
+    Crypto crypto;
+    REQUIRE(!crypto.valid());
+
+    Crypto crypto2(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
+    REQUIRE(crypto2.valid());
+}
+
 TEST_CASE("Crypto should be copyable", "[crypto]")
 {
     Crypto crypto(RandomTag{}, genRandomData(Crypto::constructRandomSize()));
@@ -90,6 +99,14 @@ TEST_CASE("Crypto should be serializable", "[crypto]")
 
     REQUIRE(oneTimeKeys == oneTimeKeys2);
     REQUIRE(crypto.numUnpublishedOneTimeKeys() == cryptoClone.numUnpublishedOneTimeKeys());
+}
+
+TEST_CASE("Invalid Crypto should be serializable", "[crypto]")
+{
+    Crypto crypto;
+    Crypto cryptoClone;
+    serializeDup(crypto, cryptoClone);
+    REQUIRE(!cryptoClone.valid());
 }
 
 TEST_CASE("Serialize Crypto with an OutboundGroupSession", "[crypto]")

@@ -48,7 +48,9 @@ namespace Kazv
     class Crypto
     {
     public:
-        [[deprecated("Use deterministic variant instead. In the future, this will construct an invalid Crypto.")]]
+        /**
+         * Construct an invalid Crypto.
+         */
         explicit Crypto();
 
         /**
@@ -68,6 +70,11 @@ namespace Kazv
         Crypto &operator=(const Crypto &that);
         Crypto &operator=(Crypto &&that);
         ~Crypto();
+
+        /**
+         * @return whether this Crypto is valid.
+         */
+        bool valid() const;
 
         std::string ed25519IdentityKey();
         std::string curve25519IdentityKey();
@@ -90,9 +97,6 @@ namespace Kazv
          * `num` one-time keys.
          */
         static std::size_t genOneTimeKeysRandomSize(int num);
-
-        [[deprecated("Use the deterministic variant. In the future, this will be removed.")]]
-        void genOneTimeKeys(int num);
 
         /**
          * Generate `num` one-time keys with user-provided random data.
@@ -134,17 +138,6 @@ namespace Kazv
          * for the session identified with `theirCurve25519IdentityKey`.
          */
         static std::size_t encryptOlmMaxRandomSize();
-
-        /** returns a json object that looks like
-         * {
-         *   "<their identity key>": {
-         *     "type": <number>,
-         *     "body": "<body>"
-         *   }
-         * }
-         */
-        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
-        nlohmann::json encryptOlm(nlohmann::json eventJson, std::string theirCurve25519IdentityKey);
 
         /**
          * Encrypt `eventJson` with olm, for the recipient identified with `theirCurve25519IdentityKey`.
@@ -188,10 +181,6 @@ namespace Kazv
          */
         static std::size_t rotateMegOlmSessionRandomSize();
 
-        /// Returns the new session key
-        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
-        std::string rotateMegOlmSession(std::string roomId);
-
         /**
          * Rotate the megolm session using user-provided random data.
          *
@@ -203,10 +192,6 @@ namespace Kazv
          * @return The new session key.
          */
         std::string rotateMegOlmSessionWithRandom(RandomData random, Timestamp timeMs, std::string roomId);
-
-        /// Returns the new session key only if it is rotated
-        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
-        std::optional<std::string> rotateMegOlmSessionIfNeeded(std::string roomId, MegOlmSessionRotateDesc desc);
 
         /**
          * Rotate the megolm session using user-provided random data,
@@ -239,10 +224,6 @@ namespace Kazv
         UserIdToDeviceIdMap devicesMissingOutboundSessionKey(
             immer::map<std::string, immer::map<std::string /* deviceId */,
             std::string /* curve25519IdentityKey */>> keyMap) const;
-
-        [[deprecated("Use deterministic variant instead. In the future, this will be removed.")]]
-        void createOutboundSession(std::string theirIdentityKey,
-                                   std::string theirOneTimeKey);
 
         /**
          * @return The size of random data needed for `createOutboundSessionWithRandom()`.
