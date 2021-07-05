@@ -80,34 +80,34 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
-    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction)
+    ClientResult updateClient(ClientModel m, GenerateAndUploadOneTimeKeysAction a)
     {
         if (! m.crypto) {
             kzo.client.warn() << "Client::crypto is invalid, ignoring it." << std::endl;
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         auto &crypto = m.crypto.value();
 
-        // Keep half of max supported number of keys
-        int numUploadedKeys = crypto.uploadedOneTimeKeysCount(signedCurve25519);
-        int numKeysNeeded = crypto.maxNumberOfOneTimeKeys() / 2
-            - numUploadedKeys;
-
-        // Subtract the number of existing one-time keys, in case
-        // the previous upload was not successful.
-        int numKeysToGenerate = numKeysNeeded - crypto.numUnpublishedOneTimeKeys();
-
         kzo.client.dbg() << "Generating one-time keys..." << std::endl;
-        kzo.client.dbg() << "Number needed: " << numKeysNeeded << std::endl;
 
-        if (numKeysNeeded <= 0) { // we have enough already
+        auto maxNumKeys = crypto.maxNumberOfOneTimeKeys();
+        auto numLocalKeys = crypto.numUnpublishedOneTimeKeys();
+        auto numStoredKeys = crypto.uploadedOneTimeKeysCount(signedCurve25519) + numLocalKeys;
+        auto numKeysToGenerate = a.numToGen;
+        auto genKeysLimit = maxNumKeys - numStoredKeys;
+
+        if (numKeysToGenerate > genKeysLimit) {
+            numKeysToGenerate = genKeysLimit;
+        }
+
+        if (numLocalKeys <= 0 && numKeysToGenerate <= 0) { // we have enough already
             kzo.client.dbg() << "We have enough one-time keys. Ignoring this." << std::endl;
             return { std::move(m), lager::noop };
         }
 
         if (numKeysToGenerate > 0) {
-            crypto.genOneTimeKeys(numKeysToGenerate);
+            crypto.genOneTimeKeysWithRandom(a.random, numKeysToGenerate);
         }
         kzo.client.dbg() << "Generating done." << std::endl;
 

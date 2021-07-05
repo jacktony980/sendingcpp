@@ -78,7 +78,7 @@ namespace Kazv
 
         int uploadedOneTimeKeysCount(std::string algorithm) const;
 
-        int maxNumberOfOneTimeKeys();
+        std::size_t maxNumberOfOneTimeKeys() const;
 
         /**
          * Get the size of random data needed to generate `num`

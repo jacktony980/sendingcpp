@@ -107,6 +107,9 @@ namespace Kazv
         /// precondition: the one-time keys for those devices must already be claimed
         Event olmEncrypt(Event e, immer::map<std::string, immer::flex_vector<std::string>> userIdToDeviceIdMap, RandomData random);
 
+        /// @return number of one-time keys we need to generate
+        std::size_t numOneTimeKeysNeeded() const;
+
         // helpers
         template<class Job>
         struct MakeJobT
@@ -335,8 +338,22 @@ namespace Kazv
     {
     };
 
+    /**
+     * The action to generate one-time keys.
+     *
+     * `random.size()` must be at least `randomSize(numToGen)`.
+     *
+     * This action will not generate keys exceeding the local limit of olm.
+     */
     struct GenerateAndUploadOneTimeKeysAction
     {
+        /// @return The size of random needed to generate
+        /// `numToGen` one-time keys
+        static std::size_t randomSize(std::size_t numToGen);
+        /// The number of keys to generate
+        std::size_t numToGen;
+        /// The random data used to generate keys
+        RandomData random;
     };
 
     struct QueryKeysAction

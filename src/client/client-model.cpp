@@ -259,6 +259,21 @@ namespace Kazv
             devices);
     }
 
+    std::size_t ClientModel::numOneTimeKeysNeeded() const
+    {
+        auto &crypto = this->crypto.value();
+
+        // Keep half of max supported number of keys
+        int numUploadedKeys = crypto.uploadedOneTimeKeysCount(CryptoConstants::signedCurve25519);
+        int numKeysNeeded = crypto.maxNumberOfOneTimeKeys() / 2
+            - numUploadedKeys;
+
+        // Subtract the number of existing one-time keys, in case
+        // the previous upload was not successful.
+        int numKeysToGenerate = numKeysNeeded - crypto.numUnpublishedOneTimeKeys();
+
+        return numKeysToGenerate;
+    }
 
     std::size_t EncryptMegOlmEventAction::maxRandomSize()
     {
@@ -276,5 +291,10 @@ namespace Kazv
         auto deviceNum = accumulate(devices, std::size_t{},
                                     [](auto counter, auto pair) { return counter + pair.second.size(); });
         return deviceNum * singleRandomSize;
+    }
+
+    std::size_t GenerateAndUploadOneTimeKeysAction::randomSize(std::size_t numToGen)
+    {
+        return Crypto::genOneTimeKeysRandomSize(numToGen);
     }
 }

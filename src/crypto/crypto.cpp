@@ -334,7 +334,7 @@ namespace Kazv
         m_d->uploadedOneTimeKeysCount = uploadedOneTimeKeysCount;
     }
 
-    int Crypto::maxNumberOfOneTimeKeys()
+    std::size_t Crypto::maxNumberOfOneTimeKeys() const
     {
         return olm_account_max_number_of_one_time_keys(m_d->account);
     }
