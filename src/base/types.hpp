@@ -21,6 +21,7 @@
 #pragma once
 #include "libkazv-config.hpp"
 
+#include <optional>
 #include <string>
 #include <variant>
 

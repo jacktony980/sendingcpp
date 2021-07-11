@@ -21,6 +21,7 @@
 #pragma once
 #include "libkazv-config.hpp"
 
+#include <optional>
 #include <variant>
 #include <tuple>
 #include <functional>

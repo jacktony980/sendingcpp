@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <limits> // workaround for immer under gcc11 21/07/11
 #include "libkazv-defs.hpp"
 
 // https://github.com/arximboldi/zug/issues/24
