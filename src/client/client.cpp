@@ -279,14 +279,14 @@ namespace Kazv
                       }
                       auto &rg = lager::get<RandomInterface &>(that.m_deps.value());
                       bool hasCrypto{+that.clientCursor()[&ClientModel::crypto]};
+                      if (! hasCrypto) {
+                          return that.m_ctx.createResolvedPromise(true);
+                      }
                       auto numKeysToGenerate = (+that.clientCursor()).numOneTimeKeysNeeded();
-                      auto p1 = hasCrypto
-                          ? that.m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{
-                                  numKeysToGenerate,
-                                  rg.generateRange<RandomData>(GenerateAndUploadOneTimeKeysAction::randomSize(numKeysToGenerate))
-                              })
-                          : that.m_ctx.createResolvedPromise(true);
-                      return p1;
+                      return that.m_ctx.dispatch(GenerateAndUploadOneTimeKeysAction{
+                              numKeysToGenerate,
+                              rg.generateRange<RandomData>(GenerateAndUploadOneTimeKeysAction::randomSize(numKeysToGenerate))
+                          });
                   });
 
         auto queryKeysRes = syncRes
