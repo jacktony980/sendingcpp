@@ -1,4 +1,3 @@
-
 # libkazv  {#mainpage}
 
 [![pipeline status](https://lily.kazv.moe/kazv/libkazv/badges/servant/pipeline.svg)](https://lily.kazv.moe/kazv/libkazv/-/commits/servant)
@@ -66,9 +65,11 @@ libkazv is not planning to support these functionalities:
 ## For Gentoo users
 
 If you are using Gentoo, you can use [tusooa-overlay][tusooa-overlay]
-to install libkazv.
+to install libkazv. The dependency `olm` can be installed from 
+[src_prepare-overlay][src-prep].
 
 [tusooa-overlay]: https://gitlab.com/tusooa/tusooa-overlay
+[src-prep]: https://gitlab.com/src_prepare/src_prepare-overlay
 
 ## Dependencies
 
