@@ -129,6 +129,12 @@ namespace Kazv
         return p1;
     }
 
+    auto Client::autoDiscover(std::string userId) const
+        -> PromiseT
+    {
+        return m_ctx.dispatch(GetWellknownAction{userId});
+    }
+
     auto Client::createRoom(RoomVisibility v,
                             std::optional<std::string> name,
                             std::optional<std::string> alias,

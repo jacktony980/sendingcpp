@@ -14,6 +14,7 @@ add_executable(kazvtest
   base/types-test.cpp
 
   client/client-test-util.cpp
+  client/discovery-test.cpp
   client/sync-test.cpp
   client/content-test.cpp
   client/paginate-test.cpp

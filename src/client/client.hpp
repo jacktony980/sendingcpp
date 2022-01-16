@@ -234,6 +234,21 @@ namespace Kazv
                             std::string token, std::string deviceId) const;
 
         /**
+         * Automatically discover the homeserver for `userId`.
+         *
+         * If the operation succeeds, `r.dataStr("homeserverUrl")` will contain
+         * the url suitable to pass to `tokenLogin()` and `passwordLogin()`.
+         *
+         * If there is no well-known file (i.e. server responds with 404),
+         * `r.dataStr("homeserverUrl")` will contain the domain part of the user
+         * id (`https://example.org` for `@foo:example.org`).
+         *
+         * @param userId The full user id. E.g. `@foo:example.org`.
+         * @return A Promise that resolves when the auto-discovery finishes.
+         */
+        PromiseT autoDiscover(std::string userId) const;
+
+        /**
          * Create a room.
          *
          * @param v The visibility of the room.

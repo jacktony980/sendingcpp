@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Tusooa Zhu <tusooa@vista.aero>
+ * Copyright (C) 2020-2022 Tusooa Zhu <tusooa@kazv.moe>
  *
  * This file is part of libkazv.
  *
@@ -99,4 +99,48 @@ namespace Kazv
         return { std::move(m), lager::noop };
     }
 
+    ClientResult updateClient(ClientModel m, GetWellknownAction a)
+    {
+        auto pos = a.userId.find(':');
+        if (pos == std::string::npos) {
+            return { std::move(m), simpleFail };
+        }
+
+        auto serverUrl = "https://" + a.userId.substr(pos);
+
+        m.addJob(GetWellknownJob{serverUrl}
+            .withData(json{{"serverUrl", serverUrl}}));
+        return { m, lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, GetWellknownResponse r)
+    {
+        auto success = r.success() || r.statusCode == 404;
+        auto error = std::string();
+
+        std::string serverUrl = r.dataStr("serverUrl");
+
+        if (r.success()) {
+            auto data = r.data();
+            if (data.homeserver.baseUrl.empty()) {
+                success = false;
+                error = "FAIL_PROMPT";
+            } else {
+                serverUrl = data.homeserver.baseUrl;
+            }
+        } else {
+            error = "FAIL_PROMPT";
+        }
+
+        return {
+            std::move(m),
+            [success, serverUrl, error](auto &&) {
+                auto data = json{
+                    {"homeserverUrl", serverUrl},
+                    {"error", error},
+                };
+                return EffectStatus(success, data);
+            }
+        };
+    }
 }

@@ -186,6 +186,11 @@ namespace Kazv
 
     struct LogoutAction {};
 
+    struct GetWellknownAction
+    {
+        std::string userId;
+    };
+
     struct SyncAction {};
 
     struct SetShouldSyncAction

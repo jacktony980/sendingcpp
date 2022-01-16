@@ -37,6 +37,7 @@ namespace Kazv
     struct LoginAction;
     struct TokenLoginAction;
     struct LogoutAction;
+    struct GetWellknownAction;
     struct SyncAction;
     struct SetShouldSyncAction;
     struct PostInitialFiltersAction;
@@ -81,6 +82,7 @@ namespace Kazv
         LoginAction,
         TokenLoginAction,
         LogoutAction,
+        GetWellknownAction,
 
         SyncAction,
         SetShouldSyncAction,
