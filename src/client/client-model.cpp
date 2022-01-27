@@ -72,6 +72,7 @@ namespace Kazv
                 // auth
                 RESPONSE_FOR(Login);
                 RESPONSE_FOR(GetWellknown);
+                RESPONSE_FOR(GetVersions);
                 // paginate
                 RESPONSE_FOR(GetRoomEvents);
                 // sync

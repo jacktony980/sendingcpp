@@ -22,6 +22,7 @@
 
 #include <csapi/login.hpp>
 #include <csapi/wellknown.hpp>
+#include <csapi/versions.hpp>
 
 #include "client-model.hpp"
 
@@ -34,4 +35,7 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, GetWellknownAction a);
     ClientResult processResponse(ClientModel m, GetWellknownResponse r);
+
+    ClientResult updateClient(ClientModel m, GetVersionsAction a);
+    ClientResult processResponse(ClientModel m, GetVersionsResponse r);
 }

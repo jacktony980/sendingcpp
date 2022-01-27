@@ -132,7 +132,20 @@ namespace Kazv
     auto Client::autoDiscover(std::string userId) const
         -> PromiseT
     {
-        return m_ctx.dispatch(GetWellknownAction{userId});
+        return m_ctx.dispatch(GetWellknownAction{userId})
+            .then([that=toEventLoop()](auto stat) {
+                      if (!stat.success()) {
+                          return that.m_ctx.createResolvedPromise(stat);
+                      }
+                      return that.m_ctx.dispatch(GetVersionsAction{stat.dataStr("serverUrl")})
+                          .then([that, stat](auto stat2) {
+                              if (!stat2.success()) {
+                                  return stat2;
+                              } else {
+                                  return stat;
+                              }
+                          });
+                  });
     }
 
     auto Client::createRoom(RoomVisibility v,

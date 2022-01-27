@@ -191,6 +191,11 @@ namespace Kazv
         std::string userId;
     };
 
+    struct GetVersionsAction
+    {
+        std::string serverUrl;
+    };
+
     struct SyncAction {};
 
     struct SetShouldSyncAction

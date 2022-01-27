@@ -143,4 +143,30 @@ namespace Kazv
             }
         };
     }
+
+    ClientResult updateClient(ClientModel m, GetVersionsAction a)
+    {
+        m.addJob(GetVersionsJob{a.serverUrl});
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, GetVersionsResponse r)
+    {
+        return {
+            std::move(m),
+            [r](auto &&) {
+                if (r.success()) {
+                    return EffectStatus(r.success(), json{
+                        {"versions", r.versions()},
+                    });
+                } else {
+                    return EffectStatus(r.success(), json{
+                        {"errorCode", r.errorCode()},
+                        {"error", r.errorMessage()},
+                    });
+                }
+            }
+        };
+    }
+
 }
