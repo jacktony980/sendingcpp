@@ -2,6 +2,7 @@ stages:
   - lint
   - prepare
   - build
+  - doc
 
 lint:
   stage: lint
@@ -9,7 +10,7 @@ lint:
     echo 'Verify that no source file contains tabs'
     ! egrep -R --exclude-dir=resources $'\t' src
   rules: &build-rules
-    - changes:
+    - changes: &src-chg
         - Dockerfile
         - Dockerfile.cov
         - '**/*.cpp'
@@ -17,7 +18,8 @@ lint:
         - '**/CMakeLists.txt'
         - '**/*.in'
         - 'src/tests/resources/**'
-prepare-env:
+
+'prepare:env':
   stage: prepare
   script: |
     tag="$CI_COMMIT_BRANCH"
@@ -28,7 +30,7 @@ prepare-env:
       dotenv: prepare.env
   rules: *build-rules
 
-build-debug:
+'build:debug':
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -37,11 +39,11 @@ build-debug:
     mkdir -p /kaniko/.docker
     echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --build-arg JOBS=1 --destination $CI_REGISTRY_IMAGE/libkazv:$tag --destination $CI_REGISTRY_IMAGE/libkazv:$tag-debug
-  dependencies:
-    - prepare-env
+  dependencies: &build-deps
+    - prepare:env
   rules: *build-rules
 
-build-production:
+'build:production':
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -50,11 +52,10 @@ build-production:
     mkdir -p /kaniko/.docker
     echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --build-arg JOBS=1 --build-arg BUILD_TYPE=Release --destination $CI_REGISTRY_IMAGE/libkazv:$tag-prod
-  dependencies:
-    - prepare-env
+  dependencies: *build-deps
   rules: *build-rules
 
-build-code-with-coverage:
+'build:coverage':
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -63,3 +64,16 @@ build-code-with-coverage:
     mkdir -p /kaniko/.docker
     /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.cov --build-arg JOBS=1 --no-push
   rules: *build-rules
+
+'doc:build':
+  stage: doc
+  image: reg.lily.kazv.moe/kazv/libkazv-deps/deps:servant
+  script:
+    - doxygen Doxyfile
+  artifacts:
+    paths:
+      - doc/html/
+  rules:
+    - changes: *src-chg
+    - changes:
+        - '**/*.md'
