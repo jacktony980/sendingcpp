@@ -60,6 +60,10 @@ namespace Kazv
     struct EncryptMegOlmEventAction;
     struct EncryptOlmEventAction;
 
+    struct GetUserProfileAction;
+    struct SetAvatarUrlAction;
+    struct SetDisplayNameAction;
+
     struct ResubmitJobAction;
 
     struct ClientModel;
@@ -108,6 +112,10 @@ namespace Kazv
         ClaimKeysAction,
         EncryptMegOlmEventAction,
         EncryptOlmEventAction,
+
+        GetUserProfileAction,
+        SetAvatarUrlAction,
+        SetDisplayNameAction,
 
         ResubmitJobAction
         >;

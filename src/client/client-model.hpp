@@ -424,6 +424,20 @@ namespace Kazv
         RandomData random;
     };
 
+    struct GetUserProfileAction
+    {
+        std::string userId;
+    };
+
+    struct SetAvatarUrlAction
+    {
+        std::string avatarUrl;
+    };
+
+    struct SetDisplayNameAction
+    {
+        std::string displayName;
+    };
 
     template<class Archive>
     void serialize(Archive &ar, ClientModel &m, std::uint32_t const /*version*/)

@@ -51,3 +51,5 @@ inline auto createTestClientStoreFrom(ClientModel m, SingleTypePromiseInterface<
         &ClientModel::update,
         std::move(ph));
 }
+
+bool hasAccessToken(const BaseJob &job);

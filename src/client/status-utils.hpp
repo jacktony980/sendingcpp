@@ -25,4 +25,21 @@ namespace Kazv
      * A effect that returns a failed EffectStatus upon invocation.
      */
     constexpr auto simpleFail = detail::SimpleFailT{};
+
+    /**
+     * A effect that returns a failed EffectStatus upon invocation.
+     */
+    template<class Resp>
+    constexpr auto failWithResponse(Resp &&r)
+    {
+        auto code = r.errorCode();
+        auto msg = std::forward<Resp>(r).errorMessage();
+        auto d = json{
+            {"error", msg},
+            {"errorCode", code},
+        };
+        return [data=JsonWrap(d)](auto &&) {
+            return EffectStatus(/* succ = */ false, data);
+        };
+    }
 }

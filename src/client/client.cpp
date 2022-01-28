@@ -356,4 +356,8 @@ namespace Kazv
         }
     }
 
+    auto Client::getProfile(std::string userId) const -> PromiseT
+    {
+        return m_ctx.dispatch(GetUserProfileAction{userId});
+    }
 }

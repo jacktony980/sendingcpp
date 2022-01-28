@@ -11,6 +11,7 @@ set(kazvclient_SRCS
   actions/ephemeral.cpp
   actions/content.cpp
   actions/encryption.cpp
+  actions/profile.cpp
   device-list-tracker.cpp
   encrypted-file.cpp
 

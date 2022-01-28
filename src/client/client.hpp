@@ -367,6 +367,33 @@ namespace Kazv
                                    std::optional<ThumbnailResizingMethod> method = std::nullopt,
                                    std::optional<FileDesc> downloadTo = std::nullopt) const;
 
+        /**
+         * Fetch the profile of a user.
+         *
+         * @param userId The id of the user to fetch.
+         * @return A Promise that resolves when the fetch is completed.
+         * If successful, `r.dataStr("avatarUrl")` will contain the
+         * avatar url of that user, and `r.dataStr("displayName")` will
+         * contain the display name of that user.
+         */
+        PromiseT getProfile(std::string userId) const;
+
+        /**
+         * Change the avatar url of the current user.
+         *
+         * @param avatarUrl The url of the new avatar. Should be an MXC URI.
+         * @return A Promise that resolves when the request is completed.
+         */
+        PromiseT setAvatarUrl(std::string avatarUrl) const;
+
+        /**
+         * Change the display name of the current user.
+         *
+         * @param displayName The new display name.
+         * @return A Promise that resolves when the request is completed.
+         */
+        PromiseT setDisplayName(std::string displayName) const;
+
         // lager::reader<bool>
         inline auto syncing() const {
             return clientCursor()[&ClientModel::syncing];

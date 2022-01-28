@@ -18,3 +18,10 @@ ClientModel createTestClientModel()
     m.loggedIn = true;
     return m;
 }
+
+
+bool hasAccessToken(const BaseJob &job)
+{
+    auto header = job.requestHeader();
+    return header->find("Authorization") != header->end();
+}

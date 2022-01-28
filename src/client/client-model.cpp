@@ -29,6 +29,7 @@
 #include "actions/ephemeral.hpp"
 #include "actions/content.hpp"
 #include "actions/encryption.hpp"
+#include "actions/profile.hpp"
 
 namespace Kazv
 {
@@ -91,6 +92,10 @@ namespace Kazv
                 RESPONSE_FOR(UploadKeys);
                 RESPONSE_FOR(QueryKeys);
                 RESPONSE_FOR(ClaimKeys);
+                // profile
+                RESPONSE_FOR(GetUserProfile);
+                RESPONSE_FOR(SetAvatarUrl);
+                RESPONSE_FOR(SetDisplayName);
 
                 m.addTrigger(UnrecognizedResponse{std::move(r)});
                 return { std::move(m), lager::noop };
