@@ -137,7 +137,7 @@ namespace Kazv
                       if (!stat.success()) {
                           return that.m_ctx.createResolvedPromise(stat);
                       }
-                      return that.m_ctx.dispatch(GetVersionsAction{stat.dataStr("serverUrl")})
+                      return that.m_ctx.dispatch(GetVersionsAction{stat.dataStr("homeserverUrl")})
                           .then([that, stat](auto stat2) {
                               if (!stat2.success()) {
                                   return stat2;

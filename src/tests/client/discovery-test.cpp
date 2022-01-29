@@ -55,6 +55,7 @@ TEST_CASE("Auto-discovery tests", "[client][discovery]")
             REQUIRE(resModel.nextJobs.size() == 1);
             auto job = resModel.nextJobs[0];
             REQUIRE_THAT(job.url(), StartsWith("https://example.com/"));
+            REQUIRE(job.dataStr("serverUrl") == "https://example.com");
         }
     }
 
