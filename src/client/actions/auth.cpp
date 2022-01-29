@@ -102,11 +102,11 @@ namespace Kazv
     ClientResult updateClient(ClientModel m, GetWellknownAction a)
     {
         auto pos = a.userId.find(':');
-        if (pos == std::string::npos) {
+        if (pos == std::string::npos || pos == a.userId.size() - 1) {
             return { std::move(m), simpleFail };
         }
 
-        auto serverUrl = "https://" + a.userId.substr(pos);
+        auto serverUrl = "https://" + a.userId.substr(pos + 1);
 
         m.addJob(GetWellknownJob{serverUrl}
             .withData(json{{"serverUrl", serverUrl}}));

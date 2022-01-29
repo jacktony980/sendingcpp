@@ -43,6 +43,85 @@ static const json versionsResponseJson = R"({
 TEST_CASE("Auto-discovery tests", "[client][discovery]")
 {
     using namespace Kazv::CursorOp;
+    using Catch::Matchers::StartsWith;
+
+    WHEN("We do a discovery")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo:example.com"});
+
+        THEN("We should send to the server address as in the userId")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE_THAT(job.url(), StartsWith("https://example.com/"));
+        }
+    }
+
+    WHEN("We do a discovery no remote part provided")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo"});
+
+        THEN("We should not send any job")
+        {
+            REQUIRE(resModel.nextJobs.size() == 0);
+        }
+    }
+
+    WHEN("We do a discovery 0-length part provided")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo:"});
+
+        THEN("We should not send any job")
+        {
+            REQUIRE(resModel.nextJobs.size() == 0);
+        }
+    }
+
+    // Test different server names
+    // https://spec.matrix.org/v1.1/appendices/#server-name
+
+    WHEN("We do a discovery with server names containing ports")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo:example.com:8080"});
+
+        THEN("We should send to the server address as in the userId")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE_THAT(job.url(), StartsWith("https://example.com:8080/"));
+        }
+    }
+
+    WHEN("We do a discovery with server names containing ipv4 address")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo:1.2.3.4:8080"});
+
+        THEN("We should send to the server address as in the userId")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE_THAT(job.url(), StartsWith("https://1.2.3.4:8080/"));
+        }
+    }
+
+    WHEN("We do a discovery with server names containing ipv6 address")
+    {
+        ClientModel m;
+        auto [resModel, dontCareEffect] = ClientModel::update(m, GetWellknownAction{"@foo:[1234:5678::abcd]:5678"});
+
+        THEN("We should send to the server address as in the userId")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE_THAT(job.url(), StartsWith("https://[1234:5678::abcd]:5678/"));
+        }
+    }
+
 
     boost::asio::io_context io;
     AsioPromiseHandler ph{io.get_executor()};
