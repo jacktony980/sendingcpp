@@ -382,17 +382,19 @@ namespace Kazv
          * Change the avatar url of the current user.
          *
          * @param avatarUrl The url of the new avatar. Should be an MXC URI.
+         *        If it is std::nullopt, remove the user avatar.
          * @return A Promise that resolves when the request is completed.
          */
-        PromiseT setAvatarUrl(std::string avatarUrl) const;
+        PromiseT setAvatarUrl(std::optional<std::string> avatarUrl) const;
 
         /**
          * Change the display name of the current user.
          *
-         * @param displayName The new display name.
+         * @param displayName The new display name. If it is std::nullopt,
+         *        remove the user avatar.
          * @return A Promise that resolves when the request is completed.
          */
-        PromiseT setDisplayName(std::string displayName) const;
+        PromiseT setDisplayName(std::optional<std::string> displayName) const;
 
         // lager::reader<bool>
         inline auto syncing() const {

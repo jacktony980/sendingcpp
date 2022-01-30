@@ -22,6 +22,9 @@ static const json getUserProfileResponseJson = R"({
   "displayname": "Alice Margatroid"
 })"_json;
 
+using Catch::Matchers::Contains;
+
+
 TEST_CASE("GetUserProfile", "[client][profile]")
 {
     WHEN("We initiate this job")
@@ -88,6 +91,116 @@ TEST_CASE("GetUserProfile", "[client][profile]")
                 .then([](auto stat) {
                     REQUIRE(!stat.success());
                     REQUIRE(stat.dataStr("errorCode") == "404");
+                });
+        }
+    }
+
+    io.run();
+}
+
+TEST_CASE("SetAvatarUrl", "[client][profile]")
+{
+    auto jobId = std::string("SetAvatarUrl");
+
+    WHEN("We initiate this job")
+    {
+        ClientModel loggedInModel = createTestClientModel();
+        auto [resModel, dontCareEffect] = ClientModel::update(loggedInModel, SetAvatarUrlAction{"mxc://example.com/xxxyyy"});
+        THEN("it should be added")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE(job.jobId() == jobId);
+            REQUIRE(hasAccessToken(job));
+
+            REQUIRE_THAT(job.url(), Contains("/" + loggedInModel.userId + "/"));
+        }
+    }
+
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto store = createTestClientStore(ph);
+
+    WHEN("We got a successful response")
+    {
+        auto resp = createResponse(jobId, json());
+
+        THEN("We should succeed")
+        {
+            store.dispatch(ProcessResponseAction{resp})
+                .then([](auto stat) {
+                    REQUIRE(stat.success());
+                });
+        }
+    }
+
+    WHEN("We got a failed response")
+    {
+        auto resp = createResponse(jobId, json());
+        resp.statusCode = 400;
+
+        THEN("We should fail")
+        {
+            store.dispatch(ProcessResponseAction{resp})
+                .then([](auto stat) {
+                    REQUIRE(!stat.success());
+                    REQUIRE(stat.dataStr("errorCode") == "400");
+                });
+        }
+    }
+
+    io.run();
+}
+
+TEST_CASE("SetDisplayName", "[client][profile]")
+{
+    auto jobId = std::string("SetDisplayName");
+
+    WHEN("We initiate this job")
+    {
+        ClientModel loggedInModel = createTestClientModel();
+        auto [resModel, dontCareEffect] = ClientModel::update(loggedInModel, SetDisplayNameAction{"mew mew"});
+        THEN("it should be added")
+        {
+            REQUIRE(resModel.nextJobs.size() == 1);
+            auto job = resModel.nextJobs[0];
+            REQUIRE(job.jobId() == jobId);
+            REQUIRE(hasAccessToken(job));
+
+            REQUIRE_THAT(job.url(), Contains("/" + loggedInModel.userId + "/"));
+        }
+    }
+
+    boost::asio::io_context io;
+    AsioPromiseHandler ph{io.get_executor()};
+
+    auto store = createTestClientStore(ph);
+
+    WHEN("We got a successful response")
+    {
+        auto resp = createResponse(jobId, json());
+
+        THEN("We should succeed")
+        {
+            store.dispatch(ProcessResponseAction{resp})
+                .then([](auto stat) {
+                    REQUIRE(stat.success());
+                });
+        }
+    }
+
+    WHEN("We got a failed response")
+    {
+        auto resp = createResponse(jobId, json());
+        resp.statusCode = 400;
+
+        THEN("We should fail")
+        {
+            store.dispatch(ProcessResponseAction{resp})
+                .then([](auto stat) {
+                    REQUIRE(!stat.success());
+                    REQUIRE(stat.dataStr("errorCode") == "400");
                 });
         }
     }

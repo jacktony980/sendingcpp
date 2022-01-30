@@ -431,12 +431,12 @@ namespace Kazv
 
     struct SetAvatarUrlAction
     {
-        std::string avatarUrl;
+        std::optional<std::string> avatarUrl;
     };
 
     struct SetDisplayNameAction
     {
-        std::string displayName;
+        std::optional<std::string> displayName;
     };
 
     template<class Archive>

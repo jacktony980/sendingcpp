@@ -38,21 +38,29 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, SetAvatarUrlAction a)
     {
+        m.addJob(m.job<SetAvatarUrlJob>().make(m.userId, a.avatarUrl));
         return { std::move(m), lager::noop };
     }
 
     ClientResult processResponse(ClientModel m, SetAvatarUrlResponse r)
     {
+        if (!r.success()) {
+            return { std::move(m), failWithResponse(std::move(r)) };
+        }
         return { std::move(m), lager::noop };
     }
 
     ClientResult updateClient(ClientModel m, SetDisplayNameAction a)
     {
+        m.addJob(m.job<SetDisplayNameJob>().make(m.userId, a.displayName));
         return { std::move(m), lager::noop };
     }
 
     ClientResult processResponse(ClientModel m, SetDisplayNameResponse r)
     {
+        if (!r.success()) {
+            return { std::move(m), failWithResponse(std::move(r)) };
+        }
         return { std::move(m), lager::noop };
     }
 }

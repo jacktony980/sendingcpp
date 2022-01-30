@@ -360,4 +360,14 @@ namespace Kazv
     {
         return m_ctx.dispatch(GetUserProfileAction{userId});
     }
+
+    auto Client::setAvatarUrl(std::optional<std::string> avatarUrl) const -> PromiseT
+    {
+        return m_ctx.dispatch(SetAvatarUrlAction{avatarUrl});
+    }
+
+    auto Client::setDisplayName(std::optional<std::string> displayName) const -> PromiseT
+    {
+        return m_ctx.dispatch(SetDisplayNameAction{displayName});
+    }
 }
