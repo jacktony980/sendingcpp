@@ -62,6 +62,21 @@ TEST_CASE("GetUserProfile", "[client][profile]")
         }
     }
 
+    WHEN("We got an empty json")
+    {
+        auto resp = createResponse("GetUserProfile", json());
+
+        THEN("We should return empty string avatar url and display name")
+        {
+            store.dispatch(ProcessResponseAction{resp})
+                .then([](auto stat) {
+                    REQUIRE(stat.success());
+                    REQUIRE(stat.dataStr("avatarUrl") == "");
+                    REQUIRE(stat.dataStr("displayName") == "");
+                });
+        }
+    }
+
     WHEN("We got a failed response")
     {
         auto resp = createResponse("GetUserProfile", json{});
