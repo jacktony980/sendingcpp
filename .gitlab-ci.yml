@@ -10,6 +10,8 @@ lint:
     echo 'Verify that no source file contains tabs'
     ! egrep -R --exclude-dir=resources $'\t' src
   rules: &build-rules
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
     - changes: &src-chg
         - Dockerfile
         - Dockerfile.cov
@@ -74,6 +76,8 @@ lint:
     paths:
       - doc/html/
   rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
     - changes: *src-chg
     - changes:
         - '**/*.md'
