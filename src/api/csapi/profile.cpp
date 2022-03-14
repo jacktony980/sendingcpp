@@ -156,7 +156,7 @@ GetDisplayNameJob::GetDisplayNameJob(
     .contains("displayname"s)) {
     return
     jsonBody().get()["displayname"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -308,7 +308,7 @@ GetAvatarUrlJob::GetAvatarUrlJob(
     .contains("avatar_url"s)) {
     return
     jsonBody().get()["avatar_url"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -387,7 +387,7 @@ GetUserProfileJob::GetUserProfileJob(
     .contains("avatar_url"s)) {
     return
     jsonBody().get()["avatar_url"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -398,7 +398,7 @@ GetUserProfileJob::GetUserProfileJob(
     .contains("displayname"s)) {
     return
     jsonBody().get()["displayname"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 

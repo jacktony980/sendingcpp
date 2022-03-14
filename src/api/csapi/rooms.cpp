@@ -292,7 +292,7 @@ GetMembersByRoomJob::GetMembersByRoomJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -371,7 +371,7 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
     .contains("joined"s)) {
     return
     jsonBody().get()["joined"s]
-    /*.get<immer::map<std::string, RoomMember>>()*/;}
+    .template get<immer::map<std::string, RoomMember>>();}
     else { return immer::map<std::string, RoomMember>(  );}
     }
 

@@ -83,7 +83,7 @@ GetRoomTagsJob::GetRoomTagsJob(
     .contains("tags"s)) {
     return
     jsonBody().get()["tags"s]
-    /*.get<immer::map<std::string, Tag>>()*/;}
+    .template get<immer::map<std::string, Tag>>();}
     else { return immer::map<std::string, Tag>(  );}
     }
 

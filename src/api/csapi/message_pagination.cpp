@@ -92,7 +92,7 @@ GetRoomEventsJob::GetRoomEventsJob(
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -103,7 +103,7 @@ GetRoomEventsJob::GetRoomEventsJob(
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -114,7 +114,7 @@ GetRoomEventsJob::GetRoomEventsJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -125,7 +125,7 @@ GetRoomEventsJob::GetRoomEventsJob(
     .contains("state"s)) {
     return
     jsonBody().get()["state"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 

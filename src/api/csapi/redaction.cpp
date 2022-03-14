@@ -88,7 +88,7 @@ RedactEventJob::RedactEventJob(
     .contains("event_id"s)) {
     return
     jsonBody().get()["event_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 

@@ -159,7 +159,7 @@ GetPresenceJob::GetPresenceJob(
     .contains("presence"s)) {
     return
     jsonBody().get()["presence"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -170,7 +170,7 @@ GetPresenceJob::GetPresenceJob(
     .contains("last_active_ago"s)) {
     return
     jsonBody().get()["last_active_ago"s]
-    /*.get<int>()*/;}
+    .template get<int>();}
     else { return std::optional<int>(  );}
     }
 
@@ -181,7 +181,7 @@ GetPresenceJob::GetPresenceJob(
     .contains("status_msg"s)) {
     return
     jsonBody().get()["status_msg"s]
-    /*.get<Variant>()*/;}
+    .template get<Variant>();}
     else { return Variant(  );}
     }
 
@@ -192,7 +192,7 @@ GetPresenceJob::GetPresenceJob(
     .contains("currently_active"s)) {
     return
     jsonBody().get()["currently_active"s]
-    /*.get<bool>()*/;}
+    .template get<bool>();}
     else { return std::optional<bool>(  );}
     }
 

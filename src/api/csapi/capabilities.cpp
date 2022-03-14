@@ -84,7 +84,7 @@ GetCapabilitiesJob::GetCapabilitiesJob(
     .contains("capabilities"s)) {
     return
     jsonBody().get()["capabilities"s]
-    /*.get<Capabilities>()*/;}
+    .template get<Capabilities>();}
     else { return Capabilities(  );}
     }
 

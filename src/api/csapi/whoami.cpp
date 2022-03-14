@@ -84,7 +84,7 @@ GetTokenOwnerJob::GetTokenOwnerJob(
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 

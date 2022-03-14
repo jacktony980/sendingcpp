@@ -83,7 +83,7 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
     .contains("visibility"s)) {
     return
     jsonBody().get()["visibility"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -241,7 +241,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<immer::array<PublicRoomsChunk>>()*/;}
+    .template get<immer::array<PublicRoomsChunk>>();}
     else { return immer::array<PublicRoomsChunk>(  );}
     }
 
@@ -252,7 +252,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     .contains("next_batch"s)) {
     return
     jsonBody().get()["next_batch"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -263,7 +263,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     .contains("prev_batch"s)) {
     return
     jsonBody().get()["prev_batch"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -274,7 +274,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
     .contains("total_room_count_estimate"s)) {
     return
     jsonBody().get()["total_room_count_estimate"s]
-    /*.get<int>()*/;}
+    .template get<int>();}
     else { return std::optional<int>(  );}
     }
 
@@ -368,7 +368,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<immer::array<PublicRoomsChunk>>()*/;}
+    .template get<immer::array<PublicRoomsChunk>>();}
     else { return immer::array<PublicRoomsChunk>(  );}
     }
 
@@ -379,7 +379,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
     .contains("next_batch"s)) {
     return
     jsonBody().get()["next_batch"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -390,7 +390,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
     .contains("prev_batch"s)) {
     return
     jsonBody().get()["prev_batch"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -401,7 +401,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
     .contains("total_room_count_estimate"s)) {
     return
     jsonBody().get()["total_room_count_estimate"s]
-    /*.get<int>()*/;}
+    .template get<int>();}
     else { return std::optional<int>(  );}
     }
 

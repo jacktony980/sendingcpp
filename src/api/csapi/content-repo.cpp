@@ -97,7 +97,7 @@ UploadContentJob::UploadContentJob(
     .contains("content_uri"s)) {
     return
     jsonBody().get()["content_uri"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -395,7 +395,7 @@ GetUrlPreviewJob::GetUrlPreviewJob(
     .contains("matrix:image:size"s)) {
     return
     jsonBody().get()["matrix:image:size"s]
-    /*.get<std::int_fast64_t>()*/;}
+    .template get<std::int_fast64_t>();}
     else { return std::optional<std::int_fast64_t>(  );}
     }
 
@@ -406,7 +406,7 @@ GetUrlPreviewJob::GetUrlPreviewJob(
     .contains("og:image"s)) {
     return
     jsonBody().get()["og:image"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -485,7 +485,7 @@ GetConfigJob::GetConfigJob(
     .contains("m.upload.size"s)) {
     return
     jsonBody().get()["m.upload.size"s]
-    /*.get<std::int_fast64_t>()*/;}
+    .template get<std::int_fast64_t>();}
     else { return std::optional<std::int_fast64_t>(  );}
     }
 

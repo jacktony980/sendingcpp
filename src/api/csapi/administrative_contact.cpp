@@ -83,7 +83,7 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
     .contains("threepids"s)) {
     return
     jsonBody().get()["threepids"s]
-    /*.get<immer::array<ThirdPartyIdentifier>>()*/;}
+    .template get<immer::array<ThirdPartyIdentifier>>();}
     else { return immer::array<ThirdPartyIdentifier>(  );}
     }
 
@@ -401,7 +401,7 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
     .contains("id_server_unbind_result"s)) {
     return
     jsonBody().get()["id_server_unbind_result"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -490,7 +490,7 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
     .contains("id_server_unbind_result"s)) {
     return
     jsonBody().get()["id_server_unbind_result"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 

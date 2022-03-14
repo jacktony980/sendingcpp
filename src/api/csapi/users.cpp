@@ -92,7 +92,7 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
     .contains("results"s)) {
     return
     jsonBody().get()["results"s]
-    /*.get<immer::array<User>>()*/;}
+    .template get<immer::array<User>>();}
     else { return immer::array<User>(  );}
     }
 
@@ -103,7 +103,7 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
     .contains("limited"s)) {
     return
     jsonBody().get()["limited"s]
-    /*.get<bool>()*/;}
+    .template get<bool>();}
     else { return bool(  );}
     }
 

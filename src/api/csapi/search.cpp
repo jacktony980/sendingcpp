@@ -90,7 +90,7 @@ SearchJob::SearchJob(
     .contains("search_categories"s)) {
     return
     jsonBody().get()["search_categories"s]
-    /*.get<ResultCategories>()*/;}
+    .template get<ResultCategories>();}
     else { return ResultCategories(  );}
     }
 

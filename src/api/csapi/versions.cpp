@@ -84,7 +84,7 @@ GetVersionsJob::GetVersionsJob(
     .contains("versions"s)) {
     return
     jsonBody().get()["versions"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 
@@ -95,7 +95,7 @@ GetVersionsJob::GetVersionsJob(
     .contains("unstable_features"s)) {
     return
     jsonBody().get()["unstable_features"s]
-    /*.get<immer::map<std::string, bool>>()*/;}
+    .template get<immer::map<std::string, bool>>();}
     else { return immer::map<std::string, bool>(  );}
     }
 

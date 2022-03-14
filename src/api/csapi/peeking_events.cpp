@@ -88,7 +88,7 @@ PeekEventsJob::PeekEventsJob(
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -99,7 +99,7 @@ PeekEventsJob::PeekEventsJob(
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -110,7 +110,7 @@ PeekEventsJob::PeekEventsJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 

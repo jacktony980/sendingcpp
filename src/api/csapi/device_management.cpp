@@ -83,7 +83,7 @@ GetDevicesJob::GetDevicesJob(
     .contains("devices"s)) {
     return
     jsonBody().get()["devices"s]
-    /*.get<immer::array<Device>>()*/;}
+    .template get<immer::array<Device>>();}
     else { return immer::array<Device>(  );}
     }
 

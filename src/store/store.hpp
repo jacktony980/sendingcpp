@@ -146,7 +146,8 @@ namespace Kazv
                 auto &&model,
                 auto &&reducer,
                 auto &&ph,
-                auto &&deps) {
+                auto &&deps,
+                auto &&) {
                 using ActionTraits = decltype(actionTraits);
 
                 using ModelF = decltype(model);
@@ -165,6 +166,6 @@ namespace Kazv
         return factory(
             lager::type_<Action>{},
             std::forward<Model>(initialModel), std::forward<Reducer>(reducer),
-            std::forward<PH>(ph), lager::deps<>{});
+            std::forward<PH>(ph), lager::deps<>{}, Tag{});
     }
 }

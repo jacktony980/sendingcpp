@@ -100,7 +100,7 @@ RegisterJob::RegisterJob(
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -111,7 +111,7 @@ RegisterJob::RegisterJob(
     .contains("access_token"s)) {
     return
     jsonBody().get()["access_token"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -122,7 +122,7 @@ RegisterJob::RegisterJob(
     .contains("home_server"s)) {
     return
     jsonBody().get()["home_server"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -133,7 +133,7 @@ RegisterJob::RegisterJob(
     .contains("device_id"s)) {
     return
     jsonBody().get()["device_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -573,7 +573,7 @@ DeactivateAccountJob::DeactivateAccountJob(
     .contains("id_server_unbind_result"s)) {
     return
     jsonBody().get()["id_server_unbind_result"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -653,7 +653,7 @@ CheckUsernameAvailabilityJob::CheckUsernameAvailabilityJob(
     .contains("available"s)) {
     return
     jsonBody().get()["available"s]
-    /*.get<bool>()*/;}
+    .template get<bool>();}
     else { return std::optional<bool>(  );}
     }
 

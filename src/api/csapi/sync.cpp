@@ -93,7 +93,7 @@ SyncJob::SyncJob(
     .contains("next_batch"s)) {
     return
     jsonBody().get()["next_batch"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -104,7 +104,7 @@ SyncJob::SyncJob(
     .contains("rooms"s)) {
     return
     jsonBody().get()["rooms"s]
-    /*.get<Rooms>()*/;}
+    .template get<Rooms>();}
     else { return std::optional<Rooms>(  );}
     }
 
@@ -115,7 +115,7 @@ SyncJob::SyncJob(
     .contains("presence"s)) {
     return
     jsonBody().get()["presence"s]
-    /*.get<EventBatch>()*/;}
+    .template get<EventBatch>();}
     else { return std::optional<EventBatch>(  );}
     }
 
@@ -126,7 +126,7 @@ SyncJob::SyncJob(
     .contains("account_data"s)) {
     return
     jsonBody().get()["account_data"s]
-    /*.get<EventBatch>()*/;}
+    .template get<EventBatch>();}
     else { return std::optional<EventBatch>(  );}
     }
 
@@ -137,7 +137,7 @@ SyncJob::SyncJob(
     .contains("to_device"s)) {
     return
     jsonBody().get()["to_device"s]
-    /*.get<JsonWrap>()*/;}
+    .template get<JsonWrap>();}
     else { return JsonWrap(  );}
     }
 
@@ -148,7 +148,7 @@ SyncJob::SyncJob(
     .contains("device_lists"s)) {
     return
     jsonBody().get()["device_lists"s]
-    /*.get<JsonWrap>()*/;}
+    .template get<JsonWrap>();}
     else { return JsonWrap(  );}
     }
 
@@ -159,7 +159,7 @@ SyncJob::SyncJob(
     .contains("device_one_time_keys_count"s)) {
     return
     jsonBody().get()["device_one_time_keys_count"s]
-    /*.get<immer::map<std::string, int>>()*/;}
+    .template get<immer::map<std::string, int>>();}
     else { return immer::map<std::string, int>(  );}
     }
 

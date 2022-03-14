@@ -83,7 +83,7 @@ GetLoginFlowsJob::GetLoginFlowsJob(
     .contains("flows"s)) {
     return
     jsonBody().get()["flows"s]
-    /*.get<immer::array<LoginFlow>>()*/;}
+    .template get<immer::array<LoginFlow>>();}
     else { return immer::array<LoginFlow>(  );}
     }
 
@@ -177,7 +177,7 @@ LoginJob::LoginJob(
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -188,7 +188,7 @@ LoginJob::LoginJob(
     .contains("access_token"s)) {
     return
     jsonBody().get()["access_token"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -199,7 +199,7 @@ LoginJob::LoginJob(
     .contains("home_server"s)) {
     return
     jsonBody().get()["home_server"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -210,7 +210,7 @@ LoginJob::LoginJob(
     .contains("device_id"s)) {
     return
     jsonBody().get()["device_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -221,7 +221,7 @@ LoginJob::LoginJob(
     .contains("well_known"s)) {
     return
     jsonBody().get()["well_known"s]
-    /*.get<DiscoveryInformation>()*/;}
+    .template get<DiscoveryInformation>();}
     else { return std::optional<DiscoveryInformation>(  );}
     }
 

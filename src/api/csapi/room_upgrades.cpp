@@ -89,7 +89,7 @@ UpgradeRoomJob::UpgradeRoomJob(
     .contains("replacement_room"s)) {
     return
     jsonBody().get()["replacement_room"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 

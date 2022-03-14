@@ -85,7 +85,7 @@ DefineFilterJob::DefineFilterJob(
     .contains("filter_id"s)) {
     return
     jsonBody().get()["filter_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 

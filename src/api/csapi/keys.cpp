@@ -91,7 +91,7 @@ UploadKeysJob::UploadKeysJob(
     .contains("one_time_key_counts"s)) {
     return
     jsonBody().get()["one_time_key_counts"s]
-    /*.get<immer::map<std::string, int>>()*/;}
+    .template get<immer::map<std::string, int>>();}
     else { return immer::map<std::string, int>(  );}
     }
 
@@ -179,7 +179,7 @@ QueryKeysJob::QueryKeysJob(
     .contains("failures"s)) {
     return
     jsonBody().get()["failures"s]
-    /*.get<immer::map<std::string, JsonWrap>>()*/;}
+    .template get<immer::map<std::string, JsonWrap>>();}
     else { return immer::map<std::string, JsonWrap>(  );}
     }
 
@@ -190,7 +190,7 @@ QueryKeysJob::QueryKeysJob(
     .contains("device_keys"s)) {
     return
     jsonBody().get()["device_keys"s]
-    /*.get<immer::map<std::string, immer::map<std::string, DeviceInformation>>>()*/;}
+    .template get<immer::map<std::string, immer::map<std::string, DeviceInformation>>>();}
     else { return immer::map<std::string, immer::map<std::string, DeviceInformation>>(  );}
     }
 
@@ -277,7 +277,7 @@ ClaimKeysJob::ClaimKeysJob(
     .contains("failures"s)) {
     return
     jsonBody().get()["failures"s]
-    /*.get<immer::map<std::string, JsonWrap>>()*/;}
+    .template get<immer::map<std::string, JsonWrap>>();}
     else { return immer::map<std::string, JsonWrap>(  );}
     }
 
@@ -288,7 +288,7 @@ ClaimKeysJob::ClaimKeysJob(
     .contains("one_time_keys"s)) {
     return
     jsonBody().get()["one_time_keys"s]
-    /*.get<immer::map<std::string, immer::map<std::string, Variant>>>()*/;}
+    .template get<immer::map<std::string, immer::map<std::string, Variant>>>();}
     else { return immer::map<std::string, immer::map<std::string, Variant>>(  );}
     }
 
@@ -370,7 +370,7 @@ GetKeysChangesJob::GetKeysChangesJob(
     .contains("changed"s)) {
     return
     jsonBody().get()["changed"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 
@@ -381,7 +381,7 @@ GetKeysChangesJob::GetKeysChangesJob(
     .contains("left"s)) {
     return
     jsonBody().get()["left"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 

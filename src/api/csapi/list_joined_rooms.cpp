@@ -84,7 +84,7 @@ GetJoinedRoomsJob::GetJoinedRoomsJob(
     .contains("joined_rooms"s)) {
     return
     jsonBody().get()["joined_rooms"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 

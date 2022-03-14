@@ -89,7 +89,7 @@ GetNotificationsJob::GetNotificationsJob(
     .contains("next_token"s)) {
     return
     jsonBody().get()["next_token"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -100,7 +100,7 @@ GetNotificationsJob::GetNotificationsJob(
     .contains("notifications"s)) {
     return
     jsonBody().get()["notifications"s]
-    /*.get<immer::array<Notification>>()*/;}
+    .template get<immer::array<Notification>>();}
     else { return immer::array<Notification>(  );}
     }
 

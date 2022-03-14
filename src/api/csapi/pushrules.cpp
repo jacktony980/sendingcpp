@@ -84,7 +84,7 @@ GetPushRulesJob::GetPushRulesJob(
     .contains("global"s)) {
     return
     jsonBody().get()["global"s]
-    /*.get<PushRuleset>()*/;}
+    .template get<PushRuleset>();}
     else { return PushRuleset(  );}
     }
 
@@ -380,7 +380,7 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
     .contains("enabled"s)) {
     return
     jsonBody().get()["enabled"s]
-    /*.get<bool>()*/;}
+    .template get<bool>();}
     else { return bool(  );}
     }
 
@@ -533,7 +533,7 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
     .contains("actions"s)) {
     return
     jsonBody().get()["actions"s]
-    /*.get<immer::array<Variant>>()*/;}
+    .template get<immer::array<Variant>>();}
     else { return immer::array<Variant>(  );}
     }
 

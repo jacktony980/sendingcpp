@@ -86,7 +86,7 @@ GetEventsJob::GetEventsJob(
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -97,7 +97,7 @@ GetEventsJob::GetEventsJob(
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -108,7 +108,7 @@ GetEventsJob::GetEventsJob(
     .contains("chunk"s)) {
     return
     jsonBody().get()["chunk"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -193,7 +193,7 @@ InitialSyncJob::InitialSyncJob(
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -204,7 +204,7 @@ InitialSyncJob::InitialSyncJob(
     .contains("presence"s)) {
     return
     jsonBody().get()["presence"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -215,7 +215,7 @@ InitialSyncJob::InitialSyncJob(
     .contains("rooms"s)) {
     return
     jsonBody().get()["rooms"s]
-    /*.get<immer::array<RoomInfo>>()*/;}
+    .template get<immer::array<RoomInfo>>();}
     else { return immer::array<RoomInfo>(  );}
     }
 
@@ -226,7 +226,7 @@ InitialSyncJob::InitialSyncJob(
     .contains("account_data"s)) {
     return
     jsonBody().get()["account_data"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 

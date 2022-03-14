@@ -83,7 +83,7 @@ GetPushersJob::GetPushersJob(
     .contains("pushers"s)) {
     return
     jsonBody().get()["pushers"s]
-    /*.get<immer::array<Pusher>>()*/;}
+    .template get<immer::array<Pusher>>();}
     else { return immer::array<Pusher>(  );}
     }
 

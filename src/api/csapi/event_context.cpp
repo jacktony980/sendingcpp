@@ -86,7 +86,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("start"s)) {
     return
     jsonBody().get()["start"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -97,7 +97,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("end"s)) {
     return
     jsonBody().get()["end"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -108,7 +108,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("events_before"s)) {
     return
     jsonBody().get()["events_before"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -119,7 +119,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("event"s)) {
     return
     jsonBody().get()["event"s]
-    /*.get<JsonWrap>()*/;}
+    .template get<JsonWrap>();}
     else { return JsonWrap(  );}
     }
 
@@ -130,7 +130,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("events_after"s)) {
     return
     jsonBody().get()["events_after"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -141,7 +141,7 @@ GetEventContextJob::GetEventContextJob(
     .contains("state"s)) {
     return
     jsonBody().get()["state"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 

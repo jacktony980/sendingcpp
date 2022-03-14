@@ -147,7 +147,7 @@ return _q;
     .contains("{{baseName}}"s)) {
     return
     jsonBody().get()["{{baseName}}"s]
-    /*.get<{{dataType.name}}>()*/;}
+    .template get<{{dataType.name}}>();}
     else { return {{>maybeOmittableType}}( {{defaultValue}} );}
     }
         {{/properties}}{{/normalResponse?}}{{/responses}}

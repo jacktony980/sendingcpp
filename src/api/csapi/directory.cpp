@@ -156,7 +156,7 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
     .contains("room_id"s)) {
     return
     jsonBody().get()["room_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -167,7 +167,7 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
     .contains("servers"s)) {
     return
     jsonBody().get()["servers"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 
@@ -315,7 +315,7 @@ GetLocalAliasesJob::GetLocalAliasesJob(
     .contains("aliases"s)) {
     return
     jsonBody().get()["aliases"s]
-    /*.get<immer::array<std::string>>()*/;}
+    .template get<immer::array<std::string>>();}
     else { return immer::array<std::string>(  );}
     }
 

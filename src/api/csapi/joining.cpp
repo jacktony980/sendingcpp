@@ -89,7 +89,7 @@ JoinRoomByIdJob::JoinRoomByIdJob(
     .contains("room_id"s)) {
     return
     jsonBody().get()["room_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -175,7 +175,7 @@ JoinRoomJob::JoinRoomJob(
     .contains("room_id"s)) {
     return
     jsonBody().get()["room_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 

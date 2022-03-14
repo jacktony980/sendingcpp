@@ -83,7 +83,7 @@ GetWhoIsJob::GetWhoIsJob(
     .contains("user_id"s)) {
     return
     jsonBody().get()["user_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -94,7 +94,7 @@ GetWhoIsJob::GetWhoIsJob(
     .contains("devices"s)) {
     return
     jsonBody().get()["devices"s]
-    /*.get<immer::map<std::string, DeviceInfo>>()*/;}
+    .template get<immer::map<std::string, DeviceInfo>>();}
     else { return immer::map<std::string, DeviceInfo>(  );}
     }
 

@@ -84,7 +84,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("room_id"s)) {
     return
     jsonBody().get()["room_id"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::string(  );}
     }
 
@@ -95,7 +95,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("membership"s)) {
     return
     jsonBody().get()["membership"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -106,7 +106,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("messages"s)) {
     return
     jsonBody().get()["messages"s]
-    /*.get<PaginationChunk>()*/;}
+    .template get<PaginationChunk>();}
     else { return std::optional<PaginationChunk>(  );}
     }
 
@@ -117,7 +117,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("state"s)) {
     return
     jsonBody().get()["state"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
@@ -128,7 +128,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("visibility"s)) {
     return
     jsonBody().get()["visibility"s]
-    /*.get<std::string>()*/;}
+    .template get<std::string>();}
     else { return std::optional<std::string>(  );}
     }
 
@@ -139,7 +139,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
     .contains("account_data"s)) {
     return
     jsonBody().get()["account_data"s]
-    /*.get<EventList>()*/;}
+    .template get<EventList>();}
     else { return EventList(  );}
     }
 
