@@ -255,21 +255,29 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, BanAction a)
     {
+        m.addJob(m.job<BanJob>().make(a.roomId, a.userId, a.reason));
         return { std::move(m), lager::noop };
     }
 
     ClientResult processResponse(ClientModel m, BanResponse r)
     {
+        if (!r.success()) {
+            return { std::move(m), failWithResponse(r) };
+        }
         return { std::move(m), lager::noop };
     }
 
     ClientResult updateClient(ClientModel m, UnbanAction a)
     {
+        m.addJob(m.job<UnbanJob>().make(a.roomId, a.userId));
         return { std::move(m), lager::noop };
     }
 
     ClientResult processResponse(ClientModel m, UnbanResponse r)
     {
+        if (!r.success()) {
+            return { std::move(m), failWithResponse(r) };
+        }
         return { std::move(m), lager::noop };
     }
 };
