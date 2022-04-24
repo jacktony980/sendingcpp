@@ -26,10 +26,10 @@ libkazv support the following functionalities:
 - Content repository
 - Send-to-device messages
 - E2EE (send and receive events only and attachments)
+- Banning and kicking
 
 These functionalities are currently not supported:
 
-- Banning and kicking
 - Setting presence
 - Device management
 - Direct messages
@@ -65,7 +65,7 @@ libkazv is not planning to support these functionalities:
 ## For Gentoo users
 
 If you are using Gentoo, you can use [tusooa-overlay][tusooa-overlay]
-to install libkazv. The dependency `olm` can be installed from 
+to install libkazv. The dependency `olm` can be installed from
 [src_prepare-overlay][src-prep].
 
 [tusooa-overlay]: https://gitlab.com/tusooa/tusooa-overlay
