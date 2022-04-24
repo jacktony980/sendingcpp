@@ -415,6 +415,45 @@ namespace Kazv
          */
         PromiseT forget() const;
 
+        /**
+         * Kick a user from this room.
+         *
+         * You must have enough power levels in this room to do so.
+         *
+         * @param userId The id of the user that will be kicked.
+         * @param reason The reason to explain this kick.
+         *
+         * @return A Promise that resolves when the kick is done,
+         * or when there is an error.
+         */
+        PromiseT kick(std::string userId, std::optional<std::string> reason = std::nullopt) const;
+
+        /**
+         * Ban a user from this room.
+         *
+         * You must have enough power levels in this room to do so.
+         *
+         * @param userId The id of the user that will be banned.
+         * @param reason The reason to explain this ban.
+         *
+         * @return A Promise that resolves when the ban is done,
+         * or when there is an error.
+         */
+        PromiseT ban(std::string userId, std::optional<std::string> reason = std::nullopt) const;
+
+        // TODO: v1.1 adds reason field
+        /**
+         * Unban a user from this room.
+         *
+         * You must have enough power levels in this room to do so.
+         *
+         * @param userId The id of the user that will be unbanned.
+         *
+         * @return A Promise that resolves when the unban is done,
+         * or when there is an error.
+         */
+        PromiseT unban(std::string userId/*, std::optional<std::string> reason = std::nullopt*/) const;
+
         /* lager::reader<JsonWrap> */
         inline auto avatar() const {
             return state(KeyOfState{"m.room.avatar", ""})

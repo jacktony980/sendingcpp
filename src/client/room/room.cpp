@@ -334,6 +334,27 @@ namespace Kazv
         return m_ctx.dispatch(ForgetRoomAction{+roomId()});
     }
 
+    auto Room::kick(std::string userId, std::optional<std::string> reason) const
+        -> PromiseT
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(KickAction{+roomId(), userId, reason});
+    }
+
+    auto Room::ban(std::string userId, std::optional<std::string> reason) const
+        -> PromiseT
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(BanAction{+roomId(), userId, reason});
+    }
+
+    auto Room::unban(std::string userId/*, std::optional<std::string> reason*/) const
+        -> PromiseT
+    {
+        using namespace CursorOp;
+        return m_ctx.dispatch(UnbanAction{+roomId(), userId});
+    }
+
     auto Room::setPinnedEvents(immer::flex_vector<std::string> eventIds) const
         -> PromiseT
     {
