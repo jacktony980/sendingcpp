@@ -12,6 +12,8 @@
 #include <csapi/inviting.hpp>
 #include <csapi/joining.hpp>
 #include <csapi/leaving.hpp>
+#include <csapi/kicking.hpp>
+#include <csapi/banning.hpp>
 
 namespace Kazv
 {
@@ -32,4 +34,13 @@ namespace Kazv
 
     ClientResult updateClient(ClientModel m, ForgetRoomAction a);
     ClientResult processResponse(ClientModel m, ForgetRoomResponse r);
+
+    ClientResult updateClient(ClientModel m, KickAction a);
+    ClientResult processResponse(ClientModel m, KickResponse r);
+
+    ClientResult updateClient(ClientModel m, BanAction a);
+    ClientResult processResponse(ClientModel m, BanResponse r);
+
+    ClientResult updateClient(ClientModel m, UnbanAction a);
+    ClientResult processResponse(ClientModel m, UnbanResponse r);
 }

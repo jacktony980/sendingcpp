@@ -41,6 +41,9 @@ namespace Kazv
     struct JoinRoomAction;
     struct LeaveRoomAction;
     struct ForgetRoomAction;
+    struct KickAction;
+    struct BanAction;
+    struct UnbanAction;
 
     struct ProcessResponseAction;
     struct SetTypingAction;
@@ -93,6 +96,9 @@ namespace Kazv
         JoinRoomAction,
         LeaveRoomAction,
         ForgetRoomAction,
+        KickAction,
+        BanAction,
+        UnbanAction,
 
         ProcessResponseAction,
 

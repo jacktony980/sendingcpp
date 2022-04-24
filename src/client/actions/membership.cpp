@@ -14,6 +14,7 @@
 #include "client-model.hpp"
 #include "clientutil.hpp"
 #include "cursorutil.hpp"
+#include "status-utils.hpp"
 
 #include "membership.hpp"
 
@@ -237,5 +238,38 @@ namespace Kazv
         kzo.client.dbg() << "Successfully forgot room" << std::endl;
         m.addTrigger(ForgetRoomSuccessful{roomId});
         return { std::move(m), lager::noop};
+    }
+
+    ClientResult updateClient(ClientModel m, KickAction a)
+    {
+        m.addJob(m.job<KickJob>().make(a.roomId, a.userId, a.reason));
+        return { std::move(m), lager::noop };
+    }
+    ClientResult processResponse(ClientModel m, KickResponse r)
+    {
+        if (!r.success()) {
+            return { std::move(m), failWithResponse(r) };
+        }
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, BanAction a)
+    {
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, BanResponse r)
+    {
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult updateClient(ClientModel m, UnbanAction a)
+    {
+        return { std::move(m), lager::noop };
+    }
+
+    ClientResult processResponse(ClientModel m, UnbanResponse r)
+    {
+        return { std::move(m), lager::noop };
     }
 };

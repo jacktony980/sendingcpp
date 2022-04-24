@@ -267,6 +267,25 @@ namespace Kazv
         std::string roomId;
     };
 
+    struct KickAction
+    {
+        std::string roomId;
+        std::string userId;
+        std::optional<std::string> reason;
+    };
+
+    struct BanAction
+    {
+        std::string roomId;
+        std::string userId;
+        std::optional<std::string> reason;
+    };
+
+    struct UnbanAction
+    {
+        std::string roomId;
+        std::string userId;
+    };
 
     struct SetTypingAction
     {

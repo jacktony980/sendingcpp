@@ -73,6 +73,9 @@ namespace Kazv
                 RESPONSE_FOR(JoinRoom);
                 RESPONSE_FOR(LeaveRoom);
                 RESPONSE_FOR(ForgetRoom);
+                RESPONSE_FOR(Kick);
+                RESPONSE_FOR(Ban);
+                RESPONSE_FOR(Unban);
                 // send
                 RESPONSE_FOR(SendMessage);
                 RESPONSE_FOR(SendToDevice);

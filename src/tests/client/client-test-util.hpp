@@ -53,3 +53,15 @@ inline auto createTestClientStoreFrom(ClientModel m, SingleTypePromiseInterface<
 }
 
 bool hasAccessToken(const BaseJob &job);
+
+template<class Model>
+void assert1Job(Model &&model)
+{
+    REQUIRE(std::forward<Model>(model).nextJobs.size() == 1);
+}
+
+template<class Model, class Pred>
+void for1stJob(Model &&model, Pred &&pred)
+{
+    std::forward<Pred>(pred)(std::forward<Model>(model).nextJobs[0]);
+}

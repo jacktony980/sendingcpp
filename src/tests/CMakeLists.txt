@@ -26,6 +26,8 @@ add_executable(kazvtest
   client/room-test.cpp
   client/random-generator-test.cpp
   client/profile-test.cpp
+  client/kick-test.cpp
+  client/ban-test.cpp
 
   kazvjobtest.cpp
   event-emitter-test.cpp
