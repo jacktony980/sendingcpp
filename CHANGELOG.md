@@ -14,6 +14,7 @@
 - Allow custom random generator with crypto. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/6
 - Support auto-discovery. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/12
 - Support profile API. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/13
+- Support kick/ban API. https://lily-is.land/kazv/libkazv/-/merge_requests/15
 
 ### Deprecated
 
