@@ -53,7 +53,7 @@ TEST_CASE("Event emitter should work normally", "[eventemitter]")
     SECTION("Handler should be disconnected once watchable is destroyed") {
         int counter2 = 0;
 
-        auto guard = boost::asio::executor_work_guard(ioContext.get_executor());
+        auto guard = boost::asio::make_work_guard(ioContext.get_executor());
         auto thread = std::thread([&] { ioContext.run(); });
 
         ee.emit(SyncFailed{});

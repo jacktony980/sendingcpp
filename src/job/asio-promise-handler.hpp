@@ -117,7 +117,7 @@ namespace Kazv
                 m_executor,
                 [=, callback=std::forward<Func>(callback),
                  resolve=std::move(resolve),
-                 guard=boost::asio::executor_work_guard(m_executor)]() {
+                 guard=boost::asio::make_work_guard(m_executor)]() {
                     callback(resolve);
                 });
         }

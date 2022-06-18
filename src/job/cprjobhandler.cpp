@@ -266,7 +266,7 @@ namespace Kazv
 
     void CprJobHandler::async(std::function<void()> func)
     {
-        std::thread([func=std::move(func), guard=boost::asio::executor_work_guard(m_d->executor)]() {
+        std::thread([func=std::move(func), guard=boost::asio::make_work_guard(m_d->executor)]() {
                         func();
                     }).detach();
     }

@@ -47,7 +47,7 @@ TEST_CASE("Thread-safety verification should work", "[client][thread-safety]")
     }
     REQUIRE(! thrown); // event loop has not started yet, so do not throw
 
-    boost::asio::executor_work_guard g(io.get_executor());
+    auto g = boost::asio::make_work_guard(io.get_executor());
 
     std::thread([&io] { io.run(); }).detach();
 
@@ -97,7 +97,7 @@ TEST_CASE("Thread-safety verification from secondary root should work", "[client
 
     auto ctx = sdk.context();
 
-    boost::asio::executor_work_guard guard(io.get_executor());
+    auto guard = boost::asio::make_work_guard(io.get_executor());
 
     std::thread([&io] { io.run(); }).detach();
 
@@ -157,7 +157,7 @@ TEST_CASE("Thread-safety verification should properly verify toEventLoop calls",
     auto room2 = client2.room("!foo:example.org");
 
     ctx.createResolvedPromise({})
-        .then([client2, room2, guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+        .then([client2, room2, guard=boost::asio::make_work_guard(io.get_executor())](auto &&) {
                   bool thrown = false;
 
                   try {
@@ -178,7 +178,7 @@ TEST_CASE("Thread-safety verification should properly verify toEventLoop calls",
 
     ctx.createResolvedPromise({})
         .then([client2=client2.toEventLoop(), room2=room2.toEventLoop(),
-               guard=boost::asio::executor_work_guard(io.get_executor())](auto &&) {
+               guard=boost::asio::make_work_guard(io.get_executor())](auto &&) {
                   bool thrown2 = false;
 
                   try {
