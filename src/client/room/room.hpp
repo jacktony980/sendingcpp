@@ -151,6 +151,38 @@ namespace Kazv
                                 }));
         }
 
+        /**
+         * Get the member events of heroes this room.
+         *
+         * @return a lager::reader of a RangeT of Event containing the member events.
+         */
+        auto heroMemberEvents() const -> lager::reader<immer::flex_vector<Event>>;
+
+        /**
+         * Get the member events of heroes this room.
+         *
+         * @return a lager::reader of a RangeT of std::string containing the member events.
+         */
+        auto heroDisplayNames() const -> lager::reader<immer::flex_vector<std::string>>;
+
+        /**
+         * Get the name of this room.
+         *
+         * If there is a m.room.name state event, the name in it is used.
+         * If there is none, the returned cursor will hold std::nullopt.
+         *
+         * @return a lager::reader of an optional std::string.
+         */
+        auto nameOpt() const -> lager::reader<std::optional<std::string>>;
+
+        /**
+         * Get the name of this room.
+         *
+         * If there is a m.room.name state event, the name in it is used.
+         * If there is none, the returned cursor will hold a placeholder string.
+         *
+         * @return a lager::reader of an std::string.
+         */
         /* lager::reader<std::string> */
         inline auto name() const {
             using namespace lager::lenses;

@@ -11,6 +11,7 @@
 #include <lager/event_loop/manual.hpp>
 
 #include <store.hpp>
+#include <sdk.hpp>
 
 #include <client/client-model.hpp>
 #include <base/basejob.hpp>
@@ -65,3 +66,5 @@ void for1stJob(Model &&model, Pred &&pred)
 {
     std::forward<Pred>(pred)(std::forward<Model>(model).nextJobs[0]);
 }
+
+Context<SdkAction> dumbContext();

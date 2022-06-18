@@ -197,7 +197,7 @@ namespace Kazv
     }
 
     template<class Archive>
-    void serialize(Archive &ar, RoomModel &r, std::uint32_t const /*version*/)
+    void serialize(Archive &ar, RoomModel &r, std::uint32_t const version)
     {
         ar
             & r.roomId
@@ -220,8 +220,13 @@ namespace Kazv
             & r.shouldRotateSessionKey
 
             & r.membersFullyLoaded
-            & r.heroIds
             ;
+
+        if (version >= 1) {
+            ar
+                & r.heroIds
+                ;
+        }
     }
 
     template<class Archive>
@@ -231,5 +236,5 @@ namespace Kazv
     }
 }
 
-BOOST_CLASS_VERSION(Kazv::RoomModel, 0)
+BOOST_CLASS_VERSION(Kazv::RoomModel, 1)
 BOOST_CLASS_VERSION(Kazv::RoomListModel, 0)

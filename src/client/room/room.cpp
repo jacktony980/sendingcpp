@@ -85,6 +85,54 @@ namespace Kazv
             });
     }
 
+    auto Room::heroMemberEvents() const -> lager::reader<immer::flex_vector<Event>>
+    {
+        using namespace lager::lenses;
+        auto idsCursor = heroIds();
+        lager::reader<immer::map<KeyOfState, Event>> statesCursor = stateEvents();
+
+        return lager::with(idsCursor, statesCursor)
+            .xform(zug::map([](const auto &ids, const auto &states) {
+                return intoImmer(
+                    immer::flex_vector<Event>{},
+                    zug::map([states](const auto &id) {
+                        return states[{"m.room.member", id}];
+                    }),
+                    ids);
+            }));
+    }
+
+    auto Room::heroDisplayNames() const
+        -> lager::reader<immer::flex_vector<std::string>>
+    {
+        return heroMemberEvents()
+            .xform(zug::map([](const auto &events) {
+                return intoImmer(
+                    immer::flex_vector<std::string>{},
+                    zug::map([](const auto &event) {
+                        auto content = event.content();
+                        return content.get().contains("displayname")
+                            ? content.get()["displayname"].template get<std::string>()
+                            : std::string();
+                    }),
+                    events);
+            }));
+    }
+
+    auto Room::nameOpt() const -> lager::reader<std::optional<std::string>>
+    {
+        using namespace lager::lenses;
+        return stateEvents()
+            [KeyOfState{"m.room.name", ""}]
+            [or_default]
+            .xform(eventContent)
+            .xform(zug::map([](const JsonWrap &content) {
+                return content.get().contains("name")
+                    ? std::optional<std::string>(content.get()["name"])
+                    : std::nullopt;
+            }));
+    }
+
     auto Room::heroIds() const
         -> lager::reader<immer::flex_vector<std::string>>
     {

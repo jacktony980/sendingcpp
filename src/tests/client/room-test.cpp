@@ -16,6 +16,8 @@
 #include <lagerstoreeventemitter.hpp>
 #include <asio-promise-handler.hpp>
 
+#include "client-test-util.hpp"
+
 using namespace Kazv;
 
 TEST_CASE("Result of Room::toEventLoop() should not vary with the original cursor", "[client][room]")
@@ -62,4 +64,128 @@ TEST_CASE("Result of Room::toEventLoop() should not vary with the original curso
 
     REQUIRE(+room.roomId() == "!bar:example.org");
     REQUIRE(+roomInEventLoop.roomId() == "!foo:example.org");
+}
+
+static const std::string exampleRoomId = "!example:example.org";
+
+static auto exampleRoomWithoutNameEvent()
+{
+    RoomModel model;
+    model.roomId = "!example:example.org";
+    model.stateEvents = model.stateEvents
+        .set(
+            {"m.room.member", "@foo:example.org"},
+            Event(R"(
+            {
+                "content": {
+                    "displayname": "foo's name",
+                    "membership": "join"
+                },
+                "event_id": "some id2",
+                "room_id": "!example:example.org",
+                "type": "m.room.member",
+                "state_key": "@foo:example.org"
+            })"_json))
+        .set(
+            {"m.room.member", "@bar:example.org"},
+            Event(R"(
+            {
+                "content": {
+                    "displayname": "bar's name",
+                    "membership": "join"
+                },
+                "event_id": "some id3",
+                "room_id": "!example:example.org",
+                "type": "m.room.member",
+                "state_key": "@bar:example.org"
+            })"_json));
+    model.heroIds = {"@foo:example.org", "@bar:example.org"};
+    return model;
+}
+
+static auto exampleRoomWithNameEvent()
+{
+    auto model = exampleRoomWithoutNameEvent();
+    model.stateEvents = model.stateEvents
+        .set(
+            {"m.room.name", ""},
+            Event(R"(
+            {
+                "content": {
+                    "name": "some name"
+                },
+                "event_id": "some id",
+                "room_id": "!example:example.org",
+                "type": "m.room.name",
+                "state_key": ""
+            })"_json));
+    return model;
+};
+
+static auto sdkWith(RoomModel room)
+{
+    SdkModel model;
+    model.client.roomList.rooms = model.client.roomList.rooms.set(room.roomId, room);
+    return model;
+}
+
+static auto makeRoomWithDumbContext(RoomModel room)
+{
+    auto cursor = lager::make_constant(sdkWith(room));
+    auto nameCursor = lager::make_constant(room.roomId);
+    return Room(cursor, nameCursor, dumbContext());
+}
+
+TEST_CASE("Room::nameOpt()", "[client][room][getter]")
+{
+    WHEN("the room has a name") {
+        auto room = makeRoomWithDumbContext(exampleRoomWithNameEvent());
+        THEN("it should give out the name") {
+            auto val = room.nameOpt().make().get();
+            REQUIRE(val.has_value());
+            REQUIRE(val.value() == "some name");
+        }
+    }
+
+    WHEN("the room has no name") {
+        auto room = makeRoomWithDumbContext(exampleRoomWithoutNameEvent());
+        THEN("it should give out nullopt") {
+            auto val = room.nameOpt().make().get();
+            REQUIRE(!val.has_value());
+        }
+    }
+}
+
+TEST_CASE("Room::heroMemberEvents()", "[client][room][getter]")
+{
+    auto room = makeRoomWithDumbContext(exampleRoomWithNameEvent());
+    THEN("it should give out the events") {
+        auto val = room.heroMemberEvents().make().get();
+        REQUIRE(val.size() == 2);
+        REQUIRE(std::any_of(val.begin(), val.end(),
+                [](const auto &v) {
+                    return v.id() == "some id2";
+                }));
+        REQUIRE(std::any_of(val.begin(), val.end(),
+                [](const auto &v) {
+                    return v.id() == "some id3";
+                }));
+    }
+}
+
+TEST_CASE("Room::heroDisplayNames()", "[client][room][getter]")
+{
+    auto room = makeRoomWithDumbContext(exampleRoomWithNameEvent());
+    THEN("it should give out the names") {
+        auto val = room.heroDisplayNames().make().get();
+        REQUIRE(val.size() == 2);
+        REQUIRE(std::any_of(val.begin(), val.end(),
+                [](const auto &v) {
+                    return v == "foo's name";
+                }));
+        REQUIRE(std::any_of(val.begin(), val.end(),
+                [](const auto &v) {
+                    return v == "bar's name";
+                }));
+    }
 }
