@@ -125,7 +125,7 @@ TEST_CASE("Job queue should behave properly", "[kazvjob]")
     h.submit(failJob, callback); // false
     h.submit(failJobWithCancel, callback); // false
     h.submit(succJob, callback); // false (because this is cancelled)
-    h.submit(succJob, [&h](Response r) {
+    h.submit(succJob, [&h](Response) {
                           h.stop();
                       }); // nothing added
 

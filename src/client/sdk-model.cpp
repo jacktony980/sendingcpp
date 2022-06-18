@@ -28,8 +28,6 @@ namespace Kazv
                     ClientModel::update(std::move(s.client), a);
                 s.client = std::move(newClient);
 
-                bool hasCrypto{s.client.crypto};
-
                 auto jobs = s.client.popAllJobs();
                 auto triggers = s.client.popAllTriggers();
 

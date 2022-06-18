@@ -317,7 +317,7 @@ namespace Kazv
     void CprJobHandler::Private::submitImpl(BaseJob job, std::function<void(Response)> userCallback)
     {
         cpr::Url url{job.url()};
-        auto streamUpload = std::holds_alternative<FileDesc>(job.requestBody());
+
         cpr::Body body;
         BaseJob::Header origHeader = job.requestHeader();
         cpr::Header header(origHeader.get().begin(), origHeader.get().end());
@@ -394,7 +394,7 @@ namespace Kazv
         if (! query.empty()) {
             // from cpr/parameters.cpp
             cpr::CurlHolder holder;
-            for (const auto kv : query) {
+            for (const auto &kv : query) {
                 std::string key = kv.first;
                 std::string value = kv.second;
                 params.Add(cpr::Parameter(std::move(key), std::move(value)));
@@ -418,7 +418,7 @@ namespace Kazv
                                 body = r.text;
                             }
 
-                            return { r.status_code,
+                            return { static_cast<Response::StatusCode>(r.status_code),
                                      body,
                                      BaseJob::Header(r.header.begin(), r.header.end()),
                                      {} // extraData, will be added in genResponse
