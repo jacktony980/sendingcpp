@@ -262,6 +262,12 @@ TEST_CASE("use sync response to update client model", "[client][sync]")
         REQUIRE(hasAlice);
     }
 
+    SECTION("heroes should be updated") {
+        auto heroIds = +r.heroIds();
+
+        REQUIRE(heroIds == immer::flex_vector<std::string>{"@alice:example.com", "@bob:example.com"});
+    }
+
     SECTION("ephemeral events should be updated") {
         auto users = +r.typingUsers();
 

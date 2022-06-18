@@ -225,6 +225,14 @@ namespace Kazv
         KAZV_WRAP_ATTR(RoomModel, roomCursor(), membersFullyLoaded);
 
         /**
+         * Get the ids of the heroes of the room.
+         *
+         * @return a lager::reader of a RangeT<std::string> containing
+         * the ids of the heroes of the room.
+         */
+        auto heroIds() const -> lager::reader<immer::flex_vector<std::string>>;
+
+        /**
          * Set local draft for this room.
          *
          * After the returned Promise is resolved,

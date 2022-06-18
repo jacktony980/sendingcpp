@@ -127,6 +127,10 @@ namespace Kazv
             [&](MarkMembersFullyLoadedAction) {
                 r.membersFullyLoaded = true;
                 return r;
+            },
+            [&](SetHeroIdsAction a) {
+                r.heroIds = a.heroIds;
+                return r;
             }
             );
     }

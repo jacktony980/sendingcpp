@@ -85,6 +85,11 @@ namespace Kazv
     {
     };
 
+    struct SetHeroIdsAction
+    {
+        immer::flex_vector<std::string> heroIds;
+    };
+
     struct RoomModel
     {
         using Membership = RoomMembership;
@@ -116,6 +121,7 @@ namespace Kazv
         bool shouldRotateSessionKey{true};
 
         bool membersFullyLoaded{false};
+        immer::flex_vector<std::string> heroIds;
 
         immer::flex_vector<std::string> joinedMemberIds() const;
 
@@ -134,7 +140,8 @@ namespace Kazv
             AddEphemeralAction,
             SetLocalDraftAction,
             SetRoomEncryptionAction,
-            MarkMembersFullyLoadedAction
+            MarkMembersFullyLoadedAction,
+            SetHeroIdsAction
             >;
 
         static RoomModel update(RoomModel r, Action a);
@@ -158,7 +165,8 @@ namespace Kazv
             && a.localDraft == b.localDraft
             && a.encrypted == b.encrypted
             && a.shouldRotateSessionKey == b.shouldRotateSessionKey
-            && a.membersFullyLoaded == b.membersFullyLoaded;
+            && a.membersFullyLoaded == b.membersFullyLoaded
+            && a.heroIds == b.heroIds;
     }
 
     struct UpdateRoomAction
@@ -212,6 +220,7 @@ namespace Kazv
             & r.shouldRotateSessionKey
 
             & r.membersFullyLoaded
+            & r.heroIds
             ;
     }
 

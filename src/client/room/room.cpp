@@ -85,6 +85,14 @@ namespace Kazv
             });
     }
 
+    auto Room::heroIds() const
+        -> lager::reader<immer::flex_vector<std::string>>
+    {
+        return roomCursor().map([](const auto &room) {
+            return room.heroIds;
+        });
+    }
+
     auto Room::setLocalDraft(std::string localDraft) const
         -> PromiseT
     {

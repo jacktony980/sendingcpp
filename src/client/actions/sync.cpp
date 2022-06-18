@@ -124,6 +124,17 @@ namespace Kazv
                 }
             };
 
+        auto updateRoomSummary =
+            [=](const auto &id, const auto &room) {
+                if (!room.summary.has_value()) {
+                    return;
+                }
+                if (!room.summary->mHeroes.empty()) {
+                    auto newHeroes = room.summary->mHeroes;
+                    updateRoomImpl(id, SetHeroIdsAction{immer::flex_vector<std::string>(newHeroes.begin(), newHeroes.end())});
+                }
+            };
+
         auto updateJoinedRoom =
             [=](const auto &id, const auto &room) {
                 updateSingleRoom(id, room, RoomMembership::Join);
@@ -132,6 +143,8 @@ namespace Kazv
                 }
                 // TODO update other info such as
                 // notification and summary
+
+                updateRoomSummary(id, room);
             };
 
         auto updateInvitedRoom =
