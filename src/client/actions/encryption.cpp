@@ -391,12 +391,12 @@ namespace Kazv
     {
         if (! m.crypto) {
             kzo.client.dbg() << "We have no encryption enabled--ignoring this" << std::endl;
-            return { std::move(m), lager::noop };
+            return { std::move(m), simpleFail };
         }
 
         if (! r.success()) {
-            kzo.client.dbg() << "query keys failed" << std::endl;
-            return { std::move(m), lager::noop };
+            kzo.client.dbg() << "query keys failed: " << r.errorCode() << r.errorMessage() << std::endl;
+            return { std::move(m), failWithResponse(r) };
         }
 
         kzo.client.dbg() << "Received a query key response" << std::endl;

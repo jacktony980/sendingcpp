@@ -27,3 +27,27 @@ TEST_CASE("immer::map<non-std::string, X> should convert to json array", "[base]
 
     REQUIRE(j.is_array());
 }
+
+TEST_CASE("immer::array<X> should convert to json array", "[base][types]")
+{
+    immer::array<int> m;
+    json j = m;
+
+    REQUIRE(j.is_array());
+
+    m = m.push_back(1);
+    j = m;
+    REQUIRE(j.is_array());
+}
+
+TEST_CASE("immer::flex_vector<X> should convert to json array", "[base][types]")
+{
+    immer::flex_vector<int> m;
+    json j = m;
+
+    REQUIRE(j.is_array());
+
+    m = m.push_back(1);
+    j = m;
+    REQUIRE(j.is_array());
+}

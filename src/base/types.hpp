@@ -163,6 +163,7 @@ namespace nlohmann {
     template <class T>
     struct adl_serializer<immer::array<T>> {
         static void to_json(json& j, immer::array<T> arr) {
+            j = json::array();
             for (auto i : arr) {
                 j.push_back(json(i));
             }
@@ -182,6 +183,7 @@ namespace nlohmann {
     template <class T>
     struct adl_serializer<immer::flex_vector<T>> {
         static void to_json(json& j, immer::flex_vector<T> arr) {
+            j = json::array();
             for (auto i : arr) {
                 j.push_back(json(i));
             }
