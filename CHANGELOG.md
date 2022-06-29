@@ -16,6 +16,7 @@
 - Support profile API. https://lily.kazv.moe/kazv/libkazv/-/merge_requests/13
 - Support kick/ban API. https://lily-is.land/kazv/libkazv/-/merge_requests/15
 - Support room heroes. https://lily-is.land/kazv/libkazv/-/merge_requests/16
+- Add coverage report. https://lily-is.land/kazv/libkazv/-/merge_requests/17
 
 ### Deprecated
 
