@@ -386,7 +386,7 @@ namespace Kazv
     MaybeString Crypto::decrypt(nlohmann::json eventJson)
     {
         auto content = eventJson.at("content");
-	auto algo = content.contains("algorithm") ? content.at("algorithm").template get<std::string>() : std::string(); 
+        auto algo = content.contains("algorithm") ? content.at("algorithm").template get<std::string>() : std::string();
         if (algo == olmAlgo) {
             return m_d->decryptOlm(std::move(content));
         } else if (algo == megOlmAlgo) {
