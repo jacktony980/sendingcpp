@@ -13,7 +13,7 @@ set(libkazvSourceRoot ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(libkazv_VERSION_MAJOR 0)
 set(libkazv_VERSION_MINOR 2)
-set(libkazv_VERSION_PATCH 0)
+set(libkazv_VERSION_PATCH 1)
 set(libkazv_VERSION_STRING ${libkazv_VERSION_MAJOR}.${libkazv_VERSION_MINOR}.${libkazv_VERSION_PATCH})
 set(libkazv_SOVERSION 2)
 
