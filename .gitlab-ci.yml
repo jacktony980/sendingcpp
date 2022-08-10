@@ -24,7 +24,7 @@ lint:
 'prepare:env':
   stage: prepare
   script: |
-    tag="$CI_COMMIT_BRANCH"
+    tag="${CI_COMMIT_BRANCH:-$CI_COMMIT_TAG}"
     tag="$(echo "$tag" | sed -e "s/[^a-zA-Z0-9.]/-/g")"
     echo "tag=$tag" >> prepare.env
   artifacts:
