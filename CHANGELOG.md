@@ -1,6 +1,10 @@
 
 # Change log
 
+## 0.2.1
+
+- Fix crash when receiving a redacted encrypted event. https://lily-is.land/kazv/libkazv/-/commit/98870fa04fa78361f5092cd77f88895e4a228d34
+
 ## 0.2.0
 
 - Support streaming uploads. https://gitlab.com/kazv/libkazv/-/merge_requests/1
