@@ -139,7 +139,7 @@ namespace Kazv
             if (! r.success()) {
                 kzo.client.dbg() << "Uploading identity keys failed" << std::endl;
                 m.addTrigger(UploadIdentityKeysFailed{r.errorCode(), r.errorMessage()});
-                return { std::move(m), lager::noop };
+                return { std::move(m), failWithResponse(r) };
             }
 
             kzo.client.dbg() << "Uploading identity keys successful" << std::endl;
@@ -150,7 +150,7 @@ namespace Kazv
             if (! r.success()) {
                 kzo.client.dbg() << "Uploading one-time keys failed" << std::endl;
                 m.addTrigger(UploadOneTimeKeysFailed{r.errorCode(), r.errorMessage()});
-                return { std::move(m), lager::noop };
+                return { std::move(m), failWithResponse(r) };
             }
 
             kzo.client.dbg() << "Uploading one-time keys successful" << std::endl;
@@ -487,7 +487,7 @@ namespace Kazv
         if (! r.success()) {
             kzo.client.dbg() << "claim keys failed" << std::endl;
             m.addTrigger(ClaimKeysFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
 
         kzo.client.dbg() << "claim keys successful" << std::endl;

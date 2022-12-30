@@ -229,7 +229,7 @@ namespace Kazv
                 kzo.client.dbg() << "Response body: "
                           << std::get<BaseJob::BytesBody>(r.body) << std::endl;
             }
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
 
         kzo.client.dbg() << "Sync successful" << std::endl;

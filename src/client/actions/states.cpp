@@ -12,6 +12,7 @@
 #include "clientutil.hpp"
 #include "cursorutil.hpp"
 
+#include <status-utils.hpp>
 #include "states.hpp"
 
 namespace Kazv
@@ -37,7 +38,7 @@ namespace Kazv
 
         if (! r.success()) {
             m.addTrigger(GetRoomStatesFailed{roomId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(GetRoomStatesSuccessful{roomId});
@@ -84,7 +85,7 @@ namespace Kazv
 
         if (! r.success()) {
             m.addTrigger(GetStateEventFailed{roomId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         auto content = r.jsonBody();
@@ -154,7 +155,7 @@ namespace Kazv
         if (! r.success()) {
             kzo.client.dbg() << "Send state event failed" << std::endl;
             m.addTrigger(SendStateEventFailed{roomId, eventType, stateKey, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(SendStateEventSuccessful{roomId, r.eventId(), eventType, stateKey});

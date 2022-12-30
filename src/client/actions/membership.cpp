@@ -90,7 +90,7 @@ namespace Kazv
         if (! r.success()) {
             kzo.client.dbg() << "Create room failed" << std::endl;
             m.addTrigger(CreateRoomFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(CreateRoomSuccessful{r.roomId()});
@@ -117,13 +117,13 @@ namespace Kazv
 
         if (! r.success()) {
             // Error
-            kzo.client.dbg() << "Error inviting user" << std::endl;
+            kzo.client.warn() << "Error inviting user " << r.errorCode() << r.errorMessage() << std::endl;
 
             m.addTrigger(InviteUserFailed{roomId, userId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
-        kzo.client.dbg() << "Inviting user successful" << std::endl;
+        kzo.client.info() << "Inviting user successful" << std::endl;
         m.addTrigger(InviteUserSuccessful{roomId, userId});
         return { std::move(m), lager::noop };
     }
@@ -147,11 +147,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            kzo.client.dbg() << "Error joining room" << std::endl;
-            return { std::move(m), lager::noop};
+            kzo.client.warn() << "Error joining room" << r.errorCode() << r.errorMessage() << std::endl;
+            return { std::move(m), failWithResponse(r) };
         }
 
-        kzo.client.dbg() << "Successfully joined room" << std::endl;
+        kzo.client.info() << "Successfully joined room" << std::endl;
         m.addTrigger(JoinRoomSuccessful{roomIdOrAlias});
         return { std::move(m), lager::noop};
     }
@@ -175,11 +175,12 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            kzo.client.dbg() << "Error joining room" << std::endl;
-            return { std::move(m), lager::noop};
+
+            kzo.client.warn() << "Error joining room" << r.errorCode() << r.errorMessage() << std::endl;
+            return { std::move(m), failWithResponse(r) };
         }
 
-        kzo.client.dbg() << "Successfully joined room" << std::endl;
+        kzo.client.info() << "Successfully joined room" << std::endl;
         m.addTrigger(JoinRoomSuccessful{roomIdOrAlias});
         return { std::move(m), lager::noop};
     }
@@ -203,11 +204,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            kzo.client.dbg() << "Error leaving room" << std::endl;
-            return { std::move(m), lager::noop};
+            kzo.client.warn() << "Error leaving room" << r.errorCode() << r.errorMessage() << std::endl;
+            return { std::move(m), failWithResponse(r) };
         }
 
-        kzo.client.dbg() << "Successfully left room" << std::endl;
+        kzo.client.info() << "Successfully left room" << std::endl;
         m.addTrigger(LeaveRoomSuccessful{roomId});
         return { std::move(m), lager::noop};
     }
@@ -231,11 +232,11 @@ namespace Kazv
                     r.errorCode(),
                     r.errorMessage()
                 });
-            kzo.client.dbg() << "Error forgetting room" << std::endl;
-            return { std::move(m), lager::noop};
+            kzo.client.warn() << "Error forgetting room" << r.errorCode() << r.errorMessage() << std::endl;
+            return { std::move(m), failWithResponse(r) };
         }
 
-        kzo.client.dbg() << "Successfully forgot room" << std::endl;
+        kzo.client.info() << "Successfully forgot room" << std::endl;
         m.addTrigger(ForgetRoomSuccessful{roomId});
         return { std::move(m), lager::noop};
     }
@@ -248,6 +249,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, KickResponse r)
     {
         if (!r.success()) {
+            kzo.client.warn() << "Error kicking" << r.errorCode() << r.errorMessage() << std::endl;
             return { std::move(m), failWithResponse(r) };
         }
         return { std::move(m), lager::noop };
@@ -262,6 +264,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, BanResponse r)
     {
         if (!r.success()) {
+            kzo.client.warn() << "Error banning" << r.errorCode() << r.errorMessage() << std::endl;
             return { std::move(m), failWithResponse(r) };
         }
         return { std::move(m), lager::noop };
@@ -276,6 +279,7 @@ namespace Kazv
     ClientResult processResponse(ClientModel m, UnbanResponse r)
     {
         if (!r.success()) {
+            kzo.client.warn() << "Error unbanning" << r.errorCode() << r.errorMessage() << std::endl;
             return { std::move(m), failWithResponse(r) };
         }
         return { std::move(m), lager::noop };

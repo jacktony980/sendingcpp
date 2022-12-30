@@ -57,7 +57,7 @@ namespace Kazv
         if (! r.success()) {
             kzo.client.dbg() << "Get room events failed" << std::endl;
             m.addTrigger(PaginateFailed{roomId});
-            return { m, lager::noop };
+            return { m, failWithResponse(r) };
         }
 
         auto paginateBackToken = r.end();

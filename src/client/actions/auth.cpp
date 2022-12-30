@@ -34,7 +34,7 @@ namespace Kazv
     {
         if (! r.success()) {
             m.addTrigger(LoginFailed{r.errorCode(), r.errorMessage()});
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
 
         kzo.client.dbg() << "Job success" << std::endl;
@@ -121,10 +121,11 @@ namespace Kazv
 
         return {
             std::move(m),
-            [success, serverUrl, error](auto &&) {
+            [success, serverUrl, error, r](auto &&) {
                 auto data = json{
                     {"homeserverUrl", serverUrl},
                     {"error", error},
+                    {"errorCode", r.errorCode()},
                 };
                 return EffectStatus(success, data);
             }
@@ -141,16 +142,13 @@ namespace Kazv
     {
         return {
             std::move(m),
-            [r](auto &&) {
+            [r](auto &&ctx) {
                 if (r.success()) {
                     return EffectStatus(r.success(), json{
                         {"versions", r.versions()},
                     });
                 } else {
-                    return EffectStatus(r.success(), json{
-                        {"errorCode", r.errorCode()},
-                        {"error", r.errorMessage()},
-                    });
+                    return failWithResponse(r)(std::forward<decltype(ctx)>(ctx));
                 }
             }
         };

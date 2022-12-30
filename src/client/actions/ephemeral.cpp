@@ -6,6 +6,7 @@
 
 #include <libkazv-config.hpp>
 
+#include <status-utils.hpp>
 #include "ephemeral.hpp"
 
 namespace Kazv
@@ -30,7 +31,7 @@ namespace Kazv
         if (! r.success()) {
             m.addTrigger(SetTypingFailed{roomId, r.errorCode(), r.errorMessage()});
 
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(SetTypingSuccessful{roomId});

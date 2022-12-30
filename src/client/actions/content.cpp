@@ -47,7 +47,7 @@ namespace Kazv
         auto uploadId = r.dataStr("uploadId");
         if (! r.success()) {
             m.addTrigger(UploadContentFailed{uploadId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
         auto mxcUri = r.contentUri();
         m.addTrigger(UploadContentSuccessful{mxcUri, uploadId});
@@ -81,7 +81,7 @@ namespace Kazv
     {
         auto mxcUri = r.dataStr("mxcUri");
         if (! r.success()) {
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
         auto isStreaming = r.dataJson("streaming").template get<bool>();
 
@@ -117,7 +117,7 @@ namespace Kazv
     {
         auto mxcUri = r.dataStr("mxcUri");
         if (! r.success()) {
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
         auto isStreaming = r.dataJson("streaming").template get<bool>();
 

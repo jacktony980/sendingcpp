@@ -66,7 +66,7 @@ namespace Kazv
         if (! r.success()) {
             kzo.client.dbg() << "Send message failed" << std::endl;
             m.addTrigger(SendMessageFailed{roomId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), lager::noop };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(SendMessageSuccessful{roomId, r.eventId()});
@@ -120,7 +120,7 @@ namespace Kazv
 
         if (! r.success()) {
             m.addTrigger(SendToDeviceMessageFailed{devicesToSend, txnId, r.errorCode(), r.errorMessage()});
-            return { std::move(m), simpleFail };
+            return { std::move(m), failWithResponse(r) };
         }
 
         m.addTrigger(SendToDeviceMessageSuccessful{devicesToSend, txnId});
