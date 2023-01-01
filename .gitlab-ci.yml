@@ -2,6 +2,7 @@ stages:
   - lint
   - prepare
   - build
+  - check-changelog
   - doc
 
 lint:
@@ -99,3 +100,11 @@ lint:
     - changes: *src-chg
     - changes:
         - '**/*.md'
+
+'check-changelog':
+  stage: check-changelog
+  image: alpine
+  script:
+    - sh ./tools/check-changelog
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "servant"
