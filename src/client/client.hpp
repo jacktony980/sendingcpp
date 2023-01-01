@@ -40,6 +40,19 @@ namespace Kazv
      * copy-constructing another Client from this is safe from any thread.
      * If the Client is constructed from a cursor, copy-constructing another
      * Client is safe only from the same thread as this Client.
+     *
+     * ## Error handling
+     *
+     * A lot of functions in Client and Room are asynchronous actions.
+     * These actions return the result via a Promise.
+     * If an API request has failed, the Promise p will satisfy the following:
+     * - `!p.success()`
+     * - `p.dataStr("error")` will contain the error message from the response.
+     * - `p.dataStr("errorCode")` will contain the matrix error code, if available,
+     *   or the HTTP status code otherwise.
+     *
+     * What information is resolved if the API request has succeeded is defined
+     * by individual functions.
      */
     class Client
     {
