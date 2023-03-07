@@ -11,6 +11,7 @@
 #include <optional>
 #include <string>
 #include <variant>
+#include <functional>
 #include <immer/box.hpp>
 #include <immer/flex_vector.hpp>
 

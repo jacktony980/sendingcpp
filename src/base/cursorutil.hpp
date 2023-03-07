@@ -113,15 +113,15 @@ namespace Kazv
     namespace CursorOp
     {
         template<class Cursor>
-        inline auto operator+(Cursor &&c)
-        {
-            return (~std::forward<Cursor>(c)).get();
-        }
-
-        template<class Cursor>
         inline auto operator~(Cursor &&c)
         {
             return std::forward<Cursor>(c).make();
+        }
+
+        template<class Cursor>
+        inline auto operator+(Cursor &&c)
+        {
+            return (~std::forward<Cursor>(c)).get();
         }
     }
 

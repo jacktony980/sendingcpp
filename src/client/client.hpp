@@ -336,7 +336,7 @@ namespace Kazv
             using namespace CursorOp;
             auto [serverName, mediaId] = mxcUriToMediaDesc(mxcUri);
             return (+clientCursor())
-                .job<GetContentJob>()
+                .template job<GetContentJob>()
                 .make(serverName, mediaId).url();
         }
 
