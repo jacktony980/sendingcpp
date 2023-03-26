@@ -45,7 +45,7 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(kazvtest
-  PRIVATE Catch2::Catch2
+  PRIVATE Catch2::Catch2WithMain
   PRIVATE kazv
   PRIVATE kazveventemitter
   PRIVATE kazvjob

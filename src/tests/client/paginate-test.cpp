@@ -7,7 +7,7 @@
 
 #include <libkazv-config.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <boost/asio.hpp>
 
 #include <asio-promise-handler.hpp>

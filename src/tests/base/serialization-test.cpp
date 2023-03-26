@@ -6,7 +6,7 @@
 
 #include <libkazv-config.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <sstream>
 #include <boost/archive/text_iarchive.hpp>

@@ -10,7 +10,7 @@
 #include <tuple>
 #include <iostream>
 #include <map>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <boost/asio.hpp>
 
 #include <immer/array.hpp>

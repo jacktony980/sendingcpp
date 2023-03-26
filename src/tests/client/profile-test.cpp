@@ -6,7 +6,7 @@
 
 #include <libkazv-config.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <boost/asio.hpp>
 
@@ -22,7 +22,7 @@ static const json getUserProfileResponseJson = R"({
   "displayname": "Alice Margatroid"
 })"_json;
 
-using Catch::Matchers::Contains;
+using Catch::Matchers::ContainsSubstring;
 
 
 TEST_CASE("GetUserProfile", "[client][profile]")
@@ -113,7 +113,7 @@ TEST_CASE("SetAvatarUrl", "[client][profile]")
             REQUIRE(job.jobId() == jobId);
             REQUIRE(hasAccessToken(job));
 
-            REQUIRE_THAT(job.url(), Contains("/" + loggedInModel.userId + "/"));
+            REQUIRE_THAT(job.url(), ContainsSubstring("/" + loggedInModel.userId + "/"));
         }
     }
 
@@ -168,7 +168,7 @@ TEST_CASE("SetDisplayName", "[client][profile]")
             REQUIRE(job.jobId() == jobId);
             REQUIRE(hasAccessToken(job));
 
-            REQUIRE_THAT(job.url(), Contains("/" + loggedInModel.userId + "/"));
+            REQUIRE_THAT(job.url(), ContainsSubstring("/" + loggedInModel.userId + "/"));
         }
     }
 
