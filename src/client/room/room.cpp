@@ -133,6 +133,11 @@ namespace Kazv
             }));
     }
 
+    lager::reader<bool> Room::encrypted() const
+    {
+        return roomCursor()[&RoomModel::encrypted];
+    }
+  
     auto Room::heroIds() const
         -> lager::reader<immer::flex_vector<std::string>>
     {
