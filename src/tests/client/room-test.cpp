@@ -189,3 +189,25 @@ TEST_CASE("Room::heroDisplayNames()", "[client][room][getter]")
                 }));
     }
 }
+
+TEST_CASE("Room::encrypted()", "[client][room][getter]")
+{
+    auto roomModel = exampleRoomWithNameEvent();
+    WHEN("the room is encrypted") {
+        roomModel.encrypted = true;
+        auto room = makeRoomWithDumbContext(roomModel);
+        THEN("it should give out true") {
+            auto val = room.encrypted().make().get();
+            REQUIRE(val);
+        }
+    }
+
+    WHEN("the room is not encrypted") {
+        roomModel.encrypted = false;
+        auto room = makeRoomWithDumbContext(roomModel);
+        THEN("it should give out false") {
+            auto val = room.encrypted().make().get();
+            REQUIRE(!val);
+        }
+    }
+}
