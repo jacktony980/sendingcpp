@@ -37,7 +37,7 @@ GetPushersJob::GetPushersJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushers",
+          std::string("/_api/client/r0") + "/pushers",
           GET,
           std::string("GetPushers"),
           _accessToken,
@@ -137,7 +137,7 @@ PostPusherJob::PostPusherJob(
         std::string pushkey, std::string kind, std::string appId, std::string appDisplayName, std::string deviceDisplayName, std::string lang, PusherData data, std::optional<std::string> profileTag, std::optional<bool> append
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushers/set",
+          std::string("/_api/client/r0") + "/pushers/set",
           POST,
           std::string("PostPusher"),
           _accessToken,

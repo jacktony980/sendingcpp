@@ -42,7 +42,7 @@ RedactEventJob::RedactEventJob(
         std::string roomId, std::string eventId, std::string txnId, std::optional<std::string> reason
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/redact/" + eventId + "/" + txnId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/redact/" + eventId + "/" + txnId,
           PUT,
           std::string("RedactEvent"),
           _accessToken,

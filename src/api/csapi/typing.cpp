@@ -44,7 +44,7 @@ SetTypingJob::SetTypingJob(
         std::string userId, std::string roomId, bool typing, std::optional<int> timeout
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/typing/" + userId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/typing/" + userId,
           PUT,
           std::string("SetTyping"),
           _accessToken,

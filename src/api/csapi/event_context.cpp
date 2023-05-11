@@ -40,7 +40,7 @@ GetEventContextJob::GetEventContextJob(
         std::string roomId, std::string eventId, std::optional<int> limit, std::optional<std::string> filter
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/context/" + eventId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/context/" + eventId,
           GET,
           std::string("GetEventContext"),
           _accessToken,

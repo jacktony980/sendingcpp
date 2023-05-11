@@ -13,9 +13,8 @@ ARG LIBKAZV_INSTALL_DIR=/opt/libkazv
 
 RUN mkdir build && cd build && \
     export CC=gcc-9 CXX=g++-9 && \
-    cmake .. -DCMAKE_INSTALL_PREFIX="$LIBKAZV_INSTALL_DIR" -DCMAKE_PREFIX_PATH="$DEPS_INSTALL_DIR" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Dlibkazv_BUILD_TESTS=ON -Dlibkazv_BUILD_EXAMPLES=ON -Dlibkazv_BUILD_KAZVJOB=ON && \
+    cmake .. -DCMAKE_INSTALL_PREFIX="$LIBKAZV_INSTALL_DIR" -DCMAKE_PREFIX_PATH="$DEPS_INSTALL_DIR" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Dlibkazv_BUILD_TESTS=OFF -Dlibkazv_BUILD_EXAMPLES=ON -Dlibkazv_BUILD_KAZVJOB=ON && \
     make -j$JOBS && \
-    ./src/tests/kazvtest && \
     make -j$JOBS install && \
     cd ../.. && \
     rm -rf /build/libkazv

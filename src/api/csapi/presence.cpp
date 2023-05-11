@@ -44,7 +44,7 @@ SetPresenceJob::SetPresenceJob(
         std::string userId, std::string presence, std::optional<std::string> statusMsg
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
+          std::string("/_api/client/r0") + "/presence/" + userId + "/status",
           PUT,
           std::string("SetPresence"),
           _accessToken,
@@ -112,7 +112,7 @@ GetPresenceJob::GetPresenceJob(
         std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/presence/" + userId + "/status",
+          std::string("/_api/client/r0") + "/presence/" + userId + "/status",
           GET,
           std::string("GetPresence"),
           _accessToken,

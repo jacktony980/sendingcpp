@@ -40,7 +40,7 @@ GetEventsJob::GetEventsJob(
         std::optional<std::string> from, std::optional<int> timeout
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/events",
+          std::string("/_api/client/r0") + "/events",
           GET,
           std::string("GetEvents"),
           _accessToken,
@@ -144,7 +144,7 @@ InitialSyncJob::InitialSyncJob(
         std::optional<int> limit, std::optional<bool> archived
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/initialSync",
+          std::string("/_api/client/r0") + "/initialSync",
           GET,
           std::string("InitialSync"),
           _accessToken,
@@ -259,7 +259,7 @@ GetOneEventJob::GetOneEventJob(
         std::string eventId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/events/" + eventId,
+          std::string("/_api/client/r0") + "/events/" + eventId,
           GET,
           std::string("GetOneEvent"),
           _accessToken,

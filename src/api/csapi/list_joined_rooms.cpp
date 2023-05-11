@@ -37,7 +37,7 @@ GetJoinedRoomsJob::GetJoinedRoomsJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/joined_rooms",
+          std::string("/_api/client/r0") + "/joined_rooms",
           GET,
           std::string("GetJoinedRooms"),
           _accessToken,

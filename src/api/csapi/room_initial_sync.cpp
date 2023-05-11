@@ -37,7 +37,7 @@ RoomInitialSyncJob::RoomInitialSyncJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/initialSync",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/initialSync",
           GET,
           std::string("RoomInitialSync"),
           _accessToken,

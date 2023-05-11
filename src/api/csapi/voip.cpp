@@ -37,7 +37,7 @@ GetTurnServerJob::GetTurnServerJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/voip/turnServer",
+          std::string("/_api/client/r0") + "/voip/turnServer",
           GET,
           std::string("GetTurnServer"),
           _accessToken,

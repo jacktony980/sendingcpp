@@ -37,7 +37,7 @@ GetWhoIsJob::GetWhoIsJob(
         std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/admin/whois/" + userId,
+          std::string("/_api/client/r0") + "/admin/whois/" + userId,
           GET,
           std::string("GetWhoIs"),
           _accessToken,

@@ -44,7 +44,7 @@ BanJob::BanJob(
         std::string roomId, std::string userId, std::optional<std::string> reason
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/ban",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/ban",
           POST,
           std::string("Ban"),
           _accessToken,
@@ -117,7 +117,7 @@ UnbanJob::UnbanJob(
         std::string roomId, std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/unban",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/unban",
           POST,
           std::string("Unban"),
           _accessToken,

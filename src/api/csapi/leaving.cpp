@@ -37,7 +37,7 @@ LeaveRoomJob::LeaveRoomJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/leave",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/leave",
           POST,
           std::string("LeaveRoom"),
           _accessToken,
@@ -105,7 +105,7 @@ ForgetRoomJob::ForgetRoomJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/forget",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/forget",
           POST,
           std::string("ForgetRoom"),
           _accessToken,

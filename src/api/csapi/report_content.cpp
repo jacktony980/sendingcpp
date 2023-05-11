@@ -44,7 +44,7 @@ ReportContentJob::ReportContentJob(
         std::string roomId, std::string eventId, int score, std::string reason
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/report/" + eventId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/report/" + eventId,
           POST,
           std::string("ReportContent"),
           _accessToken,

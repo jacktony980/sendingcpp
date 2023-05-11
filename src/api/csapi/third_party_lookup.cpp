@@ -37,7 +37,7 @@ GetProtocolsJob::GetProtocolsJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/protocols",
+          std::string("/_api/client/r0") + "/thirdparty/protocols",
           GET,
           std::string("GetProtocols"),
           _accessToken,
@@ -105,7 +105,7 @@ GetProtocolMetadataJob::GetProtocolMetadataJob(
         std::string protocol
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/protocol/" + protocol,
+          std::string("/_api/client/r0") + "/thirdparty/protocol/" + protocol,
           GET,
           std::string("GetProtocolMetadata"),
           _accessToken,
@@ -174,7 +174,7 @@ QueryLocationByProtocolJob::QueryLocationByProtocolJob(
         std::string protocol, std::optional<std::string> searchFields
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/location/" + protocol,
+          std::string("/_api/client/r0") + "/thirdparty/location/" + protocol,
           GET,
           std::string("QueryLocationByProtocol"),
           _accessToken,
@@ -243,7 +243,7 @@ QueryUserByProtocolJob::QueryUserByProtocolJob(
         std::string protocol, std::optional<std::string> fields
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/user/" + protocol,
+          std::string("/_api/client/r0") + "/thirdparty/user/" + protocol,
           GET,
           std::string("QueryUserByProtocol"),
           _accessToken,
@@ -312,7 +312,7 @@ QueryLocationByAliasJob::QueryLocationByAliasJob(
         std::string alias
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/location",
+          std::string("/_api/client/r0") + "/thirdparty/location",
           GET,
           std::string("QueryLocationByAlias"),
           _accessToken,
@@ -381,7 +381,7 @@ QueryUserByIDJob::QueryUserByIDJob(
         std::string userid
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/thirdparty/user",
+          std::string("/_api/client/r0") + "/thirdparty/user",
           GET,
           std::string("QueryUserByID"),
           _accessToken,

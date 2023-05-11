@@ -42,7 +42,7 @@ InviteUserJob::InviteUserJob(
         std::string roomId, std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
           std::string("InviteUser"),
           _accessToken,

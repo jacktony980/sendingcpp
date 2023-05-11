@@ -42,7 +42,7 @@ SendToDeviceJob::SendToDeviceJob(
         std::string eventType, std::string txnId, immer::map<std::string, immer::map<std::string, JsonWrap>> messages
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/sendToDevice/" + eventType + "/" + txnId,
+          std::string("/_api/client/r0") + "/sendToDevice/" + eventType + "/" + txnId,
           PUT,
           std::string("SendToDevice"),
           _accessToken,

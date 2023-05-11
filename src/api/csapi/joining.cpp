@@ -42,7 +42,7 @@ JoinRoomByIdJob::JoinRoomByIdJob(
         std::string roomId, std::optional<ThirdPartySigned> thirdPartySigned
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/join",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/join",
           POST,
           std::string("JoinRoomById"),
           _accessToken,
@@ -128,7 +128,7 @@ JoinRoomJob::JoinRoomJob(
         std::string roomIdOrAlias, immer::array<std::string> serverName, std::optional<ThirdPartySigned> thirdPartySigned
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/join/" + roomIdOrAlias,
+          std::string("/_api/client/r0") + "/join/" + roomIdOrAlias,
           POST,
           std::string("JoinRoom"),
           _accessToken,

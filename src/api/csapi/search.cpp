@@ -43,7 +43,7 @@ SearchJob::SearchJob(
         Categories searchCategories, std::optional<std::string> nextBatch
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/search",
+          std::string("/_api/client/r0") + "/search",
           POST,
           std::string("Search"),
           _accessToken,

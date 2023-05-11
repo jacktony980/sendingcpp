@@ -37,7 +37,7 @@ GetPushRulesJob::GetPushRulesJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules",
+          std::string("/_api/client/r0") + "/pushrules",
           GET,
           std::string("GetPushRules"),
           _accessToken,
@@ -117,7 +117,7 @@ GetPushRuleJob::GetPushRuleJob(
         std::string scope, std::string kind, std::string ruleId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           GET,
           std::string("GetPushRule"),
           _accessToken,
@@ -185,7 +185,7 @@ DeletePushRuleJob::DeletePushRuleJob(
         std::string scope, std::string kind, std::string ruleId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           DELETE,
           std::string("DeletePushRule"),
           _accessToken,
@@ -265,7 +265,7 @@ SetPushRuleJob::SetPushRuleJob(
         std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions, std::optional<std::string> before, std::optional<std::string> after, immer::array<PushCondition> conditions, std::optional<std::string> pattern
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId,
           PUT,
           std::string("SetPushRule"),
           _accessToken,
@@ -333,7 +333,7 @@ IsPushRuleEnabledJob::IsPushRuleEnabledJob(
         std::string scope, std::string kind, std::string ruleId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           GET,
           std::string("IsPushRuleEnabled"),
           _accessToken,
@@ -418,7 +418,7 @@ SetPushRuleEnabledJob::SetPushRuleEnabledJob(
         std::string scope, std::string kind, std::string ruleId, bool enabled
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/enabled",
           PUT,
           std::string("SetPushRuleEnabled"),
           _accessToken,
@@ -486,7 +486,7 @@ GetPushRuleActionsJob::GetPushRuleActionsJob(
         std::string scope, std::string kind, std::string ruleId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           GET,
           std::string("GetPushRuleActions"),
           _accessToken,
@@ -571,7 +571,7 @@ SetPushRuleActionsJob::SetPushRuleActionsJob(
         std::string scope, std::string kind, std::string ruleId, immer::array<Variant> actions
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
+          std::string("/_api/client/r0") + "/pushrules/" + scope + "/" + kind + "/" + ruleId + "/actions",
           PUT,
           std::string("SetPushRuleActions"),
           _accessToken,

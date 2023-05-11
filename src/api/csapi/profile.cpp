@@ -42,7 +42,7 @@ SetDisplayNameJob::SetDisplayNameJob(
         std::string userId, std::optional<std::string> displayname
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
+          std::string("/_api/client/r0") + "/profile/" + userId + "/displayname",
           PUT,
           std::string("SetDisplayName"),
           _accessToken,
@@ -110,7 +110,7 @@ GetDisplayNameJob::GetDisplayNameJob(
         std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/profile/" + userId + "/displayname",
+          std::string("/_api/client/r0") + "/profile/" + userId + "/displayname",
           GET,
           std::string("GetDisplayName"),
            {} ,
@@ -194,7 +194,7 @@ SetAvatarUrlJob::SetAvatarUrlJob(
         std::string userId, std::optional<std::string> avatarUrl
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
+          std::string("/_api/client/r0") + "/profile/" + userId + "/avatar_url",
           PUT,
           std::string("SetAvatarUrl"),
           _accessToken,
@@ -262,7 +262,7 @@ GetAvatarUrlJob::GetAvatarUrlJob(
         std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/profile/" + userId + "/avatar_url",
+          std::string("/_api/client/r0") + "/profile/" + userId + "/avatar_url",
           GET,
           std::string("GetAvatarUrl"),
            {} ,
@@ -341,7 +341,7 @@ GetUserProfileJob::GetUserProfileJob(
         std::string userId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/profile/" + userId,
+          std::string("/_api/client/r0") + "/profile/" + userId,
           GET,
           std::string("GetUserProfile"),
            {} ,

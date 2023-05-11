@@ -64,7 +64,7 @@ CreateRoomJob::CreateRoomJob(
         std::optional<std::string> visibility, std::optional<std::string> roomAliasName, std::optional<std::string> name, std::optional<std::string> topic, immer::array<std::string> invite, immer::array<Invite3pid> invite3pid, std::optional<std::string> roomVersion, JsonWrap creationContent, immer::array<StateEvent> initialState, std::optional<std::string> preset, std::optional<bool> isDirect, JsonWrap powerLevelContentOverride
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/createRoom",
+          std::string("/_api/client/r0") + "/createRoom",
           POST,
           std::string("CreateRoom"),
           _accessToken,

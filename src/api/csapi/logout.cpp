@@ -37,7 +37,7 @@ LogoutJob::LogoutJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/logout",
+          std::string("/_api/client/r0") + "/logout",
           POST,
           std::string("Logout"),
           _accessToken,
@@ -105,7 +105,7 @@ LogoutAllJob::LogoutAllJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/logout/all",
+          std::string("/_api/client/r0") + "/logout/all",
           POST,
           std::string("LogoutAll"),
           _accessToken,

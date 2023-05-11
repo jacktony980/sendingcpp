@@ -42,7 +42,7 @@ UpgradeRoomJob::UpgradeRoomJob(
         std::string roomId, std::string newVersion
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/upgrade",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/upgrade",
           POST,
           std::string("UpgradeRoom"),
           _accessToken,

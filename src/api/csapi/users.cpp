@@ -44,7 +44,7 @@ SearchUserDirectoryJob::SearchUserDirectoryJob(
         std::string searchTerm, std::optional<int> limit
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user_directory/search",
+          std::string("/_api/client/r0") + "/user_directory/search",
           POST,
           std::string("SearchUserDirectory"),
           _accessToken,

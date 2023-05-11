@@ -44,7 +44,7 @@ SetReadMarkerJob::SetReadMarkerJob(
         std::string roomId, std::string mFullyRead, std::optional<std::string> mRead
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/read_markers",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/read_markers",
           POST,
           std::string("SetReadMarker"),
           _accessToken,

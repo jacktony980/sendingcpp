@@ -38,7 +38,7 @@ RequestOpenIdTokenJob::RequestOpenIdTokenJob(
         std::string userId, JsonWrap body
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/openid/request_token",
+          std::string("/_api/client/r0") + "/user/" + userId + "/openid/request_token",
           POST,
           std::string("RequestOpenIdToken"),
           _accessToken,

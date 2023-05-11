@@ -38,7 +38,7 @@ SendMessageJob::SendMessageJob(
         std::string roomId, std::string eventType, std::string txnId, JsonWrap body
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/send/" + eventType + "/" + txnId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/send/" + eventType + "/" + txnId,
           PUT,
           std::string("SendMessage"),
           _accessToken,

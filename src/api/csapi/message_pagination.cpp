@@ -46,7 +46,7 @@ GetRoomEventsJob::GetRoomEventsJob(
         std::string roomId, std::string from, std::string dir, std::optional<std::string> to, std::optional<int> limit, std::optional<std::string> filter
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/messages",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/messages",
           GET,
           std::string("GetRoomEvents"),
           _accessToken,

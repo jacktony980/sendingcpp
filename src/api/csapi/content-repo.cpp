@@ -48,7 +48,7 @@ UploadContentJob::UploadContentJob(
         FileDesc content, std::optional<std::string> filename, std::optional<std::string> contentType
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/upload",
+          std::string("/_api/media/r0") + "/upload",
           POST,
           std::string("UploadContent"),
           _accessToken,
@@ -131,7 +131,7 @@ GetContentJob::GetContentJob(
         std::string serverName, std::string mediaId, bool allowRemote
         , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId,
+          std::string("/_api/media/r0") + "/download/" + serverName + "/" + mediaId,
           GET,
           std::string("GetContent"),
            {} ,
@@ -201,7 +201,7 @@ GetContentOverrideNameJob::GetContentOverrideNameJob(
         std::string serverName, std::string mediaId, std::string fileName, bool allowRemote
         , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/download/" + serverName + "/" + mediaId + "/" + fileName,
+          std::string("/_api/media/r0") + "/download/" + serverName + "/" + mediaId + "/" + fileName,
           GET,
           std::string("GetContentOverrideName"),
            {} ,
@@ -277,7 +277,7 @@ GetContentThumbnailJob::GetContentThumbnailJob(
         std::string serverName, std::string mediaId, int width, int height, std::optional<std::string> method, bool allowRemote
         , std::optional<FileDesc> downloadTo)
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/thumbnail/" + serverName + "/" + mediaId,
+          std::string("/_api/media/r0") + "/thumbnail/" + serverName + "/" + mediaId,
           GET,
           std::string("GetContentThumbnail"),
            {} ,
@@ -349,7 +349,7 @@ GetUrlPreviewJob::GetUrlPreviewJob(
         std::string url, std::optional<std::int_fast64_t> ts
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/preview_url",
+          std::string("/_api/media/r0") + "/preview_url",
           GET,
           std::string("GetUrlPreview"),
           _accessToken,
@@ -439,7 +439,7 @@ GetConfigJob::GetConfigJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/media/r0") + "/config",
+          std::string("/_api/media/r0") + "/config",
           GET,
           std::string("GetConfig"),
           _accessToken,

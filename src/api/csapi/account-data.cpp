@@ -38,7 +38,7 @@ SetAccountDataJob::SetAccountDataJob(
         std::string userId, std::string type, JsonWrap content
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/account_data/" + type,
+          std::string("/_api/client/r0") + "/user/" + userId + "/account_data/" + type,
           PUT,
           std::string("SetAccountData"),
           _accessToken,
@@ -106,7 +106,7 @@ GetAccountDataJob::GetAccountDataJob(
         std::string userId, std::string type
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/account_data/" + type,
+          std::string("/_api/client/r0") + "/user/" + userId + "/account_data/" + type,
           GET,
           std::string("GetAccountData"),
           _accessToken,
@@ -175,7 +175,7 @@ SetAccountDataPerRoomJob::SetAccountDataPerRoomJob(
         std::string userId, std::string roomId, std::string type, JsonWrap content
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
+          std::string("/_api/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
           PUT,
           std::string("SetAccountDataPerRoom"),
           _accessToken,
@@ -243,7 +243,7 @@ GetAccountDataPerRoomJob::GetAccountDataPerRoomJob(
         std::string userId, std::string roomId, std::string type
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
+          std::string("/_api/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/account_data/" + type,
           GET,
           std::string("GetAccountDataPerRoom"),
           _accessToken,

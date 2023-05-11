@@ -38,7 +38,7 @@ PostReceiptJob::PostReceiptJob(
         std::string roomId, std::string receiptType, std::string eventId, JsonWrap receipt
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/receipt/" + receiptType + "/" + eventId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/receipt/" + receiptType + "/" + eventId,
           POST,
           std::string("PostReceipt"),
           _accessToken,

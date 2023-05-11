@@ -44,7 +44,7 @@ KickJob::KickJob(
         std::string roomId, std::string userId, std::optional<std::string> reason
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/kick",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/kick",
           POST,
           std::string("Kick"),
           _accessToken,

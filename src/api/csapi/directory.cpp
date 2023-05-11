@@ -42,7 +42,7 @@ SetRoomAliasJob::SetRoomAliasJob(
         std::string roomAlias, std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
+          std::string("/_api/client/r0") + "/directory/room/" + roomAlias,
           PUT,
           std::string("SetRoomAlias"),
           _accessToken,
@@ -110,7 +110,7 @@ GetRoomIdByAliasJob::GetRoomIdByAliasJob(
         std::string roomAlias
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
+          std::string("/_api/client/r0") + "/directory/room/" + roomAlias,
           GET,
           std::string("GetRoomIdByAlias"),
            {} ,
@@ -200,7 +200,7 @@ DeleteRoomAliasJob::DeleteRoomAliasJob(
         std::string roomAlias
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/room/" + roomAlias,
+          std::string("/_api/client/r0") + "/directory/room/" + roomAlias,
           DELETE,
           std::string("DeleteRoomAlias"),
           _accessToken,
@@ -268,7 +268,7 @@ GetLocalAliasesJob::GetLocalAliasesJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/aliases",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/aliases",
           GET,
           std::string("GetLocalAliases"),
           _accessToken,

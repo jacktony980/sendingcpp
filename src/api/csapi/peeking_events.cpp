@@ -42,7 +42,7 @@ PeekEventsJob::PeekEventsJob(
         std::optional<std::string> from, std::optional<int> timeout, std::optional<std::string> roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/events",
+          std::string("/_api/client/r0") + "/events",
           GET,
           std::string("PeekEvents"),
           _accessToken,

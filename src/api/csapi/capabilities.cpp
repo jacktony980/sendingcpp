@@ -37,7 +37,7 @@ GetCapabilitiesJob::GetCapabilitiesJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/capabilities",
+          std::string("/_api/client/r0") + "/capabilities",
           GET,
           std::string("GetCapabilities"),
           _accessToken,

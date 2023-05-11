@@ -37,7 +37,7 @@ GetDevicesJob::GetDevicesJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/devices",
+          std::string("/_api/client/r0") + "/devices",
           GET,
           std::string("GetDevices"),
           _accessToken,
@@ -116,7 +116,7 @@ GetDeviceJob::GetDeviceJob(
         std::string deviceId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/devices/" + deviceId,
+          std::string("/_api/client/r0") + "/devices/" + deviceId,
           GET,
           std::string("GetDevice"),
           _accessToken,
@@ -189,7 +189,7 @@ UpdateDeviceJob::UpdateDeviceJob(
         std::string deviceId, std::optional<std::string> displayName
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/devices/" + deviceId,
+          std::string("/_api/client/r0") + "/devices/" + deviceId,
           PUT,
           std::string("UpdateDevice"),
           _accessToken,
@@ -262,7 +262,7 @@ DeleteDeviceJob::DeleteDeviceJob(
         std::string deviceId, std::optional<AuthenticationData> auth
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/devices/" + deviceId,
+          std::string("/_api/client/r0") + "/devices/" + deviceId,
           DELETE,
           std::string("DeleteDevice"),
           _accessToken,
@@ -337,7 +337,7 @@ DeleteDevicesJob::DeleteDevicesJob(
         immer::array<std::string> devices, std::optional<AuthenticationData> auth
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/delete_devices",
+          std::string("/_api/client/r0") + "/delete_devices",
           POST,
           std::string("DeleteDevices"),
           _accessToken,

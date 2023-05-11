@@ -42,7 +42,7 @@ GetNotificationsJob::GetNotificationsJob(
         std::optional<std::string> from, std::optional<int> limit, std::optional<std::string> only
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/notifications",
+          std::string("/_api/client/r0") + "/notifications",
           GET,
           std::string("GetNotifications"),
           _accessToken,

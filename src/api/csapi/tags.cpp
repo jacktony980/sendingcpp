@@ -37,7 +37,7 @@ GetRoomTagsJob::GetRoomTagsJob(
         std::string userId, std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags",
+          std::string("/_api/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags",
           GET,
           std::string("GetRoomTags"),
           _accessToken,
@@ -121,7 +121,7 @@ SetRoomTagJob::SetRoomTagJob(
         std::string userId, std::string roomId, std::string tag, std::optional<float> order, JsonWrap additionalProperties
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
+          std::string("/_api/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           PUT,
           std::string("SetRoomTag"),
           _accessToken,
@@ -189,7 +189,7 @@ DeleteRoomTagJob::DeleteRoomTagJob(
         std::string userId, std::string roomId, std::string tag
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
+          std::string("/_api/client/r0") + "/user/" + userId + "/rooms/" + roomId + "/tags/" + tag,
           DELETE,
           std::string("DeleteRoomTag"),
           _accessToken,

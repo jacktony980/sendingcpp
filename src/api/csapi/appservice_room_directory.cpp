@@ -42,7 +42,7 @@ UpdateAppserviceRoomDirectoryVsibilityJob::UpdateAppserviceRoomDirectoryVsibilit
         std::string networkId, std::string roomId, std::string visibility
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/list/appservice/" + networkId + "/" + roomId,
+          std::string("/_api/client/r0") + "/directory/list/appservice/" + networkId + "/" + roomId,
           PUT,
           std::string("UpdateAppserviceRoomDirectoryVsibility"),
           _accessToken,

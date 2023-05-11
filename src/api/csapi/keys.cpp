@@ -44,7 +44,7 @@ UploadKeysJob::UploadKeysJob(
         std::optional<DeviceKeys> deviceKeys, immer::map<std::string, Variant> oneTimeKeys
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/keys/upload",
+          std::string("/_api/client/r0") + "/keys/upload",
           POST,
           std::string("UploadKeys"),
           _accessToken,
@@ -133,7 +133,7 @@ QueryKeysJob::QueryKeysJob(
         immer::map<std::string, immer::array<std::string>> deviceKeys, std::optional<int> timeout, std::optional<std::string> token
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/keys/query",
+          std::string("/_api/client/r0") + "/keys/query",
           POST,
           std::string("QueryKeys"),
           _accessToken,
@@ -230,7 +230,7 @@ ClaimKeysJob::ClaimKeysJob(
         immer::map<std::string, immer::map<std::string, std::string>> oneTimeKeys, std::optional<int> timeout
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/keys/claim",
+          std::string("/_api/client/r0") + "/keys/claim",
           POST,
           std::string("ClaimKeys"),
           _accessToken,
@@ -324,7 +324,7 @@ GetKeysChangesJob::GetKeysChangesJob(
         std::string from, std::string to
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/keys/changes",
+          std::string("/_api/client/r0") + "/keys/changes",
           GET,
           std::string("GetKeysChanges"),
           _accessToken,

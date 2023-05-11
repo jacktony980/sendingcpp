@@ -37,7 +37,7 @@ GetRoomVisibilityOnDirectoryJob::GetRoomVisibilityOnDirectoryJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
+          std::string("/_api/client/r0") + "/directory/list/room/" + roomId,
           GET,
           std::string("GetRoomVisibilityOnDirectory"),
            {} ,
@@ -121,7 +121,7 @@ SetRoomVisibilityOnDirectoryJob::SetRoomVisibilityOnDirectoryJob(
         std::string roomId, std::optional<std::string> visibility
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/directory/list/room/" + roomId,
+          std::string("/_api/client/r0") + "/directory/list/room/" + roomId,
           PUT,
           std::string("SetRoomVisibilityOnDirectory"),
           _accessToken,
@@ -194,7 +194,7 @@ GetPublicRoomsJob::GetPublicRoomsJob(
         std::optional<int> limit, std::optional<std::string> since, std::optional<std::string> server
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/publicRooms",
+          std::string("/_api/client/r0") + "/publicRooms",
           GET,
           std::string("GetPublicRooms"),
            {} ,
@@ -321,7 +321,7 @@ QueryPublicRoomsJob::QueryPublicRoomsJob(
         std::optional<std::string> server, std::optional<int> limit, std::optional<std::string> since, std::optional<Filter> filter, std::optional<bool> includeAllNetworks, std::optional<std::string> thirdPartyInstanceId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/publicRooms",
+          std::string("/_api/client/r0") + "/publicRooms",
           POST,
           std::string("QueryPublicRooms"),
           _accessToken,

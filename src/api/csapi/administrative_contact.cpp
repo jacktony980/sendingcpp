@@ -37,7 +37,7 @@ GetAccount3PIDsJob::GetAccount3PIDsJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid",
+          std::string("/_api/client/r0") + "/account/3pid",
           GET,
           std::string("GetAccount3PIDs"),
           _accessToken,
@@ -121,7 +121,7 @@ Post3PIDsJob::Post3PIDsJob(
         ThreePidCredentials threePidCreds
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid",
+          std::string("/_api/client/r0") + "/account/3pid",
           POST,
           std::string("Post3PIDs"),
           _accessToken,
@@ -198,7 +198,7 @@ Add3PIDJob::Add3PIDJob(
         std::string clientSecret, std::string sid, std::optional<AuthenticationData> auth
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/add",
+          std::string("/_api/client/r0") + "/account/3pid/add",
           POST,
           std::string("Add3PID"),
           _accessToken,
@@ -277,7 +277,7 @@ Bind3PIDJob::Bind3PIDJob(
         std::string clientSecret, std::string idServer, std::string idAccessToken, std::string sid
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/bind",
+          std::string("/_api/client/r0") + "/account/3pid/bind",
           POST,
           std::string("Bind3PID"),
           _accessToken,
@@ -354,7 +354,7 @@ Delete3pidFromAccountJob::Delete3pidFromAccountJob(
         std::string medium, std::string address, std::optional<std::string> idServer
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/delete",
+          std::string("/_api/client/r0") + "/account/3pid/delete",
           POST,
           std::string("Delete3pidFromAccount"),
           _accessToken,
@@ -443,7 +443,7 @@ Unbind3pidFromAccountJob::Unbind3pidFromAccountJob(
         std::string medium, std::string address, std::optional<std::string> idServer
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/unbind",
+          std::string("/_api/client/r0") + "/account/3pid/unbind",
           POST,
           std::string("Unbind3pidFromAccount"),
           _accessToken,
@@ -524,7 +524,7 @@ RequestTokenTo3PIDEmailJob::RequestTokenTo3PIDEmailJob(
         EmailValidationData body
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/email/requestToken",
+          std::string("/_api/client/r0") + "/account/3pid/email/requestToken",
           POST,
           std::string("RequestTokenTo3PIDEmail"),
            {} ,
@@ -593,7 +593,7 @@ RequestTokenTo3PIDMSISDNJob::RequestTokenTo3PIDMSISDNJob(
         MsisdnValidationData body
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/3pid/msisdn/requestToken",
+          std::string("/_api/client/r0") + "/account/3pid/msisdn/requestToken",
           POST,
           std::string("RequestTokenTo3PIDMSISDN"),
            {} ,

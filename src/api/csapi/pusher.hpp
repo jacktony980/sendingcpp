@@ -219,7 +219,7 @@ public:
         {
 /// Required if ``kind`` is ``http``. The URL to use to send
 /// notifications to. MUST be an HTTPS URL with a path of 
-/// ``/_matrix/push/v1/notify``.
+/// ``/_api/push/v1/notify``.
           std::optional<std::string> url;
 /// The format to send notifications in to Push Gateways if the
 /// ``kind`` is ``http``. The details about what fields the

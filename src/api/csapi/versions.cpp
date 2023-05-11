@@ -37,7 +37,7 @@ GetVersionsJob::GetVersionsJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client") + "/versions",
+          std::string("/_api/client") + "/versions",
           GET,
           std::string("GetVersions"),
            {} ,

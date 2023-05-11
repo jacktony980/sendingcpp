@@ -37,7 +37,7 @@ GetTokenOwnerJob::GetTokenOwnerJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/account/whoami",
+          std::string("/_api/client/r0") + "/account/whoami",
           GET,
           std::string("GetTokenOwner"),
           _accessToken,

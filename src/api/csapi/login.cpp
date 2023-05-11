@@ -37,7 +37,7 @@ GetLoginFlowsJob::GetLoginFlowsJob(
         
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/login",
+          std::string("/_api/client/r0") + "/login",
           GET,
           std::string("GetLoginFlows"),
            {} ,
@@ -131,7 +131,7 @@ LoginJob::LoginJob(
         std::string type, std::optional<UserIdentifier> identifier, std::optional<std::string> password, std::optional<std::string> token, std::optional<std::string> deviceId, std::optional<std::string> initialDeviceDisplayName
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/login",
+          std::string("/_api/client/r0") + "/login",
           POST,
           std::string("Login"),
            {} ,

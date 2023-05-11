@@ -46,7 +46,7 @@ SyncJob::SyncJob(
         std::optional<std::string> filter, std::optional<std::string> since, std::optional<bool> fullState, std::optional<std::string> setPresence, std::optional<int> timeout
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/sync",
+          std::string("/_api/client/r0") + "/sync",
           GET,
           std::string("Sync"),
           _accessToken,

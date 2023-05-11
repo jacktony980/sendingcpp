@@ -48,7 +48,7 @@ InviteBy3PIDJob::InviteBy3PIDJob(
         std::string roomId, std::string idServer, std::string idAccessToken, std::string medium, std::string address
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/invite",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/invite",
           POST,
           std::string("InviteBy3PID"),
           _accessToken,

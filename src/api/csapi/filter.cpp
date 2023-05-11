@@ -38,7 +38,7 @@ DefineFilterJob::DefineFilterJob(
         std::string userId, Filter filter
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/filter",
+          std::string("/_api/client/r0") + "/user/" + userId + "/filter",
           POST,
           std::string("DefineFilter"),
           _accessToken,
@@ -118,7 +118,7 @@ GetFilterJob::GetFilterJob(
         std::string userId, std::string filterId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/user/" + userId + "/filter/" + filterId,
+          std::string("/_api/client/r0") + "/user/" + userId + "/filter/" + filterId,
           GET,
           std::string("GetFilter"),
           _accessToken,

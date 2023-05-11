@@ -37,7 +37,7 @@ GetOneRoomEventJob::GetOneRoomEventJob(
         std::string roomId, std::string eventId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/event/" + eventId,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/event/" + eventId,
           GET,
           std::string("GetOneRoomEvent"),
           _accessToken,
@@ -105,7 +105,7 @@ GetRoomStateWithKeyJob::GetRoomStateWithKeyJob(
         std::string roomId, std::string eventType, std::string stateKey
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/state/" + eventType + "/" + stateKey,
           GET,
           std::string("GetRoomStateWithKey"),
           _accessToken,
@@ -173,7 +173,7 @@ GetRoomStateJob::GetRoomStateJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/state",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/state",
           GET,
           std::string("GetRoomState"),
           _accessToken,
@@ -246,7 +246,7 @@ GetMembersByRoomJob::GetMembersByRoomJob(
         std::string roomId, std::optional<std::string> at, std::optional<std::string> membership, std::optional<std::string> notMembership
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/members",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/members",
           GET,
           std::string("GetMembersByRoom"),
           _accessToken,
@@ -325,7 +325,7 @@ GetJoinedMembersByRoomJob::GetJoinedMembersByRoomJob(
         std::string roomId
         )
       : BaseJob(std::move(serverUrl),
-          std::string("/_matrix/client/r0") + "/rooms/" + roomId + "/joined_members",
+          std::string("/_api/client/r0") + "/rooms/" + roomId + "/joined_members",
           GET,
           std::string("GetJoinedMembersByRoom"),
           _accessToken,
