@@ -224,6 +224,6 @@ namespace std
     inline auto _attr() const {                   \
         KAZV_VERIFY_THREAD_ID();                  \
         return (_d)[&_type::_attr];               \
-    }
+    }   
 
 BOOST_CLASS_VERSION(Kazv::KeyOfState, 0)

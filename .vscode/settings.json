@@ -78,6 +78,13 @@
         "vector": "cpp",
         "algorithm": "cpp",
         "__verbose_abort": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "coroutine": "cpp",
+        "*.ipp": "cpp",
+        "queue": "cpp",
+        "regex": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp",
+        "__availability": "cpp"
     }
 }

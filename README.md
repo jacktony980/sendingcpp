@@ -1,7 +1,4 @@
-# libkazv  {#mainpage}
-
-[![pipeline status](https://lily.kazv.moe/kazv/libkazv/badges/servant/pipeline.svg)](https://lily.kazv.moe/kazv/libkazv/-/commits/servant)
-[![coverage report](https://lily.kazv.moe/kazv/libkazv/badges/servant/coverage.svg)](https://lily.kazv.moe/kazv/libkazv/-/commits/servant)
+# libkazv  
 
 libkazv is a matrix client sdk built upon [lager](https://github.com/arximboldi/lager)
 and the value-oriented design it enables.
@@ -10,7 +7,7 @@ and the value-oriented design it enables.
 
 libkazv support the following functionalities:
 
-- Logging in
+- Did Logging 
 - Receiving room states
 - Receiving room messages
 - Receiving account data
@@ -128,12 +125,6 @@ It has a few libraries you can link to:
 
   Note that you will need to add `COMPONENTS job` to the arguments
   of `find_package()` to use this.
-
-# Tutorials
-
-Tutorial 0: [Getting started with libkazv][tut0]
-
-[tut0]: https://gitlab.com/kazv/libkazv/-/blob/servant/tutorials/tutorial0.md
 
 # APIs
 

@@ -26,6 +26,12 @@
 #include <sdk.hpp>
 
 #include "commands.hpp"
+#include <client/client-model.hpp>
+#include <client/did.hpp>
+#include <client/didModel.hpp>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 using namespace std::string_literals;
 
@@ -97,19 +103,46 @@ int main(int argc, char *argv[])
         std::getline(auth, homeserver);
         std::getline(auth, username);
 
-        if (mode == "token") {
-            std::string token;
-            std::string deviceId;
-            std::getline(auth, token);
-            std::getline(auth, deviceId);
-            c.tokenLogin(homeserver, username, token, deviceId);
-        } else {
-            std::string password;
-            std::getline(auth, password);
-            c.passwordLogin(homeserver, username, password, "libkazv basic example");
-            std::cout << "password login action sent" << std::endl;
-        }
+        Kazv::HttpRequest request;
+        // std::string homeserver = "https://sdktest.sending.me/";
+        //get did list
+        std::string address = "0xdb4F2CF56621D2E07c752dd4ea2A5c89c146A682";
+        Kazv::DidListResponse getResponse = request.getDidList(homeserver,address);
 
+        std::string did = "";
+        if (getResponse.data.size() > 0) {
+            //login with did
+            //pre login
+            Kazv::PreloginRequest preloginRequest = Kazv::PreloginRequest(getResponse.data[0],"");
+            Kazv::PreloginResponse postResponse = request.prelogin(homeserver, preloginRequest.toString());
+
+            //login
+            Kazv::IdentifierModel identifierModel = Kazv::IdentifierModel(getResponse.data[0],"",request.web3Sign("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054",postResponse.message));
+            Kazv::LoginRequest loginRequest = Kazv::LoginRequest(postResponse.updated,identifierModel.toString());
+            Kazv::LoginResponse loginResponse = request.didlogin(homeserver, loginRequest.toString());
+            printf("login success: userId = %s, token = %s\n", loginResponse.user_id.c_str(), loginResponse.access_token.c_str());
+            // c.serverUrl = homeserver;
+            // c.userId = loginResponse.user_id;
+            // c.token = loginResponse.access_token;
+            // c.deviceId = loginResponse.device_id;
+            // c.loggedIn = true;
+        } else {
+            //login with address
+            //pre login
+            Kazv::PreloginRequest preloginRequest = Kazv::PreloginRequest("","did:pkh:eip155:1:" + address);
+            Kazv::PreloginResponse postResponse = request.prelogin(homeserver, preloginRequest.toString());
+
+            //login
+            Kazv::IdentifierModel identifierModel = Kazv::IdentifierModel("","did:pkh:eip155:1:" + address,request.web3Sign("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054",postResponse.message));
+            Kazv::LoginRequest loginRequest = Kazv::LoginRequest(postResponse.updated,identifierModel.toString());
+            Kazv::LoginResponse loginResponse = request.didlogin(homeserver, loginRequest.toString());
+            printf("login success: userId = %s, token = %s\n", loginResponse.user_id.c_str(), loginResponse.access_token.c_str());
+            // c.serverUrl() = homeserver;
+            // c.userId() = loginResponse.user_id;
+            // c.token() = loginResponse.access_token;
+            // c.deviceId() = loginResponse.device_id;
+            // c.loggedIn() = true;
+        }
     }
 
     std::cout << "starting event loop" << std::endl;
@@ -128,3 +161,6 @@ int main(int argc, char *argv[])
 
     jobHandler.stop();
 }
+
+
+
