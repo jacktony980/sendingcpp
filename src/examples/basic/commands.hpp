@@ -11,5 +11,6 @@
 #include <string>
 
 #include <client/client.hpp>
+#include <client/sdn.hpp>
 
-void parse(std::string l, Kazv::Client c);
+void parse(Kazv::SDNHttpRequest s, std::string l, Kazv::Client c);

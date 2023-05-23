@@ -17,6 +17,8 @@
 #include <immer/flex_vector.hpp>
 
 #include "commands.hpp"
+#include <client/sdn.hpp>
+#include <client/sdnModel.hpp>
 
 using namespace std::string_literals;
 
@@ -30,7 +32,7 @@ static std::regex roomNewRegex("room new (.+)");
 static std::regex roomInviteRegex("room invite ([^\\s]+) (.+)");
 static std::regex roomJoinRegex("room join (.+)");
 
-void parse(std::string l, Kazv::Client c)
+void parse(Kazv::SDNHttpRequest s, std::string l, Kazv::Client c)
 {
     using namespace Kazv::CursorOp;
     std::smatch m;
@@ -86,9 +88,10 @@ void parse(std::string l, Kazv::Client c)
     } else if (std::regex_match(l, m, roomSendRegex)) {
         auto roomId = m[1].str();
         auto text = m[2].str();
-        auto room = c.room(roomId);
-
-        room.sendTextMessage(text);
+        Kazv::SendMessageRequest request = Kazv::SendMessageRequest(text,"m.text");
+        s.sendMessage(roomId,request.toString());
+        // auto room = c.room(roomId);
+        // room.sendTextMessage(text);
     } else if (std::regex_match(l, m, roomNameRegex)) {
         auto roomId = m[1].str();
         auto text = m[2].str();
@@ -106,11 +109,13 @@ void parse(std::string l, Kazv::Client c)
 
         c.createRoom(Kazv::RoomVisibility::Private, name);
     } else if (std::regex_match(l, m, roomInviteRegex)) {
+        std::cout << "start inviting user" << std::endl;
         auto roomId = m[1].str();
         auto userId = m[2].str();
-        auto room = c.room(roomId);
-
-        room.invite(userId);
+        Kazv::InviteRequest request = Kazv::InviteRequest(userId);
+        s.inviteUserToRoom(roomId,request.toString());
+        // auto room = c.room(roomId);
+        // room.invite(userId);
     } else if (std::regex_match(l, m, roomJoinRegex)) {
         auto roomId = m[1].str();
         c.joinRoomById(roomId);

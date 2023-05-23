@@ -3,6 +3,8 @@
  */
 
 #include <algorithm>
+#include <string>
+#include <iostream>
 
 #include "sync.hpp"
 
@@ -78,8 +80,9 @@ SyncJob::SyncJob(
 
           bool SyncResponse::success() const
           {
+            std::cout << "sync success response:" << jsonBody().get().dump() << std::endl;
             return Response::success()
-            
+
               && isBodyJson(body)
             && jsonBody().get().contains("next_batch"s)
           ;
@@ -91,6 +94,7 @@ SyncJob::SyncJob(
     {
     if (jsonBody().get()
     .contains("next_batch"s)) {
+      std::cout << "next_batch:" << jsonBody().get()["next_batch"s] << std::endl;
     return
     jsonBody().get()["next_batch"s]
     .template get<std::string>();}
@@ -102,6 +106,7 @@ SyncJob::SyncJob(
     {
     if (jsonBody().get()
     .contains("rooms"s)) {
+      std::cout << "rooms:" << jsonBody().get()["rooms"s] << std::endl;
     return
     jsonBody().get()["rooms"s]
     .template get<Rooms>();}

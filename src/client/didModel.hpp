@@ -33,31 +33,7 @@ namespace Kazv
         std::string did;
         std::string message;
         std::string updated;
-    };
-
-
-    class LoginRequest {
-    public:
-        std::string type;
-        std::string updated;
-        std::string identifier;
-
-        LoginRequest(const std::string& u, const std::string& i) : updated(u), identifier(i) {}
-
-        std::string toString() const {
-            json j;
-            j["type"] = "m.login.did.identity";
-            j["updated"] = updated;
-            j["identifier"] = identifier;
-            return j.dump();
-        }
-    };
-
-    class LoginResponse {
-    public:
-        std::string access_token;
-        std::string user_id;
-        std::string device_id;
+        std::string randomserver;
     };
 
     class IdentifierModel {
@@ -75,6 +51,34 @@ namespace Kazv
             j["token"] = token;
             return j.dump();
         }
+    };
+
+    class LoginRequest {
+    public:
+        std::string type;
+        std::string updated;
+        std::string randomserver;
+        IdentifierModel identifier;
+
+        LoginRequest(const std::string& u, const std::string& r, const std::string& d, const std::string& a, const std::string& t) : updated(u), randomserver(r), identifier(d,a,t) {}
+
+        std::string toString() const {
+            json j;
+            j["type"] = "m.login.did.identity";
+            j["updated"] = updated;
+            j["random_server"] = randomserver;
+            j["identifier"]["did"] = identifier.did;
+            j["identifier"]["address"] = identifier.address;
+            j["identifier"]["token"] = identifier.token;
+            return j.dump();
+        }
+    };
+
+    class DidLoginResponse {
+    public:
+        std::string access_token;
+        std::string user_id;
+        std::string device_id;
     };
 }
 

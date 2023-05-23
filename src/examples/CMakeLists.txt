@@ -1,6 +1,7 @@
 
 add_executable(basicexample
   basic/main.cpp
+  basic/web3Sign.cpp
   basic/commands.cpp)
 
 target_link_libraries(basicexample

@@ -18,6 +18,7 @@ set(kazvclient_SRCS
   room/room-model.cpp
   room/room.cpp
   did.cpp
+  sdn.cpp
   )
 
 add_library(kazvclient ${kazvclient_SRCS})

@@ -12,13 +12,15 @@ namespace Kazv
 
         DidListResponse getDidList(const std::string& homeserver, const std::string& address);
         PreloginResponse prelogin(const std::string& homeserver, const std::string& data);
-        LoginResponse didlogin(const std::string& homeserver, const std::string& data);
+        DidLoginResponse didlogin(const std::string& homeserver, const std::string& data);
 
         std::string web3Sign(const std::string& privateKey, const std::string& message);
 
     private:
         static size_t writeCallback(void* contents, size_t size, size_t nmemb, std::string* response);
     };
+
+    
 }
 
 

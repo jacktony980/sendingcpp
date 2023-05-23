@@ -85,6 +85,7 @@
         "regex": "cpp",
         "unordered_set": "cpp",
         "valarray": "cpp",
-        "__availability": "cpp"
+        "__availability": "cpp",
+        "filesystem": "cpp"
     }
 }
