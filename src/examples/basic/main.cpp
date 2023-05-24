@@ -62,20 +62,20 @@ int main(int argc, char *argv[])
 
     Kazv::CprJobHandler jobHandler{ioContext.get_executor()};
 
-    auto sdk = Kazv::makeDefaultSdkWithCryptoRandom(
-        Kazv::genRandomData(Kazv::makeDefaultSdkWithCryptoRandomSize()),
-        static_cast<Kazv::CprJobHandler &>(jobHandler),
-        static_cast<Kazv::EventInterface &>(eventEmitter),
-        Kazv::AsioPromiseHandler{ioContext.get_executor()},
-        zug::identity
-        );
-    // auto sdk = Kazv::makeSdk(
-    //     Kazv::SdkModel{},
+    // auto sdk = Kazv::makeDefaultSdkWithCryptoRandom(
+    //     Kazv::genRandomData(Kazv::makeDefaultSdkWithCryptoRandomSize()),
     //     static_cast<Kazv::CprJobHandler &>(jobHandler),
     //     static_cast<Kazv::EventInterface &>(eventEmitter),
     //     Kazv::AsioPromiseHandler{ioContext.get_executor()},
     //     zug::identity
-    // );
+    //     );
+    auto sdk = Kazv::makeSdk(
+        Kazv::SdkModel{},
+        static_cast<Kazv::CprJobHandler &>(jobHandler),
+        static_cast<Kazv::EventInterface &>(eventEmitter),
+        Kazv::AsioPromiseHandler{ioContext.get_executor()},
+        zug::identity
+    );
 
     auto store = sdk.context();
     auto c = sdk.client();

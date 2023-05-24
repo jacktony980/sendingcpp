@@ -124,7 +124,8 @@ void parse(Kazv::SDNHttpRequest s, std::string l, Kazv::Client c)
         // room.invite(userId);
     } else if (std::regex_match(l, m, roomJoinRegex)) {
         auto roomId = m[1].str();
-        c.joinRoomById(roomId);
+        s.joinRoom(roomId);
+        // c.joinRoomById(roomId);
     } else {
         // no valid action, display help
         std::cout << "Commands:\n"

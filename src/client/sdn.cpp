@@ -37,7 +37,7 @@ namespace Kazv
 
     std::string SDNHttpRequest::joinRoom(const std::string& roomId) {
         std::string url = homeserver + "/_api/client/r0/join/" + roomId;
-        return baseRequest(url,"",POST);
+        return baseRequest(url,"{}",POST);
     }
 
     std::string SDNHttpRequest::joinedMembers(const std::string& roomId) {
