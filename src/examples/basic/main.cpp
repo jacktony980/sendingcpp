@@ -136,16 +136,11 @@ int main(int argc, char *argv[])
         // std::string signature = signer.signMessage(postResponse.message);
         // std::string signature = request.web3Sign("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054",postResponse.message);
         // std::cout << "signStr:" << signStr << std::endl;
-        // std::string signature = "abc";
-        // Kazv::LoginRequest loginRequest = Kazv::LoginRequest(postResponse.updated,postResponse.randomserver,did,loginAddress,signature);
-        // std::cout << "address login with loginRequest " << loginRequest.toString() << "\n" << std::endl;
-        // Kazv::DidLoginResponse loginResponse = request.didlogin(homeserver, loginRequest.toString());
+        std::string signature = "abc";
+        Kazv::LoginRequest loginRequest = Kazv::LoginRequest(postResponse.updated,postResponse.randomserver,did,loginAddress,signature);
+        std::cout << "address login with loginRequest " << loginRequest.toString() << "\n" << std::endl;
+        Kazv::DidLoginResponse loginResponse = request.didlogin(homeserver, loginRequest.toString());
         // printf("login success: userId = %s, token = %s\n", loginResponse.user_id.c_str(), loginResponse.access_token.c_str());
-        // c.serverUrl() = homeserver;
-        // c.userId() = loginResponse.user_id;
-        // c.token() = loginResponse.access_token;
-        // c.deviceId() = loginResponse.device_id;
-        // c.loggedIn() = true;
         c.tokenLogin(homeserver, user_id, access_token, device_id);
     }
 

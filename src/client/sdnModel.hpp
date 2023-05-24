@@ -36,6 +36,21 @@ namespace Kazv
         }
     };
 
+    class RoomStateRequest {
+    public:
+        std::string name;
+        std::string topic;
+
+        RoomStateRequest(const std::string& n, const std::string& t) : name(n), topic(t) {}
+
+        std::string toString() const {
+            json j;
+            j["name"] = name;
+            j["topic"] = topic;
+            return j.dump();
+        }
+    };
+
     // class PreloginResponse {
     // public:
     //     std::string did;
