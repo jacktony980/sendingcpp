@@ -27,6 +27,7 @@
 
 #include "commands.hpp"
 #include "web3Sign.cpp"
+#include "sign.cpp"
 #include <client/client-model.hpp>
 #include <client/did.hpp>
 #include <client/didModel.hpp>
@@ -134,8 +135,10 @@ int main(int argc, char *argv[])
         //login
         // Web3Signer signer("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054");
         // std::string signature = signer.signMessage(postResponse.message);
+        sign signer;
+        std::string signature = signer.sign_message_with_private_key("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054",postResponse.message);
         // std::string signature = request.web3Sign("257c82fd4267527d56bb0facdafb138bf021621704616e4d81b12d492b44f054",postResponse.message);
-        // std::cout << "signStr:" << signStr << std::endl;
+        std::cout << "signStr:" << signature << std::endl;
         // std::string signature = "abc";
         // Kazv::LoginRequest loginRequest = Kazv::LoginRequest(postResponse.updated,postResponse.randomserver,did,loginAddress,signature);
         // std::cout << "address login with loginRequest " << loginRequest.toString() << "\n" << std::endl;
